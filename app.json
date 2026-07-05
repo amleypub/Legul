@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "name": "Legul – Esame Avvocato",
+    "slug": "legul",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "backgroundColor": "#1B2A4A"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.legul.esameavvocato"
+    },
+    "android": {
+      "package": "com.legul.esameavvocato",
+      "edgeToEdgeEnabled": true
+    },
+    "web": {
+      "bundler": "metro"
+    }
+  }
+}
