@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -18,9 +18,9 @@ import { colors } from './src/theme';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
 
-function tabIcon(emoji: string) {
-  return ({ focused }: { focused: boolean }) => (
-    <Text style={{ fontSize: 20, opacity: focused ? 1 : 0.5 }}>{emoji}</Text>
+function tabIcon(name: keyof typeof Ionicons.glyphMap, outline: keyof typeof Ionicons.glyphMap) {
+  return ({ focused, color }: { focused: boolean; color: string }) => (
+    <Ionicons name={focused ? name : outline} size={22} color={color} />
   );
 }
 
@@ -38,17 +38,25 @@ function Tabs() {
       <Tab.Screen
         name="Home"
         component={HomeScreen}
-        options={{ title: 'Legul ⚖️', tabBarLabel: 'Home', tabBarIcon: tabIcon('🏠') }}
+        options={{
+          title: 'Legul',
+          tabBarLabel: 'Home',
+          tabBarIcon: tabIcon('home', 'home-outline'),
+        }}
       />
       <Tab.Screen
         name="Quiz"
         component={QuizListScreen}
-        options={{ title: 'Quiz', tabBarIcon: tabIcon('❓') }}
+        options={{ title: 'Quiz', tabBarIcon: tabIcon('help-circle', 'help-circle-outline') }}
       />
       <Tab.Screen
         name="Tracce"
         component={TracceScreen}
-        options={{ title: 'Tracce anni passati', tabBarLabel: 'Tracce', tabBarIcon: tabIcon('📜') }}
+        options={{
+          title: 'Tracce anni passati',
+          tabBarLabel: 'Tracce',
+          tabBarIcon: tabIcon('document-text', 'document-text-outline'),
+        }}
       />
       <Tab.Screen
         name="Materiale"
@@ -56,7 +64,7 @@ function Tabs() {
         options={{
           title: 'Materiale per l’esame',
           tabBarLabel: 'Materiale',
-          tabBarIcon: tabIcon('🛒'),
+          tabBarIcon: tabIcon('cart', 'cart-outline'),
         }}
       />
     </Tab.Navigator>

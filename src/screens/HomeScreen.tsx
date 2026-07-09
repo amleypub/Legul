@@ -1,5 +1,6 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { BADGES, useGamification } from '../gamification/GamificationContext';
 import { ProgressBar } from '../components/ProgressBar';
 import { colors, radius, spacing } from '../theme';
@@ -15,7 +16,7 @@ export default function HomeScreen() {
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       {/* Carta livello e punti */}
       <View style={styles.heroCard}>
-        <Text style={styles.heroEmoji}>{livello.emoji}</Text>
+        <Ionicons name={livello.icona} size={44} color={colors.accent} />
         <Text style={styles.heroLivello}>{livello.nome}</Text>
         <Text style={styles.heroPunti}>{state.punti} punti</Text>
         <ProgressBar progress={progressoLivello} />
@@ -24,13 +25,13 @@ export default function HomeScreen() {
             {prossimoLivello.sogliaPunti - state.punti} punti al livello «{prossimoLivello.nome}»
           </Text>
         ) : (
-          <Text style={styles.heroProssimo}>Hai raggiunto il livello massimo! 👑</Text>
+          <Text style={styles.heroProssimo}>Hai raggiunto il livello massimo.</Text>
         )}
       </View>
 
       {/* Streak */}
       <View style={styles.streakCard}>
-        <Text style={styles.streakEmoji}>🔥</Text>
+        <Ionicons name="flame" size={32} color={colors.accent} />
         <View style={styles.streakTextWrap}>
           <Text style={styles.streakTitle}>
             {state.streak > 0
@@ -77,7 +78,11 @@ export default function HomeScreen() {
           const sbloccato = state.badges.includes(badge.id);
           return (
             <View key={badge.id} style={[styles.badgeCard, !sbloccato && styles.badgeLocked]}>
-              <Text style={styles.badgeEmoji}>{sbloccato ? badge.emoji : '🔒'}</Text>
+              <Ionicons
+                name={sbloccato ? badge.icona : 'lock-closed'}
+                size={28}
+                color={sbloccato ? colors.accent : colors.textMuted}
+              />
               <Text style={styles.badgeNome}>{badge.nome}</Text>
               <Text style={styles.badgeDescr}>{badge.descrizione}</Text>
             </View>
@@ -98,7 +103,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.sm,
   },
-  heroEmoji: { fontSize: 44 },
   heroLivello: { color: '#FFFFFF', fontSize: 20, fontWeight: '700' },
   heroPunti: { color: colors.accent, fontSize: 32, fontWeight: '800' },
   heroProssimo: { color: 'rgba(255,255,255,0.8)', fontSize: 13 },
@@ -111,7 +115,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.md,
   },
-  streakEmoji: { fontSize: 32 },
   streakTextWrap: { flex: 1 },
   streakTitle: { fontSize: 15, fontWeight: '700', color: colors.text },
   streakSub: { fontSize: 13, color: colors.textMuted, marginTop: 2 },
@@ -146,7 +149,6 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
   },
   badgeLocked: { opacity: 0.45 },
-  badgeEmoji: { fontSize: 30 },
   badgeNome: { fontSize: 14, fontWeight: '700', color: colors.text, marginTop: 4 },
   badgeDescr: {
     fontSize: 11,

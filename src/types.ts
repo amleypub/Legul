@@ -27,6 +27,14 @@ export interface Traccia {
   titolo: string;
   testo: string;
   argomenti: string[];
+  /**
+   * True quando `testo` è il testo ufficiale integrale della traccia
+   * (atto ufficiale pubblicato dal Ministero della Giustizia);
+   * false/assente quando è una sintesi a scopo di studio.
+   */
+  testoUfficiale?: boolean;
+  /** URL della fonte ufficiale (pagina o PDF del Ministero della Giustizia). */
+  fonte?: string;
 }
 
 export interface MaterialeEsame {
@@ -42,5 +50,4 @@ export interface MaterialeEsame {
   asin?: string;
   /** Query di ricerca Amazon usata come fallback quando manca l'ASIN. */
   searchQuery: string;
-  emoji: string;
 }

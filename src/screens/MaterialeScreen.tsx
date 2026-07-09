@@ -1,5 +1,6 @@
 import React from 'react';
 import { Linking, Pressable, SectionList, StyleSheet, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { buildAffiliateUrl } from '../config/affiliate';
 import { materiali } from '../data/materiali';
 import type { MaterialeEsame } from '../types';
@@ -32,14 +33,14 @@ export default function MaterialeScreen() {
       ListHeaderComponent={
         <Text style={styles.intro}>
           Tutto ciò che ti serve per affrontare la prova: i codici ammessi in sede d’esame, i
-          manuali per esercitarti e qualche accessorio salva-tempo. 🧑‍⚖️
+          manuali per esercitarti e qualche accessorio salva-tempo.
         </Text>
       }
       renderSectionHeader={({ section }) => <Text style={styles.categoria}>{section.title}</Text>}
       renderItem={({ item }) => (
         <View style={styles.card}>
           <View style={styles.cardHeader}>
-            <Text style={styles.emoji}>{item.emoji}</Text>
+            <Ionicons name="book-outline" size={22} color={colors.primary} />
             <Text style={styles.titolo}>{item.titolo}</Text>
           </View>
           <Text style={styles.descrizione}>{item.descrizione}</Text>
@@ -47,7 +48,7 @@ export default function MaterialeScreen() {
             style={({ pressed }) => [styles.btn, pressed && styles.btnPressed]}
             onPress={() => apriSuAmazon(item)}
           >
-            <Text style={styles.btnTesto}>🛒 Vedi su Amazon</Text>
+            <Text style={styles.btnTesto}>Vedi su Amazon</Text>
           </Pressable>
         </View>
       )}
@@ -81,7 +82,6 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   cardHeader: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
-  emoji: { fontSize: 24 },
   titolo: { flex: 1, fontSize: 16, fontWeight: '700', color: colors.text },
   descrizione: { fontSize: 13, color: colors.textMuted, lineHeight: 19, marginTop: 6 },
   btn: {

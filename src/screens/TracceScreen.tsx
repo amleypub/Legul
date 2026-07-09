@@ -1,5 +1,6 @@
 import React from 'react';
 import { Pressable, SectionList, StyleSheet, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { anniDisponibili, tracceByAnno } from '../data/tracce';
@@ -8,10 +9,10 @@ import type { RootStackParamList } from '../navigation/types';
 import type { TipoTraccia } from '../types';
 import { colors, radius, spacing } from '../theme';
 
-const EMOJI_TIPO: Record<TipoTraccia, string> = {
-  'Parere di diritto civile': '📕',
-  'Parere di diritto penale': '📗',
-  'Atto giudiziario': '📄',
+const ICONA_TIPO: Record<TipoTraccia, keyof typeof Ionicons.glyphMap> = {
+  'Parere di diritto civile': 'book',
+  'Parere di diritto penale': 'shield-half',
+  'Atto giudiziario': 'document-text',
 };
 
 export default function TracceScreen() {
@@ -33,7 +34,7 @@ export default function TracceScreen() {
       ListHeaderComponent={
         <Text style={styles.intro}>
           Rivedi le tracce delle prove scritte degli anni passati: capire cosa è già stato chiesto
-          è il modo migliore per prevedere cosa arriverà. Ogni traccia letta vale punti! 🏛️
+          è il modo migliore per prevedere cosa arriverà. Ogni traccia letta vale punti.
         </Text>
       }
       renderSectionHeader={({ section }) => (
@@ -46,7 +47,7 @@ export default function TracceScreen() {
             style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
             onPress={() => navigation.navigate('TracciaDetail', { tracciaId: item.id })}
           >
-            <Text style={styles.emoji}>{EMOJI_TIPO[item.tipo]}</Text>
+            <Ionicons name={ICONA_TIPO[item.tipo]} size={24} color={colors.primary} />
             <View style={styles.cardText}>
               <Text style={styles.tipo}>{item.tipo}</Text>
               <Text style={styles.titolo}>{item.titolo}</Text>
@@ -58,7 +59,11 @@ export default function TracceScreen() {
                 ))}
               </View>
             </View>
-            <Text style={styles.letta}>{letta ? '✅' : '›'}</Text>
+            <Ionicons
+              name={letta ? 'checkmark-circle' : 'chevron-forward'}
+              size={20}
+              color={letta ? colors.success : colors.textMuted}
+            />
           </Pressable>
         );
       }}
@@ -89,7 +94,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cardPressed: { opacity: 0.7 },
-  emoji: { fontSize: 26 },
   cardText: { flex: 1 },
   tipo: { fontSize: 12, fontWeight: '700', color: colors.accent, textTransform: 'uppercase' },
   titolo: { fontSize: 15, fontWeight: '700', color: colors.text, marginTop: 2 },
@@ -103,5 +107,4 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
   },
   chipText: { fontSize: 11, color: colors.textMuted },
-  letta: { fontSize: 20, color: colors.textMuted },
 });

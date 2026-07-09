@@ -1,5 +1,6 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { questionsByMateria } from '../data/quizzes';
 import { useGamification } from '../gamification/GamificationContext';
 import { ProgressBar } from '../components/ProgressBar';
@@ -107,8 +108,12 @@ export default function QuizScreen({ route, navigation }: RootStackScreenProps<'
               {LETTERE[i]}
             </Text>
             <Text style={styles.opzioneTesto}>{opzione}</Text>
-            {risposto && isCorretta && <Text style={styles.esito}>✓</Text>}
-            {risposto && isSelezionata && !isCorretta && <Text style={styles.esito}>✗</Text>}
+            {risposto && isCorretta && (
+              <Ionicons name="checkmark" size={20} color={colors.success} />
+            )}
+            {risposto && isSelezionata && !isCorretta && (
+              <Ionicons name="close" size={20} color={colors.error} />
+            )}
           </Pressable>
         );
       })}
@@ -128,13 +133,13 @@ export default function QuizScreen({ route, navigation }: RootStackScreenProps<'
           </View>
 
           <View style={styles.spiegazioneCard}>
-            <Text style={styles.spiegazioneTitolo}>💡 Perché?</Text>
+            <Text style={styles.spiegazioneTitolo}>Perché?</Text>
             <Text style={styles.spiegazioneTesto}>{domanda.spiegazione}</Text>
           </View>
 
           <Pressable style={({ pressed }) => [styles.avantiBtn, pressed && styles.avantiBtnPressed]} onPress={avanti}>
             <Text style={styles.avantiTesto}>
-              {ultima ? 'Vedi il risultato 🏁' : 'Prossima domanda →'}
+              {ultima ? 'Vedi il risultato' : 'Prossima domanda'}
             </Text>
           </Pressable>
         </View>
@@ -183,7 +188,6 @@ const styles = StyleSheet.create({
   letteraCorretta: { backgroundColor: colors.success, color: '#FFFFFF' },
   letteraErrata: { backgroundColor: colors.error, color: '#FFFFFF' },
   opzioneTesto: { flex: 1, fontSize: 15, color: colors.text, lineHeight: 21 },
-  esito: { fontSize: 18, fontWeight: '800', color: colors.text },
   feedbackWrap: { marginTop: spacing.sm, gap: spacing.sm },
   incoraggiamento: {
     borderRadius: radius.md,

@@ -10,8 +10,8 @@ const AMAZON_BASE = 'https://www.amazon.it';
 
 /**
  * Costruisce il link affiliato per un materiale:
- * - con ASIN  → link diretto alla scheda prodotto;
- * - senza ASIN → link alla ricerca Amazon (anch'essa tracciata dal tag).
+ * - con ASIN: link diretto alla scheda prodotto;
+ * - senza ASIN: link alla ricerca Amazon (anch'essa tracciata dal tag).
  */
 export function buildAffiliateUrl(materiale: MaterialeEsame): string {
   const tag = encodeURIComponent(AMAZON_AFFILIATE_TAG);

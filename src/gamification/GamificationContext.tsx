@@ -8,6 +8,9 @@ import React, {
   useState,
 } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import type { Ionicons } from '@expo/vector-icons';
+
+type IconName = keyof typeof Ionicons.glyphMap;
 
 const STORAGE_KEY = '@legul/gamification/v1';
 
@@ -23,57 +26,57 @@ export const PUNTI = {
 export interface Livello {
   nome: string;
   sogliaPunti: number;
-  emoji: string;
+  icona: IconName;
 }
 
 export const LIVELLI: Livello[] = [
-  { nome: 'Studente di Giurisprudenza', sogliaPunti: 0, emoji: '📖' },
-  { nome: 'Laureato in Legge', sogliaPunti: 100, emoji: '🎓' },
-  { nome: 'Praticante', sogliaPunti: 300, emoji: '🗂️' },
-  { nome: 'Praticante Abilitato', sogliaPunti: 600, emoji: '📜' },
-  { nome: 'Avvocato', sogliaPunti: 1000, emoji: '⚖️' },
-  { nome: 'Cassazionista', sogliaPunti: 2000, emoji: '🏛️' },
-  { nome: 'Principe del Foro', sogliaPunti: 4000, emoji: '👑' },
+  { nome: 'Studente di Giurisprudenza', sogliaPunti: 0, icona: 'book' },
+  { nome: 'Laureato in Legge', sogliaPunti: 100, icona: 'school' },
+  { nome: 'Praticante', sogliaPunti: 300, icona: 'briefcase' },
+  { nome: 'Praticante Abilitato', sogliaPunti: 600, icona: 'document-text' },
+  { nome: 'Avvocato', sogliaPunti: 1000, icona: 'ribbon' },
+  { nome: 'Cassazionista', sogliaPunti: 2000, icona: 'library' },
+  { nome: 'Principe del Foro', sogliaPunti: 4000, icona: 'trophy' },
 ];
 
 export interface BadgeDef {
   id: string;
   nome: string;
   descrizione: string;
-  emoji: string;
+  icona: IconName;
 }
 
 export const BADGES: BadgeDef[] = [
-  { id: 'primo-quiz', nome: 'Primo passo', descrizione: 'Completa il tuo primo quiz', emoji: '🚀' },
-  { id: 'quiz-perfetto', nome: 'En plein', descrizione: 'Completa un quiz senza errori', emoji: '💯' },
-  { id: 'dieci-corrette', nome: 'Giurista in erba', descrizione: 'Totalizza 10 risposte corrette', emoji: '🌱' },
-  { id: 'cinquanta-corrette', nome: 'Memoria di ferro', descrizione: 'Totalizza 50 risposte corrette', emoji: '🧠' },
-  { id: 'streak-3', nome: 'Costanza', descrizione: 'Studia per 3 giorni consecutivi', emoji: '🔥' },
-  { id: 'streak-7', nome: 'Settimana da toga', descrizione: 'Studia per 7 giorni consecutivi', emoji: '🗓️' },
-  { id: 'prima-traccia', nome: 'Storico del diritto', descrizione: 'Leggi la tua prima traccia d’esame', emoji: '🏺' },
-  { id: 'cinque-tracce', nome: 'Archivista', descrizione: 'Leggi 5 tracce degli anni passati', emoji: '🗄️' },
-  { id: 'mille-punti', nome: 'Mille di questi punti', descrizione: 'Raggiungi 1.000 punti', emoji: '🏆' },
+  { id: 'primo-quiz', nome: 'Primo passo', descrizione: 'Completa il tuo primo quiz', icona: 'rocket' },
+  { id: 'quiz-perfetto', nome: 'En plein', descrizione: 'Completa un quiz senza errori', icona: 'checkmark-done-circle' },
+  { id: 'dieci-corrette', nome: 'Giurista in erba', descrizione: 'Totalizza 10 risposte corrette', icona: 'leaf' },
+  { id: 'cinquanta-corrette', nome: 'Memoria di ferro', descrizione: 'Totalizza 50 risposte corrette', icona: 'bulb' },
+  { id: 'streak-3', nome: 'Costanza', descrizione: 'Studia per 3 giorni consecutivi', icona: 'flame' },
+  { id: 'streak-7', nome: 'Settimana da toga', descrizione: 'Studia per 7 giorni consecutivi', icona: 'calendar' },
+  { id: 'prima-traccia', nome: 'Storico del diritto', descrizione: 'Leggi la tua prima traccia d’esame', icona: 'archive' },
+  { id: 'cinque-tracce', nome: 'Archivista', descrizione: 'Leggi 5 tracce degli anni passati', icona: 'file-tray-full' },
+  { id: 'mille-punti', nome: 'Mille di questi punti', descrizione: 'Raggiungi 1.000 punti', icona: 'trophy' },
 ];
 
 const INCORAGGIAMENTI_CORRETTA = [
-  'Esatto! Continua così, l’esame si avvicina e tu sei sempre più pronto! 💪',
-  'Risposta da vero avvocato! ⚖️',
-  'Perfetto! Un altro articolo che non dimenticherai più. 📚',
-  'Grande! La Commissione sarebbe colpita. 👏',
-  'Corretto! Un passo alla volta verso la toga. 🎯',
+  'Esatto! Continua così, l’esame si avvicina e tu sei sempre più pronto.',
+  'Risposta da vero avvocato.',
+  'Perfetto! Un altro articolo che non dimenticherai più.',
+  'Ottimo: la Commissione sarebbe colpita.',
+  'Corretto! Un passo alla volta verso la toga.',
 ];
 
 const INCORAGGIAMENTI_ERRATA = [
-  'Non mollare: sbagliando si impara, e ora conosci la risposta giusta! 🌱',
-  'Capita anche ai migliori cassazionisti. Leggi la spiegazione e riprova! 💡',
-  'Errore utile! È così che si fissano i concetti. 📖',
-  'Tieni duro: ogni errore oggi è un punto in più all’esame. 🚀',
+  'Non mollare: sbagliando si impara, e ora conosci la risposta giusta.',
+  'Capita anche ai migliori cassazionisti. Leggi la spiegazione e riprova.',
+  'Errore utile: è così che si fissano i concetti.',
+  'Tieni duro: ogni errore oggi è un punto in più all’esame.',
 ];
 
 const INCORAGGIAMENTI_QUIZ_FINE = [
-  'Quiz completato! La costanza è la vera arma segreta per l’esame. 🔑',
-  'Ottimo lavoro! Concediti una pausa: te la sei meritata. ☕',
-  'Un altro quiz in archivio: il tuo io del giorno dell’esame ti ringrazierà. 🙌',
+  'Quiz completato! La costanza è la vera arma segreta per l’esame.',
+  'Ottimo lavoro! Concediti una pausa: te la sei meritata.',
+  'Un altro quiz in archivio: il tuo io del giorno dell’esame ti ringrazierà.',
 ];
 
 function pick(arr: string[], seed: number): string {
@@ -231,7 +234,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
       const punti = PUNTI.quizCompletato + (perfetto ? PUNTI.quizPerfetto : 0);
       const seed = Math.floor(Math.random() * INCORAGGIAMENTI_QUIZ_FINE.length);
       const messaggio = perfetto
-        ? 'PERFETTO! Tutte corrette: sei in formissima! 🌟'
+        ? 'Perfetto! Tutte corrette: sei in formissima.'
         : pick(INCORAGGIAMENTI_QUIZ_FINE, seed);
       return applica(
         (s) => {
@@ -269,7 +272,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
                 punti: s.punti + PUNTI.tracciaLetta,
                 tracceLette: [...s.tracceLette, tracciaId],
               },
-        'Traccia studiata: conoscere il passato è il modo migliore di prepararsi al futuro! 🏛️',
+        'Traccia studiata: conoscere il passato è il modo migliore di prepararsi al futuro.',
         PUNTI.tracciaLetta
       );
     },

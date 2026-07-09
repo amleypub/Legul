@@ -53,10 +53,16 @@ export default function TracciaDetailScreen({ route }: RootStackScreenProps<'Tra
         <Text style={styles.testo}>{traccia.testo}</Text>
       </View>
 
-      <Text style={styles.nota}>
-        ℹ️ Testo riassunto a scopo di studio: le tracce ufficiali integrali sono pubblicate dal
-        Ministero della Giustizia.
-      </Text>
+      {traccia.testoUfficiale ? (
+        traccia.fonte ? (
+          <Text style={styles.nota}>Fonte ufficiale: {traccia.fonte}</Text>
+        ) : null
+      ) : (
+        <Text style={styles.nota}>
+          Testo riassunto a scopo di studio: le tracce ufficiali integrali sono pubblicate dal
+          Ministero della Giustizia.
+        </Text>
+      )}
     </ScrollView>
   );
 }

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { BADGES } from '../gamification/GamificationContext';
 import type { RootStackScreenProps } from '../navigation/types';
 import { colors, radius, spacing } from '../theme';
@@ -12,11 +13,12 @@ export default function QuizResultScreen({
   const percentuale = totale > 0 ? Math.round((corrette / totale) * 100) : 0;
   const badgeSbloccati = BADGES.filter((b) => nuoviBadge.includes(b.id));
 
-  const emojiEsito = percentuale === 100 ? '🏆' : percentuale >= 60 ? '🎉' : '💪';
+  const iconaEsito: keyof typeof Ionicons.glyphMap =
+    percentuale === 100 ? 'trophy' : percentuale >= 60 ? 'checkmark-circle' : 'trending-up';
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.emoji}>{emojiEsito}</Text>
+      <Ionicons name={iconaEsito} size={64} color={colors.accent} style={styles.iconaEsito} />
       <Text style={styles.titolo}>Quiz completato!</Text>
       <Text style={styles.materia}>{materia}</Text>
 
@@ -34,10 +36,10 @@ export default function QuizResultScreen({
 
       {badgeSbloccati.length > 0 && (
         <View style={styles.badgeWrap}>
-          <Text style={styles.badgeTitolo}>🎖️ Nuovi badge sbloccati!</Text>
+          <Text style={styles.badgeTitolo}>Nuovi badge sbloccati</Text>
           {badgeSbloccati.map((b) => (
             <View key={b.id} style={styles.badgeCard}>
-              <Text style={styles.badgeEmoji}>{b.emoji}</Text>
+              <Ionicons name={b.icona} size={30} color={colors.accent} />
               <View style={styles.badgeTextWrap}>
                 <Text style={styles.badgeNome}>{b.nome}</Text>
                 <Text style={styles.badgeDescr}>{b.descrizione}</Text>
@@ -51,7 +53,7 @@ export default function QuizResultScreen({
         style={({ pressed }) => [styles.btnPrimario, pressed && styles.btnPressed]}
         onPress={() => navigation.replace('QuizGame', { materia })}
       >
-        <Text style={styles.btnPrimarioTesto}>Riprova questa materia 🔁</Text>
+        <Text style={styles.btnPrimarioTesto}>Riprova questa materia</Text>
       </Pressable>
       <Pressable
         style={({ pressed }) => [styles.btnSecondario, pressed && styles.btnPressed]}
@@ -66,7 +68,7 @@ export default function QuizResultScreen({
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   content: { padding: spacing.lg, alignItems: 'center', paddingBottom: spacing.xl },
-  emoji: { fontSize: 64, marginTop: spacing.md },
+  iconaEsito: { marginTop: spacing.md },
   titolo: { fontSize: 24, fontWeight: '800', color: colors.text, marginTop: spacing.sm },
   materia: { fontSize: 15, color: colors.textMuted, marginTop: 2 },
   scoreCard: {
@@ -100,7 +102,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.accent,
   },
-  badgeEmoji: { fontSize: 30 },
   badgeTextWrap: { flex: 1 },
   badgeNome: { fontSize: 15, fontWeight: '700', color: colors.text },
   badgeDescr: { fontSize: 13, color: colors.textMuted, marginTop: 2 },

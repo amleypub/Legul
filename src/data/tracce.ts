@@ -7,6 +7,13 @@ import type { Traccia } from '../types';
  * degli argomenti oggetto delle prove; i testi ufficiali integrali sono
  * pubblicati dal Ministero della Giustizia e possono essere incollati nel
  * campo `testo` per sostituire le sintesi.
+ *
+ * Per ogni traccia con testo ufficiale integrale impostare:
+ *   testoUfficiale: true,
+ *   fonte: 'https://www.giustizia.it/...',
+ * La schermata di dettaglio mostra la nota "testo riassunto" solo quando
+ * `testoUfficiale` non è true. I testi delle tracce sono atti ufficiali
+ * dello Stato e come tali sono liberamente riproducibili (art. 5 l. 633/1941).
  */
 export const tracce: Traccia[] = [
   {

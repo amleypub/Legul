@@ -1,29 +1,29 @@
-# Legul ⚖️ — Preparazione all'Esame da Avvocato
+# Legul — Preparazione all'Esame da Avvocato
 
 App mobile per **Android e iOS** (React Native + Expo) per prepararsi all'esame di abilitazione alla professione forense, con studio **gamificato**: punti, livelli, streak giornaliera, badge e messaggi di incoraggiamento.
 
 ## Funzionalità
 
-### 🎯 Quiz a risposta multipla con spiegazioni
+### Quiz a risposta multipla con spiegazioni
 - 6 materie: Diritto civile, Diritto penale, Procedura civile, Procedura penale, Diritto amministrativo, Deontologia forense
 - Dopo ogni risposta viene mostrata la **spiegazione del perché**, con i riferimenti normativi (articoli di codice, leggi speciali, riforma Cartabia, ecc.)
 - Anche le risposte errate valgono qualche punto: studiare conta sempre!
 
-### 📜 Tracce degli esami degli anni passati
+### Tracce degli esami degli anni passati
 - Archivio consultabile per anno delle tracce delle prove scritte (pareri di civile e penale, atti giudiziari)
 - Ogni traccia riporta sessione, tipologia, argomenti trattati e testo
 - Leggere una traccia assegna punti e sblocca badge dedicati
 
 > I testi presenti in `src/data/tracce.ts` sono sintesi a scopo di studio; i testi ufficiali integrali (pubblicati dal Ministero della Giustizia) possono essere incollati nel campo `testo` di ciascuna traccia.
 
-### 🏆 Gamification
+### Gamification
 - **Punti** per ogni risposta, quiz completato e traccia letta (bonus per i quiz perfetti)
-- **Livelli** a tema forense: da «Studente di Giurisprudenza» a «Principe del Foro» 👑
-- **Streak** di giorni di studio consecutivi 🔥
+- **Livelli** a tema forense: da «Studente di Giurisprudenza» a «Principe del Foro»
+- **Streak** di giorni di studio consecutivi
 - **Badge** da sbloccare e **messaggi di incoraggiamento** ad ogni azione
 - Progressi salvati sul dispositivo (AsyncStorage)
 
-### 🛒 Materiale per l'esame (link affiliati Amazon)
+### Materiale per l'esame (link affiliati Amazon)
 - Sezione con i **codici** (Civile, Penale, Quattro Codici, Procedura civile, Procedura penale, Amministrativo, Deontologia), manuali di pareri/atti svolti e accessori utili
 - Ogni scheda apre Amazon tramite **link affiliato**, con informativa di affiliazione a fondo pagina
 

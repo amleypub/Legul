@@ -1,5 +1,6 @@
 import React from 'react';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { materie, questionsByMateria } from '../data/quizzes';
@@ -7,13 +8,13 @@ import type { RootStackParamList } from '../navigation/types';
 import type { Materia } from '../types';
 import { colors, radius, spacing } from '../theme';
 
-const EMOJI_MATERIA: Record<Materia, string> = {
-  'Diritto civile': '🏠',
-  'Diritto penale': '🚔',
-  'Procedura civile': '🧾',
-  'Procedura penale': '🔍',
-  'Diritto amministrativo': '🏛️',
-  'Deontologia forense': '🤝',
+const ICONA_MATERIA: Record<Materia, keyof typeof Ionicons.glyphMap> = {
+  'Diritto civile': 'home',
+  'Diritto penale': 'shield-half',
+  'Procedura civile': 'reader',
+  'Procedura penale': 'search',
+  'Diritto amministrativo': 'business',
+  'Deontologia forense': 'people',
 };
 
 export default function QuizListScreen() {
@@ -28,7 +29,7 @@ export default function QuizListScreen() {
       ListHeaderComponent={
         <Text style={styles.intro}>
           Scegli la materia e mettiti alla prova: ogni risposta è spiegata con i riferimenti
-          normativi, così impari anche quando sbagli. Ogni risposta vale punti! 🎯
+          normativi, così impari anche quando sbagli. Ogni risposta vale punti.
         </Text>
       }
       renderItem={({ item }) => {
@@ -38,14 +39,14 @@ export default function QuizListScreen() {
             style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
             onPress={() => navigation.navigate('QuizGame', { materia: item })}
           >
-            <Text style={styles.emoji}>{EMOJI_MATERIA[item]}</Text>
+            <Ionicons name={ICONA_MATERIA[item]} size={26} color={colors.primary} />
             <View style={styles.cardText}>
               <Text style={styles.materia}>{item}</Text>
               <Text style={styles.count}>
                 {count} {count === 1 ? 'domanda' : 'domande'}
               </Text>
             </View>
-            <Text style={styles.chevron}>›</Text>
+            <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
           </Pressable>
         );
       }}
@@ -68,9 +69,7 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
   },
   cardPressed: { opacity: 0.7 },
-  emoji: { fontSize: 28 },
   cardText: { flex: 1 },
   materia: { fontSize: 16, fontWeight: '700', color: colors.text },
   count: { fontSize: 13, color: colors.textMuted, marginTop: 2 },
-  chevron: { fontSize: 26, color: colors.textMuted },
 });
