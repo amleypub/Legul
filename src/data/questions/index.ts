@@ -19,14 +19,16 @@ import { amministrativoL1 } from './amministrativo-l1';
 import { amministrativoL2 } from './amministrativo-l2';
 import { amministrativoL3 } from './amministrativo-l3';
 import { amministrativoL4 } from './amministrativo-l4';
+import { deontologiaL1 } from './deontologia-l1';
 import { deontologiaL2 } from './deontologia-l2';
 import { deontologiaL4 } from './deontologia-l4';
 
 /**
  * Aggregatore della banca domande.
  * I moduli per materia/livello vengono aggiunti man mano che sono pronti;
- * mancano ancora (fase 2/3): proc-penale-l4, deontologia-l1, deontologia-l3
- * e i completamenti fino a 650 domande per materia (250 deontologia).
+ * mancano ancora: i completamenti di amministrativo-l2, deontologia-l2 e
+ * proc-penale-l2 (fase 2) e i livelli premium fino a 650 domande per
+ * materia, inclusi proc-penale-l4 e deontologia-l3 (fase 3).
  */
 export const tutteLeDomande: QuizQuestion[] = [
   ...quizQuestions,
@@ -49,6 +51,7 @@ export const tutteLeDomande: QuizQuestion[] = [
   ...amministrativoL2,
   ...amministrativoL3,
   ...amministrativoL4,
+  ...deontologiaL1,
   ...deontologiaL2,
   ...deontologiaL4,
 ];
