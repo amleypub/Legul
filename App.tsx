@@ -7,13 +7,15 @@ import { StatusBar } from 'expo-status-bar';
 import { GamificationProvider } from './src/gamification/GamificationContext';
 import type { RootStackParamList } from './src/navigation/types';
 import HomeScreen from './src/screens/HomeScreen';
-import QuizListScreen from './src/screens/QuizListScreen';
-import QuizScreen from './src/screens/QuizScreen';
-import QuizResultScreen from './src/screens/QuizResultScreen';
+import QuizHomeScreen from './src/screens/QuizHomeScreen';
+import PercorsoScreen from './src/screens/PercorsoScreen';
+import LezioneScreen from './src/screens/LezioneScreen';
+import EsitoLezioneScreen from './src/screens/EsitoLezioneScreen';
+import PaywallScreen from './src/screens/PaywallScreen';
 import TracceScreen from './src/screens/TracceScreen';
 import TracciaDetailScreen from './src/screens/TracciaDetailScreen';
 import MaterialeScreen from './src/screens/MaterialeScreen';
-import { colors } from './src/theme';
+import { colors, materiaColors } from './src/theme';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
@@ -46,7 +48,7 @@ function Tabs() {
       />
       <Tab.Screen
         name="Quiz"
-        component={QuizListScreen}
+        component={QuizHomeScreen}
         options={{ title: 'Quiz', tabBarIcon: tabIcon('help-circle', 'help-circle-outline') }}
       />
       <Tab.Screen
@@ -85,14 +87,23 @@ export default function App() {
         >
           <Stack.Screen name="Tabs" component={Tabs} options={{ headerShown: false }} />
           <Stack.Screen
-            name="QuizGame"
-            component={QuizScreen}
-            options={({ route }) => ({ title: route.params.materia })}
+            name="Percorso"
+            component={PercorsoScreen}
+            options={({ route }) => ({
+              title: route.params.materia,
+              headerStyle: { backgroundColor: materiaColors[route.params.materia].end },
+            })}
+          />
+          <Stack.Screen name="Lezione" component={LezioneScreen} options={{ headerShown: false }} />
+          <Stack.Screen
+            name="EsitoLezione"
+            component={EsitoLezioneScreen}
+            options={{ headerShown: false, gestureEnabled: false }}
           />
           <Stack.Screen
-            name="QuizResult"
-            component={QuizResultScreen}
-            options={{ title: 'Risultato', headerBackVisible: false }}
+            name="Paywall"
+            component={PaywallScreen}
+            options={{ headerShown: false, presentation: 'modal' }}
           />
           <Stack.Screen
             name="TracciaDetail"

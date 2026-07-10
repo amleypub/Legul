@@ -51,7 +51,7 @@ export default function HomeScreen() {
       <View style={styles.statsRow}>
         <View style={styles.statCard}>
           <Text style={styles.statValue}>{state.quizCompletati}</Text>
-          <Text style={styles.statLabel}>Quiz completati</Text>
+          <Text style={styles.statLabel}>Lezioni completate</Text>
         </View>
         <View style={styles.statCard}>
           <Text style={styles.statValue}>{state.risposteCorrette}</Text>

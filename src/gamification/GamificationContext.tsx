@@ -20,6 +20,7 @@ export const PUNTI = {
   rispostaErrata: 2, // premio di partecipazione: studiare conta comunque!
   quizCompletato: 20,
   quizPerfetto: 30, // bonus aggiuntivo se tutte le risposte sono corrette
+  perStella: 10, // bonus per ogni stella ottenuta in una lezione
   tracciaLetta: 5,
 } as const;
 
@@ -88,6 +89,10 @@ interface GamificationState {
   risposteCorrette: number;
   risposteErrate: number;
   quizCompletati: number;
+  /** Migliori stelle ottenute per ogni lezione del percorso (id lezione -> 0-3). */
+  lezioni: Record<string, number>;
+  /** True se l'utente ha sbloccato i contenuti Premium (unità 3 e 4). */
+  premium: boolean;
   tracceLette: string[]; // id delle tracce lette
   badges: string[]; // id dei badge sbloccati
   streak: number;
@@ -99,6 +104,8 @@ const initialState: GamificationState = {
   risposteCorrette: 0,
   risposteErrate: 0,
   quizCompletati: 0,
+  lezioni: {},
+  premium: false,
   tracceLette: [],
   badges: [],
   streak: 0,
@@ -109,6 +116,8 @@ export interface EventoGamification {
   puntiGuadagnati: number;
   messaggio: string;
   nuoviBadge: BadgeDef[];
+  /** Stelle ottenute (solo per il completamento di una lezione). */
+  stelle?: number;
 }
 
 interface GamificationContextValue {
@@ -118,8 +127,30 @@ interface GamificationContextValue {
   /** Avanzamento (0–1) verso il prossimo livello. */
   progressoLivello: number;
   registraRisposta(corretta: boolean): EventoGamification;
-  registraQuizCompletato(corrette: number, totale: number): EventoGamification;
+  /**
+   * Registra il completamento di una lezione del percorso.
+   * Stelle: 3 = nessun errore, 2 = almeno 80%, 1 = almeno 60%.
+   */
+  registraLezioneCompletata(
+    lezioneId: string,
+    corrette: number,
+    totale: number
+  ): EventoGamification;
   registraTracciaLetta(tracciaId: string): EventoGamification;
+  /**
+   * Attiva Premium. Oggi è un flag locale (modalità demo); quando verrà
+   * integrato l'acquisto in-app, andrà chiamato dopo la conferma dello store.
+   */
+  attivaPremium(): void;
+}
+
+export function stellePerRisultato(corrette: number, totale: number): number {
+  if (totale <= 0) return 0;
+  const quota = corrette / totale;
+  if (quota >= 1) return 3;
+  if (quota >= 0.8) return 2;
+  if (quota >= 0.6) return 1;
+  return 0;
 }
 
 const GamificationContext = createContext<GamificationContextValue | null>(null);
@@ -228,20 +259,26 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
     [applica]
   );
 
-  const registraQuizCompletato = useCallback(
-    (corrette: number, totale: number): EventoGamification => {
-      const perfetto = totale > 0 && corrette === totale;
-      const punti = PUNTI.quizCompletato + (perfetto ? PUNTI.quizPerfetto : 0);
+  const registraLezioneCompletata = useCallback(
+    (lezioneId: string, corrette: number, totale: number): EventoGamification => {
+      const stelle = stellePerRisultato(corrette, totale);
+      const perfetto = stelle === 3;
+      const punti =
+        PUNTI.quizCompletato + stelle * PUNTI.perStella + (perfetto ? PUNTI.quizPerfetto : 0);
       const seed = Math.floor(Math.random() * INCORAGGIAMENTI_QUIZ_FINE.length);
       const messaggio = perfetto
         ? 'Perfetto! Tutte corrette: sei in formissima.'
         : pick(INCORAGGIAMENTI_QUIZ_FINE, seed);
-      return applica(
+      const evento = applica(
         (s) => {
           const base = {
             ...s,
             punti: s.punti + punti,
             quizCompletati: s.quizCompletati + 1,
+            lezioni: {
+              ...s.lezioni,
+              [lezioneId]: Math.max(s.lezioni[lezioneId] ?? 0, stelle),
+            },
           };
           if (!perfetto) return base;
           return {
@@ -254,9 +291,14 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
         messaggio,
         punti
       );
+      return { ...evento, stelle };
     },
     [applica]
   );
+
+  const attivaPremium = useCallback(() => {
+    setState((prev) => (prev.premium ? prev : { ...prev, premium: true }));
+  }, []);
 
   const registraTracciaLetta = useCallback(
     (tracciaId: string): EventoGamification => {
@@ -293,10 +335,11 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
       prossimoLivello,
       progressoLivello: Math.min(Math.max(progressoLivello, 0), 1),
       registraRisposta,
-      registraQuizCompletato,
+      registraLezioneCompletata,
       registraTracciaLetta,
+      attivaPremium,
     };
-  }, [state, registraRisposta, registraQuizCompletato, registraTracciaLetta]);
+  }, [state, registraRisposta, registraLezioneCompletata, registraTracciaLetta, attivaPremium]);
 
   return <GamificationContext.Provider value={value}>{children}</GamificationContext.Provider>;
 }

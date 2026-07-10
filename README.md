@@ -4,10 +4,20 @@ App mobile per **Android e iOS** (React Native + Expo) per prepararsi all'esame 
 
 ## Funzionalità
 
-### Quiz a risposta multipla con spiegazioni
+### Percorso quiz in stile Duolingo
 - 6 materie: Diritto civile, Diritto penale, Procedura civile, Procedura penale, Diritto amministrativo, Deontologia forense
+- **Percorso a nodi** con 4 unità per materia (Fondamenti, Consolidamento, Avanzato, Eccellenza) e lezioni da 10 domande a sblocco progressivo
+- **Cuori**: 4 tentativi per lezione; **stelle** (1-3) in base alla precisione; pulsanti "chunky" 3D, gradienti, animazioni a molla e feedback aptico
 - Dopo ogni risposta viene mostrata la **spiegazione del perché**, con i riferimenti normativi (articoli di codice, leggi speciali, riforma Cartabia, ecc.)
-- Anche le risposte errate valgono qualche punto: studiare conta sempre!
+- Anche le risposte errate valgono qualche punto: studiare conta sempre
+
+### Modello freemium
+- Le unità **1 e 2 sono gratuite**; le unità **3 e 4 richiedono Premium** (paywall con piani mensile/annuale di esempio)
+- L'acquisto in-app non è ancora integrato: il pulsante del paywall attiva Premium in **modalità demo** (`attivaPremium()` in `src/gamification/GamificationContext.tsx`)
+
+### Banca domande
+- Obiettivo: **650 domande per materia** (250 per deontologia), suddivise nei 4 livelli
+- Stato attuale: ~900 domande in `src/data/questions/` (una per file materia-livello); i completamenti sono pianificati nelle fasi 2 e 3
 
 ### Tracce degli esami degli anni passati
 - Archivio consultabile per anno delle tracce delle prove scritte (pareri di civile e penale, atti giudiziari)

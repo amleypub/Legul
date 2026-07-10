@@ -14,6 +14,7 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 'civ-1',
     materia: 'Diritto civile',
+    difficolta: 1,
     domanda: 'Qual è il termine ordinario di prescrizione dei diritti?',
     opzioni: ['5 anni', '10 anni', '20 anni', 'I diritti non si prescrivono mai'],
     rispostaCorretta: 1,
@@ -23,6 +24,7 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 'civ-2',
     materia: 'Diritto civile',
+    difficolta: 1,
     domanda:
       'Se il promittente venditore di un preliminare di vendita rifiuta di stipulare il definitivo, il promissario acquirente può ottenere:',
     opzioni: [
@@ -38,6 +40,7 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 'civ-3',
     materia: 'Diritto civile',
+    difficolta: 1,
     domanda: 'Quale forma è richiesta, di regola, per la donazione?',
     opzioni: [
       'Scrittura privata autenticata',
@@ -52,6 +55,7 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 'civ-4',
     materia: 'Diritto civile',
+    difficolta: 1,
     domanda: 'La responsabilità ex art. 2043 c.c. presuppone:',
     opzioni: [
       'Un inadempimento contrattuale',
@@ -66,6 +70,7 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 'civ-5',
     materia: 'Diritto civile',
+    difficolta: 1,
     domanda:
       'In presenza di coniuge e di un solo figlio, quale quota di legittima spetta a ciascuno?',
     opzioni: [
@@ -83,6 +88,7 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 'pen-1',
     materia: 'Diritto penale',
+    difficolta: 1,
     domanda: 'In materia di delitti, la punibilità a titolo di colpa:',
     opzioni: [
       'È la regola generale',
@@ -97,6 +103,7 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 'pen-2',
     materia: 'Diritto penale',
+    difficolta: 1,
     domanda: 'Il tentativo punibile richiede:',
     opzioni: [
       'Qualsiasi atto preparatorio',
@@ -111,6 +118,7 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 'pen-3',
     materia: 'Diritto penale',
+    difficolta: 1,
     domanda: 'La legittima difesa (art. 52 c.p.) richiede, tra l’altro:',
     opzioni: [
       'Solo l’attualità del pericolo',
@@ -125,6 +133,7 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 'pen-4',
     materia: 'Diritto penale',
+    difficolta: 1,
     domanda: 'Ciò che distingue la rapina dal furto è:',
     opzioni: [
       'Il valore della cosa sottratta',
@@ -139,6 +148,7 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 'pen-5',
     materia: 'Diritto penale',
+    difficolta: 1,
     domanda: 'Se dopo la commissione del fatto entra in vigore una legge più favorevole al reo:',
     opzioni: [
       'Si applica sempre la legge del tempo del fatto',
@@ -155,6 +165,7 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 'pc-1',
     materia: 'Procedura civile',
+    difficolta: 1,
     domanda:
       'Qual è, in via generale, il limite di competenza per valore del giudice di pace per le cause relative a beni mobili?',
     opzioni: ['5.000 euro', '10.000 euro', '25.000 euro', '50.000 euro'],
@@ -165,6 +176,7 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 'pc-2',
     materia: 'Procedura civile',
+    difficolta: 1,
     domanda:
       'In assenza di notificazione della sentenza, entro quale termine va proposta l’impugnazione?',
     opzioni: [
@@ -180,6 +192,7 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 'pc-3',
     materia: 'Procedura civile',
+    difficolta: 1,
     domanda:
       'Dopo la riforma Cartabia, quale termine minimo a comparire deve essere assegnato al convenuto nell’atto di citazione?',
     opzioni: ['60 giorni', '90 giorni', '120 giorni', '150 giorni'],
@@ -190,6 +203,7 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 'pc-4',
     materia: 'Procedura civile',
+    difficolta: 1,
     domanda: 'Secondo la regola generale sull’onere della prova:',
     opzioni: [
       'Il giudice deve ricercare d’ufficio tutte le prove',
@@ -204,6 +218,7 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 'pc-5',
     materia: 'Procedura civile',
+    difficolta: 1,
     domanda: 'Il ricorso per cassazione consente:',
     opzioni: [
       'Un riesame completo del merito della causa',
@@ -220,6 +235,7 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 'pp-1',
     materia: 'Procedura penale',
+    difficolta: 1,
     domanda: 'L’applicazione di una misura cautelare personale richiede:',
     opzioni: [
       'La sola gravità del reato contestato',
@@ -234,6 +250,7 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 'pp-2',
     materia: 'Procedura penale',
+    difficolta: 1,
     domanda:
       'Dopo la riforma Cartabia, qual è il termine ordinario di durata delle indagini preliminari per i delitti comuni?',
     opzioni: ['6 mesi', '1 anno', '18 mesi', '2 anni'],
@@ -244,6 +261,7 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 'pp-3',
     materia: 'Procedura penale',
+    difficolta: 1,
     domanda: 'Il "patteggiamento" (applicazione della pena su richiesta) è ammesso quando la pena da applicare:',
     opzioni: [
       'Non supera 2 anni',
@@ -258,6 +276,7 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 'pp-4',
     materia: 'Procedura penale',
+    difficolta: 1,
     domanda: 'In caso di condanna nel giudizio abbreviato, la pena per i delitti è ridotta:',
     opzioni: ['Della metà', 'Di un terzo', 'Di un quarto', 'Di due terzi'],
     rispostaCorretta: 1,
@@ -267,6 +286,7 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 'pp-5',
     materia: 'Procedura penale',
+    difficolta: 1,
     domanda: 'Prima dell’interrogatorio, la persona sottoposta alle indagini deve essere avvertita che:',
     opzioni: [
       'Ha l’obbligo di rispondere secondo verità a ogni domanda',
@@ -283,6 +303,7 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 'amm-1',
     materia: 'Diritto amministrativo',
+    difficolta: 1,
     domanda: 'Entro quale termine va proposto, di regola, il ricorso al TAR per l’annullamento di un provvedimento?',
     opzioni: ['30 giorni', '60 giorni', '90 giorni', '120 giorni'],
     rispostaCorretta: 1,
@@ -292,6 +313,7 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 'amm-2',
     materia: 'Diritto amministrativo',
+    difficolta: 1,
     domanda: 'Con la SCIA (segnalazione certificata di inizio attività), l’attività segnalata:',
     opzioni: [
       'Può iniziare solo dopo 30 giorni',
@@ -306,6 +328,7 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 'amm-3',
     materia: 'Diritto amministrativo',
+    difficolta: 1,
     domanda: 'Il silenzio-assenso ex art. 20 l. 241/1990 comporta che:',
     opzioni: [
       'Il silenzio della P.A. equivale sempre a rigetto',
@@ -320,6 +343,7 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 'amm-4',
     materia: 'Diritto amministrativo',
+    difficolta: 1,
     domanda: 'La giurisdizione generale di legittimità del giudice amministrativo ha ad oggetto:',
     opzioni: [
       'I diritti soggettivi',
@@ -334,6 +358,7 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 'amm-5',
     materia: 'Diritto amministrativo',
+    difficolta: 1,
     domanda: 'Il diritto di accesso ai documenti amministrativi (l. 241/1990) spetta:',
     opzioni: [
       'A chiunque, senza alcuna condizione',
@@ -350,6 +375,7 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 'deo-1',
     materia: 'Deontologia forense',
+    difficolta: 1,
     domanda: 'Il patto con cui l’avvocato pattuisce come compenso una quota del bene oggetto della lite (patto di quota lite) è:',
     opzioni: [
       'Sempre consentito',
@@ -364,6 +390,7 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 'deo-2',
     materia: 'Deontologia forense',
+    difficolta: 1,
     domanda: 'Il segreto professionale per l’avvocato è:',
     opzioni: [
       'Una semplice facoltà',
@@ -378,6 +405,7 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 'deo-3',
     materia: 'Deontologia forense',
+    difficolta: 1,
     domanda: 'L’avvocato può assumere un incarico contro un proprio cliente attuale?',
     opzioni: [
       'Sì, sempre',
@@ -392,6 +420,7 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 'deo-4',
     materia: 'Deontologia forense',
+    difficolta: 1,
     domanda: 'La pubblicità informativa dell’avvocato è:',
     opzioni: [
       'Vietata in ogni forma',
@@ -406,6 +435,7 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 'deo-5',
     materia: 'Deontologia forense',
+    difficolta: 1,
     domanda: 'L’avvocato può mettersi in contatto diretto con la controparte che sia assistita da un collega?',
     opzioni: [
       'Sì, liberamente',

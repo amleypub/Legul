@@ -6,9 +6,13 @@ export type Materia =
   | 'Diritto amministrativo'
   | 'Deontologia forense';
 
+/** Livello di difficoltà: 1 Fondamenti, 2 Consolidamento, 3 Avanzato, 4 Eccellenza. */
+export type Difficolta = 1 | 2 | 3 | 4;
+
 export interface QuizQuestion {
   id: string;
   materia: Materia;
+  difficolta: Difficolta;
   domanda: string;
   opzioni: string[];
   /** Indice (0-based) della risposta corretta in `opzioni`. */
