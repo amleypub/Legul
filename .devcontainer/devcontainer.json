@@ -1,0 +1,15 @@
+{
+  "name": "Legul – Expo",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+  "features": {},
+  "forwardPorts": [8081],
+  "postCreateCommand": "npm install",
+  "postAttachCommand": {
+    "avvia-app": "npx expo start --tunnel"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": []
+    }
+  }
+}
