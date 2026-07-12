@@ -16,8 +16,13 @@ App mobile per **Android e iOS** (React Native + Expo) per prepararsi all'esame 
 - L'acquisto in-app non è ancora integrato: il pulsante del paywall attiva Premium in **modalità demo** (`attivaPremium()` in `src/gamification/GamificationContext.tsx`)
 
 ### Banca domande
-- Obiettivo: **650 domande per materia** (250 per deontologia), suddivise nei 4 livelli
-- Stato attuale: ~900 domande in `src/data/questions/` (una per file materia-livello); i completamenti sono pianificati nelle fasi 2 e 3
+- **3.500 domande** in `src/data/questions/` (un file per materia-livello), aggregate in `index.ts`
+- **645 domande per ogni materia principale** e **245 per deontologia**, distribuite sui 4 livelli:
+  - Unità 1 · Fondamenti — 158 per materia (58 deontologia)
+  - Unità 2 · Consolidamento — 162 per materia (62 deontologia)
+  - Unità 3 · Avanzato — 163 per materia (63 deontologia)
+  - Unità 4 · Eccellenza — 162 per materia (62 deontologia)
+- Id univoci verificati, nessuna emoji, diritto vigente (riforme Cartabia, codice contratti d.lgs. 36/2023)
 
 ### Tracce degli esami degli anni passati
 - Archivio consultabile per anno delle tracce delle prove scritte (pareri di civile e penale, atti giudiziari)
