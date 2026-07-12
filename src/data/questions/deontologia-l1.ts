@@ -307,7 +307,7 @@ export const deontologiaL1: QuizQuestion[] = [
       'Può accettare incarichi in materie a lui ignote purché applichi una riduzione del compenso',
     ],
     rispostaCorretta: 0,
-    spiegazione: 'L’art. 14 del codice deontologico impone all’avvocato il dovere di competenza e l’art. 26 stabilisce che egli non deve accettare incarichi che sappia di non poter svolgere con adeguata competenza, dovendo in tal caso informare il cliente o avvalersi della collaborazione di altro professionista. La regola attua il principio generale dell’art. 3, comma 2, l. 247/2012.',
+    spiegazione: 'L’art. 14 del codice deontologico, che disciplina il dovere di competenza, stabilisce che l’avvocato non deve accettare incarichi che sappia di non poter svolgere con adeguata competenza, dovendo in tal caso informare il cliente o valutare l’integrazione della difesa con altro collega. La regola attua il principio generale dell’art. 3, comma 2, l. 247/2012.',
   },
   {
     id: 'deo-l1-023',
@@ -377,7 +377,7 @@ export const deontologiaL1: QuizQuestion[] = [
       'Sì, se il giudizio si conclude con esito favorevole',
     ],
     rispostaCorretta: 1,
-    spiegazione: 'L’art. 85 d.P.R. 115/2002 vieta al difensore della parte ammessa al patrocinio a spese dello Stato di chiedere o percepire dal proprio assistito compensi o rimborsi a qualunque titolo, diversi da quelli previsti dalla legge; ogni patto contrario è nullo. La violazione costituisce grave illecito disciplinare, sanzionato anche ai sensi dell’art. 29 del codice deontologico.',
+    spiegazione: 'L’art. 85 d.P.R. 115/2002 vieta al difensore della parte ammessa al patrocinio a spese dello Stato di chiedere o percepire dal proprio assistito compensi o rimborsi a qualunque titolo, diversi da quelli previsti dalla legge; ogni patto contrario è nullo. La violazione di tale divieto costituisce altresì un grave illecito disciplinare.',
   },
   {
     id: 'deo-l1-028',
