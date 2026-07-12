@@ -1051,7 +1051,7 @@ export const amministrativoL2: QuizQuestion[] = [
     domanda: 'È esperibile il giudizio di ottemperanza per l’esecuzione delle decisioni rese su ricorso straordinario al Presidente della Repubblica?',
     opzioni: ['Sì: dopo la legge n. 69/2009 la giurisprudenza riconosce alla decisione natura sostanzialmente giurisdizionale e ne ammette l’ottemperanza', 'No, trattandosi di atto amministrativo puro non assimilabile al giudicato', 'Solo se l’amministrazione soccombente vi consente espressamente', 'Solo davanti al giudice ordinario in sede di esecuzione forzata'],
     rispostaCorretta: 0,
-    spiegazione: 'Dopo che la legge n. 69/2009 ha reso vincolante il parere del Consiglio di Stato, la giurisprudenza, anche delle Sezioni unite e dell’Adunanza plenaria, ha riconosciuto alla decisione del ricorso straordinario natura sostanzialmente giurisdizionale. Ne consegue l’esperibilità del giudizio di ottemperanza ai sensi dell’art. 112, comma 2, lett. b), c.p.a. per ottenere l’esecuzione del decreto decisorio rimasto ineseguito.',
+    spiegazione: 'Dopo che la legge n. 69/2009 ha reso vincolante il parere del Consiglio di Stato, la giurisprudenza, anche delle Sezioni unite e dell’Adunanza plenaria, ha riconosciuto alla decisione del ricorso straordinario natura sostanzialmente giurisdizionale. Ne consegue l’esperibilità del giudizio di ottemperanza ai sensi dell’art. 112, comma 2, lett. d), c.p.a., relativo ai provvedimenti equiparati alle sentenze passate in giudicato per i quali non è previsto altro rimedio di ottemperanza, per ottenere l’esecuzione del decreto decisorio rimasto ineseguito.',
   },
   {
     id: 'amm-l2-118',

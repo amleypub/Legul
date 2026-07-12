@@ -363,7 +363,7 @@ export const procPenaleL1: QuizQuestion[] = [
       'Che l’inutilizzabilità riguarda soltanto le intercettazioni illegittime',
     ],
     rispostaCorretta: 2,
-    spiegazione: 'L’art. 191 c.p.p. stabilisce che le prove acquisite in violazione dei divieti stabiliti dalla legge non possono essere utilizzate e che l’inutilizzabilità è rilevabile anche d’ufficio in ogni stato e grado del procedimento. Il comma 2-bis, introdotto dalla legge n. 7 del 2020 in materia di intercettazioni, ne è una specifica applicazione, ma l’istituto ha portata generale.',
+    spiegazione: 'L’art. 191 c.p.p. stabilisce che le prove acquisite in violazione dei divieti stabiliti dalla legge non possono essere utilizzate e che l’inutilizzabilità è rilevabile anche d’ufficio in ogni stato e grado del procedimento. Il comma 2-bis, introdotto dalla legge n. 110 del 2017, ne costituisce una specifica applicazione, sancendo l’inutilizzabilità delle dichiarazioni o informazioni ottenute mediante il delitto di tortura, salvo che contro l’autore di tale delitto; l’istituto ha comunque portata generale.',
   },
   {
     id: 'prp-l1-027',

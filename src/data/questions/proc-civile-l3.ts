@@ -484,7 +484,7 @@ export const procCivileL3: QuizQuestion[] = [
     domanda: 'Caio è dichiarato contumace, ma dagli atti il giudice si avvede che la citazione era stata notificata in un luogo che non ha alcun collegamento con il convenuto, con lesione del diritto di difesa. Come deve provvedere?',
     opzioni: [
       'Deve ordinare la rinnovazione della notificazione ex art. 291 c.p.c., poiché la nullità impedisce la valida instaurazione del contraddittorio con il contumace',
-      'Deve proseguire il processo, perché la contumarie sana ogni vizio della vocatio in ius',
+      'Deve proseguire il processo, perché la contumacia sana ogni vizio della vocatio in ius',
       'Deve dichiarare l’estinzione del processo',
       'Deve emettere sentenza di rigetto della domanda per difetto di contraddittorio',
     ],
@@ -1321,7 +1321,7 @@ export const procCivileL3: QuizQuestion[] = [
     id: 'prc-l3-095',
     materia: 'Procedura civile',
     difficolta: 3,
-    domanda: 'Il giudice dell’opposizione a decreto ingiuntivo, richiestone dall’opposto Tizio, valuta se concedere la provvisoria esecuzione del decreto non opposto nei termini alla prima udienza. Su quale presupposto può concederla ex art. 648 c.p.c.?',
+    domanda: 'Il giudice dell’opposizione a decreto ingiuntivo, richiestone dall’opposto Tizio, valuta se concedere la provvisoria esecuzione del decreto opposto alla prima udienza. Su quale presupposto può concederla ex art. 648 c.p.c.?',
     opzioni: [
       'Quando l’opposizione non è fondata su prova scritta o di pronta soluzione',
       'Solo con il consenso dell’opponente',
@@ -2180,7 +2180,7 @@ export const procCivileL3: QuizQuestion[] = [
       'Il pignoramento si esegue con semplice ingiunzione verbale al debitore',
       'Il pignoramento si perfeziona con il solo deposito in cancelleria',
       'Il pignoramento immobiliare non richiede alcuna trascrizione',
-      'Il pignoramento immobiliare si esegue mediante notificazione al debitore e successiva trascrizione dell’atto presso i registri immobiliari, necessaria per l’opponibilità ai terzi ai sensi degli artt. 555 e 2693 ss. c.c.',
+      'Il pignoramento immobiliare si esegue mediante notificazione al debitore e successiva trascrizione dell’atto presso i registri immobiliari, necessaria per l’opponibilità ai terzi ai sensi dell’art. 555 c.p.c. e degli artt. 2643 ss. c.c.',
     ],
     rispostaCorretta: 3,
     spiegazione: 'L’art. 555 c.p.c. prevede che il pignoramento immobiliare si esegua mediante notificazione al debitore e successiva trascrizione di un atto contenente gli elementi prescritti. La trascrizione presso la conservatoria dei registri immobiliari è essenziale per rendere il vincolo pignoratizio opponibile ai terzi e per disciplinare il concorso con gli atti dispositivi del debitore.',

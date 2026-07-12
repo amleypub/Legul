@@ -1673,7 +1673,7 @@ export const civileL3: QuizQuestion[] = [
     difficolta: 3,
     domanda: 'Cinque anni dopo l’ultimazione di un edificio realizzato dall’appaltatore Tizio, si manifestano gravi difetti che ne compromettono la stabilità. Entro quali termini il committente Caio può far valere la responsabilità dell’appaltatore?',
     opzioni: [
-      'Deve denunciare entro sessanta giorni dalla scoperta e agire entro un anno da tale denuncia, comunque entro dieci anni dal compimento dell’opera',
+      'Deve denunciare entro un anno dalla scoperta e agire entro un anno da tale denuncia, comunque entro dieci anni dal compimento dell’opera',
       'Ha tempo dieci anni dalla scoperta del difetto per agire, senza obbligo di denuncia',
       'Non ha alcun rimedio, essendo la garanzia estinta dopo due anni dalla consegna',
       'Deve agire entro cinque anni dalla consegna, previa denuncia entro otto giorni',

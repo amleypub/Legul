@@ -611,11 +611,11 @@ export const deontologiaL4: QuizQuestion[] = [
     opzioni: [
       'La clausola è pienamente valida in forza dell’autonomia contrattuale',
       'L’intero contratto è nullo e va rinnovato',
-      'La clausola è nulla, ferma la validità del contratto, e il giudice rideterma il compenso secondo i parametri',
+      'La clausola è nulla, ferma la validità del contratto, e il giudice ridetermina il compenso secondo i parametri',
       'La clausola è annullabile solo su domanda proposta entro trenta giorni',
     ],
     rispostaCorretta: 2,
-    spiegazione: 'La l. 49/2023 sanziona con la nullità di protezione, operante a vantaggio del solo professionista, la pattuizione di un compenso non equo. Il contratto resta valido e il giudice rideterma il compenso secondo i parametri ministeriali.',
+    spiegazione: 'La l. 49/2023 sanziona con la nullità di protezione, operante a vantaggio del solo professionista, la pattuizione di un compenso non equo. Il contratto resta valido e il giudice ridetermina il compenso secondo i parametri ministeriali.',
   },
   {
     id: 'deo-l4-045',
@@ -671,7 +671,7 @@ export const deontologiaL4: QuizQuestion[] = [
       'Nella cancellazione definitiva dall’albo',
     ],
     rispostaCorretta: 2,
-    spiegazione: 'L’art. 52 della l. 247/2012 definisce la censura come il biasimo formale per la trasgressione commessa. È sanzione intermedia tra l’avvertimento e la sospensione, applicabile quando la gravità dell’infrazione, il grado di responsabilità e i precedenti la giustificano.',
+    spiegazione: 'L’art. 22 del codice deontologico forense definisce la censura come il biasimo formale per la trasgressione commessa; l’art. 51 della l. 247/2012 la elenca tra le sanzioni disciplinari. È sanzione intermedia tra l’avvertimento e la sospensione, applicabile quando la gravità dell’infrazione, il grado di responsabilità e i precedenti la giustificano.',
   },
   {
     id: 'deo-l4-049',

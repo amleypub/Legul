@@ -1895,7 +1895,7 @@ export const procCivileL4: QuizQuestion[] = [
     id: 'prc-l4-136',
     materia: 'Procedura civile',
     difficolta: 4,
-    domanda: 'Nell’arbitrato societario di cui al d.lgs. n. 5/2003, quale requisito è imposto, a pena di nullità, alla clausola compromissoria statutaria?',
+    domanda: 'Nell’arbitrato societario disciplinato dagli artt. 838-bis e seguenti c.p.c., quale requisito è imposto, a pena di nullità, alla clausola compromissoria statutaria?',
     opzioni: [
       'Che preveda un numero di arbitri non inferiore a cinque',
       'Che attribuisca la nomina di tutti gli arbitri a un soggetto estraneo alla società',
@@ -1903,7 +1903,7 @@ export const procCivileL4: QuizQuestion[] = [
       'Che sia depositata presso la Consob',
     ],
     rispostaCorretta: 1,
-    spiegazione: 'L’art. 34 del d.lgs. n. 5/2003 impone che la clausola compromissoria statutaria attribuisca il potere di nomina di tutti gli arbitri a un soggetto estraneo alla società, a pena di nullità. La regola garantisce la terzietà e l’imparzialità del collegio arbitrale nelle controversie endosocietarie.',
+    spiegazione: 'L’art. 838-bis c.p.c., introdotto dalla riforma Cartabia in luogo dell’abrogato art. 34 del d.lgs. n. 5/2003, impone che la clausola compromissoria statutaria attribuisca il potere di nomina di tutti gli arbitri a un soggetto estraneo alla società, a pena di nullità. La regola garantisce la terzietà e l’imparzialità del collegio arbitrale nelle controversie endosocietarie.',
   },
   {
     id: 'prc-l4-137',
