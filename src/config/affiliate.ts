@@ -2,9 +2,9 @@ import type { MaterialeEsame } from '../types';
 
 /**
  * Tag affiliato Amazon (Programma di Affiliazione Amazon.it).
- * Sostituire con il proprio tag, es. "legul-21".
+ * Corrisponde allo Store ID dell'account Affiliati.
  */
-export const AMAZON_AFFILIATE_TAG = 'INSERISCI-TAG-21';
+export const AMAZON_AFFILIATE_TAG = 'andreamoriggi-21';
 
 const AMAZON_BASE = 'https://www.amazon.it';
 
