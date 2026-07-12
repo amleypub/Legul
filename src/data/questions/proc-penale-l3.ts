@@ -1324,12 +1324,12 @@ export const procPenaleL3: QuizQuestion[] = [
     domanda: 'Nel corso del procedimento contro Tizio, insorge un conflitto di competenza rimesso alla Corte di cassazione. La difesa chiede la sospensione del procedimento in attesa della decisione. Il conflitto sospende necessariamente il processo?',
     opzioni: [
       'Sì, la mera denuncia del conflitto sospende automaticamente e obbligatoriamente il procedimento',
-      'No, la denuncia del conflitto non sospende necessariamente il corso della giustizia, salva la facoltà del giudice di disporre la sospensione ai sensi dell’art. 31 c.p.p.',
+      'No: ai sensi dell’art. 30, comma 3, c.p.p. la denuncia del conflitto non ha effetto sospensivo sui procedimenti in corso, e la sospensione non è comunque rimessa al singolo giudice di merito',
       'Sì, ma la sospensione dura al massimo dieci giorni',
       'No, il conflitto è irrilevante ai fini della prosecuzione del procedimento',
     ],
     rispostaCorretta: 1,
-    spiegazione: 'Ai sensi dell’art. 31 c.p.p., la proposizione del conflitto non determina di per sé la sospensione dei procedimenti in corso; ciascun giudice può tuttavia disporre, con ordinanza, la sospensione fino alla decisione della Corte di cassazione, compiendo nel frattempo gli atti urgenti. La sospensione è quindi facoltativa e rimessa alla valutazione del giudice.',
+    spiegazione: 'Ai sensi dell’art. 30, comma 3, c.p.p., l’ordinanza e la denuncia del conflitto non hanno effetto sospensivo sui procedimenti in corso: il giudice di merito non può sospendere il processo per la sola pendenza del conflitto ed è anzi tenuto a compiere gli atti necessari e urgenti. La definizione del conflitto è rimessa alla Corte di cassazione, che decide con sentenza in camera di consiglio ai sensi dell’art. 32 c.p.p.',
   },
   {
     id: 'prp-l3-096',

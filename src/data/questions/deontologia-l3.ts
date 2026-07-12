@@ -167,7 +167,7 @@ export const deontologiaL3: QuizQuestion[] = [
       'Non deve rivelare notizie coperte dal segreto o dalla riservatezza né ledere la dignità delle persone, spendendo il nome dell’assistito a fini pubblicitari',
     ],
     rispostaCorretta: 3,
-    spiegazione: 'L’art. 38 cdf impone, nei rapporti con gli organi di informazione, il rispetto del segreto e della riservatezza, della dignità delle persone e dei diritti dei terzi. È vietato spendere il nome dell’assistito a fini di autopromozione.',
+    spiegazione: 'L’art. 18 cdf impone, nei rapporti con gli organi di informazione, il rispetto del segreto e della riservatezza, della dignità delle persone e dei diritti dei terzi. È vietato spendere il nome dell’assistito a fini di autopromozione.',
   },
   {
     id: 'deo-l3-013',
@@ -181,7 +181,7 @@ export const deontologiaL3: QuizQuestion[] = [
       'Sì, trattandosi di attività pubblicitaria sempre libera',
     ],
     rispostaCorretta: 0,
-    spiegazione: 'Gli artt. 38 e 35 cdf impongono riservatezza e corretta informazione; secondo gli orientamenti del CNF tali doveri si estendono alla comunicazione sui social. È vietato divulgare dati dell’assistito e della controparte a fini pubblicitari.',
+    spiegazione: 'Gli artt. 18 e 35 cdf impongono riservatezza e corretta informazione; secondo gli orientamenti del CNF tali doveri si estendono alla comunicazione sui social. È vietato divulgare dati dell’assistito e della controparte a fini pubblicitari.',
   },
   {
     id: 'deo-l3-014',
@@ -195,7 +195,7 @@ export const deontologiaL3: QuizQuestion[] = [
       'Sì, se la minaccia è formulata per iscritto e non verbalmente',
     ],
     rispostaCorretta: 1,
-    spiegazione: 'L’art. 66 cdf vieta all’avvocato di minacciare alla controparte azioni o iniziative sproporzionate o vessatorie. Prospettare l’arresto per ottenere il pagamento di un credito civile viola tale divieto e i doveri di probità dell’art. 9 cdf.',
+    spiegazione: 'L’art. 65 cdf vieta all’avvocato di minacciare alla controparte azioni o iniziative sproporzionate o vessatorie. Prospettare l’arresto per ottenere il pagamento di un credito civile viola tale divieto e i doveri di probità dell’art. 9 cdf.',
   },
   {
     id: 'deo-l3-015',
@@ -209,7 +209,7 @@ export const deontologiaL3: QuizQuestion[] = [
       'È irrilevante deontologicamente, riguardando i soli rapporti tra Ordini',
     ],
     rispostaCorretta: 2,
-    spiegazione: 'L’art. 66 cdf e i doveri di lealtà e correttezza verso i colleghi vietano di strumentalizzare la minaccia di azioni disciplinari per ottenere vantaggi nella controversia. La condotta lede altresì la probità sancita dall’art. 9 cdf.',
+    spiegazione: 'L’art. 19 cdf, sui doveri di lealtà e correttezza verso i colleghi, vieta di strumentalizzare la minaccia di azioni disciplinari per ottenere vantaggi nella controversia. La condotta lede altresì la probità sancita dall’art. 9 cdf.',
   },
   {
     id: 'deo-l3-016',
@@ -279,7 +279,7 @@ export const deontologiaL3: QuizQuestion[] = [
       'Deve rinunciare agli incarichi in conflitto, dando il preavviso necessario a non pregiudicare la difesa delle parti',
     ],
     rispostaCorretta: 3,
-    spiegazione: 'Gli artt. 24 e 25 cdf impongono l’astensione e, ove il conflitto emerga in corso di mandato, la rinuncia agli incarichi confliggenti. La rinuncia va esercitata con modalità e preavviso tali da non pregiudicare la difesa delle parti.',
+    spiegazione: 'Gli artt. 24 e 32 cdf impongono l’astensione e, ove il conflitto emerga in corso di mandato, la rinuncia agli incarichi confliggenti. La rinuncia va esercitata con modalità e preavviso tali da non pregiudicare la difesa delle parti.',
   },
   {
     id: 'deo-l3-021',
@@ -363,7 +363,7 @@ export const deontologiaL3: QuizQuestion[] = [
       'Può presentare i testimoni riservandosi di non insistere sulle loro dichiarazioni',
     ],
     rispostaCorretta: 1,
-    spiegazione: 'Gli artt. 50 e 25 cdf vietano l’utilizzo di prove false e consentono la rinuncia al mandato. A fronte dell’insistenza del cliente per una condotta fraudolenta l’avvocato deve rinunciare, restando vincolato al segreto (art. 28 cdf) e non gravato da un obbligo di denuncia.',
+    spiegazione: 'Gli artt. 50 e 32 cdf vietano l’utilizzo di prove false e consentono la rinuncia al mandato. A fronte dell’insistenza del cliente per una condotta fraudolenta l’avvocato deve rinunciare, restando vincolato al segreto (art. 28 cdf) e non gravato da un obbligo di denuncia.',
   },
   {
     id: 'deo-l3-027',
@@ -433,7 +433,7 @@ export const deontologiaL3: QuizQuestion[] = [
       'È irrilevante, non esistendo limiti alle dichiarazioni pubbliche del difensore',
     ],
     rispostaCorretta: 2,
-    spiegazione: 'L’art. 38 cdf impone, nei rapporti con gli organi di informazione, criteri di riservatezza, equilibrio e continenza, nel rispetto della dignità delle persone. Le dichiarazioni denigratorie violano tali doveri e la probità dell’art. 9 cdf.',
+    spiegazione: 'L’art. 18 cdf impone, nei rapporti con gli organi di informazione, criteri di riservatezza, equilibrio e continenza, nel rispetto della dignità delle persone. Le dichiarazioni denigratorie violano tali doveri e la probità dell’art. 9 cdf.',
   },
   {
     id: 'deo-l3-032',
@@ -489,7 +489,7 @@ export const deontologiaL3: QuizQuestion[] = [
       'Può rinunciare solo con l’autorizzazione del giudice',
     ],
     rispostaCorretta: 2,
-    spiegazione: 'L’art. 25 cdf consente la rinuncia al mandato ma impone di dare un congruo preavviso e di adoperarsi affinché la rinuncia non pregiudichi il diritto di difesa dell’assistito.',
+    spiegazione: 'L’art. 32 cdf consente la rinuncia al mandato ma impone di dare un congruo preavviso e di adoperarsi affinché la rinuncia non pregiudichi il diritto di difesa dell’assistito.',
   },
   {
     id: 'deo-l3-036',
@@ -601,7 +601,7 @@ export const deontologiaL3: QuizQuestion[] = [
       'È lecito purché preannunciato per iscritto',
     ],
     rispostaCorretta: 2,
-    spiegazione: 'Gli artt. 66 e 43 cdf vietano di minacciare o intraprendere iniziative sproporzionate o vessatorie e di aggravare inutilmente la posizione della controparte. La condotta lede altresì i doveri di probità e lealtà dell’art. 9 cdf.',
+    spiegazione: 'Gli artt. 65 e 66 cdf vietano di minacciare o intraprendere iniziative sproporzionate o vessatorie e di aggravare inutilmente la posizione della controparte. La condotta lede altresì i doveri di probità e lealtà dell’art. 9 cdf.',
   },
   {
     id: 'deo-l3-044',
@@ -825,7 +825,7 @@ export const deontologiaL3: QuizQuestion[] = [
       'È irrilevante, non avendo l’avvocato limiti nelle dichiarazioni pubbliche',
     ],
     rispostaCorretta: 2,
-    spiegazione: 'L’art. 38 cdf impone, nei rapporti con gli organi di informazione, criteri di equilibrio e riservatezza e il rispetto dei diritti dei terzi. Dichiarare colpevole l’imputato prima della sentenza lede la presunzione di innocenza.',
+    spiegazione: 'L’art. 18 cdf impone, nei rapporti con gli organi di informazione, criteri di equilibrio e riservatezza e il rispetto dei diritti dei terzi. Dichiarare colpevole l’imputato prima della sentenza lede la presunzione di innocenza.',
   },
   {
     id: 'deo-l3-060',
@@ -867,7 +867,7 @@ export const deontologiaL3: QuizQuestion[] = [
       'Può utilizzarla se il giudice non ne rileva la falsità',
     ],
     rispostaCorretta: 1,
-    spiegazione: 'Gli artt. 50 e 25 cdf vietano di utilizzare atti che si sanno falsi e consentono la rinuncia al mandato. L’avvocato deve astenersi dall’avvalersi della procura falsa ed eventualmente rinunciare, restando tenuto al segreto (art. 28 cdf).',
+    spiegazione: 'Gli artt. 50 e 32 cdf vietano di utilizzare atti che si sanno falsi e consentono la rinuncia al mandato. L’avvocato deve astenersi dall’avvalersi della procura falsa ed eventualmente rinunciare, restando tenuto al segreto (art. 28 cdf).',
   },
   {
     id: 'deo-l3-063',
