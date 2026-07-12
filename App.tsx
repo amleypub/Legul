@@ -15,6 +15,8 @@ import PaywallScreen from './src/screens/PaywallScreen';
 import TracceScreen from './src/screens/TracceScreen';
 import TracciaDetailScreen from './src/screens/TracciaDetailScreen';
 import MaterialeScreen from './src/screens/MaterialeScreen';
+import ProfiloScreen from './src/screens/ProfiloScreen';
+import LoginScreen from './src/screens/LoginScreen';
 import { colors, materiaColors } from './src/theme';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -69,6 +71,11 @@ function Tabs() {
           tabBarIcon: tabIcon('cart', 'cart-outline'),
         }}
       />
+      <Tab.Screen
+        name="Profilo"
+        component={ProfiloScreen}
+        options={{ headerShown: false, tabBarIcon: tabIcon('person', 'person-outline') }}
+      />
     </Tab.Navigator>
   );
 }
@@ -103,6 +110,11 @@ export default function App() {
           <Stack.Screen
             name="Paywall"
             component={PaywallScreen}
+            options={{ headerShown: false, presentation: 'modal' }}
+          />
+          <Stack.Screen
+            name="Login"
+            component={LoginScreen}
             options={{ headerShown: false, presentation: 'modal' }}
           />
           <Stack.Screen

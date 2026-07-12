@@ -21,6 +21,8 @@ export type RootStackParamList = {
   };
   /** Paywall Premium (unità 3 e 4). */
   Paywall: undefined;
+  /** Accesso: Apple / Google / email (UI; backend in arrivo). */
+  Login: undefined;
   TracciaDetail: { tracciaId: string };
 };
 
