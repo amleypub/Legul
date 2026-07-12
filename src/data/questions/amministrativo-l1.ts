@@ -1256,10 +1256,10 @@ export const amministrativoL1: QuizQuestion[] = [
       'Il periodo di prova dell’appaltatore dopo la consegna dei lavori',
       'Il termine entro cui il giudice deve fissare l’udienza nel rito appalti',
       'La sospensione dei lavori disposta dal direttore dei lavori',
-      'Il divieto di stipulare il contratto prima di trentacinque giorni dall’invio dell’ultima comunicazione del provvedimento di aggiudicazione',
+      'Il divieto di stipulare il contratto prima di trentadue giorni dall’invio dell’ultima comunicazione del provvedimento di aggiudicazione',
     ],
     rispostaCorretta: 3,
-    spiegazione: 'L’art. 18, comma 3, d.lgs. 36/2023 prevede che il contratto non può essere stipulato prima di trentacinque giorni dall’invio dell’ultima delle comunicazioni del provvedimento di aggiudicazione. Lo stand-still serve a consentire ai concorrenti non aggiudicatari di attivare la tutela giurisdizionale prima che il contratto sia concluso, in attuazione della direttiva ricorsi.',
+    spiegazione: 'L’art. 18, comma 3, d.lgs. 36/2023, come modificato dal d.lgs. 209/2024 (correttivo), prevede che il contratto non può essere stipulato prima di trentadue giorni dall’invio dell’ultima delle comunicazioni del provvedimento di aggiudicazione. Lo stand-still serve a consentire ai concorrenti non aggiudicatari di attivare la tutela giurisdizionale prima che il contratto sia concluso, in attuazione della direttiva ricorsi.',
   },
   {
     id: 'amm-l1-091',

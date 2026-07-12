@@ -363,7 +363,7 @@ export const deontologiaL2: QuizQuestion[] = [
       'Sì, quando servano a giustificare il subentro nel mandato',
     ],
     rispostaCorretta: 2,
-    spiegazione: 'L’art. 38 cdf vieta all’avvocato di esprimere apprezzamenti denigratori sull’attività professionale di un collega. La critica tecnica alle tesi avversarie è lecita, ma non può trasmodare nel discredito personale o professionale, in violazione dei doveri di lealtà e colleganza di cui all’art. 19 cdf e dei principi di dignità e decoro della l. 247/2012.',
+    spiegazione: 'L’art. 42 cdf vieta all’avvocato di esprimere apprezzamenti denigratori sull’attività professionale di un collega. La critica tecnica alle tesi avversarie è lecita, ma non può trasmodare nel discredito personale o professionale, in violazione dei doveri di lealtà e colleganza di cui all’art. 19 cdf e dei principi di dignità e decoro della l. 247/2012.',
   },
   {
     id: 'deo-l2-027',

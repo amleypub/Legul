@@ -223,7 +223,7 @@ export const amministrativoL4: QuizQuestion[] = [
       'La sospensione automatica della procedura di gara fino alla definizione del giudizio di primo grado',
     ],
     rispostaCorretta: 2,
-    spiegazione: 'Per i giudizi che riguardano le procedure di attuazione del PNRR il legislatore (art. 12-bis del d.l. 68/2022) ha richiamato il rito abbreviato ex art. 119 c.p.a. e le regole dell’art. 125 c.p.a., già dettate per le infrastrutture strategiche: nella valutazione cautelare assume rilievo il preminente interesse nazionale alla realizzazione tempestiva dell’intervento e la caducazione del contratto resta eccezionale, con prevalenza della tutela risarcitoria per equivalente. Si tratta di un bilanciamento tra effettività della tutela e obiettivi del Piano, oggetto di ampio dibattito dottrinale.',
+    spiegazione: 'Per i giudizi che riguardano le procedure di attuazione del PNRR il legislatore (art. 48, comma 4, del d.l. 77/2021) ha richiamato il rito abbreviato ex art. 119 c.p.a. e le regole dell’art. 125 c.p.a., già dettate per le infrastrutture strategiche: nella valutazione cautelare assume rilievo il preminente interesse nazionale alla realizzazione tempestiva dell’intervento e la caducazione del contratto resta eccezionale, con prevalenza della tutela risarcitoria per equivalente. Si tratta di un bilanciamento tra effettività della tutela e obiettivi del Piano, oggetto di ampio dibattito dottrinale.',
   },
   {
     id: 'amm-l4-017',
@@ -512,7 +512,7 @@ export const amministrativoL4: QuizQuestion[] = [
     domanda: 'In tema di principio di equivalenza, quali mezzi di prova può utilizzare l’operatore economico per dimostrare la conformità dell’offerta ai requisiti richiesti?',
     opzioni: [
       'Qualsiasi mezzo appropriato, comprese la documentazione tecnica del fabbricante e una relazione di prova di un organismo riconosciuto, purché la prova sia fornita nel corso della procedura',
-      'Esclusivamente il certificato di un organismo di valutazione della conformità accreditato dallo Stato di stabilizione dell’offerente',
+      'Esclusivamente il certificato di un organismo di valutazione della conformità accreditato dallo Stato di stabilimento dell’offerente',
       'Soltanto una perizia giurata depositata prima dell’apertura delle buste economiche',
       'Nessun mezzo, poiché l’equivalenza deve risultare in modo automatico dalla scheda tecnica del prodotto',
     ],

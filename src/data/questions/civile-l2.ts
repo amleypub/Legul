@@ -645,9 +645,9 @@ export const civileL2: QuizQuestion[] = [
     materia: 'Diritto civile',
     difficolta: 2,
     domanda: 'Quale età minima è richiesta per poter riconoscere il figlio nato fuori del matrimonio?',
-    opzioni: ['Sedici anni, senza eccezioni', 'La maggiore età', 'Quattordici anni', 'Diciotto anni, salvo autorizzazione del giudice per il sedicenne'],
-    rispostaCorretta: 2,
-    spiegazione: 'Ai sensi dell’art. 250, ultimo comma, c.c., come modificato dalla legge 219/2012, il riconoscimento del figlio nato fuori del matrimonio non può essere fatto dai genitori che non abbiano compiuto il quattordicesimo anno di età. La riforma della filiazione ha abbassato il precedente limite dei sedici anni.',
+    opzioni: ['Sedici anni, salvo che il giudice autorizzi il genitore infrasedicenne, valutate le circostanze e l’interesse del figlio', 'La maggiore età', 'Quattordici anni', 'Diciotto anni, salvo autorizzazione del giudice per il sedicenne'],
+    rispostaCorretta: 0,
+    spiegazione: 'Ai sensi dell’art. 250, ultimo comma, c.c., il riconoscimento del figlio non può essere fatto dai genitori che non abbiano compiuto il sedicesimo anno di età, salvo che il giudice li autorizzi, valutate le circostanze e avuto riguardo all’interesse del figlio. La riforma della filiazione (legge 219/2012 e d.lgs. 154/2013) ha introdotto la possibilità dell’autorizzazione giudiziale, mantenendo fermo il limite dei sedici anni.',
   },
   {
     id: 'civ-l2-073',

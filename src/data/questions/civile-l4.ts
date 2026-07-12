@@ -1175,7 +1175,7 @@ export const civileL4: QuizQuestion[] = [
       'Valido, purché il tipo negoziale utilizzato sia effettivamente voluto e la causa concreta perseguita sia lecita, dovendosi applicare alla fattispecie anche la disciplina propria dello scopo ulteriore ove imperativa',
     ],
     rispostaCorretta: 3,
-    spiegazione: 'Nel negozio indiretto le parti utilizzano realmente un dato tipo contrattuale per conseguire uno scopo ulteriore, ultronneo rispetto alla causa tipica. Esso è valido se il negozio-mezzo è effettivamente voluto e lo scopo perseguito è lecito; la giurisprudenza applica tuttavia le norme imperative proprie del risultato perseguito (ad esempio le regole sostanziali della donazione per la donazione indiretta), a differenza della simulazione, in cui il negozio apparente non è voluto.',
+    spiegazione: 'Nel negozio indiretto le parti utilizzano realmente un dato tipo contrattuale per conseguire uno scopo ulteriore, ultroneo rispetto alla causa tipica. Esso è valido se il negozio-mezzo è effettivamente voluto e lo scopo perseguito è lecito; la giurisprudenza applica tuttavia le norme imperative proprie del risultato perseguito (ad esempio le regole sostanziali della donazione per la donazione indiretta), a differenza della simulazione, in cui il negozio apparente non è voluto.',
   },
   {
     id: 'civ-l4-085',
@@ -1489,7 +1489,7 @@ export const civileL4: QuizQuestion[] = [
     id: 'civ-l4-107',
     materia: 'Diritto civile',
     difficolta: 4,
-    domanda: 'Per il risarcimento del danno da perdita del rapporto parentale, la Cassazione a Sezioni Unite del 2021-2022 e la giurisprudenza successiva hanno indicato come criterio preferibile:',
+    domanda: 'Per il risarcimento del danno da perdita del rapporto parentale, la Cassazione a partire dal 2021 e la giurisprudenza successiva hanno indicato come criterio preferibile:',
     opzioni: [
       'L’esclusione del risarcimento in favore dei congiunti non conviventi',
       'La liquidazione rimessa alla piena discrezionalità del giudice senza alcun parametro',
@@ -2141,7 +2141,7 @@ export const civileL4: QuizQuestion[] = [
       'Solo eseguendo immediatamente la propria prestazione',
     ],
     rispostaCorretta: 0,
-    spiegazione: 'L’art. 1467, comma 3, c.c. attribuisce alla parte contro la quale è domandata la risoluzione per eccessiva onerosità sopravvenuta la facoltà di evitarla offrendo di modificare equamente le condizioni del contratto (reductio ad aequitatem). Il rimedio presuppone, ex comma 1, che l’onerosità derivi da avvenimenti straordinari e imprevedibili e che eccceda l’alea normale del contratto, ed è escluso per i contratti aleatori.',
+    spiegazione: 'L’art. 1467, comma 3, c.c. attribuisce alla parte contro la quale è domandata la risoluzione per eccessiva onerosità sopravvenuta la facoltà di evitarla offrendo di modificare equamente le condizioni del contratto (reductio ad aequitatem). Il rimedio presuppone, ex comma 1, che l’onerosità derivi da avvenimenti straordinari e imprevedibili e che ecceda l’alea normale del contratto, ed è escluso per i contratti aleatori.',
   },
   {
     id: 'civ-l4-154',

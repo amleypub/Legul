@@ -2136,12 +2136,12 @@ export const penaleL4: QuizQuestion[] = [
     domanda: 'Entro quale limite temporale l’imputato può, di regola, formulare la richiesta di sospensione del procedimento con messa alla prova nel giudizio ordinario?',
     opzioni: [
       'In qualunque momento, anche in appello',
-      'La richiesta è preclusa dopo la chiusura delle indagini preliminari',
-      'La richiesta può essere formulata, oralmente o per iscritto, fino a quando non siano formulate le conclusioni nel giudizio abbreviato o nel giudizio ordinario di primo grado, secondo scansioni processuali tipizzate, e non è ammessa per la prima volta in appello',
+      'La richiesta è preclusa già dopo la chiusura delle indagini preliminari, non potendo essere avanzata nell’udienza preliminare',
+      'La richiesta può essere formulata, oralmente o per iscritto, fino alla formulazione delle conclusioni nell’udienza preliminare ovvero, nei riti a citazione diretta, fino alla dichiarazione di apertura del dibattimento di primo grado, secondo le scansioni tipizzate del rito, e non è ammessa per la prima volta in appello',
       'Solo dopo la sentenza di primo grado',
     ],
-    rispostaCorretta: 1,
-    spiegazione: 'La messa alla prova è istituto del giudizio di primo grado: la richiesta va formulata entro precisi limiti temporali legati alla fase processuale, in particolare non oltre la formulazione delle conclusioni nell’udienza preliminare o le scansioni tipizzate del rito prescelto, e non può essere avanzata per la prima volta nel giudizio di impugnazione. La distribuzione dell’indice corretto impone qui di individuare l’affermazione più aderente al sistema, che esclude la proponibilità dopo il primo grado.',
+    rispostaCorretta: 2,
+    spiegazione: 'La richiesta di sospensione con messa alla prova (art. 464-bis c.p.p.) va formulata, oralmente o per iscritto, entro precisi limiti temporali legati alla fase processuale: fino alla formulazione delle conclusioni nell’udienza preliminare ovvero, nei riti a citazione diretta, fino alla dichiarazione di apertura del dibattimento di primo grado. L’istituto appartiene al giudizio di primo grado, sicché la richiesta non è preclusa dalla mera chiusura delle indagini ma non può essere proposta per la prima volta nel giudizio di impugnazione.',
   },
   {
     id: 'pen-l4-154',
