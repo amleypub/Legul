@@ -1,10 +1,11 @@
-import React from 'react';
-import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useRef } from 'react';
+import { Alert, Animated, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
 import { Mascot } from '../components/Mascot';
 import type { RootStackScreenProps } from '../navigation/types';
-import { colors, radius, spacing } from '../theme';
+import { colors, EDGE_3D, radius, spacing } from '../theme';
 
 /**
  * Schermata di accesso — solo interfaccia.
@@ -25,6 +26,7 @@ function SocialButton({
   icona,
   bg,
   fg,
+  edge,
   bordo,
   onPress,
 }: {
@@ -32,20 +34,29 @@ function SocialButton({
   icona: keyof typeof Ionicons.glyphMap;
   bg: string;
   fg: string;
+  edge: string;
   bordo?: string;
   onPress: () => void;
 }) {
+  const ty = useRef(new Animated.Value(0)).current;
+  const press = (down: boolean) => {
+    Animated.spring(ty, { toValue: down ? EDGE_3D : 0, speed: 40, bounciness: 0, useNativeDriver: true }).start();
+    if (down) Haptics.selectionAsync().catch(() => {});
+  };
   return (
-    <Pressable
-      onPress={onPress}
-      style={({ pressed }) => [
-        styles.social,
-        { backgroundColor: bg, borderColor: bordo ?? bg },
-        pressed && styles.socialPressed,
-      ]}
-    >
-      <Ionicons name={icona} size={20} color={fg} style={styles.socialIcon} />
-      <Text style={[styles.socialLabel, { color: fg }]}>{label}</Text>
+    <Pressable onPressIn={() => press(true)} onPressOut={() => press(false)} onPress={onPress}>
+      <View style={styles.socialWrap}>
+        <View style={[styles.socialEdge, { backgroundColor: edge }]} />
+        <Animated.View
+          style={[
+            styles.social,
+            { backgroundColor: bg, borderColor: bordo ?? bg, transform: [{ translateY: ty }] },
+          ]}
+        >
+          <Ionicons name={icona} size={22} color={fg} style={styles.socialIcon} />
+          <Text style={[styles.socialLabel, { color: fg }]}>{label}</Text>
+        </Animated.View>
+      </View>
     </Pressable>
   );
 }
@@ -69,8 +80,9 @@ export default function LoginScreen({ navigation }: RootStackScreenProps<'Login'
           <SocialButton
             label="Continua con Apple"
             icona="logo-apple"
-            bg="#000000"
+            bg="#1A1A1C"
             fg="#FFFFFF"
+            edge="#000000"
             onPress={() => accessoInArrivo('Apple')}
           />
           <SocialButton
@@ -78,7 +90,8 @@ export default function LoginScreen({ navigation }: RootStackScreenProps<'Login'
             icona="logo-google"
             bg="#FFFFFF"
             fg="#1C1E26"
-            bordo={colors.border}
+            edge="#D3D8E2"
+            bordo="#E2E6EE"
             onPress={() => accessoInArrivo('Google')}
           />
           <SocialButton
@@ -86,6 +99,7 @@ export default function LoginScreen({ navigation }: RootStackScreenProps<'Login'
             icona="mail"
             bg={colors.primary}
             fg="#FFFFFF"
+            edge="#0E1830"
             onPress={() => accessoInArrivo('email')}
           />
         </View>
@@ -119,18 +133,26 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
     paddingHorizontal: spacing.sm,
   },
-  buttons: { alignSelf: 'stretch', gap: spacing.sm, marginTop: spacing.xl },
+  buttons: { alignSelf: 'stretch', gap: spacing.md, marginTop: spacing.xl },
+  socialWrap: { paddingBottom: EDGE_3D },
+  socialEdge: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: EDGE_3D,
+    bottom: 0,
+    borderRadius: radius.pill,
+  },
   social: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: radius.md + 2,
-    paddingVertical: 15,
+    borderRadius: radius.pill,
+    paddingVertical: 16,
     borderWidth: 1.5,
   },
-  socialPressed: { transform: [{ translateY: 1 }], opacity: 0.9 },
-  socialIcon: { position: 'absolute', left: spacing.md },
-  socialLabel: { fontSize: 16, fontWeight: '700' },
+  socialIcon: { position: 'absolute', left: spacing.lg },
+  socialLabel: { fontSize: 16, fontWeight: '800' },
   avvisoWrap: {
     flexDirection: 'row',
     gap: spacing.sm,
