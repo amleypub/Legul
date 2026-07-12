@@ -1,18 +1,19 @@
 import React from 'react';
-import { Pressable, SectionList, StyleSheet, Text, View } from 'react-native';
+import { SectionList, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { anniDisponibili, tracceByAnno } from '../data/tracce';
 import { useGamification } from '../gamification/GamificationContext';
+import { Card3D } from '../components/Card3D';
 import type { RootStackParamList } from '../navigation/types';
 import type { TipoTraccia } from '../types';
-import { colors, radius, spacing } from '../theme';
+import { colors, materiaColors, radius, spacing } from '../theme';
 
-const ICONA_TIPO: Record<TipoTraccia, keyof typeof Ionicons.glyphMap> = {
-  'Parere di diritto civile': 'book',
-  'Parere di diritto penale': 'shield-half',
-  'Atto giudiziario': 'document-text',
+const TIPO_STYLE: Record<TipoTraccia, { icona: keyof typeof Ionicons.glyphMap; tinta: string }> = {
+  'Parere di diritto civile': { icona: 'book', tinta: materiaColors['Diritto civile'].start },
+  'Parere di diritto penale': { icona: 'shield-half', tinta: materiaColors['Diritto penale'].start },
+  'Atto giudiziario': { icona: 'document-text', tinta: materiaColors['Procedura civile'].start },
 };
 
 export default function TracceScreen() {
@@ -38,18 +39,29 @@ export default function TracceScreen() {
         </Text>
       }
       renderSectionHeader={({ section }) => (
-        <Text style={styles.anno}>Anno {section.title}</Text>
+        <View style={styles.annoRow}>
+          <View style={styles.annoPill}>
+            <Text style={styles.annoPillText}>{section.title}</Text>
+          </View>
+          <View style={styles.annoLine} />
+        </View>
       )}
       renderItem={({ item }) => {
         const letta = state.tracceLette.includes(item.id);
+        const tipo = TIPO_STYLE[item.tipo];
         return (
-          <Pressable
-            style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
+          <Card3D
+            edgeColor="#DfE3EC"
+            radiusSize={radius.lg}
+            style={styles.cardOuter}
+            contentStyle={styles.card}
             onPress={() => navigation.navigate('TracciaDetail', { tracciaId: item.id })}
           >
-            <Ionicons name={ICONA_TIPO[item.tipo]} size={24} color={colors.primary} />
+            <View style={[styles.iconTile, { backgroundColor: tipo.tinta + '1A' }]}>
+              <Ionicons name={tipo.icona} size={24} color={tipo.tinta} />
+            </View>
             <View style={styles.cardText}>
-              <Text style={styles.tipo}>{item.tipo}</Text>
+              <Text style={[styles.tipo, { color: tipo.tinta }]}>{item.tipo}</Text>
               <Text style={styles.titolo}>{item.titolo}</Text>
               <View style={styles.chipRow}>
                 {item.argomenti.map((a) => (
@@ -61,10 +73,10 @@ export default function TracceScreen() {
             </View>
             <Ionicons
               name={letta ? 'checkmark-circle' : 'chevron-forward'}
-              size={20}
+              size={22}
               color={letta ? colors.success : colors.textMuted}
             />
-          </Pressable>
+          </Card3D>
         );
       }}
     />
@@ -75,27 +87,37 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   content: { padding: spacing.md, paddingBottom: spacing.xl },
   intro: { fontSize: 14, color: colors.textMuted, marginBottom: spacing.sm, lineHeight: 20 },
-  anno: {
-    fontSize: 18,
-    fontWeight: '800',
-    color: colors.primary,
+  annoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
     marginTop: spacing.md,
     marginBottom: spacing.sm,
   },
+  annoPill: {
+    backgroundColor: colors.primary,
+    borderRadius: radius.pill,
+    paddingHorizontal: 14,
+    paddingVertical: 4,
+  },
+  annoPillText: { color: '#FFFFFF', fontSize: 14, fontWeight: '800' },
+  annoLine: { flex: 1, height: 2, borderRadius: 1, backgroundColor: colors.border },
+  cardOuter: { marginBottom: spacing.sm },
   card: {
-    backgroundColor: colors.card,
-    borderRadius: radius.md,
     padding: spacing.md,
     flexDirection: 'row',
     gap: spacing.md,
-    borderWidth: 1,
-    borderColor: colors.border,
-    marginBottom: spacing.sm,
     alignItems: 'center',
   },
-  cardPressed: { opacity: 0.7 },
+  iconTile: {
+    width: 46,
+    height: 46,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   cardText: { flex: 1 },
-  tipo: { fontSize: 12, fontWeight: '700', color: colors.accent, textTransform: 'uppercase' },
+  tipo: { fontSize: 12, fontWeight: '800', textTransform: 'uppercase', letterSpacing: 0.3 },
   titolo: { fontSize: 15, fontWeight: '700', color: colors.text, marginTop: 2 },
   chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 4, marginTop: 6 },
   chip: {
@@ -103,8 +125,6 @@ const styles = StyleSheet.create({
     borderRadius: radius.pill,
     paddingHorizontal: 8,
     paddingVertical: 3,
-    borderWidth: 1,
-    borderColor: colors.border,
   },
-  chipText: { fontSize: 11, color: colors.textMuted },
+  chipText: { fontSize: 11, color: colors.textMuted, fontWeight: '600' },
 });

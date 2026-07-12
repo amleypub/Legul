@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Animated, Easing, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
@@ -10,6 +10,7 @@ import {
   type Lezione,
 } from '../data/percorso';
 import { useGamification } from '../gamification/GamificationContext';
+import { Mascot } from '../components/Mascot';
 import type { RootStackScreenProps } from '../navigation/types';
 import { colors, materiaColors, radius, softShadow, spacing } from '../theme';
 
@@ -37,18 +38,29 @@ function Nodo({
 }) {
   const translateY = useRef(new Animated.Value(0)).current;
   const bounce = useRef(new Animated.Value(0)).current;
+  const halo = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     if (stato !== 'corrente') return;
-    const loop = Animated.loop(
+    const loopBounce = Animated.loop(
       Animated.sequence([
         Animated.timing(bounce, { toValue: -7, duration: 550, useNativeDriver: true }),
         Animated.timing(bounce, { toValue: 0, duration: 550, useNativeDriver: true }),
       ])
     );
-    loop.start();
-    return () => loop.stop();
-  }, [stato, bounce]);
+    const loopHalo = Animated.loop(
+      Animated.sequence([
+        Animated.timing(halo, { toValue: 1, duration: 1100, easing: Easing.out(Easing.quad), useNativeDriver: true }),
+        Animated.timing(halo, { toValue: 0, duration: 0, useNativeDriver: true }),
+      ])
+    );
+    loopBounce.start();
+    loopHalo.start();
+    return () => {
+      loopBounce.stop();
+      loopHalo.stop();
+    };
+  }, [stato, bounce, halo]);
 
   const bloccata = stato === 'bloccata';
   const premium = stato === 'premium';
@@ -97,6 +109,19 @@ function Nodo({
         onPress={onPress}
         style={styles.nodoWrap}
       >
+        {stato === 'corrente' && (
+          <Animated.View
+            pointerEvents="none"
+            style={[
+              styles.halo,
+              {
+                borderColor: tinte.start,
+                opacity: halo.interpolate({ inputRange: [0, 1], outputRange: [0.5, 0] }),
+                transform: [{ scale: halo.interpolate({ inputRange: [0, 1], outputRange: [1, 1.5] }) }],
+              },
+            ]}
+          />
+        )}
         <View style={[styles.nodoEdge, { backgroundColor: bordo }]} />
         <Animated.View
           style={[styles.nodoFace, { backgroundColor: faccia, transform: [{ translateY }] }]}
@@ -139,8 +164,21 @@ export default function PercorsoScreen({ route, navigation }: RootStackScreenPro
 
   let contatoreGlobale = -1;
 
+  const stelleFatte = ordine.reduce((acc, l) => acc + (state.lezioni[l.id] ?? 0), 0);
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      <View style={styles.pathHeader}>
+        <Mascot state="studying" size={68} />
+        <View style={styles.pathHeaderText}>
+          <Text style={styles.pathHeaderTitle}>Continua da dove eri!</Text>
+          <View style={styles.pathHeaderStars}>
+            <Ionicons name="star" size={15} color={colors.accent} />
+            <Text style={styles.pathHeaderStarsText}>{stelleFatte} stelle conquistate</Text>
+          </View>
+        </View>
+      </View>
+
       {unita.map((u) => {
         const richiedePremium = !unitaGratuita(u.difficolta) && !state.premium;
         return (
@@ -203,6 +241,22 @@ export default function PercorsoScreen({ route, navigation }: RootStackScreenPro
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   content: { padding: spacing.md, paddingBottom: spacing.xl * 2 },
+  pathHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    backgroundColor: colors.card,
+    borderRadius: radius.lg,
+    padding: spacing.sm,
+    paddingRight: spacing.md,
+    marginBottom: spacing.md,
+    ...softShadow,
+    shadowOpacity: 0.06,
+  },
+  pathHeaderText: { flex: 1 },
+  pathHeaderTitle: { fontSize: 16, fontWeight: '800', color: colors.text },
+  pathHeaderStars: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 },
+  pathHeaderStarsText: { fontSize: 13, color: colors.textMuted, fontWeight: '600' },
   unitaBanner: {
     borderRadius: radius.lg,
     paddingVertical: spacing.md,
@@ -239,6 +293,15 @@ const styles = StyleSheet.create({
   nodi: { alignItems: 'center', gap: spacing.md, marginBottom: spacing.lg },
   nodoRiga: { alignItems: 'center' },
   nodoWrap: { width: NODE, height: NODE + EDGE },
+  halo: {
+    position: 'absolute',
+    left: 0,
+    width: NODE,
+    height: NODE,
+    borderRadius: NODE / 2,
+    borderWidth: 4,
+    top: EDGE,
+  },
   nodoEdge: {
     position: 'absolute',
     top: EDGE,

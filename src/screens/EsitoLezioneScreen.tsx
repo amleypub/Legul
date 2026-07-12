@@ -6,6 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
 import { BADGES } from '../gamification/GamificationContext';
 import { Button3D } from '../components/Button3D';
+import { Mascot } from '../components/Mascot';
 import type { RootStackScreenProps } from '../navigation/types';
 import { colors, materiaColors, radius, softShadow, spacing } from '../theme';
 
@@ -68,6 +69,8 @@ export default function EsitoLezioneScreen({
     >
       <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
         <ScrollView contentContainerStyle={styles.content}>
+          <Mascot state={fallito ? 'studying' : 'celebrating'} size={128} animated={!fallito} />
+
           <View style={styles.stelleRow}>
             <Stella accesa={!fallito && stelle >= 1} ritardo={200} />
             <View style={styles.stellaCentro}>
