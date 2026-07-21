@@ -4,9 +4,7 @@
   "features": {},
   "forwardPorts": [8081],
   "postCreateCommand": "npm install",
-  "postAttachCommand": {
-    "avvia-app": "npx expo start --tunnel"
-  },
+  "postStartCommand": "nohup npx expo start --tunnel > /workspaces/Legul/expo-log.txt 2>&1 &",
   "customizations": {
     "vscode": {
       "extensions": []
