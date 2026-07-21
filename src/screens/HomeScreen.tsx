@@ -13,20 +13,18 @@ function StatTile({
   label,
   icona,
   tint,
-  big,
 }: {
   valore: string | number;
   label: string;
   icona: keyof typeof Ionicons.glyphMap;
   tint: string;
-  big?: boolean;
 }) {
   return (
-    <View style={[styles.tile, big && styles.tileBig]}>
-      <View style={[styles.tileIcon, { backgroundColor: tint + '22' }]}>
-        <Ionicons name={icona} size={big ? 26 : 18} color={tint} />
+    <View style={[styles.tile, { backgroundColor: tint + '16' }]}>
+      <View style={[styles.tileIcon, { backgroundColor: tint }]}>
+        <Ionicons name={icona} size={20} color="#FFFFFF" />
       </View>
-      <Text style={[styles.tileValue, big && styles.tileValueBig]}>{valore}</Text>
+      <Text style={[styles.tileValue, { color: tint }]}>{valore}</Text>
       <Text style={styles.tileLabel}>{label}</Text>
     </View>
   );
@@ -129,35 +127,27 @@ export default function HomeScreen() {
         </LinearGradient>
       </View>
 
-      {/* Bento grid dei progressi */}
+      {/* Progressi in tessere colorate compatte */}
       <Text style={styles.sectionTitle}>I tuoi progressi</Text>
-      <View style={styles.bento}>
+      <View style={styles.bentoRow}>
         <StatTile
           valore={state.risposteCorrette}
           label="Risposte esatte"
           icona="checkmark-done"
           tint={colors.success}
-          big
         />
-        <View style={styles.bentoColumn}>
-          <StatTile
-            valore={precisione !== null ? `${precisione}%` : '—'}
-            label="Precisione"
-            icona="analytics"
-            tint="#4F7CF3"
-          />
-          <StatTile
-            valore={state.quizCompletati}
-            label="Lezioni"
-            icona="ribbon"
-            tint="#9B6BFF"
-          />
-        </View>
+        <StatTile
+          valore={precisione !== null ? `${precisione}%` : '—'}
+          label="Precisione"
+          icona="analytics"
+          tint="#4F7CF3"
+        />
       </View>
-      <View style={styles.bentoWide}>
+      <View style={styles.bentoRow}>
+        <StatTile valore={state.quizCompletati} label="Lezioni" icona="ribbon" tint="#9B6BFF" />
         <StatTile
           valore={state.tracceLette.length}
-          label="Tracce d’esame studiate"
+          label="Tracce studiate"
           icona="document-text"
           tint={colors.accentEdge}
         />
@@ -171,7 +161,7 @@ export default function HomeScreen() {
         {BADGES.map((badge) => {
           const sbloccato = state.badges.includes(badge.id);
           return (
-            <View key={badge.id} style={styles.badgeCard}>
+            <View key={badge.id} style={[styles.badgeCard, sbloccato && styles.badgeCardOn]}>
               <View style={[styles.badgeIconWrap, sbloccato && styles.badgeIconWrapOn]}>
                 <Ionicons
                   name={badge.icona}
@@ -272,29 +262,22 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
 
-  bento: { flexDirection: 'row', gap: spacing.sm },
-  bentoColumn: { flex: 1, gap: spacing.sm },
-  bentoWide: { marginTop: spacing.sm },
+  bentoRow: { flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.sm },
   tile: {
     flex: 1,
-    backgroundColor: colors.card,
     borderRadius: radius.lg,
     padding: spacing.md,
-    ...softShadow,
-    shadowOpacity: 0.06,
   },
-  tileBig: { justifyContent: 'center', paddingVertical: spacing.lg },
   tileIcon: {
-    width: 34,
-    height: 34,
-    borderRadius: 10,
+    width: 36,
+    height: 36,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: spacing.sm,
   },
-  tileValue: { fontSize: 22, fontWeight: '900', color: colors.text },
-  tileValueBig: { fontSize: 40 },
-  tileLabel: { fontSize: 12, color: colors.textMuted, marginTop: 2, fontWeight: '600' },
+  tileValue: { fontSize: 28, fontWeight: '900' },
+  tileLabel: { fontSize: 13, color: colors.textMuted, marginTop: 2, fontWeight: '700' },
 
   badgeGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   badgeCard: {
@@ -308,6 +291,7 @@ const styles = StyleSheet.create({
     ...softShadow,
     shadowOpacity: 0.06,
   },
+  badgeCardOn: { backgroundColor: colors.accentSoft },
   badgeIconWrap: {
     width: 48,
     height: 48,
@@ -316,7 +300,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#EEF1F6',
   },
-  badgeIconWrapOn: { backgroundColor: colors.accentSoft },
+  badgeIconWrapOn: { backgroundColor: '#FFFFFF' },
   badgeNome: { fontSize: 14, fontWeight: '800', color: colors.text, marginTop: spacing.sm },
   badgeDescr: { fontSize: 11, color: colors.textMuted, textAlign: 'center', marginTop: 2 },
   badgeFrost: {
