@@ -9,6 +9,7 @@ import React, {
 } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { Ionicons } from '@expo/vector-icons';
+import { setAudioEnabled } from '../audio/sounds';
 
 type IconName = keyof typeof Ionicons.glyphMap;
 
@@ -93,6 +94,8 @@ interface GamificationState {
   lezioni: Record<string, number>;
   /** True se l'utente ha sbloccato i contenuti Premium (unità 3 e 4). */
   premium: boolean;
+  /** Effetti sonori attivi. */
+  audioAttivo: boolean;
   tracceLette: string[]; // id delle tracce lette
   badges: string[]; // id dei badge sbloccati
   streak: number;
@@ -106,6 +109,7 @@ const initialState: GamificationState = {
   quizCompletati: 0,
   lezioni: {},
   premium: false,
+  audioAttivo: true,
   tracceLette: [],
   badges: [],
   streak: 0,
@@ -142,6 +146,8 @@ interface GamificationContextValue {
    * integrato l'acquisto in-app, andrà chiamato dopo la conferma dello store.
    */
   attivaPremium(): void;
+  /** Attiva/disattiva gli effetti sonori. */
+  toggleAudio(): void;
 }
 
 export function stellePerRisultato(corrette: number, totale: number): number {
@@ -300,6 +306,15 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
     setState((prev) => (prev.premium ? prev : { ...prev, premium: true }));
   }, []);
 
+  const toggleAudio = useCallback(() => {
+    setState((prev) => ({ ...prev, audioAttivo: !prev.audioAttivo }));
+  }, []);
+
+  // Mantiene il gestore suoni allineato alla preferenza salvata.
+  useEffect(() => {
+    setAudioEnabled(state.audioAttivo);
+  }, [state.audioAttivo]);
+
   const registraTracciaLetta = useCallback(
     (tracciaId: string): EventoGamification => {
       if (state.tracceLette.includes(tracciaId)) {
@@ -338,8 +353,9 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
       registraLezioneCompletata,
       registraTracciaLetta,
       attivaPremium,
+      toggleAudio,
     };
-  }, [state, registraRisposta, registraLezioneCompletata, registraTracciaLetta, attivaPremium]);
+  }, [state, registraRisposta, registraLezioneCompletata, registraTracciaLetta, attivaPremium, toggleAudio]);
 
   return <GamificationContext.Provider value={value}>{children}</GamificationContext.Provider>;
 }

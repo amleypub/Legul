@@ -10,6 +10,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
+import { playSound } from '../audio/sounds';
 import { trovaLezione } from '../data/percorso';
 import { useGamification } from '../gamification/GamificationContext';
 import { Button3D } from '../components/Button3D';
@@ -77,9 +78,11 @@ export default function LezioneScreen({ route, navigation }: RootStackScreenProp
     badgeRaccolti.current.push(...evento.nuoviBadge.map((b) => b.id));
     if (corretta) {
       corrette.current += 1;
+      playSound('correct');
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
     } else {
       setCuori((c) => c - 1);
+      playSound('wrong');
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error).catch(() => {});
       Animated.sequence([
         Animated.timing(heartShake, { toValue: 8, duration: 60, useNativeDriver: true }),
@@ -171,6 +174,7 @@ export default function LezioneScreen({ route, navigation }: RootStackScreenProp
               disabled={confermata}
               onPress={() => {
                 setSelezionata(i);
+                playSound('tap');
                 Haptics.selectionAsync().catch(() => {});
               }}
               style={({ pressed }) => [

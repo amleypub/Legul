@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
@@ -18,7 +18,7 @@ const VANTAGGI: { icona: keyof typeof Ionicons.glyphMap; testo: string }[] = [
 
 export default function ProfiloScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const { state, livello } = useGamification();
+  const { state, livello, toggleAudio } = useGamification();
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -77,6 +77,25 @@ export default function ProfiloScreen() {
           edgeColor="#0E1830"
           style={styles.cta}
         />
+      </View>
+
+      {/* Impostazioni */}
+      <Text style={styles.sezioneTitolo}>Impostazioni</Text>
+      <View style={styles.settingsCard}>
+        <View style={styles.settingRow}>
+          <View style={styles.settingLeft}>
+            <View style={styles.settingIcona}>
+              <Ionicons name="volume-high" size={18} color={colors.primary} />
+            </View>
+            <Text style={styles.settingLabel}>Effetti sonori</Text>
+          </View>
+          <Switch
+            value={state.audioAttivo}
+            onValueChange={toggleAudio}
+            trackColor={{ true: colors.success, false: '#CBD2DE' }}
+            thumbColor="#FFFFFF"
+          />
+        </View>
       </View>
     </ScrollView>
   );
@@ -137,4 +156,34 @@ const styles = StyleSheet.create({
   },
   vantaggioTesto: { flex: 1, fontSize: 14, color: colors.text },
   cta: { marginTop: spacing.lg },
+  sezioneTitolo: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: colors.text,
+    marginTop: spacing.lg,
+    marginBottom: spacing.sm,
+  },
+  settingsCard: {
+    backgroundColor: colors.card,
+    borderRadius: radius.xl,
+    paddingHorizontal: spacing.md,
+    ...softShadow,
+    shadowOpacity: 0.06,
+  },
+  settingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: spacing.md,
+  },
+  settingLeft: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
+  settingIcona: {
+    width: 34,
+    height: 34,
+    borderRadius: 10,
+    backgroundColor: colors.accentSoft,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  settingLabel: { fontSize: 15, fontWeight: '600', color: colors.text },
 });

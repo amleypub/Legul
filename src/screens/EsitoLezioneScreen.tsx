@@ -7,6 +7,8 @@ import * as Haptics from 'expo-haptics';
 import { BADGES } from '../gamification/GamificationContext';
 import { Button3D } from '../components/Button3D';
 import { Mascot } from '../components/Mascot';
+import { Confetti } from '../components/Confetti';
+import { playSound } from '../audio/sounds';
 import type { RootStackScreenProps } from '../navigation/types';
 import { colors, materiaColors, radius, softShadow, spacing } from '../theme';
 
@@ -39,11 +41,17 @@ export default function EsitoLezioneScreen({
 
   const [puntiMostrati, setPuntiMostrati] = useState(0);
   const contatore = useRef(new Animated.Value(0)).current;
+  // Ingresso 3D della mascotte (pop + rotazione sull'asse Y).
+  const entrata = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     Haptics.notificationAsync(
       fallito ? Haptics.NotificationFeedbackType.Warning : Haptics.NotificationFeedbackType.Success
     ).catch(() => {});
+    if (!fallito) playSound(stelle === 3 ? 'perfect' : 'complete');
+
+    Animated.spring(entrata, { toValue: 1, speed: 6, bounciness: 12, delay: 150, useNativeDriver: true }).start();
+
     const sub = contatore.addListener(({ value }) => setPuntiMostrati(Math.round(value)));
     Animated.timing(contatore, {
       toValue: punti,
@@ -52,7 +60,17 @@ export default function EsitoLezioneScreen({
       useNativeDriver: false,
     }).start();
     return () => contatore.removeListener(sub);
-  }, [contatore, punti, fallito]);
+  }, [contatore, entrata, punti, fallito, stelle]);
+
+  const mascotStyle = {
+    transform: [
+      { perspective: 800 },
+      { scale: entrata.interpolate({ inputRange: [0, 1], outputRange: [0.3, 1] }) },
+      {
+        rotateY: entrata.interpolate({ inputRange: [0, 1], outputRange: ['180deg', '0deg'] }),
+      },
+    ],
+  };
 
   const titolo = fallito
     ? 'Cuori esauriti'
@@ -67,9 +85,12 @@ export default function EsitoLezioneScreen({
       colors={fallito ? ['#3A4358', '#1C2231'] : [tinte.start, tinte.end]}
       style={styles.gradient}
     >
+      {!fallito && <Confetti count={stelle === 3 ? 110 : 70} />}
       <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
         <ScrollView contentContainerStyle={styles.content}>
-          <Mascot state={fallito ? 'studying' : 'celebrating'} size={128} animated={!fallito} />
+          <Animated.View style={mascotStyle}>
+            <Mascot state={fallito ? 'studying' : 'celebrating'} size={128} animated={!fallito} />
+          </Animated.View>
 
           <View style={styles.stelleRow}>
             <Stella accesa={!fallito && stelle >= 1} ritardo={200} />
