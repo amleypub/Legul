@@ -39,6 +39,10 @@ async function main() {
     viewport: { width: 402, height: 874 },
     deviceScaleFactor: 2,
   });
+  page.on('pageerror', (e) => console.log('PAGEERROR:', e.message));
+  page.on('console', (m) => {
+    if (m.type() === 'error') console.log('CONSOLE.ERROR:', m.text());
+  });
   await page.goto('http://127.0.0.1:8099', { waitUntil: 'networkidle' });
   await page.waitForTimeout(3500);
 

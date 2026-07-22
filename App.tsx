@@ -4,7 +4,11 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StatusBar } from 'expo-status-bar';
+import { useFonts } from 'expo-font';
+import { applyGlobalFont, fontMap } from './src/fonts';
 import { GamificationProvider } from './src/gamification/GamificationContext';
+
+applyGlobalFont();
 import type { RootStackParamList } from './src/navigation/types';
 import HomeScreen from './src/screens/HomeScreen';
 import QuizHomeScreen from './src/screens/QuizHomeScreen';
@@ -81,6 +85,8 @@ function Tabs() {
 }
 
 export default function App() {
+  const [fontsLoaded] = useFonts(fontMap);
+  if (!fontsLoaded) return null;
   return (
     <GamificationProvider>
       <NavigationContainer>
