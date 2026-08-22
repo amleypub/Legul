@@ -33,7 +33,7 @@ App mobile per **Android e iOS** (React Native + Expo) per prepararsi all'esame 
 
 ### Gamification
 - **Punti** per ogni risposta, quiz completato e traccia letta (bonus per i quiz perfetti)
-- **Livelli** a tema forense: da «Studente di Giurisprudenza» a «Principe del Foro»
+- **Livelli** che misurano quanto sei pronto per l'esame — da «Al via» a «Più che pronto» — e non che titolo hai: chi usa Legul è già laureato e in pratica, una scala di qualifiche lo retrocederebbe o gli regalerebbe il traguardo che deve ancora conquistare
 - **Streak** di giorni di studio consecutivi
 - **Badge** da sbloccare e **messaggi di incoraggiamento** ad ogni azione
 - Progressi salvati sul dispositivo (AsyncStorage)

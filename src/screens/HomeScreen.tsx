@@ -140,8 +140,8 @@ export default function HomeScreen() {
             <ProgressBar progress={progressoLivello} />
             <Text style={styles.heroProssimo} numberOfLines={1}>
               {prossimoLivello
-                ? `${prossimoLivello.sogliaPunti - state.punti} al livello «${prossimoLivello.nome}»`
-                : 'Livello massimo raggiunto.'}
+                ? `${prossimoLivello.sogliaPunti - state.punti} punti a «${prossimoLivello.nome}»`
+                : 'Hai raggiunto l’ultimo livello.'}
             </Text>
           </View>
         </LinearGradient>

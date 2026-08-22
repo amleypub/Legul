@@ -38,14 +38,22 @@ export interface Livello {
   icona: IconName;
 }
 
+/**
+ * I livelli misurano quanto sei pronto per l'esame, non che titolo hai.
+ *
+ * Chi usa Legul è già laureato e sta facendo pratica: una scala che parte
+ * da «studente» lo retrocederebbe, e una che regala il titolo di
+ * «avvocato» a mille punti svilirebbe proprio il traguardo che l'app
+ * serve a raggiungere. Nessuno di questi nomi è una qualifica.
+ */
 export const LIVELLI: Livello[] = [
-  { nome: 'Studente di Giurisprudenza', sogliaPunti: 0, icona: 'book' },
-  { nome: 'Laureato in Legge', sogliaPunti: 100, icona: 'school' },
-  { nome: 'Praticante', sogliaPunti: 300, icona: 'briefcase' },
-  { nome: 'Praticante Abilitato', sogliaPunti: 600, icona: 'document-text' },
-  { nome: 'Avvocato', sogliaPunti: 1000, icona: 'ribbon' },
-  { nome: 'Cassazionista', sogliaPunti: 2000, icona: 'library' },
-  { nome: 'Principe del Foro', sogliaPunti: 4000, icona: 'trophy' },
+  { nome: 'Al via', sogliaPunti: 0, icona: 'flag' },
+  { nome: 'In carreggiata', sogliaPunti: 100, icona: 'navigate' },
+  { nome: 'Ritmo costante', sogliaPunti: 300, icona: 'pulse' },
+  { nome: 'Passo sicuro', sogliaPunti: 600, icona: 'footsteps' },
+  { nome: 'Dirittura d’arrivo', sogliaPunti: 1000, icona: 'speedometer' },
+  { nome: 'Pronto all’esame', sogliaPunti: 2000, icona: 'shield-checkmark' },
+  { nome: 'Più che pronto', sogliaPunti: 4000, icona: 'trophy' },
 ];
 
 export interface BadgeDef {

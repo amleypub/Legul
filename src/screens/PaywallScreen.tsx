@@ -11,7 +11,7 @@ import { colors, EDGE_3D, radius, spacing } from '../theme';
 const VANTAGGI = [
   'Unità Avanzato ed Eccellenza per tutte le materie',
   'Migliaia di domande con spiegazioni e riferimenti normativi',
-  'Percorso completo fino al livello Principe del Foro',
+  'Il percorso completo per arrivare pronto all’esame',
   'Sostieni lo sviluppo continuo di Legul',
 ];
 

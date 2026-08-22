@@ -133,13 +133,27 @@ describe('conBadgeAggiornati', () => {
 
 describe('livelloPerPunti', () => {
   it('parte dal primo livello', () => {
-    expect(livelloPerPunti(0).nome).toBe('Studente di Giurisprudenza');
-    expect(livelloPerPunti(99).nome).toBe('Studente di Giurisprudenza');
+    expect(livelloPerPunti(0)).toBe(LIVELLI[0]);
+    expect(livelloPerPunti(99)).toBe(LIVELLI[0]);
   });
 
   it('sale esattamente alla soglia', () => {
-    expect(livelloPerPunti(100).nome).toBe('Laureato in Legge');
-    expect(livelloPerPunti(1000).nome).toBe('Avvocato');
+    expect(livelloPerPunti(100)).toBe(LIVELLI[1]);
+    expect(livelloPerPunti(999)).toBe(LIVELLI[3]);
+    expect(livelloPerPunti(1000)).toBe(LIVELLI[4]);
+  });
+
+  /**
+   * I livelli non devono promettere qualifiche: chi usa l'app è già
+   * laureato e in pratica, e l'abilitazione la ottiene all'esame vero.
+   */
+  it('non usa titoli professionali come nome di livello', () => {
+    const titoli = ['avvocato', 'praticante', 'studente', 'laureato', 'cassazionista'];
+    for (const l of LIVELLI) {
+      for (const t of titoli) {
+        expect(l.nome.toLowerCase()).not.toContain(t);
+      }
+    }
   });
 
   it('si ferma al livello massimo', () => {
