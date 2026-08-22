@@ -32,6 +32,22 @@ const server = http.createServer((req, res) => {
   fs.createReadStream(file).pipe(res);
 });
 
+/** Costruisce l'URL della schermata di esito con i parametri richiesti. */
+function esitoUrl({ stelle, corrette, punti, fallito = false }) {
+  const q = new URLSearchParams({
+    fallito: String(fallito),
+    corrette: String(corrette),
+    totale: '10',
+    stelle: String(stelle),
+    punti: String(punti),
+    messaggio: fallito
+      ? 'Ripassa le spiegazioni e riprova: sei più vicino di quanto pensi.'
+      : 'Tre stelle piene: hai risposto correttamente a tutta la lezione.',
+    nuoviBadge: fallito ? '' : 'primo-quiz',
+  });
+  return `/esito/${encodeURIComponent('Diritto civile')}/civile-l1-1?${q}`;
+}
+
 async function main() {
   await new Promise((r) => server.listen(8099, r));
   const browser = await chromium.launch({ executablePath: EXE, args: ['--no-sandbox'] });
@@ -91,6 +107,25 @@ async function main() {
     await shot('7-profilo.png');
   } catch (e) {
     console.log('profilo errore:', e.message);
+  }
+
+  // Schermate raggiunte via deep link (linking config di React Navigation).
+  const deepLinks = [
+    ['8-esito-perfetto.png', esitoUrl({ stelle: 3, corrette: 10, punti: 128 })],
+    ['9-esito-fallito.png', esitoUrl({ stelle: 0, corrette: 4, punti: 22, fallito: true })],
+    ['10-paywall.png', '/premium'],
+    ['11-login.png', '/accedi'],
+    ['12-materiale.png', '/materiale'],
+    ['13-tracce.png', '/tracce'],
+  ];
+  for (const [nome, url] of deepLinks) {
+    try {
+      await page.goto('http://127.0.0.1:8099' + url, { waitUntil: 'networkidle' });
+      await page.waitForTimeout(2600);
+      await shot(nome);
+    } catch (e) {
+      console.log(nome, 'errore:', e.message);
+    }
   }
 
   await browser.close();

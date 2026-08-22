@@ -182,7 +182,7 @@ export default function LezioneScreen({ route, navigation }: RootStackScreenProp
         totale: domande.length,
         stelle: 0,
         punti: puntiTotali.current,
-        messaggio: 'Cuori esauriti. Ripassa la spiegazione e riprova: ci sei quasi.',
+        messaggio: 'Ripassa le spiegazioni e riprova: sei più vicino di quanto pensi.',
         nuoviBadge: badgeRaccolti.current,
       });
       return;

@@ -4,7 +4,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { buildAffiliateUrl } from '../config/affiliate';
 import { materiali } from '../data/materiali';
 import { Card3D } from '../components/Card3D';
-import { Button3D } from '../components/Button3D';
 import { Mascot } from '../components/Mascot';
 import type { MaterialeEsame } from '../types';
 import { colors, radius, spacing } from '../theme';
@@ -15,6 +14,13 @@ const ICONA_CATEGORIA: Record<MaterialeEsame['categoria'], keyof typeof Ionicons
   Codici: 'library',
   Manuali: 'school',
   'Cancelleria e utilità': 'color-wand',
+};
+
+/** Icona mostrata nella tessera del singolo prodotto. */
+const ICONA_MATERIALE: Record<MaterialeEsame['categoria'], keyof typeof Ionicons.glyphMap> = {
+  Codici: 'book',
+  Manuali: 'reader',
+  'Cancelleria e utilità': 'briefcase',
 };
 
 async function apriSuAmazon(m: MaterialeEsame) {
@@ -54,22 +60,26 @@ export default function MaterialeScreen() {
         </View>
       )}
       renderItem={({ item }) => (
-        <Card3D edgeColor="#DfE3EC" radiusSize={radius.lg} style={styles.cardOuter} contentStyle={styles.card}>
-          <View style={styles.cardHeader}>
-            <View style={styles.iconTile}>
-              <Ionicons name="book" size={20} color={colors.accentEdge} />
-            </View>
-            <Text style={styles.titolo}>{item.titolo}</Text>
+        <Card3D
+          edgeColor="#DFE4EF"
+          radiusSize={radius.xl}
+          style={styles.cardOuter}
+          contentStyle={styles.card}
+          onPress={() => apriSuAmazon(item)}
+        >
+          <View style={styles.iconTile}>
+            <Ionicons name={ICONA_MATERIALE[item.categoria]} size={22} color={colors.accentEdge} />
           </View>
-          <Text style={styles.descrizione}>{item.descrizione}</Text>
-          <Button3D
-            label="Vedi su Amazon"
-            onPress={() => apriSuAmazon(item)}
-            color={colors.accent}
-            edgeColor={colors.accentEdge}
-            textColor={colors.primary}
-            style={styles.btn}
-          />
+          <View style={styles.cardText}>
+            <Text style={styles.titolo}>{item.titolo}</Text>
+            <Text style={styles.descrizione} numberOfLines={2}>
+              {item.descrizione}
+            </Text>
+            <View style={styles.chip}>
+              <Ionicons name="cart" size={13} color={colors.primary} />
+              <Text style={styles.chipTesto}>Vedi su Amazon</Text>
+            </View>
+          </View>
         </Card3D>
       )}
       ListFooterComponent={
@@ -104,19 +114,35 @@ const styles = StyleSheet.create({
   },
   categoria: { fontSize: 18, fontWeight: '800', color: colors.primary },
   cardOuter: { marginBottom: spacing.sm },
-  card: { padding: spacing.md },
-  cardHeader: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
+  card: {
+    flexDirection: 'row',
+    gap: spacing.sm + 4,
+    paddingVertical: spacing.md - 2,
+    paddingHorizontal: spacing.md - 2,
+  },
+  cardText: { flex: 1 },
   iconTile: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
+    width: 44,
+    height: 44,
+    borderRadius: 14,
     backgroundColor: colors.accentSoft,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  titolo: { flex: 1, fontSize: 16, fontWeight: '800', color: colors.text },
-  descrizione: { fontSize: 13, color: colors.textMuted, lineHeight: 19, marginTop: spacing.sm },
-  btn: { marginTop: spacing.md },
+  titolo: { fontSize: 16, fontWeight: '800', color: colors.text, lineHeight: 21 },
+  descrizione: { fontSize: 13, color: colors.textMuted, lineHeight: 18, marginTop: 3 },
+  chip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    gap: 5,
+    marginTop: spacing.sm,
+    backgroundColor: colors.accent,
+    borderRadius: radius.pill,
+    paddingHorizontal: 11,
+    paddingVertical: 5,
+  },
+  chipTesto: { fontSize: 12, fontWeight: '800', color: colors.primary },
   disclosure: {
     fontSize: 11,
     color: colors.textMuted,

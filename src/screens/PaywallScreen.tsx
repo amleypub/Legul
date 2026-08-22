@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { Animated, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useGamification } from '../gamification/GamificationContext';
 import { Button3D } from '../components/Button3D';
 import type { RootStackScreenProps } from '../navigation/types';
-import { colors, radius, spacing } from '../theme';
+import { colors, EDGE_3D, radius, spacing } from '../theme';
 
 const VANTAGGI = [
   'Unità Avanzato ed Eccellenza per tutte le materie',
@@ -16,6 +16,65 @@ const VANTAGGI = [
 ];
 
 type Piano = 'mensile' | 'annuale';
+
+/** Card di un piano: blocco 3D che si abbassa quando lo scegli. */
+function Piano({
+  nome,
+  prezzo,
+  dettaglio,
+  etichetta,
+  attivo,
+  onPress,
+}: {
+  nome: string;
+  prezzo: string;
+  dettaglio: string;
+  etichetta?: string;
+  attivo: boolean;
+  onPress: () => void;
+}) {
+  const ty = useRef(new Animated.Value(0)).current;
+  const giu = (down: boolean) =>
+    Animated.spring(ty, {
+      toValue: down ? EDGE_3D : 0,
+      speed: 40,
+      bounciness: 0,
+      useNativeDriver: true,
+    }).start();
+
+  return (
+    <Pressable style={styles.pianoPress} onPressIn={() => giu(true)} onPressOut={() => giu(false)} onPress={onPress}>
+      <View style={styles.pianoWrap}>
+        <View style={[styles.pianoEdge, attivo && styles.pianoEdgeAttivo]} />
+        <Animated.View
+          style={[
+            styles.piano,
+            attivo && styles.pianoAttivo,
+            { transform: [{ translateY: ty }] },
+          ]}
+        >
+          {etichetta ? (
+            <View style={[styles.pianoBadge, !attivo && styles.pianoBadgeSpento]}>
+              <Text style={[styles.pianoBadgeTesto, !attivo && styles.pianoBadgeTestoSpento]}>
+                {etichetta}
+              </Text>
+            </View>
+          ) : (
+            <View style={styles.pianoBadgeVuoto} />
+          )}
+          <Text style={styles.pianoNome}>{nome}</Text>
+          <Text style={styles.pianoPrezzo}>{prezzo}</Text>
+          <Text style={styles.pianoDettaglio}>{dettaglio}</Text>
+          {attivo && (
+            <View style={styles.pianoSpunta}>
+              <Ionicons name="checkmark" size={15} color={colors.primary} />
+            </View>
+          )}
+        </Animated.View>
+      </View>
+    </Pressable>
+  );
+}
 
 export default function PaywallScreen({ navigation }: RootStackScreenProps<'Paywall'>) {
   const { attivaPremium } = useGamification();
@@ -47,25 +106,21 @@ export default function PaywallScreen({ navigation }: RootStackScreenProps<'Payw
           </View>
 
           <View style={styles.piani}>
-            <Pressable
+            <Piano
+              nome="Annuale"
+              prezzo="49,99 €"
+              dettaglio="4,17 € al mese"
+              etichetta="RISPARMI IL 48%"
+              attivo={piano === 'annuale'}
               onPress={() => setPiano('annuale')}
-              style={[styles.piano, piano === 'annuale' && styles.pianoAttivo]}
-            >
-              <View style={styles.pianoBadge}>
-                <Text style={styles.pianoBadgeTesto}>CONSIGLIATO</Text>
-              </View>
-              <Text style={styles.pianoNome}>Annuale</Text>
-              <Text style={styles.pianoPrezzo}>49,99 €</Text>
-              <Text style={styles.pianoDettaglio}>4,17 € al mese</Text>
-            </Pressable>
-            <Pressable
+            />
+            <Piano
+              nome="Mensile"
+              prezzo="7,99 €"
+              dettaglio="fatturazione mensile"
+              attivo={piano === 'mensile'}
               onPress={() => setPiano('mensile')}
-              style={[styles.piano, piano === 'mensile' && styles.pianoAttivo]}
-            >
-              <Text style={styles.pianoNome}>Mensile</Text>
-              <Text style={styles.pianoPrezzo}>7,99 €</Text>
-              <Text style={styles.pianoDettaglio}>fatturazione mensile</Text>
-            </Pressable>
+            />
           </View>
 
           <Button3D
@@ -116,36 +171,67 @@ const styles = StyleSheet.create({
   vantaggioTesto: { flex: 1, fontSize: 15, color: '#FFFFFF', lineHeight: 21 },
   piani: {
     flexDirection: 'row',
+    alignItems: 'stretch',
     gap: spacing.sm,
     alignSelf: 'stretch',
     marginVertical: spacing.lg,
   },
+  pianoPress: { flex: 1 },
+  pianoWrap: { flex: 1, paddingBottom: EDGE_3D },
+  pianoEdge: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: EDGE_3D,
+    bottom: 0,
+    borderRadius: radius.xl,
+    backgroundColor: 'rgba(0,0,0,0.35)',
+  },
+  pianoEdgeAttivo: { backgroundColor: '#A8861B' },
+  // Sfondo pieno (non traslucido) così il bordo 3D non traspare e sporca il colore.
   piano: {
     flex: 1,
-    backgroundColor: 'rgba(255,255,255,0.08)',
-    borderRadius: radius.lg,
+    backgroundColor: '#26314C',
+    borderRadius: radius.xl,
     borderWidth: 2,
-    borderColor: 'rgba(255,255,255,0.15)',
-    padding: spacing.md,
+    borderColor: 'rgba(255,255,255,0.16)',
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.sm,
     alignItems: 'center',
   },
-  pianoAttivo: { borderColor: colors.accent, backgroundColor: 'rgba(201,162,39,0.15)' },
+  pianoAttivo: { borderColor: colors.accent, backgroundColor: '#2E3B5C' },
+  // Altezza fissa condivisa col segnaposto, così i due piani restano allineati.
   pianoBadge: {
+    height: 22,
+    justifyContent: 'center',
     backgroundColor: colors.accent,
     borderRadius: radius.pill,
-    paddingHorizontal: 10,
-    paddingVertical: 3,
-    marginBottom: spacing.xs,
+    paddingHorizontal: 9,
+    marginBottom: spacing.sm,
   },
+  pianoBadgeSpento: { backgroundColor: 'rgba(255,255,255,0.16)' },
+  pianoBadgeVuoto: { height: 22, marginBottom: spacing.sm },
   pianoBadgeTesto: {
-    fontSize: 10,
+    fontSize: 9,
     fontWeight: '800',
-    letterSpacing: 1,
+    letterSpacing: 0.6,
     color: colors.primary,
   },
+  pianoBadgeTestoSpento: { color: 'rgba(255,255,255,0.85)' },
   pianoNome: { fontSize: 15, fontWeight: '700', color: '#FFFFFF' },
-  pianoPrezzo: { fontSize: 24, fontWeight: '800', color: '#FFFFFF', marginTop: 4 },
-  pianoDettaglio: { fontSize: 12, color: 'rgba(255,255,255,0.7)', marginTop: 2 },
+  pianoPrezzo: { fontSize: 24, fontWeight: '900', color: '#FFFFFF', marginTop: 4 },
+  pianoDettaglio: { fontSize: 12, color: 'rgba(255,255,255,0.7)', marginTop: 2, textAlign: 'center' },
+  pianoSpunta: {
+    position: 'absolute',
+    top: -1,
+    right: -1,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: colors.accent,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   nota: {
     fontSize: 12,
     color: 'rgba(255,255,255,0.6)',

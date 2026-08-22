@@ -10,7 +10,7 @@ import { Mascot } from '../components/Mascot';
 import { Confetti } from '../components/Confetti';
 import { playSound } from '../audio/sounds';
 import type { RootStackScreenProps } from '../navigation/types';
-import { colors, materiaColors, radius, softShadow, spacing } from '../theme';
+import { colors, EDGE_3D, materiaColors, radius, softShadow, spacing } from '../theme';
 
 function Stella({ accesa, ritardo }: { accesa: boolean; ritardo: number }) {
   const scale = useRef(new Animated.Value(0)).current;
@@ -26,6 +26,27 @@ function Stella({ accesa, ritardo }: { accesa: boolean; ritardo: number }) {
     <Animated.View style={{ transform: [{ scale }] }}>
       <Ionicons name="star" size={54} color={accesa ? colors.accent : 'rgba(255,255,255,0.25)'} />
     </Animated.View>
+  );
+}
+
+/** Riquadro statistica a blocco, con bordo 3D scuro sul gradiente. */
+function StatBlocco({
+  label,
+  valore,
+  icona,
+}: {
+  label: string;
+  valore: string;
+  icona: keyof typeof Ionicons.glyphMap;
+}) {
+  return (
+    <View style={styles.statCard}>
+      <Ionicons name={icona} size={16} color="rgba(255,255,255,0.7)" />
+      <Text style={styles.statValore} numberOfLines={1} adjustsFontSizeToFit>
+        {valore}
+      </Text>
+      <Text style={styles.statLabel}>{label}</Text>
+    </View>
   );
 }
 
@@ -104,20 +125,9 @@ export default function EsitoLezioneScreen({
           <Text style={styles.messaggio}>{messaggio}</Text>
 
           <View style={styles.statsRow}>
-            <View style={styles.statCard}>
-              <Text style={styles.statLabel}>Punti</Text>
-              <Text style={styles.statValore}>+{puntiMostrati}</Text>
-            </View>
-            <View style={styles.statCard}>
-              <Text style={styles.statLabel}>Precisione</Text>
-              <Text style={styles.statValore}>{precisione}%</Text>
-            </View>
-            <View style={styles.statCard}>
-              <Text style={styles.statLabel}>Risposte</Text>
-              <Text style={styles.statValore}>
-                {corrette}/{totale}
-              </Text>
-            </View>
+            <StatBlocco label="Punti" valore={`+${puntiMostrati}`} icona="flash" />
+            <StatBlocco label="Precisione" valore={`${precisione}%`} icona="analytics" />
+            <StatBlocco label="Risposte" valore={`${corrette}/${totale}`} icona="checkmark-done" />
           </View>
 
           {badgeSbloccati.length > 0 && (
@@ -161,7 +171,13 @@ export default function EsitoLezioneScreen({
 const styles = StyleSheet.create({
   gradient: { flex: 1 },
   safe: { flex: 1 },
-  content: { padding: spacing.lg, alignItems: 'center', paddingBottom: spacing.xl },
+  content: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    padding: spacing.lg,
+    alignItems: 'center',
+    paddingBottom: spacing.xl,
+  },
   stelleRow: {
     flexDirection: 'row',
     alignItems: 'flex-end',
@@ -183,21 +199,27 @@ const styles = StyleSheet.create({
     marginTop: spacing.xl,
     alignSelf: 'stretch',
   },
+  // La card è traslucida: il bordo 3D è un border inferiore, non un
+  // riquadro dietro (che trasparirebbe come una banda scura).
   statCard: {
     flex: 1,
-    backgroundColor: 'rgba(255,255,255,0.14)',
-    borderRadius: radius.md,
-    paddingVertical: spacing.md,
+    backgroundColor: 'rgba(255,255,255,0.18)',
+    borderRadius: radius.lg,
+    borderBottomWidth: EDGE_3D,
+    borderBottomColor: 'rgba(0,0,0,0.22)',
+    paddingVertical: spacing.sm + 4,
+    paddingHorizontal: spacing.xs,
     alignItems: 'center',
   },
   statLabel: {
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: '800',
-    letterSpacing: 1,
+    letterSpacing: 0.8,
     textTransform: 'uppercase',
     color: 'rgba(255,255,255,0.75)',
+    marginTop: 2,
   },
-  statValore: { fontSize: 22, fontWeight: '800', color: '#FFFFFF', marginTop: 4 },
+  statValore: { fontSize: 22, fontWeight: '900', color: '#FFFFFF', marginTop: 2 },
   badgeWrap: { alignSelf: 'stretch', marginTop: spacing.lg, gap: spacing.sm },
   badgeTitolo: {
     fontSize: 15,

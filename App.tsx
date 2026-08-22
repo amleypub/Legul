@@ -10,6 +10,7 @@ import { GamificationProvider } from './src/gamification/GamificationContext';
 
 applyGlobalFont();
 import type { RootStackParamList } from './src/navigation/types';
+import { linking } from './src/navigation/linking';
 import HomeScreen from './src/screens/HomeScreen';
 import QuizHomeScreen from './src/screens/QuizHomeScreen';
 import PercorsoScreen from './src/screens/PercorsoScreen';
@@ -89,7 +90,7 @@ export default function App() {
   if (!fontsLoaded) return null;
   return (
     <GamificationProvider>
-      <NavigationContainer>
+      <NavigationContainer linking={linking}>
         <StatusBar style="light" />
         <Stack.Navigator
           screenOptions={{
