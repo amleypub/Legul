@@ -156,6 +156,7 @@ async function main() {
     ['11b-login-email.png', '/accedi', async () => tap('Continua con email')],
     ['12-materiale.png', '/materiale'],
     ['13-tracce.png', '/tracce'],
+    ['14-traccia.png', '/traccia/2023-atto-civile'],
   ];
   for (const [nome, url, azione] of deepLinks) {
     try {
