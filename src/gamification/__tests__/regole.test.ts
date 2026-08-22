@@ -20,6 +20,7 @@ const base: GamificationState = {
   badges: [],
   streak: 0,
   ultimoGiornoAttivita: null,
+  puntiOggi: 0,
 };
 
 const con = (p: Partial<GamificationState>): GamificationState => ({ ...base, ...p });
@@ -68,6 +69,18 @@ describe('conStreakAggiornata', () => {
 
   it('riparte da uno dopo un giorno saltato', () => {
     expect(conStreakAggiornata(con({ streak: 9, ultimoGiornoAttivita: '2026-08-20' })).streak).toBe(1);
+  });
+
+  it('azzera l’obiettivo giornaliero quando cambia il giorno', () => {
+    expect(
+      conStreakAggiornata(con({ puntiOggi: 80, ultimoGiornoAttivita: '2026-08-21' })).puntiOggi
+    ).toBe(0);
+  });
+
+  it('non azzera l’obiettivo se si sta ancora studiando oggi', () => {
+    expect(
+      conStreakAggiornata(con({ puntiOggi: 30, ultimoGiornoAttivita: '2026-08-22' })).puntiOggi
+    ).toBe(30);
   });
 });
 

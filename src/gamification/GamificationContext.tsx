@@ -107,6 +107,8 @@ export interface GamificationState {
   badges: string[]; // id dei badge sbloccati
   streak: number;
   ultimoGiornoAttivita: string | null; // YYYY-MM-DD
+  /** Punti guadagnati oggi: si azzera al cambio di giorno. */
+  puntiOggi: number;
 }
 
 const initialState: GamificationState = {
@@ -121,6 +123,7 @@ const initialState: GamificationState = {
   badges: [],
   streak: 0,
   ultimoGiornoAttivita: null,
+  puntiOggi: 0,
 };
 
 export interface EventoGamification {
@@ -183,7 +186,8 @@ export function conStreakAggiornata(s: GamificationState): GamificationState {
   const oggi = oggiISO();
   if (s.ultimoGiornoAttivita === oggi) return s;
   const streak = s.ultimoGiornoAttivita === ieriISO() ? s.streak + 1 : 1;
-  return { ...s, streak, ultimoGiornoAttivita: oggi };
+  // Nuovo giorno: l'obiettivo giornaliero riparte da zero.
+  return { ...s, streak, ultimoGiornoAttivita: oggi, puntiOggi: 0 };
 }
 
 /** Calcola i badge sbloccati dallo stato corrente e restituisce i nuovi. */
@@ -300,8 +304,11 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
     ): EventoGamification => {
       let nuoviBadge: BadgeDef[] = [];
       setState((prev) => {
+        // L'ordine conta: conStreakAggiornata azzera puntiOggi al cambio
+        // di giorno, quindi i punti appena guadagnati vanno sommati dopo.
         const aggiornato = conStreakAggiornata(trasforma(prev));
-        const { state: finale, nuovi } = conBadgeAggiornati(aggiornato);
+        const conOggi = { ...aggiornato, puntiOggi: aggiornato.puntiOggi + puntiGuadagnati };
+        const { state: finale, nuovi } = conBadgeAggiornati(conOggi);
         nuoviBadge = nuovi;
         return finale;
       });

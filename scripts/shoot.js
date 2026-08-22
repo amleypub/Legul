@@ -55,6 +55,36 @@ async function main() {
     viewport: { width: 402, height: 874 },
     deviceScaleFactor: 2,
   });
+  // Con lo stato vuoto ogni schermata mostra solo zeri e non si capisce
+  // come apparirà davvero: si semina un profilo di esempio, a meno che
+  // non si chieda esplicitamente la vista del primo avvio (`--nuovo`).
+  if (!process.argv.includes('--nuovo')) {
+    const oggi = new Date().toISOString().slice(0, 10);
+    const stato = {
+      punti: 740,
+      risposteCorrette: 128,
+      risposteErrate: 22,
+      quizCompletati: 14,
+      lezioni: {
+        'Diritto civile|1|0': 3,
+        'Diritto civile|1|1': 3,
+        'Diritto civile|1|2': 2,
+        'Diritto civile|1|3': 1,
+      },
+      premium: false,
+      audioAttivo: true,
+      tracceLette: ['2023-civile', '2023-penale', '2022-civile'],
+      badges: ['primo-quiz', 'dieci-corrette', 'cinquanta-corrette', 'streak-3', 'prima-traccia'],
+      streak: 4,
+      ultimoGiornoAttivita: oggi,
+      puntiOggi: 30,
+    };
+    await page.addInitScript(
+      ([chiave, valore]) => window.localStorage.setItem(chiave, valore),
+      ['@legul/gamification/v1', JSON.stringify(stato)]
+    );
+  }
+
   page.on('pageerror', (e) => console.log('PAGEERROR:', e.message));
   page.on('console', (m) => {
     if (m.type() === 'error') console.log('CONSOLE.ERROR:', m.text());
