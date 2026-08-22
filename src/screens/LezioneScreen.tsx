@@ -15,9 +15,84 @@ import { trovaLezione } from '../data/percorso';
 import { useGamification } from '../gamification/GamificationContext';
 import { Button3D } from '../components/Button3D';
 import type { RootStackScreenProps } from '../navigation/types';
-import { colors, materiaColors, radius, softShadow, spacing } from '../theme';
+import { colors, EDGE_3D, materiaColors, radius, softShadow, spacing } from '../theme';
 
 export const CUORI_INIZIALI = 4;
+
+/** Risposta "a blocco": si abbassa sul bordo 3D quando la premi. */
+function Opzione({
+  testo,
+  stato,
+  tinte,
+  disabled,
+  onPress,
+}: {
+  testo: string;
+  stato: 'idle' | 'selezionata' | 'corretta' | 'errata';
+  tinte: { start: string; end: string; edge: string; soft: string };
+  disabled: boolean;
+  onPress: () => void;
+}) {
+  const ty = useRef(new Animated.Value(0)).current;
+  const giu = (down: boolean) =>
+    Animated.spring(ty, {
+      toValue: down ? EDGE_3D : 0,
+      speed: 40,
+      bounciness: 0,
+      useNativeDriver: true,
+    }).start();
+
+  const palette = {
+    idle: { bg: colors.card, bordo: '#E3E7EF', edge: '#D3D9E6', testo: colors.text },
+    selezionata: { bg: tinte.soft, bordo: tinte.start, edge: tinte.edge, testo: tinte.end },
+    corretta: {
+      bg: colors.successSoft,
+      bordo: colors.success,
+      edge: colors.successEdge,
+      testo: colors.successEdge,
+    },
+    errata: {
+      bg: colors.errorSoft,
+      bordo: colors.error,
+      edge: colors.errorEdge,
+      testo: colors.errorEdge,
+    },
+  }[stato];
+
+  return (
+    <Pressable
+      disabled={disabled}
+      onPressIn={() => giu(true)}
+      onPressOut={() => giu(false)}
+      onPress={onPress}
+    >
+      <View style={styles.opzioneWrap}>
+        <View style={[styles.opzioneEdge, { backgroundColor: palette.edge }]} />
+        <Animated.View
+          style={[
+            styles.opzione,
+            { backgroundColor: palette.bg, borderColor: palette.bordo },
+            { transform: [{ translateY: ty }] },
+          ]}
+        >
+          <Text
+            style={[
+              styles.opzioneTesto,
+              { color: palette.testo },
+              stato !== 'idle' && styles.opzioneTestoAttivo,
+            ]}
+          >
+            {testo}
+          </Text>
+          {stato === 'corretta' && (
+            <Ionicons name="checkmark-circle" size={22} color={colors.success} />
+          )}
+          {stato === 'errata' && <Ionicons name="close-circle" size={22} color={colors.error} />}
+        </Animated.View>
+      </View>
+    </Pressable>
+  );
+}
 
 export default function LezioneScreen({ route, navigation }: RootStackScreenProps<'Lezione'>) {
   const { materia, lezioneId } = route.params;
@@ -168,38 +243,28 @@ export default function LezioneScreen({ route, navigation }: RootStackScreenProp
         {domanda.opzioni.map((opzione, i) => {
           const isSelezionata = i === selezionata;
           const isCorretta = i === domanda.rispostaCorretta;
+          const stato = confermata
+            ? isCorretta
+              ? 'corretta'
+              : isSelezionata
+                ? 'errata'
+                : 'idle'
+            : isSelezionata
+              ? 'selezionata'
+              : 'idle';
           return (
-            <Pressable
+            <Opzione
               key={i}
+              testo={opzione}
+              stato={stato}
+              tinte={tinte}
               disabled={confermata}
               onPress={() => {
                 setSelezionata(i);
                 playSound('tap');
                 Haptics.selectionAsync().catch(() => {});
               }}
-              style={({ pressed }) => [
-                styles.opzione,
-                pressed && styles.opzionePressed,
-                isSelezionata && !confermata && { borderColor: tinte.start, backgroundColor: tinte.soft },
-                confermata && isCorretta && styles.opzioneCorretta,
-                confermata && isSelezionata && !isCorretta && styles.opzioneErrata,
-              ]}
-            >
-              <Text
-                style={[
-                  styles.opzioneTesto,
-                  isSelezionata && !confermata && { color: tinte.end, fontWeight: '700' },
-                ]}
-              >
-                {opzione}
-              </Text>
-              {confermata && isCorretta && (
-                <Ionicons name="checkmark-circle" size={22} color={colors.success} />
-              )}
-              {confermata && isSelezionata && !isCorretta && (
-                <Ionicons name="close-circle" size={22} color={colors.error} />
-              )}
-            </Pressable>
+            />
           );
         })}
       </ScrollView>
@@ -294,21 +359,26 @@ const styles = StyleSheet.create({
     lineHeight: 28,
     marginBottom: spacing.lg,
   },
+  opzioneWrap: { paddingBottom: EDGE_3D, marginBottom: spacing.sm },
+  opzioneEdge: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: EDGE_3D,
+    bottom: 0,
+    borderRadius: radius.lg,
+  },
   opzione: {
-    backgroundColor: colors.card,
-    borderRadius: radius.md,
+    borderRadius: radius.lg,
     borderWidth: 2,
-    borderColor: colors.border,
-    padding: spacing.md,
-    marginBottom: spacing.sm,
+    paddingVertical: spacing.md - 2,
+    paddingHorizontal: spacing.md,
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm,
   },
-  opzionePressed: { opacity: 0.75 },
-  opzioneCorretta: { borderColor: colors.success, backgroundColor: colors.successSoft },
-  opzioneErrata: { borderColor: colors.error, backgroundColor: colors.errorSoft },
-  opzioneTesto: { flex: 1, fontSize: 15, color: colors.text, lineHeight: 21 },
+  opzioneTesto: { flex: 1, fontSize: 15, lineHeight: 21, fontWeight: '600' },
+  opzioneTestoAttivo: { fontWeight: '800' },
   footer: { padding: spacing.md },
   sheet: {
     position: 'absolute',

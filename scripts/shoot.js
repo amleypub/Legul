@@ -46,25 +46,51 @@ async function main() {
   await page.goto('http://127.0.0.1:8099', { waitUntil: 'networkidle' });
   await page.waitForTimeout(3500);
 
-  const shots = process.argv.slice(2);
-  const tabs = shots.length ? shots : ['Home', 'Quiz', 'Profilo'];
   const outDir = path.join(__dirname, '..', 'shots');
   fs.mkdirSync(outDir, { recursive: true });
 
-  // Home è già mostrata
-  await page.screenshot({ path: path.join(outDir, '1-home.png') });
+  const shot = (n) => page.screenshot({ path: path.join(outDir, n) });
+  const tap = async (testo, opts = {}) => {
+    await page.getByText(testo, { exact: opts.exact !== false }).last().click({ timeout: 6000 });
+    await page.waitForTimeout(opts.wait ?? 1200);
+  };
 
-  // Naviga alle tab cliccando il testo nella tab bar
-  let i = 2;
-  for (const t of ['Quiz', 'Profilo']) {
-    try {
-      await page.getByText(t, { exact: true }).last().click({ timeout: 5000 });
-      await page.waitForTimeout(1500);
-      await page.screenshot({ path: path.join(outDir, `${i}-${t.toLowerCase()}.png`) });
-    } catch (e) {
-      console.log('tab', t, 'errore:', e.message);
-    }
-    i++;
+  // Home è già mostrata
+  await shot('1-home.png');
+
+  // Tab Quiz -> elenco materie
+  await tap('Quiz');
+  await shot('2-quiz.png');
+
+  // Percorso di una materia
+  await tap('Diritto civile');
+  await shot('3-percorso.png');
+
+  // Primo nodo del percorso: il cerchio "play" sotto il fumetto INIZIA.
+  await page.mouse.click(201, 350);
+  await page.waitForTimeout(1400);
+  await shot('4-lezione.png');
+
+  // Seleziona una risposta e conferma, per vedere il foglio di feedback.
+  try {
+    await page.mouse.click(201, 300);
+    await page.waitForTimeout(600);
+    await shot('5-lezione-selezione.png');
+    await tap('Conferma');
+    await page.waitForTimeout(900);
+    await shot('6-lezione-feedback.png');
+  } catch (e) {
+    console.log('lezione errore:', e.message);
+  }
+
+  // Torna alle tab e apri il Profilo.
+  try {
+    await page.goto('http://127.0.0.1:8099', { waitUntil: 'networkidle' });
+    await page.waitForTimeout(2500);
+    await tap('Profilo');
+    await shot('7-profilo.png');
+  } catch (e) {
+    console.log('profilo errore:', e.message);
   }
 
   await browser.close();

@@ -6,26 +6,35 @@ import { BlurView } from 'expo-blur';
 import { BADGES, useGamification } from '../gamification/GamificationContext';
 import { ProgressBar } from '../components/ProgressBar';
 import { Mascot } from '../components/Mascot';
-import { colors, radius, softShadow, spacing } from '../theme';
+import { colors, EDGE_3D, radius, softShadow, spacing } from '../theme';
 
 function StatTile({
   valore,
   label,
   icona,
   tint,
+  edge,
 }: {
   valore: string | number;
   label: string;
   icona: keyof typeof Ionicons.glyphMap;
   tint: string;
+  edge: string;
 }) {
   return (
-    <View style={[styles.tile, { backgroundColor: tint + '16' }]}>
-      <View style={[styles.tileIcon, { backgroundColor: tint }]}>
-        <Ionicons name={icona} size={20} color="#FFFFFF" />
+    <View style={styles.tileWrap}>
+      <View style={[styles.tileEdge, { backgroundColor: edge }]} />
+      <View style={styles.tile}>
+        <View style={styles.tileTop}>
+          <View style={[styles.tileIcon, { backgroundColor: tint }]}>
+            <Ionicons name={icona} size={19} color="#FFFFFF" />
+          </View>
+          <Text style={[styles.tileValue, { color: tint }]} numberOfLines={1} adjustsFontSizeToFit>
+            {valore}
+          </Text>
+        </View>
+        <Text style={styles.tileLabel}>{label}</Text>
       </View>
-      <Text style={[styles.tileValue, { color: tint }]}>{valore}</Text>
-      <Text style={styles.tileLabel}>{label}</Text>
     </View>
   );
 }
@@ -86,18 +95,22 @@ export default function HomeScreen() {
 
       {/* Banner streak con bagliore animato e mascotte che sbuca */}
       <View style={styles.streakWrap}>
+        <View style={styles.streakEdge} />
         <Animated.View
           style={[
-            styles.streakGlow,
-            { opacity: glow.interpolate({ inputRange: [0, 1], outputRange: [0.25, 0.6] }) },
+            styles.streakCard,
+            {
+              transform: [
+                { scale: glow.interpolate({ inputRange: [0, 1], outputRange: [1, 1.012] }) },
+              ],
+            },
           ]}
-        />
-        <View style={styles.streakEdge} />
+        >
         <LinearGradient
           colors={[colors.streakFrom, colors.streakTo]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
-          style={styles.streakCard}
+          style={styles.streakInner}
         >
           <Animated.View
             style={{
@@ -125,6 +138,7 @@ export default function HomeScreen() {
           </View>
           {state.streak > 0 && <Mascot state="celebrating" size={64} style={styles.streakMascot} />}
         </LinearGradient>
+        </Animated.View>
       </View>
 
       {/* Progressi in tessere colorate compatte */}
@@ -135,21 +149,30 @@ export default function HomeScreen() {
           label="Risposte esatte"
           icona="checkmark-done"
           tint={colors.success}
+          edge="#C9E8D8"
         />
         <StatTile
-          valore={precisione !== null ? `${precisione}%` : '—'}
+          valore={precisione !== null ? `${precisione}%` : '0%'}
           label="Precisione"
           icona="analytics"
           tint="#4F7CF3"
+          edge="#CCDAF8"
         />
       </View>
       <View style={styles.bentoRow}>
-        <StatTile valore={state.quizCompletati} label="Lezioni" icona="ribbon" tint="#9B6BFF" />
+        <StatTile
+          valore={state.quizCompletati}
+          label="Lezioni"
+          icona="ribbon"
+          tint="#9B6BFF"
+          edge="#DBCEF8"
+        />
         <StatTile
           valore={state.tracceLette.length}
           label="Tracce studiate"
           icona="document-text"
           tint={colors.accentEdge}
+          edge="#F0DFB8"
         />
       </View>
 
@@ -161,23 +184,26 @@ export default function HomeScreen() {
         {BADGES.map((badge) => {
           const sbloccato = state.badges.includes(badge.id);
           return (
-            <View key={badge.id} style={[styles.badgeCard, sbloccato && styles.badgeCardOn]}>
-              <View style={[styles.badgeIconWrap, sbloccato && styles.badgeIconWrapOn]}>
-                <Ionicons
-                  name={badge.icona}
-                  size={26}
-                  color={sbloccato ? colors.accent : '#9AA3B2'}
-                />
+            <View key={badge.id} style={styles.badgeWrap}>
+              <View style={[styles.badgeEdge, sbloccato && styles.badgeEdgeOn]} />
+              <View style={[styles.badgeCard, sbloccato && styles.badgeCardOn]}>
+                <View style={[styles.badgeIconWrap, sbloccato && styles.badgeIconWrapOn]}>
+                  <Ionicons
+                    name={badge.icona}
+                    size={26}
+                    color={sbloccato ? colors.accent : '#9AA3B2'}
+                  />
+                </View>
+                <Text style={styles.badgeNome}>{badge.nome}</Text>
+                <Text style={styles.badgeDescr}>{badge.descrizione}</Text>
+                {!sbloccato && (
+                  <BlurView intensity={18} tint="light" style={styles.badgeFrost}>
+                    <View style={styles.badgeLockPill}>
+                      <Ionicons name="lock-closed" size={14} color="#5B6472" />
+                    </View>
+                  </BlurView>
+                )}
               </View>
-              <Text style={styles.badgeNome}>{badge.nome}</Text>
-              <Text style={styles.badgeDescr}>{badge.descrizione}</Text>
-              {!sbloccato && (
-                <BlurView intensity={18} tint="light" style={styles.badgeFrost}>
-                  <View style={styles.badgeLockPill}>
-                    <Ionicons name="lock-closed" size={14} color="#5B6472" />
-                  </View>
-                </BlurView>
-              )}
             </View>
           );
         })}
@@ -220,33 +246,25 @@ const styles = StyleSheet.create({
   },
   heroProssimo: { color: 'rgba(255,255,255,0.8)', fontSize: 13, marginTop: spacing.sm },
 
-  streakWrap: { marginTop: spacing.lg },
-  streakGlow: {
-    position: 'absolute',
-    top: 6,
-    left: 18,
-    right: 18,
-    bottom: -6,
-    backgroundColor: colors.streakTo,
-    borderRadius: radius.xxl,
-  },
+  streakWrap: { marginTop: spacing.lg, paddingBottom: EDGE_3D },
   streakEdge: {
     position: 'absolute',
-    top: 6,
+    top: EDGE_3D,
     left: 0,
     right: 0,
     bottom: 0,
     backgroundColor: '#C43A22',
     borderRadius: radius.xl,
   },
-  streakCard: {
+  streakCard: { borderRadius: radius.xl },
+  streakInner: {
     borderRadius: radius.xl,
-    padding: spacing.md,
+    paddingVertical: spacing.md - 2,
+    paddingLeft: spacing.md,
     paddingRight: spacing.sm,
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.md,
-    marginBottom: 6,
   },
   streakTextWrap: { flex: 1 },
   streakNumero: { fontSize: 26, fontWeight: '900', color: '#FFFFFF' },
@@ -263,33 +281,50 @@ const styles = StyleSheet.create({
   },
 
   bentoRow: { flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.sm },
-  tile: {
-    flex: 1,
-    borderRadius: radius.lg,
-    padding: spacing.md,
+  tileWrap: { flex: 1, paddingBottom: EDGE_3D },
+  tileEdge: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: EDGE_3D,
+    bottom: 0,
+    borderRadius: radius.xl,
   },
+  tile: {
+    backgroundColor: colors.card,
+    borderRadius: radius.xl,
+    paddingVertical: spacing.sm + 2,
+    paddingHorizontal: spacing.md - 2,
+  },
+  tileTop: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   tileIcon: {
-    width: 36,
-    height: 36,
+    width: 34,
+    height: 34,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: spacing.sm,
   },
-  tileValue: { fontSize: 28, fontWeight: '900' },
-  tileLabel: { fontSize: 13, color: colors.textMuted, marginTop: 2, fontWeight: '700' },
+  tileValue: { flex: 1, fontSize: 26, fontWeight: '900' },
+  tileLabel: { fontSize: 13, color: colors.textMuted, marginTop: 6, fontWeight: '700' },
 
   badgeGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
+  badgeWrap: { width: '48%', flexGrow: 1, paddingBottom: EDGE_3D },
+  badgeEdge: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: EDGE_3D,
+    bottom: 0,
+    borderRadius: radius.xl,
+    backgroundColor: '#DFE4EF',
+  },
+  badgeEdgeOn: { backgroundColor: colors.accentEdge },
   badgeCard: {
-    width: '48%',
-    flexGrow: 1,
     backgroundColor: colors.card,
-    borderRadius: radius.lg,
+    borderRadius: radius.xl,
     padding: spacing.md,
     alignItems: 'center',
     overflow: 'hidden',
-    ...softShadow,
-    shadowOpacity: 0.06,
   },
   badgeCardOn: { backgroundColor: colors.accentSoft },
   badgeIconWrap: {
