@@ -38,13 +38,23 @@ App mobile per **Android e iOS** (React Native + Expo) per prepararsi all'esame 
 - **Badge** da sbloccare e **messaggi di incoraggiamento** ad ogni azione
 - Progressi salvati sul dispositivo (AsyncStorage)
 
+### Accesso e sincronizzazione (Supabase)
+- Accesso con **Apple**, **Google** o **email** (link magico, nessuna password)
+- I progressi vengono **fusi** fra dispositivo e cloud, mai sovrascritti: per ogni contatore vince il valore più alto e le liste si uniscono, così un dispositivo rimasto indietro non cancella il lavoro fatto altrove
+- Senza credenziali configurate l'app resta pienamente utilizzabile **come ospite**, con i progressi sul solo dispositivo
+
+> Configurazione passo passo (progetto, tabella, policy RLS, provider): **[`docs/supabase.md`](docs/supabase.md)**
+
 ### Materiale per l'esame (link affiliati Amazon)
 - Sezione con i **codici** (Civile, Penale, Quattro Codici, Procedura civile, Procedura penale, Amministrativo, Deontologia), manuali di pareri/atti svolti e accessori utili
 - Ogni scheda apre Amazon tramite **link affiliato**, con informativa di affiliazione a fondo pagina
 
-#### Come configurare l'affiliazione Amazon
-1. Apri `src/config/affiliate.ts` e sostituisci `INSERISCI-TAG-21` con il tuo tag del Programma di Affiliazione Amazon (es. `legul-21`).
-2. (Opzionale) In `src/data/materiali.ts` aggiungi l'`asin` del prodotto specifico che vuoi promuovere (lo trovi nell'URL della scheda prodotto, es. `/dp/B0ABC12345`): il pulsante punterà direttamente alla scheda. Senza ASIN, il link apre una ricerca Amazon mirata, comunque tracciata col tag.
+#### Affiliazione Amazon
+Il tag del Programma di Affiliazione è già impostato in `src/config/affiliate.ts`.
+
+Per puntare a una scheda prodotto precisa, aggiungi l'`asin` alla voce in
+`src/data/materiali.ts` (lo trovi nell'URL della scheda, es. `/dp/B0ABC12345`).
+Senza ASIN il link apre una ricerca Amazon mirata, comunque tracciata dal tag.
 
 ## Avvio
 
@@ -54,6 +64,22 @@ npm start          # avvia Expo (scansiona il QR con l'app Expo Go)
 npm run android    # avvia su emulatore/dispositivo Android
 npm run ios        # avvia su simulatore iOS (macOS)
 npm run typecheck  # verifica TypeScript
+npm test           # esegue i test (Jest)
+```
+
+> Dopo aver creato o modificato il file `.env`, avvia con `npx expo start --clear`:
+> i valori vengono incollati nel codice in fase di trasformazione e Metro
+> tiene in cache i file già trasformati.
+
+### Verifica grafica senza dispositivo
+
+`scripts/shoot.js` esporta l'app per il web e ne cattura le schermate con
+Chromium, comprese quelle raggiungibili solo via deep link (esito lezione,
+paywall, accesso):
+
+```bash
+npx expo export --platform web --output-dir web-build --clear
+node scripts/shoot.js        # immagini in shots/
 ```
 
 ## Struttura del progetto
@@ -61,15 +87,35 @@ npm run typecheck  # verifica TypeScript
 ```
 App.tsx                          # Navigazione (tab + stack) e provider
 src/
+  auth/                          # Client Supabase, sessione, accesso Apple/Google/email
   config/affiliate.ts            # Tag affiliato Amazon e costruzione link
-  data/quizzes.ts                # Domande dei quiz con spiegazioni
+  data/questions/                # Banca domande (un file per materia-livello)
+  data/percorso.ts               # Costruzione di unità e lezioni dal percorso
   data/tracce.ts                 # Archivio tracce anni passati
   data/materiali.ts              # Materiale per l'esame (codici, manuali…)
+  fonts.ts                       # Nunito applicato a tutta l'app
   gamification/                  # Punti, livelli, streak, badge, incoraggiamenti
-  screens/                       # Home, Quiz, Tracce, Materiale
-  components/                    # Componenti condivisi
+  gamification/sync.ts           # Fusione dei progressi fra dispositivo e cloud
+  navigation/linking.ts          # Deep link (schema legul://)
+  screens/                       # Home, Quiz, Percorso, Lezione, Tracce, Materiale, Profilo
+  components/                    # Componenti condivisi (mascotte, blocchi 3D, coriandoli)
   theme.ts                       # Colori e spaziature
+docs/supabase.md                 # Configurazione dell'accesso e della sincronizzazione
+scripts/shoot.js                 # Cattura delle schermate per la verifica grafica
 ```
+
+## Test
+
+`npm test` copre le parti dove un errore silenzioso costerebbe caro:
+
+- **`sync.test.ts`** — la fusione dei progressi, con la garanzia che un
+  dispositivo rimasto indietro non possa cancellare quelli fatti altrove
+- **`regole.test.ts`** — streak (con orologio fissato), badge, stelle, livelli
+- **`domande.test.ts`** — invarianti della banca domande: niente id duplicati,
+  quattro opzioni distinte, indice della risposta valido, spiegazione presente,
+  risposta corretta distribuita fra le quattro posizioni
+- **`percorso.test.ts`** — costruzione delle unità e regole di sblocco
+- **`affiliate.test.ts`** — i link portano sempre il tag affiliato
 
 ## Come aggiungere contenuti
 

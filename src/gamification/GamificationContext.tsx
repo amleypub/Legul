@@ -92,7 +92,7 @@ function pick(arr: string[], seed: number): string {
   return arr[seed % arr.length];
 }
 
-interface GamificationState {
+export interface GamificationState {
   punti: number;
   risposteCorrette: number;
   risposteErrate: number;
@@ -179,7 +179,7 @@ function ieriISO(): string {
 }
 
 /** Aggiorna la streak giornaliera in base all'ultima attività registrata. */
-function conStreakAggiornata(s: GamificationState): GamificationState {
+export function conStreakAggiornata(s: GamificationState): GamificationState {
   const oggi = oggiISO();
   if (s.ultimoGiornoAttivita === oggi) return s;
   const streak = s.ultimoGiornoAttivita === ieriISO() ? s.streak + 1 : 1;
@@ -187,7 +187,7 @@ function conStreakAggiornata(s: GamificationState): GamificationState {
 }
 
 /** Calcola i badge sbloccati dallo stato corrente e restituisce i nuovi. */
-function conBadgeAggiornati(s: GamificationState): {
+export function conBadgeAggiornati(s: GamificationState): {
   state: GamificationState;
   nuovi: BadgeDef[];
 } {
