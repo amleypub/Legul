@@ -1,10 +1,11 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useGamification } from '../gamification/GamificationContext';
+import { nomeVisualizzato, useAuth } from '../auth/AuthContext';
 import { Mascot } from '../components/Mascot';
 import { Button3D } from '../components/Button3D';
 import type { RootStackParamList } from '../navigation/types';
@@ -19,6 +20,18 @@ const VANTAGGI: { icona: keyof typeof Ionicons.glyphMap; testo: string }[] = [
 export default function ProfiloScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { state, livello, toggleAudio } = useGamification();
+  const { utente, esci } = useAuth();
+
+  function confermaUscita() {
+    Alert.alert(
+      'Vuoi uscire?',
+      'I progressi restano salvati sul tuo account: li ritrovi al prossimo accesso.',
+      [
+        { text: 'Annulla', style: 'cancel' },
+        { text: 'Esci', style: 'destructive', onPress: () => void esci() },
+      ]
+    );
+  }
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -30,7 +43,8 @@ export default function ProfiloScreen() {
         style={[styles.hero, softShadow]}
       >
         <Mascot state="neutral" size={96} style={styles.heroMascot} />
-        <Text style={styles.heroNome}>Ospite</Text>
+        <Text style={styles.heroNome}>{nomeVisualizzato(utente)}</Text>
+        {utente?.email && <Text style={styles.heroEmail}>{utente.email}</Text>}
         <View style={styles.heroLivelloRow}>
           <Ionicons name={livello.icona} size={15} color={colors.accent} />
           <Text style={styles.heroLivello}>{livello.nome}</Text>
@@ -53,31 +67,57 @@ export default function ProfiloScreen() {
         </View>
       </LinearGradient>
 
-      {/* Invito ad accedere */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitolo}>Crea un account gratuito</Text>
-        <Text style={styles.cardSub}>
-          Stai studiando come ospite: i progressi sono salvati solo su questo telefono. Accedi per
-          non perderli mai e ritrovarli ovunque.
-        </Text>
-        <View style={styles.vantaggi}>
-          {VANTAGGI.map((v) => (
-            <View key={v.testo} style={styles.vantaggioRiga}>
-              <View style={styles.vantaggioIcona}>
-                <Ionicons name={v.icona} size={18} color={colors.primary} />
-              </View>
-              <Text style={styles.vantaggioTesto}>{v.testo}</Text>
+      {utente ? (
+        /* Account collegato: i progressi viaggiano con l'utente */
+        <View style={styles.card}>
+          <View style={styles.sincroRiga}>
+            <View style={styles.sincroIcona}>
+              <Ionicons name="cloud-done" size={20} color={colors.success} />
             </View>
-          ))}
+            <View style={styles.sincroTesto}>
+              <Text style={styles.cardTitolo}>Progressi al sicuro</Text>
+              <Text style={styles.cardSub}>
+                Punti, streak e stelle sono salvati sul tuo account: li ritrovi su ogni dispositivo
+                dove accedi.
+              </Text>
+            </View>
+          </View>
+          <Button3D
+            label="Esci dall’account"
+            onPress={confermaUscita}
+            color="#FFFFFF"
+            edgeColor="#D3D8E2"
+            textColor={colors.text}
+            style={styles.cta}
+          />
         </View>
-        <Button3D
-          label="Accedi o registrati"
-          onPress={() => navigation.navigate('Login')}
-          color={colors.primary}
-          edgeColor="#0E1830"
-          style={styles.cta}
-        />
-      </View>
+      ) : (
+        /* Invito ad accedere */
+        <View style={styles.card}>
+          <Text style={styles.cardTitolo}>Crea un account gratuito</Text>
+          <Text style={styles.cardSub}>
+            Stai studiando come ospite: i progressi sono salvati solo su questo telefono. Accedi per
+            non perderli mai e ritrovarli ovunque.
+          </Text>
+          <View style={styles.vantaggi}>
+            {VANTAGGI.map((v) => (
+              <View key={v.testo} style={styles.vantaggioRiga}>
+                <View style={styles.vantaggioIcona}>
+                  <Ionicons name={v.icona} size={18} color={colors.primary} />
+                </View>
+                <Text style={styles.vantaggioTesto}>{v.testo}</Text>
+              </View>
+            ))}
+          </View>
+          <Button3D
+            label="Accedi o registrati"
+            onPress={() => navigation.navigate('Login')}
+            color={colors.primary}
+            edgeColor="#0E1830"
+            style={styles.cta}
+          />
+        </View>
+      )}
 
       {/* Impostazioni */}
       <Text style={styles.sezioneTitolo}>Impostazioni</Text>
@@ -114,6 +154,17 @@ const styles = StyleSheet.create({
   },
   heroMascot: { position: 'absolute', top: -48, alignSelf: 'center' },
   heroNome: { color: '#FFFFFF', fontSize: 24, fontWeight: '900', marginTop: spacing.sm },
+  heroEmail: { color: 'rgba(255,255,255,0.6)', fontSize: 13, marginTop: 2 },
+  sincroRiga: { flexDirection: 'row', gap: spacing.sm + 2 },
+  sincroTesto: { flex: 1 },
+  sincroIcona: {
+    width: 40,
+    height: 40,
+    borderRadius: 13,
+    backgroundColor: colors.successSoft,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   heroLivelloRow: { flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 4 },
   heroLivello: { color: 'rgba(255,255,255,0.85)', fontSize: 13, fontWeight: '700' },
   heroStats: {

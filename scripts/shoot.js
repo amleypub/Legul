@@ -123,13 +123,15 @@ async function main() {
     ['9-esito-fallito.png', esitoUrl({ stelle: 0, corrette: 4, punti: 22, fallito: true })],
     ['10-paywall.png', '/premium'],
     ['11-login.png', '/accedi'],
+    ['11b-login-email.png', '/accedi', async () => tap('Continua con email')],
     ['12-materiale.png', '/materiale'],
     ['13-tracce.png', '/tracce'],
   ];
-  for (const [nome, url] of deepLinks) {
+  for (const [nome, url, azione] of deepLinks) {
     try {
       await page.goto('http://127.0.0.1:8099' + url, { waitUntil: 'networkidle' });
       await page.waitForTimeout(2600);
+      if (azione) await azione();
       await shot(nome);
     } catch (e) {
       console.log(nome, 'errore:', e.message);

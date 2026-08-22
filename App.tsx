@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
 import { applyGlobalFont, fontMap } from './src/fonts';
+import { AuthProvider } from './src/auth/AuthContext';
 import { GamificationProvider } from './src/gamification/GamificationContext';
 
 applyGlobalFont();
@@ -89,7 +90,8 @@ export default function App() {
   const [fontsLoaded] = useFonts(fontMap);
   if (!fontsLoaded) return null;
   return (
-    <GamificationProvider>
+    <AuthProvider>
+      <GamificationProvider>
       <NavigationContainer linking={linking}>
         <StatusBar style="light" />
         <Stack.Navigator
@@ -131,6 +133,7 @@ export default function App() {
           />
         </Stack.Navigator>
       </NavigationContainer>
-    </GamificationProvider>
+      </GamificationProvider>
+    </AuthProvider>
   );
 }

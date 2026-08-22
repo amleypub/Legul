@@ -10,6 +10,13 @@ import React, {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { Ionicons } from '@expo/vector-icons';
 import { setAudioEnabled } from '../audio/sounds';
+import { useAuth } from '../auth/AuthContext';
+import {
+  caricaProgressi,
+  scaricaProgressi,
+  unisciProgressi,
+  type ProgressiRemoti,
+} from './sync';
 
 type IconName = keyof typeof Ionicons.glyphMap;
 
@@ -208,6 +215,22 @@ export function livelloPerPunti(punti: number): Livello {
   return corrente;
 }
 
+/** Estrae dallo stato solo i campi che vanno sul cloud (fuori: le preferenze locali). */
+function soloSincronizzabili(s: GamificationState): ProgressiRemoti {
+  return {
+    punti: s.punti,
+    risposteCorrette: s.risposteCorrette,
+    risposteErrate: s.risposteErrate,
+    quizCompletati: s.quizCompletati,
+    lezioni: s.lezioni,
+    premium: s.premium,
+    tracceLette: s.tracceLette,
+    badges: s.badges,
+    streak: s.streak,
+    ultimoGiornoAttivita: s.ultimoGiornoAttivita,
+  };
+}
+
 export function GamificationProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<GamificationState>(initialState);
   const loaded = useRef(false);
@@ -227,6 +250,47 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
     if (!loaded.current) return;
     AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(state)).catch(() => {});
   }, [state]);
+
+  // ——— Sincronizzazione con il cloud ———
+  const { utente } = useAuth();
+  const utenteId = utente?.id ?? null;
+  // Finché non abbiamo fuso i dati remoti non ha senso ricaricarli su:
+  // spedirebbe lo stato locale ancora incompleto sovrascrivendo il cloud.
+  const fusioneFatta = useRef(false);
+
+  useEffect(() => {
+    fusioneFatta.current = false;
+    if (!utenteId) return;
+    let vivo = true;
+
+    (async () => {
+      try {
+        const remoto = await scaricaProgressi(utenteId);
+        if (!vivo) return;
+        if (remoto) {
+          setState((prev) => ({ ...prev, ...unisciProgressi(soloSincronizzabili(prev), remoto) }));
+        }
+      } catch {
+        // Rete assente o tabella non ancora creata: si continua in locale.
+      } finally {
+        if (vivo) fusioneFatta.current = true;
+      }
+    })();
+
+    return () => {
+      vivo = false;
+    };
+  }, [utenteId]);
+
+  // Salva sul cloud a ogni cambiamento, ma non più di una volta al secondo:
+  // durante una lezione lo stato cambia a ogni risposta.
+  useEffect(() => {
+    if (!utenteId || !fusioneFatta.current) return;
+    const t = setTimeout(() => {
+      caricaProgressi(utenteId, soloSincronizzabili(state)).catch(() => {});
+    }, 1000);
+    return () => clearTimeout(t);
+  }, [state, utenteId]);
 
   const applica = useCallback(
     (
