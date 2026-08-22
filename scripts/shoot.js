@@ -82,6 +82,14 @@ async function main() {
   await tap('Diritto civile');
   await shot('3-percorso.png');
 
+  // Fondo del percorso: le unità a pagamento con il riquadro Premium.
+  await page.mouse.move(201, 500);
+  for (let n = 0; n < 40; n++) await page.mouse.wheel(0, 900);
+  await page.waitForTimeout(1200);
+  await shot('3b-percorso-premium.png');
+  for (let n = 0; n < 40; n++) await page.mouse.wheel(0, -900);
+  await page.waitForTimeout(1000);
+
   // Primo nodo del percorso: il cerchio "play" sotto il fumetto INIZIA.
   await page.mouse.click(201, 350);
   await page.waitForTimeout(1400);

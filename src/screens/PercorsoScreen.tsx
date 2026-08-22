@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { Animated, Easing, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 import * as Haptics from 'expo-haptics';
 import {
   lezioniInOrdine,
@@ -11,6 +12,7 @@ import {
 } from '../data/percorso';
 import { useGamification } from '../gamification/GamificationContext';
 import { Mascot } from '../components/Mascot';
+import { Button3D } from '../components/Button3D';
 import type { RootStackScreenProps } from '../navigation/types';
 import { colors, materiaColors, radius, softShadow, spacing } from '../theme';
 
@@ -152,6 +154,57 @@ function Nodo({
   );
 }
 
+/**
+ * Riquadro che sostituisce i nodi di un'unità a pagamento: mostra il
+ * percorso sfocato dietro un vetro smerigliato, con la proposta Premium.
+ * Meglio di sedici lucchetti identici da scorrere.
+ */
+function BloccoPremium({
+  unita,
+  tinte,
+  onPress,
+}: {
+  unita: { difficolta: number; nome: string; lezioni: Lezione[] };
+  tinte: { start: string; end: string; edge: string; soft: string };
+  onPress: () => void;
+}) {
+  const domande = unita.lezioni.reduce((acc, l) => acc + l.domande.length, 0);
+
+  return (
+    <View style={styles.premiumWrap}>
+      {/* Anteprima del percorso: nodi veri, ma sfocati e desaturati. */}
+      <View style={styles.premiumGhost} pointerEvents="none">
+        {[-72, 18, 72].map((dx) => (
+          <View
+            key={dx}
+            style={[
+              styles.premiumGhostNodo,
+              { backgroundColor: tinte.start, transform: [{ translateX: dx }] },
+            ]}
+          />
+        ))}
+      </View>
+      <BlurView intensity={30} tint="dark" style={styles.premiumFrost}>
+        <View style={styles.premiumCorona}>
+          <MaterialCommunityIcons name="crown" size={30} color={colors.primary} />
+        </View>
+        <Text style={styles.premiumTitolo}>Unità {unita.difficolta} bloccata</Text>
+        <Text style={styles.premiumSub}>
+          {unita.lezioni.length} lezioni e {domande} domande di livello «{unita.nome}» ti aspettano.
+        </Text>
+        <Button3D
+          label="Sblocca con Premium"
+          onPress={onPress}
+          color={colors.accent}
+          edgeColor="#A8861B"
+          textColor={colors.primary}
+          style={styles.premiumBtn}
+        />
+      </BlurView>
+    </View>
+  );
+}
+
 export default function PercorsoScreen({ route, navigation }: RootStackScreenProps<'Percorso'>) {
   const { materia } = route.params;
   const { state } = useGamification();
@@ -171,10 +224,16 @@ export default function PercorsoScreen({ route, navigation }: RootStackScreenPro
       <View style={styles.pathHeader}>
         <Mascot state="studying" size={68} />
         <View style={styles.pathHeaderText}>
-          <Text style={styles.pathHeaderTitle}>Continua da dove eri!</Text>
+          <Text style={styles.pathHeaderTitle}>
+            {stelleFatte > 0 ? 'Continua da dove eri!' : 'Si comincia da qui'}
+          </Text>
           <View style={styles.pathHeaderStars}>
             <Ionicons name="star" size={15} color={colors.accent} />
-            <Text style={styles.pathHeaderStarsText}>{stelleFatte} stelle conquistate</Text>
+            <Text style={styles.pathHeaderStarsText}>
+              {stelleFatte > 0
+                ? `${stelleFatte} stelle conquistate`
+                : 'Completa la prima lezione per la tua prima stella'}
+            </Text>
           </View>
         </View>
       </View>
@@ -199,38 +258,46 @@ export default function PercorsoScreen({ route, navigation }: RootStackScreenPro
                   <Text style={styles.premiumChipTesto}>PREMIUM</Text>
                 </View>
               ) : (
-                <Text style={styles.unitaMeta}>{u.lezioni.length} lezioni</Text>
+                <Text style={styles.unitaMeta}>
+                  {u.lezioni.filter((l) => (state.lezioni[l.id] ?? 0) >= 1).length}/
+                  {u.lezioni.length} lezioni
+                </Text>
               )}
             </LinearGradient>
 
-            <View style={styles.nodi}>
-              {u.lezioni.map((lezione) => {
-                contatoreGlobale += 1;
-                const stelle = state.lezioni[lezione.id] ?? 0;
-                const stato: StatoNodo = richiedePremium
-                  ? 'premium'
-                  : stelle >= 1
-                    ? 'completata'
-                    : lezione.id === correnteId
-                      ? 'corrente'
-                      : 'bloccata';
-                return (
-                  <Nodo
-                    key={lezione.id}
-                    lezione={lezione}
-                    stato={stato}
-                    stelle={stelle}
-                    offset={OFFSETS[contatoreGlobale % OFFSETS.length]}
-                    tinte={tinte}
-                    onPress={() =>
-                      stato === 'premium'
-                        ? navigation.navigate('Paywall')
-                        : navigation.navigate('Lezione', { materia, lezioneId: lezione.id })
-                    }
-                  />
-                );
-              })}
-            </View>
+            {richiedePremium ? (
+              <BloccoPremium
+                unita={u}
+                tinte={tinte}
+                onPress={() => navigation.navigate('Paywall')}
+              />
+            ) : (
+              <View style={styles.nodi}>
+                {u.lezioni.map((lezione) => {
+                  contatoreGlobale += 1;
+                  const stelle = state.lezioni[lezione.id] ?? 0;
+                  const stato: StatoNodo =
+                    stelle >= 1
+                      ? 'completata'
+                      : lezione.id === correnteId
+                        ? 'corrente'
+                        : 'bloccata';
+                  return (
+                    <Nodo
+                      key={lezione.id}
+                      lezione={lezione}
+                      stato={stato}
+                      stelle={stelle}
+                      offset={OFFSETS[contatoreGlobale % OFFSETS.length]}
+                      tinte={tinte}
+                      onPress={() =>
+                        navigation.navigate('Lezione', { materia, lezioneId: lezione.id })
+                      }
+                    />
+                  );
+                })}
+              </View>
+            )}
           </View>
         );
       })}
@@ -255,8 +322,15 @@ const styles = StyleSheet.create({
   },
   pathHeaderText: { flex: 1 },
   pathHeaderTitle: { fontSize: 16, fontWeight: '800', color: colors.text },
-  pathHeaderStars: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 },
-  pathHeaderStarsText: { fontSize: 13, color: colors.textMuted, fontWeight: '600' },
+  // flex-start: con il testo su due righe la stella deve restare sulla prima.
+  pathHeaderStars: { flexDirection: 'row', alignItems: 'flex-start', gap: 4, marginTop: 2 },
+  pathHeaderStarsText: {
+    flex: 1,
+    fontSize: 13,
+    color: colors.textMuted,
+    fontWeight: '600',
+    lineHeight: 18,
+  },
   unitaBanner: {
     borderRadius: radius.lg,
     paddingVertical: spacing.md,
@@ -290,6 +364,49 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     color: colors.primary,
   },
+  premiumWrap: {
+    borderRadius: radius.xxl,
+    overflow: 'hidden',
+    marginBottom: spacing.lg,
+    backgroundColor: '#2A3247',
+  },
+  premiumGhost: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.md,
+    opacity: 0.45,
+  },
+  premiumGhostNodo: { width: NODE, height: NODE, borderRadius: NODE / 2 },
+  premiumFrost: {
+    alignItems: 'center',
+    paddingVertical: spacing.lg,
+    paddingHorizontal: spacing.md,
+    backgroundColor: 'rgba(26,33,50,0.55)',
+  },
+  premiumCorona: {
+    width: 62,
+    height: 62,
+    borderRadius: 31,
+    backgroundColor: colors.accent,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  premiumTitolo: {
+    fontSize: 20,
+    fontWeight: '900',
+    color: '#FFFFFF',
+    marginTop: spacing.sm + 2,
+  },
+  premiumSub: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.82)',
+    textAlign: 'center',
+    lineHeight: 20,
+    marginTop: 6,
+  },
+  premiumBtn: { alignSelf: 'stretch', marginTop: spacing.md },
+
   nodi: { alignItems: 'center', gap: spacing.md, marginBottom: spacing.lg },
   nodoRiga: { alignItems: 'center' },
   nodoWrap: { width: NODE, height: NODE + EDGE },
