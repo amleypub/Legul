@@ -4,6 +4,7 @@ import {
   conStreakAggiornata,
   LIVELLI,
   livelloPerPunti,
+  progressiAzzerati,
   stellePerRisultato,
   type GamificationState,
 } from '../GamificationContext';
@@ -128,6 +129,55 @@ describe('conBadgeAggiornati', () => {
   it('usa identificatori di badge unici', () => {
     const ids = BADGES.map((b) => b.id);
     expect(new Set(ids).size).toBe(ids.length);
+  });
+});
+
+describe('progressiAzzerati', () => {
+  const pieno = con({
+    punti: 940,
+    risposteCorrette: 128,
+    risposteErrate: 22,
+    quizCompletati: 14,
+    lezioni: { 'Diritto civile|1|0': 3 },
+    premium: true,
+    tracceLette: ['2023-atto-civile'],
+    badges: ['primo-quiz', 'streak-3'],
+    streak: 4,
+    ultimoGiornoAttivita: '2026-08-22',
+    puntiOggi: 30,
+  });
+
+  it('cancella ogni traccia dei progressi', () => {
+    const vuoto = progressiAzzerati(pieno);
+    expect(vuoto.punti).toBe(0);
+    expect(vuoto.risposteCorrette).toBe(0);
+    expect(vuoto.risposteErrate).toBe(0);
+    expect(vuoto.quizCompletati).toBe(0);
+    expect(vuoto.lezioni).toEqual({});
+    expect(vuoto.tracceLette).toEqual([]);
+    expect(vuoto.badges).toEqual([]);
+    expect(vuoto.streak).toBe(0);
+    expect(vuoto.ultimoGiornoAttivita).toBeNull();
+    expect(vuoto.puntiOggi).toBe(0);
+  });
+
+  it('revoca anche Premium', () => {
+    expect(progressiAzzerati(pieno).premium).toBe(false);
+  });
+
+  /**
+   * L'audio è una preferenza del telefono, non un dato dell'utente: chi
+   * elimina l'account non si aspetta di ritrovare i suoni riaccesi.
+   */
+  it('conserva la preferenza sugli effetti sonori', () => {
+    expect(progressiAzzerati(con({ audioAttivo: false })).audioAttivo).toBe(false);
+    expect(progressiAzzerati(con({ audioAttivo: true })).audioAttivo).toBe(true);
+  });
+
+  it('non modifica lo stato ricevuto', () => {
+    progressiAzzerati(pieno);
+    expect(pieno.punti).toBe(940);
+    expect(pieno.badges).toEqual(['primo-quiz', 'streak-3']);
   });
 });
 

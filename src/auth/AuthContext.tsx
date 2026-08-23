@@ -15,6 +15,8 @@ interface AuthValue {
   accediGoogle: () => Promise<void>;
   accediEmail: (email: string) => Promise<void>;
   esci: () => Promise<void>;
+  /** Cancella definitivamente l'account e i dati sul server. */
+  eliminaAccount: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthValue | undefined>(undefined);
@@ -60,6 +62,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setSession(null);
   }, []);
 
+  const eliminaAccount = useCallback(async () => {
+    if (!supabase) throw new Error('Supabase non configurato.');
+
+    const { error } = await supabase.functions.invoke('elimina-account', { method: 'POST' });
+    if (error) throw error;
+
+    // L'utente non esiste più: un signOut normale proverebbe a revocare la
+    // sessione sul server e fallirebbe. Qui basta dimenticarla in locale.
+    await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
+    setSession(null);
+  }, []);
+
   const value = useMemo<AuthValue>(
     () => ({
       session,
@@ -70,8 +84,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       accediGoogle: () => accediConProvider('google'),
       accediEmail: inviaLinkEmail,
       esci,
+      eliminaAccount,
     }),
-    [session, caricamento, esci]
+    [session, caricamento, esci, eliminaAccount]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

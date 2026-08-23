@@ -166,6 +166,12 @@ interface GamificationContextValue {
   attivaPremium(): void;
   /** Attiva/disattiva gli effetti sonori. */
   toggleAudio(): void;
+  /**
+   * Riporta i progressi a zero su questo dispositivo, conservando le
+   * preferenze locali (audio). Usato quando si elimina l'account: i dati
+   * non devono restare sul telefono dopo la cancellazione.
+   */
+  azzeraProgressi(): void;
 }
 
 export function stellePerRisultato(corrette: number, totale: number): number {
@@ -217,6 +223,16 @@ export function conBadgeAggiornati(s: GamificationState): {
   const nuovi = BADGES.filter((b) => criteri[b.id] && !unlocked.has(b.id));
   if (nuovi.length === 0) return { state: s, nuovi };
   return { state: { ...s, badges: [...s.badges, ...nuovi.map((b) => b.id)] }, nuovi };
+}
+
+/**
+ * Riporta i progressi allo stato iniziale conservando le preferenze che
+ * riguardano il dispositivo e non i dati dell'utente: azzerare anche
+ * l'audio sarebbe una sorpresa sgradita, e non è ciò che si chiede
+ * eliminando un account.
+ */
+export function progressiAzzerati(s: GamificationState): GamificationState {
+  return { ...initialState, audioAttivo: s.audioAttivo };
 }
 
 export function livelloPerPunti(punti: number): Livello {
@@ -389,6 +405,10 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
     setState((prev) => ({ ...prev, audioAttivo: !prev.audioAttivo }));
   }, []);
 
+  const azzeraProgressi = useCallback(() => {
+    setState(progressiAzzerati);
+  }, []);
+
   // Mantiene il gestore suoni allineato alla preferenza salvata.
   useEffect(() => {
     setAudioEnabled(state.audioAttivo);
@@ -433,8 +453,17 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
       registraTracciaLetta,
       attivaPremium,
       toggleAudio,
+      azzeraProgressi,
     };
-  }, [state, registraRisposta, registraLezioneCompletata, registraTracciaLetta, attivaPremium, toggleAudio]);
+  }, [
+    state,
+    registraRisposta,
+    registraLezioneCompletata,
+    registraTracciaLetta,
+    attivaPremium,
+    toggleAudio,
+    azzeraProgressi,
+  ]);
 
   return <GamificationContext.Provider value={value}>{children}</GamificationContext.Provider>;
 }

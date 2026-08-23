@@ -121,6 +121,39 @@ anche una versione web, aggiungi qui pure il suo indirizzo.
 
 ---
 
+## 5. Pubblicare la funzione di eliminazione account
+
+Apple e Google impongono che un'app che permette di registrarsi permetta
+anche di **cancellare l'account dall'interno dell'app**. Il pulsante c'è
+già (Profilo, in fondo), ma ha bisogno di una funzione lato server.
+
+Non può farlo l'app da sola: eliminare un utente richiede la chiave
+`service_role`, che ha pieni poteri sul database. Dentro il bundle
+sarebbe estraibile da chiunque.
+
+Con la [CLI di Supabase](https://supabase.com/docs/guides/cli) installata:
+
+```bash
+supabase login
+supabase link --project-ref <id-del-progetto>
+supabase functions deploy elimina-account
+```
+
+L'id del progetto è la parte iniziale del Project URL
+(`https://<id-del-progetto>.supabase.co`).
+
+Non serve impostare nessun segreto: `SUPABASE_URL` e
+`SUPABASE_SERVICE_ROLE_KEY` sono già disponibili dentro le Edge Function.
+
+Il codice sta in `supabase/functions/elimina-account/index.ts`. Accetta
+solo il token di chi chiama e cancella esclusivamente sé stesso: non
+riceve mai un id dall'esterno, quindi non è possibile passarle
+l'identificativo di un altro utente.
+
+Per provarla senza pubblicarla: `supabase functions serve elimina-account`.
+
+---
+
 ## Come funziona la sincronizzazione
 
 - I progressi restano **sempre** salvati sul dispositivo: se la rete manca,

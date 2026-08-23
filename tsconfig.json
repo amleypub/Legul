@@ -5,5 +5,12 @@
     "paths": {
       "@/*": ["./src/*"]
     }
-  }
+  },
+  "exclude": [
+    "node_modules",
+    "web-build",
+    // Le Edge Function girano su Deno, con API e import via URL che il
+    // TypeScript dell'app non conosce: hanno un ambiente tutto loro.
+    "supabase/functions"
+  ]
 }

@@ -85,6 +85,32 @@ async function main() {
     );
   }
 
+  // `--utente` finge una sessione già attiva, per vedere le schermate
+  // riservate a chi ha effettuato l'accesso (serve un build con le
+  // credenziali Supabase valorizzate, anche di prova).
+  if (process.argv.includes('--utente')) {
+    const sessione = {
+      access_token: 'finto-access-token',
+      token_type: 'bearer',
+      expires_in: 3600,
+      expires_at: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 365,
+      refresh_token: 'finto-refresh-token',
+      user: {
+        id: '00000000-0000-4000-8000-000000000000',
+        aud: 'authenticated',
+        role: 'authenticated',
+        email: 'anna.rossi@esempio.it',
+        app_metadata: { provider: 'email' },
+        user_metadata: { full_name: 'Anna Rossi' },
+        created_at: '2026-01-05T10:00:00Z',
+      },
+    };
+    await page.addInitScript(
+      ([chiave, valore]) => window.localStorage.setItem(chiave, valore),
+      ['sb-demo-auth-token', JSON.stringify(sessione)]
+    );
+  }
+
   page.on('pageerror', (e) => console.log('PAGEERROR:', e.message));
   page.on('console', (m) => {
     if (m.type() === 'error') console.log('CONSOLE.ERROR:', m.text());

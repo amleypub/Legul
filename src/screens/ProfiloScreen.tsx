@@ -1,5 +1,14 @@
-import React from 'react';
-import { Alert, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  View,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
@@ -19,8 +28,9 @@ const VANTAGGI: { icona: keyof typeof Ionicons.glyphMap; testo: string }[] = [
 
 export default function ProfiloScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const { state, livello, toggleAudio } = useGamification();
-  const { utente, esci } = useAuth();
+  const { state, livello, toggleAudio, azzeraProgressi } = useGamification();
+  const { utente, esci, eliminaAccount } = useAuth();
+  const [eliminazioneInCorso, setEliminazioneInCorso] = useState(false);
 
   function confermaUscita() {
     Alert.alert(
@@ -31,6 +41,50 @@ export default function ProfiloScreen() {
         { text: 'Esci', style: 'destructive', onPress: () => void esci() },
       ]
     );
+  }
+
+  /**
+   * Due passaggi prima di cancellare: il primo spiega che cosa sparisce,
+   * il secondo chiede conferma. L'operazione è irreversibile e vale la
+   * pena renderla difficile da avviare per sbaglio.
+   */
+  function confermaEliminazione() {
+    Alert.alert(
+      'Eliminare l’account?',
+      'Verranno cancellati per sempre il tuo account e tutti i progressi: punti, streak, stelle, badge e tracce studiate, sia sul telefono sia sul server.\n\nSe hai un abbonamento attivo, ricordati di annullarlo dalle impostazioni dello store: eliminando l’account non si disdice da solo.',
+      [
+        { text: 'Annulla', style: 'cancel' },
+        { text: 'Continua', style: 'destructive', onPress: ultimaConferma },
+      ]
+    );
+  }
+
+  function ultimaConferma() {
+    Alert.alert('Sei sicuro?', 'L’operazione non può essere annullata.', [
+      { text: 'No, torna indietro', style: 'cancel' },
+      { text: 'Elimina definitivamente', style: 'destructive', onPress: () => void elimina() },
+    ]);
+  }
+
+  async function elimina() {
+    setEliminazioneInCorso(true);
+    try {
+      await eliminaAccount();
+      // Solo dopo che il server ha confermato: se la chiamata fallisce,
+      // i progressi locali devono restare dove sono.
+      azzeraProgressi();
+      Alert.alert('Account eliminato', 'Puoi continuare a usare Legul come ospite.');
+    } catch (e) {
+      const testo = e instanceof Error ? e.message : String(e);
+      Alert.alert(
+        'Eliminazione non riuscita',
+        /network|fetch/i.test(testo)
+          ? 'Connessione assente. Controlla la rete e riprova: il tuo account non è stato toccato.'
+          : `${testo}\n\nIl tuo account non è stato toccato.`
+      );
+    } finally {
+      setEliminazioneInCorso(false);
+    }
   }
 
   return (
@@ -137,6 +191,38 @@ export default function ProfiloScreen() {
           />
         </View>
       </View>
+
+      {utente && (
+        /* Cancellazione dell'account: obbligatoria per gli store quando
+           l'app permette di registrarsi. In fondo alla schermata, dove ci
+           si aspetta di trovare le azioni irreversibili. */
+        <View style={styles.pericoloCard}>
+          <Pressable
+            onPress={confermaEliminazione}
+            disabled={eliminazioneInCorso}
+            accessibilityRole="button"
+            accessibilityLabel="Elimina account"
+            accessibilityHint="Cancella per sempre account e progressi"
+            style={({ pressed }) => [styles.pericoloRiga, pressed && styles.pericoloPremuto]}
+          >
+            <View style={styles.pericoloIcona}>
+              {eliminazioneInCorso ? (
+                <ActivityIndicator size="small" color={colors.error} />
+              ) : (
+                <Ionicons name="trash-outline" size={19} color={colors.error} />
+              )}
+            </View>
+            <View style={styles.pericoloTesto}>
+              <Text style={styles.pericoloLabel}>
+                {eliminazioneInCorso ? 'Eliminazione in corso…' : 'Elimina account'}
+              </Text>
+              <Text style={styles.pericoloSub}>
+                Cancella per sempre account e progressi, su questo dispositivo e sul server.
+              </Text>
+            </View>
+          </Pressable>
+        </View>
+      )}
     </ScrollView>
   );
 }
@@ -237,4 +323,33 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   settingLabel: { fontSize: 15, fontWeight: '600', color: colors.text },
+
+  // Azione irreversibile: niente blocco 3D invitante, un riquadro sobrio
+  // che si distingue senza gridare.
+  pericoloCard: {
+    marginTop: spacing.lg,
+    backgroundColor: colors.card,
+    borderRadius: radius.xl,
+    borderWidth: 1,
+    borderColor: '#F3D5D8',
+    overflow: 'hidden',
+  },
+  pericoloRiga: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    padding: spacing.md,
+  },
+  pericoloPremuto: { backgroundColor: colors.errorSoft },
+  pericoloIcona: {
+    width: 34,
+    height: 34,
+    borderRadius: 10,
+    backgroundColor: colors.errorSoft,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  pericoloTesto: { flex: 1 },
+  pericoloLabel: { fontSize: 15, fontWeight: '700', color: colors.error },
+  pericoloSub: { fontSize: 12, color: colors.textMuted, lineHeight: 17, marginTop: 2 },
 });
