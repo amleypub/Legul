@@ -41,6 +41,7 @@ export const linking: LinkingOptions<RootStackParamList> = {
       Paywall: 'premium',
       Login: 'accedi',
       TracciaDetail: 'traccia/:tracciaId',
+      DocumentoLegale: 'legale/:documento',
     },
   },
 };

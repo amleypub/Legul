@@ -24,6 +24,8 @@ export type RootStackParamList = {
   /** Accesso: Apple / Google / email (UI; backend in arrivo). */
   Login: undefined;
   TracciaDetail: { tracciaId: string };
+  /** Informativa sulla privacy o termini di servizio. */
+  DocumentoLegale: { documento: 'privacy' | 'termini' };
 };
 
 export type RootStackScreenProps<T extends keyof RootStackParamList> = NativeStackScreenProps<

@@ -2,6 +2,11 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
+    // Gli script di servizio girano su Node 22, che esegue TypeScript
+    // rimuovendo i tipi: per farlo pretende l'estensione nell'import.
+    // Metro compila con Babel, quindi noEmit non tocca la build dell'app.
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
     "paths": {
       "@/*": ["./src/*"]
     }

@@ -183,6 +183,8 @@ async function main() {
     ['12-materiale.png', '/materiale'],
     ['13-tracce.png', '/tracce'],
     ['14-traccia.png', '/traccia/2023-atto-civile'],
+    ['15-privacy.png', '/legale/privacy'],
+    ['16-termini.png', '/legale/termini'],
   ];
   for (const [nome, url, azione] of deepLinks) {
     try {

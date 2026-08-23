@@ -229,7 +229,21 @@ export default function LoginScreen({ navigation }: RootStackScreenProps<'Login'
             )}
 
             <Text style={styles.privacy}>
-              Continuando accetterai i Termini di servizio e l’Informativa sulla privacy di Legul.
+              Continuando accetterai i{' '}
+              <Text
+                style={styles.privacyLink}
+                onPress={() => navigation.navigate('DocumentoLegale', { documento: 'termini' })}
+              >
+                Termini di servizio
+              </Text>{' '}
+              e l’
+              <Text
+                style={styles.privacyLink}
+                onPress={() => navigation.navigate('DocumentoLegale', { documento: 'privacy' })}
+              >
+                Informativa sulla privacy
+              </Text>{' '}
+              di Legul.
             </Text>
           </>
         )}
@@ -331,4 +345,5 @@ const styles = StyleSheet.create({
     marginTop: spacing.lg,
     paddingHorizontal: spacing.sm,
   },
+  privacyLink: { color: colors.primary, fontWeight: '800', textDecorationLine: 'underline' },
 });

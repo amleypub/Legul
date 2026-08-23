@@ -45,6 +45,12 @@ App mobile per **Android e iOS** (React Native + Expo) per prepararsi all'esame 
 
 > Configurazione passo passo (progetto, tabella, policy RLS, provider): **[`docs/supabase.md`](docs/supabase.md)**
 
+### Privacy e Termini
+- Testi difensivi e conformi al GDPR, con **una sola sorgente** (`src/data/legale.ts`) da cui vengono sia le schermate nell'app sia le pagine pubbliche
+- Raggiungibili dalla schermata di accesso e dal Profilo, e pubblicabili su GitHub Pages con `npm run legale`
+
+> Come completarli e metterli online: **[`docs/legale.md`](docs/legale.md)**
+
 ### Materiale per l'esame (link affiliati Amazon)
 - Sezione con i **codici** (Civile, Penale, Quattro Codici, Procedura civile, Procedura penale, Amministrativo, Deontologia), manuali di pareri/atti svolti e accessori utili
 - Ogni scheda apre Amazon tramite **link affiliato**, con informativa di affiliazione a fondo pagina
@@ -65,6 +71,7 @@ npm run android    # avvia su emulatore/dispositivo Android
 npm run ios        # avvia su simulatore iOS (macOS)
 npm run typecheck  # verifica TypeScript
 npm test           # esegue i test (Jest)
+npm run legale     # rigenera le pagine pubbliche di privacy e termini
 ```
 
 > Dopo aver creato o modificato il file `.env`, avvia con `npx expo start --clear`:

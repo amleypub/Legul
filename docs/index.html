@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Documenti legali · Legul</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+  :root {
+    --ground: #F4F6FB; --surface: #FFFFFF; --ink: #1C1E26; --ink-soft: #545E70;
+    --rule: #E3E8F1; --navy: #1B2A4A; --gold: #A8760A;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #0F131B; --surface: #171D28; --ink: #E9EDF5; --ink-soft: #A6AFC0;
+      --rule: #262E3D; --navy: #B3C4E6; --gold: #E0A93C;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--ground); color: var(--ink);
+    font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.65; -webkit-text-size-adjust: 100%;
+  }
+  .wrap { max-width: 44rem; margin: 0 auto; padding: 3rem 1.25rem 5rem; }
+  header { border-bottom: 2px solid var(--navy); padding-bottom: 1.25rem; }
+  .marchio {
+    font-size: 0.72rem; font-weight: 800; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--gold); margin: 0;
+  }
+  h1 { font-size: clamp(1.9rem, 5vw, 2.5rem); line-height: 1.12; margin: 0.4rem 0 0; }
+  .occhiello { color: var(--ink-soft); margin: 0.9rem 0 0; }
+  .data {
+    display: inline-block; margin-top: 1rem; padding: 0.3rem 0.7rem;
+    border: 1px solid var(--rule); border-radius: 999px;
+    font-size: 0.8rem; font-weight: 700; color: var(--ink-soft);
+  }
+  section { margin-top: 2.25rem; }
+  h2 { font-size: 1.15rem; color: var(--navy); margin: 0 0 0.6rem; }
+  p { margin: 0 0 0.85rem; }
+  footer {
+    margin-top: 3.5rem; padding-top: 1.25rem; border-top: 1px solid var(--rule);
+    color: var(--ink-soft); font-size: 0.85rem;
+  }
+  a { color: var(--navy); }
+  nav { margin-top: 1.5rem; display: flex; gap: 1rem; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <p class="marchio">Legul · Preparazione all’esame da avvocato</p>
+  <h1>Documenti legali</h1>
+  <p class="occhiello">Le condizioni d’uso dell’app e l’informativa su come trattiamo i dati.</p>
+</header>
+<section>
+  <h2><a href="./privacy.html">Informativa sulla privacy</a></h2>
+  <p>Quali dati tratta Legul, perché, per quanto tempo e come puoi farli cancellare. Redatta ai sensi degli articoli 13 e 14 del Regolamento (UE) 2016/679.</p>
+</section>
+<section>
+  <h2><a href="./termini.html">Termini di servizio</a></h2>
+  <p>Le regole d’uso di Legul. Leggile: alcune limitano la nostra responsabilità e definiscono che cosa l’app è e che cosa non è.</p>
+</section>
+<footer>
+  <p>Andrea Moriggi — ditta individuale — P. IVA [[ da completare ]] — [[ da completare ]]</p>
+</footer>
+</div>
+</body>
+</html>

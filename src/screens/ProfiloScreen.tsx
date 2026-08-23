@@ -26,6 +26,34 @@ const VANTAGGI: { icona: keyof typeof Ionicons.glyphMap; testo: string }[] = [
   { icona: 'shield-checkmark', testo: 'Accesso sicuro con Apple, Google o email' },
 ];
 
+/** Riga di rimando a un documento legale, nella card Impostazioni. */
+function VoceLegale({
+  etichetta,
+  icona,
+  onPress,
+}: {
+  etichetta: string;
+  icona: keyof typeof Ionicons.glyphMap;
+  onPress: () => void;
+}) {
+  return (
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="link"
+      accessibilityLabel={etichetta}
+      style={({ pressed }) => [styles.settingRow, pressed && styles.settingPremuto]}
+    >
+      <View style={styles.settingLeft}>
+        <View style={styles.settingIcona}>
+          <Ionicons name={icona} size={18} color={colors.primary} />
+        </View>
+        <Text style={styles.settingLabel}>{etichetta}</Text>
+      </View>
+      <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
+    </Pressable>
+  );
+}
+
 export default function ProfiloScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { state, livello, toggleAudio, azzeraProgressi } = useGamification();
@@ -190,6 +218,20 @@ export default function ProfiloScreen() {
             thumbColor="#FFFFFF"
           />
         </View>
+
+        <View style={styles.settingSeparatore} />
+
+        <VoceLegale
+          etichetta="Informativa sulla privacy"
+          icona="lock-closed"
+          onPress={() => navigation.navigate('DocumentoLegale', { documento: 'privacy' })}
+        />
+        <View style={styles.settingSeparatore} />
+        <VoceLegale
+          etichetta="Termini di servizio"
+          icona="document-text"
+          onPress={() => navigation.navigate('DocumentoLegale', { documento: 'termini' })}
+        />
       </View>
 
       {utente && (
@@ -323,6 +365,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   settingLabel: { fontSize: 15, fontWeight: '600', color: colors.text },
+  settingPremuto: { backgroundColor: '#F4F6FB' },
+  settingSeparatore: { height: 1, backgroundColor: '#EEF1F7', marginLeft: 34 + spacing.sm },
 
   // Azione irreversibile: niente blocco 3D invitante, un riquadro sobrio
   // che si distingue senza gridare.

@@ -23,6 +23,8 @@ import TracciaDetailScreen from './src/screens/TracciaDetailScreen';
 import MaterialeScreen from './src/screens/MaterialeScreen';
 import ProfiloScreen from './src/screens/ProfiloScreen';
 import LoginScreen from './src/screens/LoginScreen';
+import DocumentoLegaleScreen from './src/screens/DocumentoLegaleScreen';
+import { DOCUMENTI } from './src/data/legale';
 import { colors, materiaColors } from './src/theme';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -130,6 +132,13 @@ export default function App() {
             name="TracciaDetail"
             component={TracciaDetailScreen}
             options={{ title: 'Traccia d’esame' }}
+          />
+          <Stack.Screen
+            name="DocumentoLegale"
+            component={DocumentoLegaleScreen}
+            options={({ route }) => ({
+              title: DOCUMENTI[route.params.documento].titolo,
+            })}
           />
         </Stack.Navigator>
       </NavigationContainer>
