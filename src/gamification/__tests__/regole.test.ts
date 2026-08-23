@@ -1,9 +1,11 @@
 import {
   BADGES,
   conBadgeAggiornati,
+  conErrore,
   conStreakAggiornata,
   LIVELLI,
   livelloPerPunti,
+  MAX_ERRORI_DA_RIPASSARE,
   progressiAzzerati,
   stellePerRisultato,
   type GamificationState,
@@ -22,6 +24,7 @@ const base: GamificationState = {
   streak: 0,
   ultimoGiornoAttivita: null,
   puntiOggi: 0,
+  erroriDaRipassare: [],
 };
 
 const con = (p: Partial<GamificationState>): GamificationState => ({ ...base, ...p });
@@ -132,6 +135,43 @@ describe('conBadgeAggiornati', () => {
   });
 });
 
+describe('conErrore', () => {
+  it('mette in testa la domanda sbagliata', () => {
+    expect(conErrore(['b'], false, 'a')).toEqual(['a', 'b']);
+  });
+
+  it('toglie dall’elenco una domanda poi indovinata', () => {
+    expect(conErrore(['a', 'b'], true, 'a')).toEqual(['b']);
+  });
+
+  it('non tocca l’elenco quando indovini qualcosa che non avevi sbagliato', () => {
+    const errori = ['a', 'b'];
+    expect(conErrore(errori, true, 'z')).toBe(errori);
+  });
+
+  it('non duplica una domanda sbagliata due volte', () => {
+    expect(conErrore(['a', 'b'], false, 'b')).toEqual(['b', 'a']);
+  });
+
+  it('non fa nulla senza identificatore della domanda', () => {
+    const errori = ['a'];
+    expect(conErrore(errori, false)).toBe(errori);
+    expect(conErrore(errori, true)).toBe(errori);
+  });
+
+  /**
+   * Oltre il tetto il ripasso smetterebbe di essere un recupero mirato e
+   * diventerebbe un secondo percorso che nessuno finisce mai.
+   */
+  it('tiene solo gli errori più recenti fino al tetto', () => {
+    const molti = Array.from({ length: MAX_ERRORI_DA_RIPASSARE }, (_, i) => `d${i}`);
+    const dopo = conErrore(molti, false, 'nuova');
+    expect(dopo).toHaveLength(MAX_ERRORI_DA_RIPASSARE);
+    expect(dopo[0]).toBe('nuova');
+    expect(dopo).not.toContain(`d${MAX_ERRORI_DA_RIPASSARE - 1}`);
+  });
+});
+
 describe('progressiAzzerati', () => {
   const pieno = con({
     punti: 940,
@@ -145,6 +185,7 @@ describe('progressiAzzerati', () => {
     streak: 4,
     ultimoGiornoAttivita: '2026-08-22',
     puntiOggi: 30,
+    erroriDaRipassare: ['civile-1-3'],
   });
 
   it('cancella ogni traccia dei progressi', () => {
@@ -159,6 +200,7 @@ describe('progressiAzzerati', () => {
     expect(vuoto.streak).toBe(0);
     expect(vuoto.ultimoGiornoAttivita).toBeNull();
     expect(vuoto.puntiOggi).toBe(0);
+    expect(vuoto.erroriDaRipassare).toEqual([]);
   });
 
   it('revoca anche Premium', () => {

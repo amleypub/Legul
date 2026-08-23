@@ -8,9 +8,10 @@ import { useNavigation } from '@react-navigation/native';
 import { ProgressBar } from '../components/ProgressBar';
 import { AnelloProgresso, EtichettaAnello } from '../components/AnelloProgresso';
 import { Button3D } from '../components/Button3D';
+import { Card3D } from '../components/Card3D';
 import { Mascot } from '../components/Mascot';
 import { TitoloSchermata } from '../components/TitoloSchermata';
-import { colors, EDGE_3D, radius, spacing } from '../theme';
+import { colors, EDGE_3D, materiaColors, radius, spacing } from '../theme';
 
 /** Obiettivo giornaliero in punti: la ragione per riaprire l'app domani. */
 export const OBIETTIVO_GIORNALIERO = 50;
@@ -236,6 +237,31 @@ export default function HomeScreen() {
         </LinearGradient>
       </View>
 
+      {/* Ripasso: compare solo se c'è davvero qualcosa da recuperare */}
+      {state.erroriDaRipassare.length > 0 && (
+        <Card3D
+          edgeColor={materiaColors.Ripasso.edge}
+          color={materiaColors.Ripasso.soft}
+          radiusSize={radius.xl}
+          style={styles.ripassoWrap}
+          contentStyle={styles.ripasso}
+          onPress={() => navigation.navigate('Ripasso')}
+        >
+          <View style={styles.ripassoIcona}>
+            <Ionicons name="refresh-circle" size={26} color="#FFFFFF" />
+          </View>
+          <View style={styles.ripassoTesto}>
+            <Text style={styles.ripassoTitolo}>Ripassa i tuoi errori</Text>
+            <Text style={styles.ripassoSub}>
+              {state.erroriDaRipassare.length}{' '}
+              {state.erroriDaRipassare.length === 1 ? 'domanda sbagliata' : 'domande sbagliate'} da
+              recuperare.
+            </Text>
+          </View>
+          <Ionicons name="chevron-forward" size={22} color={materiaColors.Ripasso.edge} />
+        </Card3D>
+      )}
+
       {/* Numeri complessivi, su una riga sola */}
       <View style={styles.statsWrap}>
         <View style={styles.statsEdge} />
@@ -440,6 +466,27 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.30)',
   },
   giornoPuntoFuturo: { backgroundColor: 'rgba(255,255,255,0.15)' },
+
+  // ——— Ripasso degli errori ———
+  ripassoWrap: { marginTop: spacing.md },
+  ripasso: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm + 2,
+    paddingVertical: spacing.sm + 4,
+    paddingHorizontal: spacing.md - 2,
+  },
+  ripassoIcona: {
+    width: 42,
+    height: 42,
+    borderRadius: 14,
+    backgroundColor: materiaColors.Ripasso.end,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  ripassoTesto: { flex: 1 },
+  ripassoTitolo: { fontSize: 16, fontWeight: '800', color: colors.text },
+  ripassoSub: { fontSize: 13, color: colors.textMuted, lineHeight: 18, marginTop: 2 },
 
   // ——— Riga dei numeri complessivi ———
   statsWrap: { paddingBottom: EDGE_3D, marginTop: spacing.sm },

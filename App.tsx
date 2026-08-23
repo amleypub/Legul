@@ -16,6 +16,7 @@ import HomeScreen from './src/screens/HomeScreen';
 import QuizHomeScreen from './src/screens/QuizHomeScreen';
 import PercorsoScreen from './src/screens/PercorsoScreen';
 import LezioneScreen from './src/screens/LezioneScreen';
+import RipassoScreen from './src/screens/RipassoScreen';
 import EsitoLezioneScreen from './src/screens/EsitoLezioneScreen';
 import PaywallScreen from './src/screens/PaywallScreen';
 import TracceScreen from './src/screens/TracceScreen';
@@ -126,6 +127,7 @@ export default function App() {
             })}
           />
           <Stack.Screen name="Lezione" component={LezioneScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="Ripasso" component={RipassoScreen} options={{ headerShown: false }} />
           <Stack.Screen
             name="EsitoLezione"
             component={EsitoLezioneScreen}

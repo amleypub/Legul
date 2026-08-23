@@ -22,6 +22,7 @@ export const linking: LinkingOptions<RootStackParamList> = {
       },
       Percorso: 'percorso/:materia',
       Lezione: 'lezione/:materia/:lezioneId',
+      Ripasso: 'ripasso',
       EsitoLezione: {
         path: 'esito/:materia/:lezioneId',
         // I parametri arrivano dall'URL come stringhe: qui tornano ai tipi giusti.

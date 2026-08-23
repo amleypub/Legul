@@ -118,6 +118,11 @@ export interface GamificationState {
   ultimoGiornoAttivita: string | null; // YYYY-MM-DD
   /** Punti guadagnati oggi: si azzera al cambio di giorno. */
   puntiOggi: number;
+  /**
+   * Identificatori delle domande sbagliate e non ancora recuperate, dalla
+   * più recente. Una risposta corretta in ripasso la toglie dall'elenco.
+   */
+  erroriDaRipassare: string[];
 }
 
 const initialState: GamificationState = {
@@ -133,6 +138,7 @@ const initialState: GamificationState = {
   streak: 0,
   ultimoGiornoAttivita: null,
   puntiOggi: 0,
+  erroriDaRipassare: [],
 };
 
 export interface EventoGamification {
@@ -151,11 +157,21 @@ interface GamificationContextValue {
    * quello resta alto finché non si guadagnano nuovi punti.
    */
   streak: number;
+  /**
+   * Falso finché i progressi non sono stati letti dal dispositivo: senza
+   * questa distinzione «nessun dato» e «dati non ancora arrivati» sono
+   * indistinguibili, e le schermate mostrano un vuoto che non è vero.
+   */
+  caricato: boolean;
   livello: Livello;
   prossimoLivello: Livello | null;
   /** Avanzamento (0–1) verso il prossimo livello. */
   progressoLivello: number;
-  registraRisposta(corretta: boolean): EventoGamification;
+  /**
+   * `domandaId` serve a tenere traccia degli errori per il ripasso:
+   * senza, una risposta sbagliata dava la spiegazione e spariva.
+   */
+  registraRisposta(corretta: boolean, domandaId?: string): EventoGamification;
   /**
    * Registra il completamento di una lezione del percorso.
    * Stelle: 3 = nessun errore, 2 = almeno 80%, 1 = almeno 60%.
@@ -179,6 +195,30 @@ interface GamificationContextValue {
    * non devono restare sul telefono dopo la cancellazione.
    */
   azzeraProgressi(): void;
+}
+
+/**
+ * Quante domande sbagliate teniamo da parte. Oltre un certo numero il
+ * ripasso smette di essere un recupero mirato e diventa un secondo
+ * percorso parallelo, che nessuno finisce mai.
+ */
+export const MAX_ERRORI_DA_RIPASSARE = 60;
+
+/**
+ * Aggiorna l'elenco degli errori da ripassare dopo una risposta.
+ * Sbagliando la domanda entra in testa; rispondendo bene esce.
+ */
+export function conErrore(
+  errori: string[],
+  corretta: boolean,
+  domandaId?: string
+): string[] {
+  if (!domandaId) return errori;
+  if (corretta) {
+    return errori.includes(domandaId) ? errori.filter((id) => id !== domandaId) : errori;
+  }
+  const senzaDuplicato = errori.filter((id) => id !== domandaId);
+  return [domandaId, ...senzaDuplicato].slice(0, MAX_ERRORI_DA_RIPASSARE);
 }
 
 export function stellePerRisultato(corrette: number, totale: number): number {
@@ -268,6 +308,7 @@ function soloSincronizzabili(s: GamificationState): ProgressiRemoti {
 
 export function GamificationProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<GamificationState>(initialState);
+  const [caricato, setCaricato] = useState(false);
   const loaded = useRef(false);
 
   useEffect(() => {
@@ -278,6 +319,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
       .catch(() => {})
       .finally(() => {
         loaded.current = true;
+        setCaricato(true);
       });
   }, []);
 
@@ -349,7 +391,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
   );
 
   const registraRisposta = useCallback(
-    (corretta: boolean): EventoGamification => {
+    (corretta: boolean, domandaId?: string): EventoGamification => {
       const punti = corretta ? PUNTI.rispostaCorretta : PUNTI.rispostaErrata;
       const pool = corretta ? INCORAGGIAMENTI_CORRETTA : INCORAGGIAMENTI_ERRATA;
       const seed = Math.floor(Math.random() * pool.length);
@@ -359,6 +401,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
           punti: s.punti + punti,
           risposteCorrette: s.risposteCorrette + (corretta ? 1 : 0),
           risposteErrate: s.risposteErrate + (corretta ? 0 : 1),
+          erroriDaRipassare: conErrore(s.erroriDaRipassare, corretta, domandaId),
         }),
         pick(pool, seed),
         punti
@@ -453,6 +496,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
     return {
       state,
       streak: streakEffettiva(state.streak, state.ultimoGiornoAttivita, oggiISO()),
+      caricato,
       livello,
       prossimoLivello,
       progressoLivello: Math.min(Math.max(progressoLivello, 0), 1),
@@ -465,6 +509,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
     };
   }, [
     state,
+    caricato,
     registraRisposta,
     registraLezioneCompletata,
     registraTracciaLetta,

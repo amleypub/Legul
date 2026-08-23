@@ -7,9 +7,12 @@ export type RootStackParamList = {
   Percorso: { materia: Materia };
   /** Lezione da 10 domande con cuori e feedback immediato. */
   Lezione: { materia: Materia; lezioneId: string };
+  /** Ripasso mirato delle domande sbagliate, senza cuori. */
+  Ripasso: undefined;
   /** Schermata di esito a fine lezione (stelle, punti, badge). */
   EsitoLezione: {
-    materia: Materia;
+    /** `Ripasso` quando l'esito non appartiene a una lezione del percorso. */
+    materia: Materia | 'Ripasso';
     lezioneId: string;
     fallito: boolean;
     corrette: number;

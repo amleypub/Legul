@@ -100,7 +100,9 @@ export default function EsitoLezioneScreen({
     ],
   };
 
-  const titolo = fallito
+  const titolo = materia === 'Ripasso'
+    ? 'Ripasso completato'
+    : fallito
     ? 'Cuori esauriti'
     : stelle === 3
       ? 'Perfetto!'
@@ -121,13 +123,15 @@ export default function EsitoLezioneScreen({
             <Mascot state={fallito ? 'studying' : 'celebrating'} size={128} animated={!fallito} />
           </Animated.View>
 
-          <View style={styles.stelleRow}>
-            <Stella accesa={!fallito && stelle >= 1} ritardo={200} />
-            <View style={styles.stellaCentro}>
-              <Stella accesa={!fallito && stelle >= 2} ritardo={450} />
+          {materia !== 'Ripasso' && (
+            <View style={styles.stelleRow}>
+              <Stella accesa={!fallito && stelle >= 1} ritardo={200} />
+              <View style={styles.stellaCentro}>
+                <Stella accesa={!fallito && stelle >= 2} ritardo={450} />
+              </View>
+              <Stella accesa={!fallito && stelle >= 3} ritardo={700} />
             </View>
-            <Stella accesa={!fallito && stelle >= 3} ritardo={700} />
-          </View>
+          )}
 
           <Text style={styles.titolo}>{titolo}</Text>
           <Text style={styles.messaggio}>{messaggio}</Text>
@@ -155,7 +159,7 @@ export default function EsitoLezioneScreen({
         </ScrollView>
 
         <View style={styles.footer}>
-          {(fallito || stelle < 3) && (
+          {materia !== 'Ripasso' && (fallito || stelle < 3) && (
             <Button3D
               label="Riprova la lezione"
               onPress={() => navigation.replace('Lezione', { materia, lezioneId })}

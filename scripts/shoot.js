@@ -77,6 +77,11 @@ async function main() {
       streak: 4,
       ultimoGiornoAttivita: oggi,
       puntiOggi: 30,
+      erroriDaRipassare: [
+        'civ-l1-004',
+        'civ-l1-011',
+        'pen-l1-002',
+      ],
     };
     // `--streak-rotta`: ultima attività di cinque giorni fa. Serve a
     // controllare che il contatore dei giorni di fila non menta.
@@ -189,6 +194,7 @@ async function main() {
     ['12-materiale.png', '/materiale'],
     ['13-tracce.png', '/tracce'],
     ['14-traccia.png', '/traccia/2023-atto-civile'],
+    ['14b-ripasso.png', '/ripasso'],
     ['15-privacy.png', '/legale/privacy'],
     ['16-termini.png', '/legale/termini'],
   ];
