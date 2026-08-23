@@ -1,10 +1,23 @@
+/**
+ * Materie del percorso.
+ *
+ * Le prime sei coprono gli scritti e il nucleo fisso dell'orale. Il d.l.
+ * 100/2026 (conv. l. 145/2026) ha però ristretto la scelta libera
+ * dell'orale a una sola materia fra sei — costituzionale, commerciale,
+ * lavoro, internazionale, dell'Unione europea, tributario — e ha tolto
+ * di mezzo l'ecclesiastico. Non sono materie nuove per l'esame (c'erano
+ * già nella rosa di dodici del vecchio ordinamento), ma lo sono per
+ * l'app, e ora pesano di più: la prova è una su cinque e non c'è
+ * compensazione fra i punteggi.
+ */
 export type Materia =
   | 'Diritto civile'
   | 'Diritto penale'
   | 'Procedura civile'
   | 'Procedura penale'
   | 'Diritto amministrativo'
-  | 'Deontologia forense';
+  | 'Deontologia forense'
+  | 'Diritto costituzionale';
 
 /** Livello di difficoltà: 1 Fondamenti, 2 Consolidamento, 3 Avanzato, 4 Eccellenza. */
 export type Difficolta = 1 | 2 | 3 | 4;

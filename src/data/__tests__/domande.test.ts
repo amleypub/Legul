@@ -69,6 +69,30 @@ describe('banca domande', () => {
     }
   });
 
+  /**
+   * Il controllo globale sopra non basta: una materia nuova, aggiunta con
+   * le risposte quasi tutte nella stessa posizione, resta invisibile
+   * perché le migliaia di domande preesistenti diluiscono lo squilibrio.
+   * Chi però studia una sola materia se ne accorge subito, e impara la
+   * posizione invece della norma. Il controllo va fatto materia per materia.
+   */
+  it('distribuisce la risposta corretta anche dentro ogni materia', () => {
+    const squilibrate: { materia: string; quote: string }[] = [];
+    for (const materia of materie as Materia[]) {
+      const domande = tutteLeDomande.filter((d) => d.materia === materia);
+      const conteggi = [0, 0, 0, 0];
+      for (const d of domande) conteggi[d.rispostaCorretta] += 1;
+      const quote = conteggi.map((c) => c / domande.length);
+      if (quote.some((q) => q < 0.12 || q > 0.4)) {
+        squilibrate.push({
+          materia,
+          quote: quote.map((q) => `${Math.round(q * 100)}%`).join(' '),
+        });
+      }
+    }
+    expect(squilibrate).toEqual([]);
+  });
+
   it('copre ogni materia a ogni livello di difficoltà', () => {
     for (const materia of materie as Materia[]) {
       for (const d of DIFFICOLTA) {

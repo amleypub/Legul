@@ -24,6 +24,10 @@ import { deontologiaL1 } from './deontologia-l1';
 import { deontologiaL2 } from './deontologia-l2';
 import { deontologiaL3 } from './deontologia-l3';
 import { deontologiaL4 } from './deontologia-l4';
+import { costituzionaleL1 } from './costituzionale-l1';
+import { costituzionaleL2 } from './costituzionale-l2';
+import { costituzionaleL3 } from './costituzionale-l3';
+import { costituzionaleL4 } from './costituzionale-l4';
 
 /**
  * Aggregatore della banca domande: unisce tutti i moduli materia/livello.
@@ -56,4 +60,8 @@ export const tutteLeDomande: QuizQuestion[] = [
   ...deontologiaL2,
   ...deontologiaL3,
   ...deontologiaL4,
+  ...costituzionaleL1,
+  ...costituzionaleL2,
+  ...costituzionaleL3,
+  ...costituzionaleL4,
 ];

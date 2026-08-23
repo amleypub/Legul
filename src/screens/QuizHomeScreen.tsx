@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { materie } from '../data/quizzes';
+import { MATERIE_A_SCELTA, materieObbligatorie } from '../data/quizzes';
 import { percorsoPerMateria, unitaGratuita } from '../data/percorso';
 import { useGamification } from '../gamification/GamificationContext';
 import type { RootStackParamList } from '../navigation/types';
@@ -20,6 +20,7 @@ export const ICONA_MATERIA: Record<Materia, keyof typeof Ionicons.glyphMap> = {
   'Procedura penale': 'search',
   'Diritto amministrativo': 'business',
   'Deontologia forense': 'people',
+  'Diritto costituzionale': 'library',
 };
 
 function MateriaBlock({
@@ -98,13 +99,36 @@ export default function QuizHomeScreen() {
         sottotitolo="Scegli la materia e avanza lezione dopo lezione: dai Fondamenti fino all’Eccellenza."
       />
 
-      {materie.map((materia) => (
+      {materieObbligatorie.map((materia) => (
         <MateriaBlock
           key={materia}
           materia={materia}
           onPress={() => navigation.navigate('Percorso', { materia })}
         />
       ))}
+
+      {/* Le materie a scelta non vanno presentate insieme alle altre: chi
+          le vedesse in fila crederebbe di doverle studiare tutte, mentre
+          all'orale se ne porta una sola. */}
+      {MATERIE_A_SCELTA.length > 0 && (
+        <>
+          <View style={styles.gruppo}>
+            <Text style={styles.gruppoTitolo}>Materia a scelta</Text>
+            <Text style={styles.gruppoNota}>
+              All’orale ne porti <Text style={styles.gruppoForte}>una sola</Text>, scelta fra
+              costituzionale, commerciale, del lavoro, internazionale, dell’Unione europea e
+              tributario.
+            </Text>
+          </View>
+          {MATERIE_A_SCELTA.map((materia) => (
+            <MateriaBlock
+              key={materia}
+              materia={materia}
+              onPress={() => navigation.navigate('Percorso', { materia })}
+            />
+          ))}
+        </>
+      )}
     </ScrollView>
   );
 }
@@ -145,4 +169,15 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   progressFill: { height: '100%', borderRadius: 4, backgroundColor: '#FFFFFF' },
+
+  gruppo: { marginTop: spacing.sm, gap: 4 },
+  gruppoTitolo: {
+    fontSize: 12,
+    fontWeight: '800',
+    letterSpacing: 1,
+    textTransform: 'uppercase',
+    color: colors.textMuted,
+  },
+  gruppoNota: { fontSize: 13, color: colors.textMuted, lineHeight: 19 },
+  gruppoForte: { fontWeight: '800', color: colors.text },
 });

@@ -47,6 +47,9 @@ export const materiaColors: Record<
   'Procedura penale': { start: '#9B6BFF', end: '#7534E0', edge: '#571FAD', soft: '#F1EAFE' },
   'Diritto amministrativo': { start: '#F6A93B', end: '#E1841A', edge: '#B0640F', soft: '#FDF0DC' },
   'Deontologia forense': { start: '#7C8BA0', end: '#455166', edge: '#2C3547', soft: '#EDEFF4' },
+  // Materia a scelta dell'orale: tinta propria, così si distingue a colpo
+  // d'occhio dalle sei che valgono per tutti.
+  'Diritto costituzionale': { start: '#E0607F', end: '#B92E56', edge: '#8C1B3C', soft: '#FBE7EC' },
   // Il ripasso non è una materia: ha un colore proprio, così si distingue
   // a colpo d'occhio da una lezione del percorso.
   Ripasso: { start: '#F6A93B', end: '#E1751A', edge: '#AD570F', soft: '#FDEEDC' },

@@ -7,7 +7,25 @@ export const materie: Materia[] = [
   'Procedura penale',
   'Diritto amministrativo',
   'Deontologia forense',
+  'Diritto costituzionale',
 ];
+
+/**
+ * Materie fra cui il candidato ne sceglie **una sola** per il quarto
+ * quesito dell'orale (d.l. 100/2026, conv. l. 145/2026): costituzionale,
+ * commerciale, del lavoro, internazionale, dell'Unione europea,
+ * tributario.
+ *
+ * Vanno tenute distinte dalle altre nell'interfaccia: presentate insieme
+ * farebbero credere che siano tutte da studiare, quando invece se ne
+ * porta una. È un'informazione che cambia il piano di studio, non una
+ * questione di ordinamento visivo.
+ */
+export const MATERIE_A_SCELTA: Materia[] = ['Diritto costituzionale'];
+
+export const materieObbligatorie: Materia[] = materie.filter(
+  (m) => !MATERIE_A_SCELTA.includes(m)
+);
 
 export const quizQuestions: QuizQuestion[] = [
   // ———————————————— DIRITTO CIVILE ————————————————

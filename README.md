@@ -5,7 +5,8 @@ App mobile per **Android e iOS** (React Native + Expo) per prepararsi all'esame 
 ## Funzionalità
 
 ### Percorso quiz in stile Duolingo
-- 6 materie: Diritto civile, Diritto penale, Procedura civile, Procedura penale, Diritto amministrativo, Deontologia forense
+- 6 materie del nucleo comune: Diritto civile, Diritto penale, Procedura civile, Procedura penale, Diritto amministrativo, Deontologia forense
+- **Materia a scelta dell'orale**: Diritto costituzionale (in arrivo commerciale, lavoro, internazionale, UE, tributario). Il d.l. 100/2026 ne fa portare **una sola**, e la schermata Quiz le tiene in un blocco a parte per non far credere che vadano studiate tutte
 - **Percorso a nodi** con 4 unità per materia (Fondamenti, Consolidamento, Avanzato, Eccellenza) e lezioni da 10 domande a sblocco progressivo
 - **Cuori**: 4 tentativi per lezione; **stelle** (1-3) in base alla precisione; pulsanti "chunky" 3D, gradienti, animazioni a molla e feedback aptico
 - Dopo ogni risposta viene mostrata la **spiegazione del perché**, con i riferimenti normativi (articoli di codice, leggi speciali, riforma Cartabia, ecc.)
@@ -16,13 +17,14 @@ App mobile per **Android e iOS** (React Native + Expo) per prepararsi all'esame 
 - L'acquisto in-app non è ancora integrato: il pulsante del paywall attiva Premium in **modalità demo** (`attivaPremium()` in `src/gamification/GamificationContext.tsx`)
 
 ### Banca domande
-- **3.500 domande** in `src/data/questions/` (un file per materia-livello), aggregate in `index.ts`
-- **645 domande per ogni materia principale** e **245 per deontologia**, distribuite sui 4 livelli:
-  - Unità 1 · Fondamenti — 158 per materia (58 deontologia)
-  - Unità 2 · Consolidamento — 162 per materia (62 deontologia)
-  - Unità 3 · Avanzato — 163 per materia (63 deontologia)
-  - Unità 4 · Eccellenza — 162 per materia (62 deontologia)
-- Id univoci verificati, nessuna emoji, diritto vigente (riforme Cartabia, codice contratti d.lgs. 36/2023)
+- **3.748 domande** in `src/data/questions/` (un file per materia-livello), aggregate in `index.ts`
+- **645 domande per ogni materia principale**, **245 per deontologia** e **248 per la materia a scelta**, distribuite sui 4 livelli:
+  - Unità 1 · Fondamenti — 158 per materia (58 deontologia, 62 costituzionale)
+  - Unità 2 · Consolidamento — 162 per materia (62 deontologia, 62 costituzionale)
+  - Unità 3 · Avanzato — 163 per materia (63 deontologia, 62 costituzionale)
+  - Unità 4 · Eccellenza — 162 per materia (62 deontologia, 62 costituzionale)
+- Id univoci verificati, nessuna emoji, diritto vigente (riforme Cartabia, codice contratti d.lgs. 36/2023, l. cost. 1/2022 su artt. 9 e 41 Cost.)
+- La posizione della risposta corretta è bilanciata **dentro ogni materia**, non solo sul totale: chi studia una materia sola non deve poter imparare la posizione invece della norma
 
 ### Tracce degli esami degli anni passati
 - Archivio consultabile per anno delle tracce delle prove scritte (pareri di civile e penale, atti giudiziari)
