@@ -110,7 +110,19 @@ export const TERMINI: DocumentoLegale = {
       ],
     },
     {
-      titolo: '7. Legul Premium: abbonamenti e pagamenti',
+      titolo: '7. Contenuti scritti dagli utenti',
+      paragrafi: [
+        'Alcune sezioni dell’App ospitano una discussione in cui gli utenti possono pubblicare commenti e proporre soluzioni alle tracce («Contenuti dell’Utente»). Sei l’unico responsabile di ciò che pubblichi.',
+        'Quei contenuti sono scritti da altri utenti: non sono nostri, non li abbiamo verificati e non li facciamo nostri. Non sono soluzioni ufficiali né pareri professionali, non provengono da avvocati incaricati dal Titolare e non costituiscono consulenza legale. Non rispondiamo della loro esattezza, completezza o aggiornamento, né delle conseguenze di un loro utilizzo.',
+        'Pubblicando accetti le regole della discussione: niente insulti, molestie, minacce, incitamento all’odio o alla violenza, contenuti sessuali, discriminatori, diffamatori o illeciti; niente spam, pubblicità o promozione di corsi e servizi; niente dati personali propri o altrui (nomi di parti, numeri di procedimento, recapiti); niente testi coperti da diritto d’autore altrui, comprese porzioni di manuali, riviste o corsi; niente contenuti generati automaticamente e spacciati per propri.',
+        'Concedi al Titolare una licenza gratuita, non esclusiva, trasferibile e valida in tutto il mondo per ospitare, riprodurre, adattare tecnicamente e mostrare nell’App e sui canali del Servizio i Contenuti dell’Utente che pubblichi, per il tempo in cui restano pubblicati e per il tempo tecnicamente necessario alla loro rimozione dai backup. Resti titolare dei tuoi contenuti.',
+        'Possiamo rimuovere, nascondere o rendere inaccessibile qualsiasi contenuto, anche senza preavviso, quando riteniamo ragionevolmente che violi questi Termini o la legge, e possiamo sospendere o chiudere l’account di chi lo pubblica. I contenuti che ricevono più segnalazioni possono essere nascosti in automatico in attesa di controllo: si tratta di una misura cautelare, non di un giudizio sul loro contenuto.',
+        'Nell’App trovi, su ogni messaggio, gli strumenti per segnalarlo e per bloccare chi lo ha scritto. Le segnalazioni si possono inviare anche all’indirizzo indicato al punto 1. Non svolgiamo un controllo preventivo generalizzato sui contenuti pubblicati, ai sensi degli articoli 6 e 8 del Regolamento (UE) 2022/2065; interveniamo su segnalazione o quando veniamo altrimenti a conoscenza di un contenuto illecito.',
+        'Puoi eliminare in ogni momento i tuoi messaggi. Se hanno ricevuto risposte, il testo viene rimosso ma la posizione nella discussione resta visibile, per non cancellare i contributi di altre persone.',
+      ],
+    },
+    {
+      titolo: '8. Legul Premium: abbonamenti e pagamenti',
       paragrafi: [
         'Alcune parti del percorso di studio sono accessibili solo con un abbonamento a pagamento. Le condizioni economiche in vigore ti sono mostrate nell’App prima dell’acquisto.',
         'Gli abbonamenti sono acquistati e gestiti tramite App Store (Apple) o Google Play secondo le condizioni di tali piattaforme. Il pagamento avviene presso lo store: non riceviamo né trattiamo i dati della tua carta o del tuo metodo di pagamento.',
@@ -120,7 +132,7 @@ export const TERMINI: DocumentoLegale = {
       ],
     },
     {
-      titolo: '8. Link di affiliazione Amazon',
+      titolo: '9. Link di affiliazione Amazon',
       paragrafi: [
         'La sezione dedicata al materiale d’esame contiene link di affiliazione: in qualità di Affiliati Amazon riceviamo un guadagno dagli acquisti idonei effettuati tramite quei link, senza alcun costo aggiuntivo per te.',
         'I prodotti sono venduti da Amazon o da venditori terzi, secondo le loro condizioni. Non siamo parte di quel contratto e non rispondiamo della disponibilità, del prezzo, delle caratteristiche, della consegna o dell’idoneità dei prodotti, né dei contenuti dei siti di terzi raggiungibili dall’App.',
@@ -128,7 +140,7 @@ export const TERMINI: DocumentoLegale = {
       ],
     },
     {
-      titolo: '9. Disponibilità del servizio',
+      titolo: '10. Disponibilità del servizio',
       paragrafi: [
         'Il Servizio è fornito «così com’è» e «come disponibile». Non garantiamo che sia privo di errori o interruzioni, né che funzioni senza difetti su ogni dispositivo o versione di sistema operativo.',
         'Possiamo modificare, sospendere o interrompere in tutto o in parte il Servizio, anche senza preavviso, per ragioni tecniche, di sicurezza, legali o organizzative. Se l’interruzione è definitiva e hai un abbonamento in corso, ti sarà rimborsata la quota corrispondente al periodo non goduto.',
@@ -136,14 +148,14 @@ export const TERMINI: DocumentoLegale = {
       ],
     },
     {
-      titolo: '10. Copia dei tuoi dati e responsabilità del dispositivo',
+      titolo: '11. Copia dei tuoi dati e responsabilità del dispositivo',
       paragrafi: [
         'Se usi Legul senza account, i tuoi progressi sono salvati soltanto sul dispositivo: disinstallando l’App, cancellandone i dati o perdendo il dispositivo li perdi in modo irreversibile. Per conservarli ti consigliamo di accedere con un account.',
         'Pur adottando misure adeguate, non rispondiamo della perdita di progressi dovuta a malfunzionamenti del dispositivo, del sistema operativo, della rete o a operazioni compiute da te.',
       ],
     },
     {
-      titolo: '11. Limitazione di responsabilità',
+      titolo: '12. Limitazione di responsabilità',
       paragrafi: [
         'Nei limiti massimi consentiti dalla legge applicabile, non rispondiamo dei danni indiretti, consequenziali, punitivi, né della perdita di occasioni, di risultati di studio, di esiti d’esame, di tempo o di dati, comunque derivanti dall’uso o dal mancato uso del Servizio.',
         'Nei limiti massimi consentiti dalla legge, la nostra responsabilità complessiva verso di te, per qualsiasi titolo, non potrà superare l’importo che ci hai effettivamente corrisposto per il Servizio nei dodici mesi precedenti il fatto che ha generato la richiesta; se nulla hai corrisposto, la responsabilità è esclusa nei limiti in cui la legge lo consente.',
@@ -151,21 +163,21 @@ export const TERMINI: DocumentoLegale = {
       ],
     },
     {
-      titolo: '12. Sospensione e chiusura dell’account',
+      titolo: '13. Sospensione e chiusura dell’account',
       paragrafi: [
         'Possiamo sospendere o chiudere il tuo account, dandotene comunicazione, in caso di violazione di questi Termini, di uso fraudolento o di attività che pregiudichino la sicurezza del Servizio o i diritti di terzi. Nei casi più gravi la misura può essere immediata.',
         'Puoi chiudere il tuo account in qualsiasi momento dalla sezione Profilo dell’App: la cancellazione elimina definitivamente account e progressi, sul dispositivo e sui nostri server.',
       ],
     },
     {
-      titolo: '13. Modifiche ai Termini',
+      titolo: '14. Modifiche ai Termini',
       paragrafi: [
         'Possiamo aggiornare questi Termini, per esempio a seguito di modifiche del Servizio o della normativa. La versione aggiornata è pubblicata nell’App con la data di aggiornamento; se le modifiche sono rilevanti te ne daremo avviso.',
         'Continuare a usare l’App dopo l’entrata in vigore delle modifiche significa accettarle. Se non le accetti, puoi smettere di usare il Servizio ed eliminare il tuo account.',
       ],
     },
     {
-      titolo: '14. Legge applicabile e controversie',
+      titolo: '15. Legge applicabile e controversie',
       paragrafi: [
         'Questi Termini sono regolati dalla legge italiana.',
         'Se sei un consumatore, resta ferma la competenza inderogabile del giudice del luogo in cui risiedi o hai eletto domicilio, e restano applicabili le disposizioni più favorevoli previste dalla legge del tuo Paese di residenza nell’Unione europea. Puoi inoltre ricorrere alla piattaforma europea di risoluzione delle controversie online.',
@@ -173,7 +185,7 @@ export const TERMINI: DocumentoLegale = {
       ],
     },
     {
-      titolo: '15. Disposizioni finali',
+      titolo: '16. Disposizioni finali',
       paragrafi: [
         'Se una clausola di questi Termini risultasse nulla o inefficace, le restanti conservano piena validità e la clausola viene sostituita da una disposizione valida che ne rispetti il più possibile la finalità.',
         'La nostra tolleranza rispetto a un inadempimento non costituisce rinuncia a far valere i nostri diritti in seguito.',
@@ -286,7 +298,17 @@ export const PRIVACY: DocumentoLegale = {
       ],
     },
     {
-      titolo: '11. Nessuna profilazione, nessuna pubblicità',
+      titolo: '11. Discussione: che cosa diventa pubblico',
+      paragrafi: [
+        'Se scrivi un commento o proponi una soluzione, il testo che pubblichi diventa visibile a chiunque usi l’App, insieme al nome con cui compari e al momento della pubblicazione. Non pubblicare in quello spazio dati personali tuoi o di terzi.',
+        'Il nome pubblico non è il tuo nome per esteso: se il tuo account ne contiene uno, lo abbreviamo mantenendo solo il nome e l’iniziale del cognome (per esempio «Andrea M.»); se non ne contiene, ti assegniamo un’etichetta generica. L’indirizzo email non viene mai mostrato, nemmeno in parte. Puoi cambiare il nome pubblico quando vuoi da Profilo, Comunità.',
+        'La base giuridica è l’esecuzione del contratto (art. 6.1.b GDPR) per la pubblicazione dei tuoi messaggi, che avviene su tua richiesta, e il nostro legittimo interesse (art. 6.1.f GDPR) a mantenere la discussione sicura e leggibile per quanto riguarda voti, segnalazioni, blocchi e misure di moderazione.',
+        'I voti sono individuali ma non pubblici: sul messaggio compare soltanto il totale, e chi ha votato che cosa non è visibile agli altri utenti. Le segnalazioni sono note al solo Titolare e non vengono comunicate a chi ha scritto il contenuto segnalato. Chi blocchi non riceve alcuna notifica.',
+        'I messaggi restano pubblicati finché non li elimini o finché non li rimuoviamo. Eliminando l’account, i tuoi messaggi vengono cancellati; quelli che hanno ricevuto risposte lasciano una traccia priva di testo e di nome, per non far sparire i contributi altrui. I contenuti rimossi per violazione delle regole possono essere conservati fino a dodici mesi per difenderci da eventuali contestazioni e per dare seguito alle segnalazioni.',
+      ],
+    },
+    {
+      titolo: '12. Nessuna profilazione, nessuna pubblicità',
       paragrafi: [
         'Non effettuiamo processi decisionali automatizzati né attività di profilazione che producano effetti giuridici o incidano in modo analogamente significativo sulla tua persona.',
         'L’App non contiene reti pubblicitarie, strumenti di analisi del comportamento o tecnologie di tracciamento di terze parti. Non utilizziamo cookie di profilazione: le informazioni salvate sul dispositivo servono unicamente a far funzionare l’App e a conservare i tuoi progressi e le tue preferenze.',
@@ -294,21 +316,21 @@ export const PRIVACY: DocumentoLegale = {
       ],
     },
     {
-      titolo: '12. Minori',
+      titolo: '13. Minori',
       paragrafi: [
         'Il Servizio è destinato a persone maggiorenni e non è rivolto ai minori. Non raccogliamo consapevolmente dati di minori.',
         `Se ritieni che un minore ci abbia fornito dati personali, scrivici a ${TITOLARE.email}: provvederemo a cancellarli senza ritardo.`,
       ],
     },
     {
-      titolo: '13. Sicurezza',
+      titolo: '14. Sicurezza',
       paragrafi: [
         'Adottiamo misure tecniche e organizzative adeguate a proteggere i dati da accessi non autorizzati, perdita e divulgazione: comunicazioni cifrate, autenticazione gestita da un fornitore specializzato e regole di accesso che consentono a ciascun utente di leggere e modificare esclusivamente i propri dati.',
         'Nessun sistema è però sicuro in modo assoluto. In caso di violazione dei dati personali che comporti un rischio elevato per i tuoi diritti, ti informeremo secondo quanto previsto dall’art. 34 GDPR.',
       ],
     },
     {
-      titolo: '14. Modifiche a questa informativa',
+      titolo: '15. Modifiche a questa informativa',
       paragrafi: [
         'Possiamo aggiornare questa informativa per adeguarla a modifiche del Servizio o della normativa. La versione vigente è sempre consultabile nell’App, con la data di ultimo aggiornamento indicata in testa.',
         'Se le modifiche riguardano finalità o basi giuridiche del trattamento, te ne daremo avviso prima che diventino efficaci.',

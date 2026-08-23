@@ -26,6 +26,8 @@ import TracciaDetailScreen from './src/screens/TracciaDetailScreen';
 import MaterialeScreen from './src/screens/MaterialeScreen';
 import ProfiloScreen from './src/screens/ProfiloScreen';
 import LoginScreen from './src/screens/LoginScreen';
+import DiscussioneScreen from './src/screens/DiscussioneScreen';
+import ComunitaScreen from './src/screens/ComunitaScreen';
 import DocumentoLegaleScreen from './src/screens/DocumentoLegaleScreen';
 import { DOCUMENTI } from './src/data/legale';
 import { ConfineErrori } from './src/components/ConfineErrori';
@@ -149,6 +151,16 @@ export default function App() {
             name="TracciaDetail"
             component={TracciaDetailScreen}
             options={{ title: 'Traccia d’esame' }}
+          />
+          <Stack.Screen
+            name="Discussione"
+            component={DiscussioneScreen}
+            options={{ title: 'Discussione' }}
+          />
+          <Stack.Screen
+            name="Comunita"
+            component={ComunitaScreen}
+            options={{ title: 'Comunità' }}
           />
           <Stack.Screen
             name="DocumentoLegale"

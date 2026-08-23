@@ -1,10 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import { tracce } from '../data/tracce';
 import { useGamification } from '../gamification/GamificationContext';
+import { argomentoTraccia } from '../discussione/modello';
+import { useConteggioDiscussione } from '../discussione/useConteggio';
 import { Button3D } from '../components/Button3D';
 import { Mascot } from '../components/Mascot';
 import type { RootStackScreenProps } from '../navigation/types';
@@ -33,6 +35,7 @@ export default function TracciaDetailScreen({
   const { state, registraTracciaLetta } = useGamification();
   const [premio, setPremio] = useState<number | null>(null);
   const registrata = useRef(false);
+  const conteggio = useConteggioDiscussione(argomentoTraccia(tracciaId));
 
   useEffect(() => {
     if (!traccia || registrata.current) return;
@@ -140,6 +143,64 @@ export default function TracciaDetailScreen({
             ? `Testo ufficiale integrale.${traccia.fonte ? ` Fonte: ${traccia.fonte}` : ''}`
             : 'Testo riassunto a scopo di studio: le tracce ufficiali integrali sono pubblicate dal Ministero della Giustizia.'}
         </Text>
+      </View>
+
+      {/* Confronto con gli altri candidati: la traccia da sola dice poco,
+          il valore sta nel come la si scioglie. */}
+      <View style={styles.sezioneTestata}>
+        <Ionicons name="people-outline" size={16} color={colors.textMuted} />
+        <Text style={styles.sezioneTitolo}>Confronto</Text>
+      </View>
+
+      <View style={styles.confronto}>
+        <Pressable
+          onPress={() =>
+            navigation.navigate('Discussione', {
+              argomento: argomentoTraccia(traccia.id),
+              titolo: traccia.titolo,
+            })
+          }
+          accessibilityRole="button"
+          style={({ pressed }) => [styles.confrontoVoce, pressed && styles.confrontoPremuto]}
+        >
+          <View style={[styles.confrontoIcona, { backgroundColor: '#4F7CF3' }]}>
+            <Ionicons name="chatbubbles" size={18} color="#FFFFFF" />
+          </View>
+          <View style={styles.confrontoTesti}>
+            <Text style={styles.confrontoEtichetta}>Commenti degli utenti</Text>
+            <Text style={styles.confrontoSottotitolo}>
+              Dubbi, precisazioni e riferimenti trovati dagli altri
+            </Text>
+          </View>
+          {conteggio !== null && conteggio > 0 ? (
+            <Text style={styles.confrontoConteggio}>{conteggio}</Text>
+          ) : (
+            <Ionicons name="chevron-forward" size={17} color="#B6BECC" />
+          )}
+        </Pressable>
+
+        <Pressable
+          onPress={() =>
+            navigation.navigate('Discussione', {
+              argomento: argomentoTraccia(traccia.id),
+              titolo: traccia.titolo,
+              genereIniziale: 'soluzione',
+            })
+          }
+          accessibilityRole="button"
+          style={({ pressed }) => [styles.confrontoVoce, pressed && styles.confrontoPremuto]}
+        >
+          <View style={[styles.confrontoIcona, { backgroundColor: colors.accentEdge }]}>
+            <Ionicons name="bulb" size={18} color="#FFFFFF" />
+          </View>
+          <View style={styles.confrontoTesti}>
+            <Text style={styles.confrontoEtichetta}>Suggerisci un’altra soluzione</Text>
+            <Text style={styles.confrontoSottotitolo}>
+              Come l’hai impostata tu, con le norme su cui ti sei basato
+            </Text>
+          </View>
+          <Ionicons name="chevron-forward" size={17} color="#B6BECC" />
+        </Pressable>
       </View>
 
       {/* Alla fine della lettura serve una via d'uscita che non sia tornare indietro */}
@@ -282,6 +343,44 @@ const styles = StyleSheet.create({
   // Il testo di una traccia si legge come un documento: righe larghe e
   // ariose, non compresse come una didascalia.
   testo: { fontSize: 15.5, color: colors.text, lineHeight: 26 },
+
+  // Stesso linguaggio delle impostazioni: tessera a tinta piena per voce,
+  // una card sola senza righe divisorie.
+  confronto: {
+    backgroundColor: colors.card,
+    borderRadius: radius.xl,
+    paddingHorizontal: spacing.md - 4,
+    paddingVertical: spacing.xs,
+  },
+  confrontoVoce: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm + 2,
+    paddingVertical: 11,
+    paddingHorizontal: 4,
+    borderRadius: radius.md,
+  },
+  confrontoPremuto: { backgroundColor: '#F2F5FB' },
+  confrontoIcona: {
+    width: 36,
+    height: 36,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  confrontoTesti: { flex: 1 },
+  confrontoEtichetta: { fontSize: 15, fontWeight: '700', color: colors.text },
+  confrontoSottotitolo: { fontSize: 12.5, color: colors.textMuted, marginTop: 1, lineHeight: 17 },
+  confrontoConteggio: {
+    fontSize: 12.5,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    backgroundColor: '#4F7CF3',
+    borderRadius: radius.pill,
+    paddingHorizontal: 9,
+    paddingVertical: 2,
+    overflow: 'hidden',
+  },
 
   nota: {
     flexDirection: 'row',

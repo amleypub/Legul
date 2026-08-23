@@ -75,6 +75,64 @@ all'utente autenticato — la chiave nell'app non basta a vedere altro.
 
 ---
 
+## 2-bis. Attivare la discussione
+
+La discussione sulle tracce (commenti, soluzioni proposte, voti, risposte)
+vive su un secondo gruppo di tabelle. Apri di nuovo **SQL Editor**,
+incolla l'intero contenuto di
+[`supabase/sql/discussione.sql`](../supabase/sql/discussione.sql) ed esegui.
+Lo script è idempotente: rilanciarlo dopo un aggiornamento non rompe nulla
+e non cancella i messaggi già scritti.
+
+Che cosa crea:
+
+| Tabella | A che serve |
+| --- | --- |
+| `profili_pubblici` | lo pseudonimo con cui si compare (`Andrea M.`) |
+| `commenti` | i messaggi, raggruppati per «argomento» |
+| `voti` | un voto per persona per messaggio |
+| `segnalazioni` | chi ha segnalato che cosa |
+| `blocchi` | chi hai bloccato |
+| `parole_vietate` | filtro minimo sul linguaggio |
+
+Tre cose da sapere:
+
+- **Nessuno scrive direttamente sulle tabelle.** I limiti di lunghezza, il
+  filtro sul linguaggio, il tetto di quindici messaggi l'ora e la
+  profondità massima del filo stanno dentro funzioni `security definer`.
+  La chiave anonima è dentro l'app e quindi in mano a chiunque: se il
+  client potesse fare `insert`, basterebbe una chiamata HTTP scritta a
+  mano per aggirare ogni regola.
+- **Il filtro sul linguaggio è una tabella, non codice.** Puoi allungare
+  `parole_vietate` dal pannello di Supabase senza ripubblicare l'app. Le
+  voci sono espressioni regolari, quindi `stronz[oiae]` copre tutte le
+  desinenze. La tabella non è leggibile dal client: un elenco a
+  disposizione di tutti sarebbe il manuale per aggirarlo.
+- **Oltre tre segnalazioni un messaggio si nasconde da solo.** È una
+  misura cautelare, non una cancellazione: il testo resta nel database e
+  si rimette in chiaro con `update commenti set nascosto = false where
+  id = '…'`. La soglia si cambia riscrivendo `soglia_segnalazioni()`.
+
+Per vedere che cosa è in attesa di controllo:
+
+```sql
+select c.id, c.creato_il, c.segnalazioni, c.testo,
+       (select string_agg(coalesce(s.motivo, '—'), ' | ')
+          from segnalazioni s where s.commento_id = c.id) as motivi
+  from commenti c
+ where c.nascosto
+ order by c.segnalazioni desc, c.creato_il desc;
+```
+
+> **App Store, linea guida 1.2.** Un'app che ospita contenuti scritti
+> dagli utenti deve avere quattro cose: un filtro sui contenuti
+> offensivi, un modo per segnalarli, un modo per bloccare chi li scrive e
+> un recapito pubblico. Le prime tre sono nell'app e in questo schema; la
+> quarta è l'indirizzo email in `src/data/legale.ts`, che va compilato
+> prima di inviare la build in revisione.
+
+---
+
 ## 3. Attivare i provider di accesso
 
 In **Authentication → Providers**:

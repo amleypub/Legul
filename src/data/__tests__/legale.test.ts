@@ -66,6 +66,16 @@ describe('informativa privacy', () => {
     expect(testo).toMatch(/profilazione/i);
     expect(testo).toMatch(/pubblicit/i);
   });
+
+  it('spiega che cosa diventa pubblico nella discussione', () => {
+    const sezione = PRIVACY.sezioni.find((s) => /Discussione/i.test(s.titolo));
+    expect(sezione).toBeDefined();
+    const corpo = sezione!.paragrafi.join(' ');
+    expect(corpo).toMatch(/visibile a chiunque/i);
+    expect(corpo).toMatch(/iniziale del cognome/i);
+    expect(corpo).toMatch(/email non viene mai mostrat/i);
+    expect(corpo).toMatch(/art\. 6\.1\.[bf] GDPR/);
+  });
 });
 
 describe('termini di servizio', () => {
@@ -103,6 +113,40 @@ describe('termini di servizio', () => {
 
   it('dichiara i link di affiliazione', () => {
     expect(testo).toMatch(/affiliaz|affiliati/i);
+  });
+
+  /**
+   * Ospitare testi scritti dagli utenti senza dire chi ne risponde, che
+   * licenza si riceve e come si rimuovono è il modo più rapido per
+   * trovarsi a rispondere di quello che ha scritto qualcun altro.
+   */
+  describe('contenuti scritti dagli utenti', () => {
+    const sezione = TERMINI.sezioni.find((s) => /Contenuti scritti dagli utenti/i.test(s.titolo));
+    const corpo = sezione ? sezione.paragrafi.join(' ') : '';
+
+    it('esiste', () => {
+      expect(sezione).toBeDefined();
+    });
+
+    it('addossa la responsabilità a chi pubblica', () => {
+      expect(corpo).toMatch(/unico responsabile/i);
+    });
+
+    it('nega di far propri i contenuti altrui e che siano consulenza', () => {
+      expect(corpo).toMatch(/non li abbiamo verificati/i);
+      expect(corpo).toMatch(/non costituiscono consulenza legale/i);
+    });
+
+    it('si riserva la rimozione e descrive segnalazione e blocco', () => {
+      expect(corpo).toMatch(/rimuovere, nascondere/i);
+      expect(corpo).toMatch(/segnalarlo/i);
+      expect(corpo).toMatch(/bloccare/i);
+    });
+
+    it('definisce la licenza sui contenuti pubblicati', () => {
+      expect(corpo).toMatch(/licenza/i);
+      expect(corpo).toMatch(/Resti titolare dei tuoi contenuti/i);
+    });
   });
 });
 

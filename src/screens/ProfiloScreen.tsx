@@ -337,6 +337,18 @@ export default function ProfiloScreen() {
         )}
       </Gruppo>
 
+      {utente && (
+        <Gruppo titolo="Comunità">
+          <Voce
+            icona="people"
+            tinta="#E1751A"
+            etichetta="Nome e persone bloccate"
+            sottotitolo="Come compari nelle discussioni"
+            onPress={() => navigation.navigate('Comunita')}
+          />
+        </Gruppo>
+      )}
+
       <Gruppo titolo="Documenti">
         <Voce
           icona="lock-closed"

@@ -31,6 +31,16 @@ App mobile per **Android e iOS** (React Native + Expo) per prepararsi all'esame 
 
 > I testi presenti in `src/data/tracce.ts` sono sintesi a scopo di studio; i testi ufficiali integrali (pubblicati dal Ministero della Giustizia) possono essere incollati nel campo `testo` di ciascuna traccia.
 
+### Discussione fra candidati
+- In fondo a ogni traccia, due ingressi: **Commenti degli utenti** e **Suggerisci un'altra soluzione**
+- Le soluzioni proposte stanno in cima, con un distintivo dorato; i commenti liberi sotto
+- **Voti** in stile Reddit (su/giù, il totale cambia colore col proprio voto) e **una risposta per messaggio**: il terzo rientro su uno schermo di telefono è già illeggibile, quindi rispondere a una risposta resta nello stesso filo
+- Si compare con un **nome accorciato** — «Andrea Moriggi» diventa «Andrea M.» — modificabile da *Profilo → Comunità*. Email e cognome per intero non compaiono mai
+- **Segnalazione** e **blocco** su ogni messaggio, filtro sul linguaggio e tetto anti-spam lato server; oltre tre segnalazioni un messaggio si nasconde in automatico in attesa di controllo
+- Nessuna soluzione è validata da noi, e l'app lo dice in testa a ogni discussione: sono contributi di altri candidati, da valutare con il proprio giudizio
+
+> Le regole stanno tutte in funzioni Postgres, non nell'app: la chiave anonima è dentro il bundle e quindi in mano a chiunque. Schema e attivazione: **[`docs/supabase.md`](docs/supabase.md)**, script in `supabase/sql/discussione.sql`.
+
 ### Gamification
 - **Punti** per ogni risposta, quiz completato e traccia letta (bonus per i quiz perfetti)
 - **Livelli** che misurano quanto sei pronto per l'esame — da «Al via» a «Più che pronto» — e non che titolo hai: chi usa Legul è già laureato e in pratica, una scala di qualifiche lo retrocederebbe o gli regalerebbe il traguardo che deve ancora conquistare
@@ -114,6 +124,7 @@ src/
   data/questions/                # Banca domande (un file per materia-livello)
   data/percorso.ts               # Costruzione di unità e lezioni dal percorso
   data/tracce.ts                 # Archivio tracce anni passati
+  discussione/                   # Commenti, soluzioni proposte, voti, moderazione
   data/materiali.ts              # Materiale per l'esame (codici, manuali…)
   fonts.ts                       # Nunito applicato a tutta l'app
   gamification/                  # Punti, livelli, streak, badge, incoraggiamenti
@@ -122,6 +133,8 @@ src/
   screens/                       # Home, Quiz, Percorso, Lezione, Tracce, Materiale, Profilo
   components/                    # Componenti condivisi (mascotte, blocchi 3D, coriandoli)
   theme.ts                       # Colori e spaziature
+supabase/sql/discussione.sql     # Schema e regole della discussione (RLS + funzioni)
+supabase/functions/              # Edge Function (cancellazione account)
 docs/supabase.md                 # Configurazione dell'accesso e della sincronizzazione
 scripts/shoot.js                 # Cattura delle schermate per la verifica grafica
 ```
@@ -138,6 +151,12 @@ scripts/shoot.js                 # Cattura delle schermate per la verifica grafi
   risposta corretta distribuita fra le quattro posizioni
 - **`percorso.test.ts`** — costruzione delle unità e regole di sblocco
 - **`affiliate.test.ts`** — i link portano sempre il tag affiliato
+- **`discussione/modello.test.ts`** — ordinamento dei messaggi, risposte
+  rimaste senza genitore (che non devono sparire), lapidi dei messaggi
+  eliminati, e la regola per cui il cognome non compare mai per esteso
+- **`legale.test.ts`** — fra l'altro: che i Termini continuino a dire chi
+  risponde dei contenuti scritti dagli utenti e che la privacy continui a
+  spiegare che cosa diventa pubblico
 
 ## Come aggiungere contenuti
 
