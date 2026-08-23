@@ -6,6 +6,7 @@ import { materiali } from '../data/materiali';
 import { Card3D } from '../components/Card3D';
 import { Mascot } from '../components/Mascot';
 import type { MaterialeEsame } from '../types';
+import { TitoloSchermata } from '../components/TitoloSchermata';
 import { colors, radius, spacing } from '../theme';
 
 const CATEGORIE: MaterialeEsame['categoria'][] = ['Codici', 'Manuali', 'Cancelleria e utilità'];
@@ -45,6 +46,8 @@ export default function MaterialeScreen() {
       keyExtractor={(m) => m.id}
       stickySectionHeadersEnabled={false}
       ListHeaderComponent={
+        <>
+        <TitoloSchermata titolo="Materiale per l’esame" />
         <View style={styles.headerCard}>
           <Mascot state="studying" size={72} />
           <Text style={styles.headerText}>
@@ -52,6 +55,7 @@ export default function MaterialeScreen() {
             esercitarti e qualche accessorio salva-tempo.
           </Text>
         </View>
+        </>
       }
       renderSectionHeader={({ section }) => (
         <View style={styles.categoriaRow}>

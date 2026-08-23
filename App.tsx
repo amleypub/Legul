@@ -25,6 +25,7 @@ import ProfiloScreen from './src/screens/ProfiloScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import DocumentoLegaleScreen from './src/screens/DocumentoLegaleScreen';
 import { DOCUMENTI } from './src/data/legale';
+import { ConfineErrori } from './src/components/ConfineErrori';
 import { colors, materiaColors } from './src/theme';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -40,11 +41,21 @@ function Tabs() {
   return (
     <Tab.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: colors.primary },
-        headerTintColor: '#FFFFFF',
-        headerTitleStyle: { fontWeight: '700' },
+        // Le schermate a tab hanno già il proprio titolo nel contenuto:
+        // una barra piena sopra ripeteva l'informazione e rubava spazio.
+        headerShown: false,
         tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.textMuted,
+        tabBarInactiveTintColor: '#9AA3B4',
+        // Solo colori e bordo: altezze e spaziature restano quelle
+        // calcolate dalla navigazione, che tiene conto della safe area.
+        // Ogni valore imposto a mano qui finisce per tagliare le
+        // etichette su qualche dispositivo.
+        tabBarStyle: {
+          borderTopWidth: 1,
+          borderTopColor: '#E6EAF2',
+          backgroundColor: '#FFFFFF',
+        },
+        tabBarLabelStyle: { fontWeight: '700' },
       }}
     >
       <Tab.Screen
@@ -92,10 +103,12 @@ export default function App() {
   const [fontsLoaded] = useFonts(fontMap);
   if (!fontsLoaded) return null;
   return (
+    // Fuori da tutto: deve poter intercettare anche gli errori dei provider.
+    <ConfineErrori>
     <AuthProvider>
       <GamificationProvider>
       <NavigationContainer linking={linking}>
-        <StatusBar style="light" />
+        <StatusBar style="dark" />
         <Stack.Navigator
           screenOptions={{
             headerStyle: { backgroundColor: colors.primary },
@@ -144,5 +157,6 @@ export default function App() {
       </NavigationContainer>
       </GamificationProvider>
     </AuthProvider>
+    </ConfineErrori>
   );
 }

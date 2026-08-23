@@ -16,9 +16,10 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useGamification } from '../gamification/GamificationContext';
 import { nomeVisualizzato, useAuth } from '../auth/AuthContext';
 import { Mascot } from '../components/Mascot';
+import { SpazioStatusBar } from '../components/TitoloSchermata';
 import { Button3D } from '../components/Button3D';
 import type { RootStackParamList } from '../navigation/types';
-import { colors, radius, softShadow, spacing } from '../theme';
+import { colors, EDGE_3D, radius, softShadow, spacing } from '../theme';
 
 const VANTAGGI: { icona: keyof typeof Ionicons.glyphMap; testo: string }[] = [
   { icona: 'sync', testo: 'Ritrova i tuoi progressi su ogni dispositivo' },
@@ -87,6 +88,24 @@ export default function ProfiloScreen() {
     );
   }
 
+  /**
+   * Azzeramento dei progressi senza toccare l'account: serve a chi vuole
+   * rifare il percorso da capo, e a chi vuole ripulire il dispositivo
+   * senza cancellarsi.
+   */
+  function confermaAzzeramento() {
+    Alert.alert(
+      'Ricominciare da capo?',
+      `Punti, streak, stelle, badge e tracce lette torneranno a zero${
+        utente ? ', su questo dispositivo e sul tuo account' : ' su questo dispositivo'
+      }. Le domande e le tracce restano tutte disponibili.`,
+      [
+        { text: 'Annulla', style: 'cancel' },
+        { text: 'Azzera i progressi', style: 'destructive', onPress: azzeraProgressi },
+      ]
+    );
+  }
+
   function ultimaConferma() {
     Alert.alert('Sei sicuro?', 'L’operazione non può essere annullata.', [
       { text: 'No, torna indietro', style: 'cancel' },
@@ -117,19 +136,36 @@ export default function ProfiloScreen() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      {/* Intestazione ospite */}
-      <LinearGradient
-        colors={['#2E4370', '#1B2A4A']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={[styles.hero, softShadow]}
-      >
-        <Mascot state="neutral" size={96} style={styles.heroMascot} />
-        <Text style={styles.heroNome}>{nomeVisualizzato(utente)}</Text>
-        {utente?.email && <Text style={styles.heroEmail}>{utente.email}</Text>}
-        <View style={styles.heroLivelloRow}>
-          <Ionicons name={livello.icona} size={15} color={colors.accent} />
-          <Text style={styles.heroLivello}>{livello.nome}</Text>
+      <SpazioStatusBar extra={spacing.sm} />
+      {/* Stessa impostazione dell'intestazione in Home: la mascotte
+          affiancata al testo, blocco con bordo 3D, niente ritratto
+          sovrapposto che sfonda il riquadro. */}
+      <View style={styles.heroWrap}>
+        <View style={styles.heroEdge} />
+        <LinearGradient
+          colors={['#2E4370', '#1B2A4A']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.hero}
+        >
+        <View style={styles.heroTop}>
+          <Mascot state="neutral" size={72} />
+          <View style={styles.heroTesto}>
+            <Text style={styles.heroNome} numberOfLines={1}>
+              {nomeVisualizzato(utente)}
+            </Text>
+            {utente?.email && (
+              <Text style={styles.heroEmail} numberOfLines={1}>
+                {utente.email}
+              </Text>
+            )}
+            <View style={styles.heroLivelloRow}>
+              <Ionicons name={livello.icona} size={13} color={colors.accent} />
+              <Text style={styles.heroLivello} numberOfLines={1}>
+                {livello.nome}
+              </Text>
+            </View>
+          </View>
         </View>
         <View style={styles.heroStats}>
           <View style={styles.heroStat}>
@@ -147,7 +183,8 @@ export default function ProfiloScreen() {
             <Text style={styles.heroStatLabel}>lezioni</Text>
           </View>
         </View>
-      </LinearGradient>
+        </LinearGradient>
+      </View>
 
       {utente ? (
         /* Account collegato: i progressi viaggiano con l'utente */
@@ -234,12 +271,29 @@ export default function ProfiloScreen() {
         />
       </View>
 
-      {utente && (
-        /* Cancellazione dell'account: obbligatoria per gli store quando
-           l'app permette di registrarsi. In fondo alla schermata, dove ci
-           si aspetta di trovare le azioni irreversibili. */
-        <View style={styles.pericoloCard}>
-          <Pressable
+      {/* Azioni irreversibili, in fondo, dove ci si aspetta di trovarle. */}
+      <View style={styles.pericoloCard}>
+        <Pressable
+          onPress={confermaAzzeramento}
+          accessibilityRole="button"
+          accessibilityLabel="Azzera i progressi"
+          style={({ pressed }) => [styles.pericoloRiga, pressed && styles.pericoloPremuto]}
+        >
+          <View style={styles.pericoloIcona}>
+            <Ionicons name="refresh" size={19} color={colors.error} />
+          </View>
+          <View style={styles.pericoloTesto}>
+            <Text style={styles.pericoloLabel}>Azzera i progressi</Text>
+            <Text style={styles.pericoloSub}>
+              Riparti da zero mantenendo l’account e i contenuti.
+            </Text>
+          </View>
+        </Pressable>
+
+        {utente && (
+          <>
+            <View style={styles.settingSeparatore} />
+            <Pressable
             onPress={confermaEliminazione}
             disabled={eliminazioneInCorso}
             accessibilityRole="button"
@@ -262,27 +316,36 @@ export default function ProfiloScreen() {
                 Cancella per sempre account e progressi, su questo dispositivo e sul server.
               </Text>
             </View>
-          </Pressable>
-        </View>
-      )}
+            </Pressable>
+          </>
+        )}
+      </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
-  content: { padding: spacing.md, paddingTop: spacing.xl + spacing.md, paddingBottom: spacing.xl },
+  content: { padding: spacing.md, paddingBottom: spacing.xl },
+  heroWrap: { paddingBottom: EDGE_3D },
+  heroEdge: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: EDGE_3D,
+    bottom: 0,
+    borderRadius: radius.xxl,
+    backgroundColor: '#111A2E',
+  },
   hero: {
     borderRadius: radius.xxl,
-    paddingTop: spacing.xl + spacing.md,
-    paddingBottom: spacing.lg,
-    paddingHorizontal: spacing.lg,
-    alignItems: 'center',
-    marginTop: 40,
+    padding: spacing.md,
+    gap: spacing.md,
   },
-  heroMascot: { position: 'absolute', top: -48, alignSelf: 'center' },
-  heroNome: { color: '#FFFFFF', fontSize: 24, fontWeight: '900', marginTop: spacing.sm },
-  heroEmail: { color: 'rgba(255,255,255,0.6)', fontSize: 13, marginTop: 2 },
+  heroTop: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm + 2 },
+  heroTesto: { flex: 1, gap: 2 },
+  heroNome: { color: '#FFFFFF', fontSize: 21, fontWeight: '900' },
+  heroEmail: { color: 'rgba(255,255,255,0.6)', fontSize: 13 },
   sincroRiga: { flexDirection: 'row', gap: spacing.sm + 2 },
   sincroTesto: { flex: 1 },
   sincroIcona: {
@@ -293,14 +356,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  heroLivelloRow: { flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 4 },
+  heroLivelloRow: { flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 3 },
   heroLivello: { color: 'rgba(255,255,255,0.85)', fontSize: 13, fontWeight: '700' },
   heroStats: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: spacing.lg,
     alignSelf: 'stretch',
     justifyContent: 'space-around',
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255,255,255,0.10)',
+    paddingTop: spacing.md,
   },
   heroStat: { alignItems: 'center', flex: 1 },
   heroStatValore: { color: '#FFFFFF', fontSize: 22, fontWeight: '900' },

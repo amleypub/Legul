@@ -3,6 +3,7 @@ import { Animated, Pressable, ScrollView, StyleSheet, Text, View } from 'react-n
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { StatusBar } from 'expo-status-bar';
 import { useGamification } from '../gamification/GamificationContext';
 import { Button3D } from '../components/Button3D';
 import type { RootStackScreenProps } from '../navigation/types';
@@ -82,6 +83,7 @@ export default function PaywallScreen({ navigation }: RootStackScreenProps<'Payw
 
   return (
     <LinearGradient colors={['#22314F', '#101728']} style={styles.gradient}>
+      <StatusBar style="light" />
       <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
         <ScrollView contentContainerStyle={styles.content}>
           <Pressable onPress={() => navigation.goBack()} hitSlop={12} style={styles.chiudi}>

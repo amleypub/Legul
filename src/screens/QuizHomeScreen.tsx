@@ -10,6 +10,7 @@ import { percorsoPerMateria, unitaGratuita } from '../data/percorso';
 import { useGamification } from '../gamification/GamificationContext';
 import type { RootStackParamList } from '../navigation/types';
 import type { Materia } from '../types';
+import { TitoloSchermata } from '../components/TitoloSchermata';
 import { colors, EDGE_3D, materiaColors, radius, spacing } from '../theme';
 
 export const ICONA_MATERIA: Record<Materia, keyof typeof Ionicons.glyphMap> = {
@@ -92,10 +93,10 @@ export default function QuizHomeScreen() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.titolo}>Percorso di studio</Text>
-      <Text style={styles.sottotitolo}>
-        Scegli la materia e avanza lezione dopo lezione: dai Fondamenti fino all’Eccellenza.
-      </Text>
+      <TitoloSchermata
+        titolo="Percorso di studio"
+        sottotitolo="Scegli la materia e avanza lezione dopo lezione: dai Fondamenti fino all’Eccellenza."
+      />
 
       {materie.map((materia) => (
         <MateriaBlock

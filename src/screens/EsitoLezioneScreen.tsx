@@ -3,6 +3,7 @@ import { Animated, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { StatusBar } from 'expo-status-bar';
 import * as Haptics from 'expo-haptics';
 import { BADGES } from '../gamification/GamificationContext';
 import { Button3D } from '../components/Button3D';
@@ -112,6 +113,7 @@ export default function EsitoLezioneScreen({
       colors={fallito ? ['#3A4358', '#1C2231'] : [tinte.start, tinte.end]}
       style={styles.gradient}
     >
+      <StatusBar style="light" />
       {!fallito && <Confetti count={stelle === 3 ? 110 : 70} />}
       <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
         <ScrollView contentContainerStyle={styles.content}>

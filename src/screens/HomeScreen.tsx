@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import { Animated, Easing, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { BlurView } from 'expo-blur';
 import { BADGES, useGamification } from '../gamification/GamificationContext';
 import { settimanaCorrente, type GiornoSettimana } from '../gamification/settimana';
 import { useNavigation } from '@react-navigation/native';
@@ -10,6 +9,7 @@ import { ProgressBar } from '../components/ProgressBar';
 import { AnelloProgresso, EtichettaAnello } from '../components/AnelloProgresso';
 import { Button3D } from '../components/Button3D';
 import { Mascot } from '../components/Mascot';
+import { TitoloSchermata } from '../components/TitoloSchermata';
 import { colors, EDGE_3D, radius, spacing } from '../theme';
 
 /** Obiettivo giornaliero in punti: la ragione per riaprire l'app domani. */
@@ -122,6 +122,7 @@ export default function HomeScreen() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      <TitoloSchermata titolo="Legul" sottotitolo="La tua preparazione, un giorno alla volta." />
       {/*
         Intestazione compatta: prima occupava mezza schermata per dire il
         livello e i punti, spingendo sotto la piega la parte che conta.
@@ -287,14 +288,19 @@ export default function HomeScreen() {
                     color={sbloccato ? colors.accent : '#9AA3B2'}
                   />
                 </View>
-                <Text style={styles.badgeNome}>{badge.nome}</Text>
-                <Text style={styles.badgeDescr}>{badge.descrizione}</Text>
+                <Text style={[styles.badgeNome, !sbloccato && styles.badgeSpento]}>
+                  {badge.nome}
+                </Text>
+                <Text style={[styles.badgeDescr, !sbloccato && styles.badgeSpento]}>
+                  {badge.descrizione}
+                </Text>
                 {!sbloccato && (
-                  <BlurView intensity={18} tint="light" style={styles.badgeFrost}>
-                    <View style={styles.badgeLockPill}>
-                      <Ionicons name="lock-closed" size={14} color="#5B6472" />
-                    </View>
-                  </BlurView>
+                  /* Il lucchetto sta in un angolo, non sopra il testo: un
+                     badge bloccato deve incuriosire, e per farlo bisogna
+                     poter leggere che cosa si sta per sbloccare. */
+                  <View style={styles.badgeLockPill}>
+                    <Ionicons name="lock-closed" size={12} color="#8B93A3" />
+                  </View>
                 )}
               </View>
             </View>
@@ -496,20 +502,16 @@ const styles = StyleSheet.create({
   badgeIconWrapOn: { backgroundColor: '#FFFFFF' },
   badgeNome: { fontSize: 14, fontWeight: '800', color: colors.text, marginTop: spacing.sm },
   badgeDescr: { fontSize: 11, color: colors.textMuted, textAlign: 'center', marginTop: 2 },
-  badgeFrost: {
-    ...StyleSheet.absoluteFillObject,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(245,247,250,0.35)',
-  },
+  badgeSpento: { color: '#9AA3B2' },
   badgeLockPill: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: 'rgba(255,255,255,0.75)',
+    position: 'absolute',
+    top: spacing.sm,
+    right: spacing.sm,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: '#EEF1F6',
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.9)',
   },
 });

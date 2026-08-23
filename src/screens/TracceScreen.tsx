@@ -8,6 +8,7 @@ import { useGamification } from '../gamification/GamificationContext';
 import { Card3D } from '../components/Card3D';
 import type { RootStackParamList } from '../navigation/types';
 import type { TipoTraccia } from '../types';
+import { TitoloSchermata } from '../components/TitoloSchermata';
 import { colors, materiaColors, radius, spacing } from '../theme';
 
 const TIPO_STYLE: Record<TipoTraccia, { icona: keyof typeof Ionicons.glyphMap; tinta: string }> = {
@@ -33,10 +34,10 @@ export default function TracceScreen() {
       keyExtractor={(t) => t.id}
       stickySectionHeadersEnabled={false}
       ListHeaderComponent={
-        <Text style={styles.intro}>
-          Rivedi le tracce delle prove scritte degli anni passati: capire cosa è già stato chiesto
-          è il modo migliore per prevedere cosa arriverà. Ogni traccia letta vale punti.
-        </Text>
+        <TitoloSchermata
+          titolo="Tracce d’esame"
+          sottotitolo="Le prove scritte degli anni passati: capire cosa è già stato chiesto è il modo migliore per prevedere cosa arriverà. Ogni traccia letta vale punti."
+        />
       }
       renderSectionHeader={({ section }) => (
         <View style={styles.annoRow}>
