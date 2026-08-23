@@ -9,7 +9,8 @@
     "web": "expo start --web",
     "typecheck": "tsc --noEmit",
     "test": "jest",
-    "legale": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/genera-legale.mts"
+    "legale": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/genera-legale.mts",
+    "icone": "node scripts/genera-icone.mjs"
   },
   "jest": {
     "preset": "jest-expo",

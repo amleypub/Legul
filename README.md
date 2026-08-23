@@ -75,7 +75,19 @@ npm run ios        # avvia su simulatore iOS (macOS)
 npm run typecheck  # verifica TypeScript
 npm test           # esegue i test (Jest)
 npm run legale     # rigenera le pagine pubbliche di privacy e termini
+npm run icone      # rigenera icona, icona adattiva, avvio e favicon dal logo
 ```
+
+### Sostituire il logo
+
+Metti il nuovo file in `assets/logo-sorgente.png` (il marchio su fondo
+pieno, anche con margine e ombra intorno) e lancia `npm run icone`. Lo
+script ritaglia il logo, isola il marchio dal fondo e produce i quattro
+formati con i requisiti di ciascuno store — iOS vuole un quadrato pieno
+senza canale alfa, Android il marchio dentro il 66% centrale su uno
+strato trasparente. Il colore di fondo rilevato viene stampato a fine
+esecuzione: va riportato in `app.json` (`splash.backgroundColor` e
+`android.adaptiveIcon.backgroundColor`).
 
 > Dopo aver creato o modificato il file `.env`, avvia con `npx expo start --clear`:
 > i valori vengono incollati nel codice in fase di trasformazione e Metro
