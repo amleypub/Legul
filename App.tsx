@@ -6,10 +6,12 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
 import { applyGlobalFont, fontMap } from './src/fonts';
+import { configuraNotifiche } from './src/notifiche/promemoria';
 import { AuthProvider } from './src/auth/AuthContext';
 import { GamificationProvider } from './src/gamification/GamificationContext';
 
 applyGlobalFont();
+configuraNotifiche();
 import type { RootStackParamList } from './src/navigation/types';
 import { linking } from './src/navigation/linking';
 import HomeScreen from './src/screens/HomeScreen';

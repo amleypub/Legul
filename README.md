@@ -36,6 +36,9 @@ App mobile per **Android e iOS** (React Native + Expo) per prepararsi all'esame 
 - **Livelli** che misurano quanto sei pronto per l'esame — da «Al via» a «Più che pronto» — e non che titolo hai: chi usa Legul è già laureato e in pratica, una scala di qualifiche lo retrocederebbe o gli regalerebbe il traguardo che deve ancora conquistare
 - **Streak** di giorni di studio consecutivi
 - **Badge** da sbloccare e **messaggi di incoraggiamento** ad ogni azione
+- **Obiettivo giornaliero** in punti, con anello di avanzamento e striscia dei sette giorni
+- **Ripasso degli errori**: ogni domanda sbagliata viene riproposta finché non la indovini, senza cuori e senza stelle
+- **Promemoria giornaliero** con notifica locale, all'ora scelta: programmata dal telefono, non passa da alcun server
 - Progressi salvati sul dispositivo (AsyncStorage)
 
 ### Accesso e sincronizzazione (Supabase)

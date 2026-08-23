@@ -19,6 +19,8 @@ const base: GamificationState = {
   lezioni: {},
   premium: false,
   audioAttivo: true,
+  promemoriaAttivo: false,
+  oraPromemoria: 20,
   tracceLette: [],
   badges: [],
   streak: 0,
@@ -211,9 +213,12 @@ describe('progressiAzzerati', () => {
    * L'audio è una preferenza del telefono, non un dato dell'utente: chi
    * elimina l'account non si aspetta di ritrovare i suoni riaccesi.
    */
-  it('conserva la preferenza sugli effetti sonori', () => {
+  it('conserva le preferenze del dispositivo', () => {
     expect(progressiAzzerati(con({ audioAttivo: false })).audioAttivo).toBe(false);
     expect(progressiAzzerati(con({ audioAttivo: true })).audioAttivo).toBe(true);
+    const conPromemoria = progressiAzzerati(con({ promemoriaAttivo: true, oraPromemoria: 8 }));
+    expect(conPromemoria.promemoriaAttivo).toBe(true);
+    expect(conPromemoria.oraPromemoria).toBe(8);
   });
 
   it('non modifica lo stato ricevuto', () => {

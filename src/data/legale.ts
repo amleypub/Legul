@@ -278,7 +278,15 @@ export const PRIVACY: DocumentoLegale = {
       ],
     },
     {
-      titolo: '10. Nessuna profilazione, nessuna pubblicità',
+      titolo: '10. Promemoria di studio',
+      paragrafi: [
+        'Se attivi il promemoria giornaliero dalle impostazioni dell’App, il tuo telefono ti mostrerà una notifica all’ora che hai scelto.',
+        'Si tratta di una notifica locale: è programmata dal dispositivo stesso e non passa da alcun server. Non riceviamo né conserviamo identificativi per notifiche push, e non sappiamo se e quando la notifica ti viene mostrata.',
+        'Puoi disattivare il promemoria in qualsiasi momento dalle impostazioni dell’App o revocare il permesso alle notifiche dalle impostazioni del telefono.',
+      ],
+    },
+    {
+      titolo: '11. Nessuna profilazione, nessuna pubblicità',
       paragrafi: [
         'Non effettuiamo processi decisionali automatizzati né attività di profilazione che producano effetti giuridici o incidano in modo analogamente significativo sulla tua persona.',
         'L’App non contiene reti pubblicitarie, strumenti di analisi del comportamento o tecnologie di tracciamento di terze parti. Non utilizziamo cookie di profilazione: le informazioni salvate sul dispositivo servono unicamente a far funzionare l’App e a conservare i tuoi progressi e le tue preferenze.',
@@ -286,21 +294,21 @@ export const PRIVACY: DocumentoLegale = {
       ],
     },
     {
-      titolo: '11. Minori',
+      titolo: '12. Minori',
       paragrafi: [
         'Il Servizio è destinato a persone maggiorenni e non è rivolto ai minori. Non raccogliamo consapevolmente dati di minori.',
         `Se ritieni che un minore ci abbia fornito dati personali, scrivici a ${TITOLARE.email}: provvederemo a cancellarli senza ritardo.`,
       ],
     },
     {
-      titolo: '12. Sicurezza',
+      titolo: '13. Sicurezza',
       paragrafi: [
         'Adottiamo misure tecniche e organizzative adeguate a proteggere i dati da accessi non autorizzati, perdita e divulgazione: comunicazioni cifrate, autenticazione gestita da un fornitore specializzato e regole di accesso che consentono a ciascun utente di leggere e modificare esclusivamente i propri dati.',
         'Nessun sistema è però sicuro in modo assoluto. In caso di violazione dei dati personali che comporti un rischio elevato per i tuoi diritti, ti informeremo secondo quanto previsto dall’art. 34 GDPR.',
       ],
     },
     {
-      titolo: '13. Modifiche a questa informativa',
+      titolo: '14. Modifiche a questa informativa',
       paragrafi: [
         'Possiamo aggiornare questa informativa per adeguarla a modifiche del Servizio o della normativa. La versione vigente è sempre consultabile nell’App, con la data di ultimo aggiornamento indicata in testa.',
         'Se le modifiche riguardano finalità o basi giuridiche del trattamento, te ne daremo avviso prima che diventino efficaci.',

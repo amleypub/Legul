@@ -15,6 +15,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useGamification } from '../gamification/GamificationContext';
 import { nomeVisualizzato, useAuth } from '../auth/AuthContext';
+import { ORE_PROPOSTE } from '../notifiche/promemoria';
 import { Mascot } from '../components/Mascot';
 import { SpazioStatusBar } from '../components/TitoloSchermata';
 import { Button3D } from '../components/Button3D';
@@ -57,9 +58,35 @@ function VoceLegale({
 
 export default function ProfiloScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const { state, streak, livello, toggleAudio, azzeraProgressi } = useGamification();
+  const { state, streak, livello, toggleAudio, impostaPromemoria, azzeraProgressi } =
+    useGamification();
   const { utente, esci, eliminaAccount } = useAuth();
   const [eliminazioneInCorso, setEliminazioneInCorso] = useState(false);
+
+  /**
+   * L'interruttore resta acceso solo se il permesso è stato concesso:
+   * altrimenti prometterebbe un promemoria che il sistema non mostrerà.
+   */
+  async function cambiaPromemoria(attivo: boolean) {
+    const riuscito = await impostaPromemoria(attivo, state.oraPromemoria);
+    if (!riuscito) {
+      Alert.alert(
+        'Notifiche disattivate',
+        'Per ricevere il promemoria devi consentire le notifiche a Legul dalle impostazioni del telefono.',
+        [{ text: 'Ho capito' }]
+      );
+    }
+  }
+
+  function scegliOra() {
+    Alert.alert('A che ora vuoi il promemoria?', undefined, [
+      ...ORE_PROPOSTE.map((ora) => ({
+        text: `${String(ora).padStart(2, '0')}:00`,
+        onPress: () => void impostaPromemoria(true, ora),
+      })),
+      { text: 'Annulla', style: 'cancel' as const },
+    ]);
+  }
 
   function confermaUscita() {
     Alert.alert(
@@ -258,6 +285,52 @@ export default function ProfiloScreen() {
 
         <View style={styles.settingSeparatore} />
 
+        <View style={styles.settingRow}>
+          <View style={styles.settingLeft}>
+            <View style={styles.settingIcona}>
+              <Ionicons name="notifications" size={18} color={colors.primary} />
+            </View>
+            <View style={styles.settingTesto}>
+              <Text style={styles.settingLabel}>Promemoria giornaliero</Text>
+              <Text style={styles.settingSub}>
+                {state.promemoriaAttivo
+                  ? `Ogni giorno alle ${String(state.oraPromemoria).padStart(2, '0')}:00`
+                  : 'Un invito a studiare, per non perdere la streak'}
+              </Text>
+            </View>
+          </View>
+          <Switch
+            value={state.promemoriaAttivo}
+            onValueChange={(v) => void cambiaPromemoria(v)}
+            trackColor={{ true: colors.success, false: '#CBD2DE' }}
+            thumbColor="#FFFFFF"
+          />
+        </View>
+
+        {state.promemoriaAttivo && (
+          <>
+            <View style={styles.settingSeparatore} />
+            <Pressable
+              onPress={scegliOra}
+              accessibilityRole="button"
+              accessibilityLabel="Cambia l’ora del promemoria"
+              style={({ pressed }) => [styles.settingRow, pressed && styles.settingPremuto]}
+            >
+              <View style={styles.settingLeft}>
+                <View style={styles.settingIcona}>
+                  <Ionicons name="time" size={18} color={colors.primary} />
+                </View>
+                <Text style={styles.settingLabel}>Ora del promemoria</Text>
+              </View>
+              <Text style={styles.settingValore}>
+                {String(state.oraPromemoria).padStart(2, '0')}:00
+              </Text>
+            </Pressable>
+          </>
+        )}
+
+        <View style={styles.settingSeparatore} />
+
         <VoceLegale
           etichetta="Informativa sulla privacy"
           icona="lock-closed"
@@ -430,6 +503,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   settingLabel: { fontSize: 15, fontWeight: '600', color: colors.text },
+  settingTesto: { flex: 1 },
+  settingSub: { fontSize: 12, color: colors.textMuted, lineHeight: 16, marginTop: 1 },
+  settingValore: { fontSize: 15, fontWeight: '700', color: colors.primary },
   settingPremuto: { backgroundColor: '#F4F6FB' },
   settingSeparatore: { height: 1, backgroundColor: '#EEF1F7', marginLeft: 34 + spacing.sm },
 

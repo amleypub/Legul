@@ -13,6 +13,12 @@ import { setAudioEnabled } from '../audio/sounds';
 import { useAuth } from '../auth/AuthContext';
 import { streakEffettiva } from './settimana';
 import {
+  annullaPromemoria,
+  chiediPermesso,
+  ORA_PREDEFINITA,
+  programmaPromemoria,
+} from '../notifiche/promemoria';
+import {
   caricaProgressi,
   scaricaProgressi,
   unisciProgressi,
@@ -112,6 +118,9 @@ export interface GamificationState {
   premium: boolean;
   /** Effetti sonori attivi. */
   audioAttivo: boolean;
+  /** Promemoria giornaliero attivo, e a che ora. Preferenze del dispositivo. */
+  promemoriaAttivo: boolean;
+  oraPromemoria: number;
   tracceLette: string[]; // id delle tracce lette
   badges: string[]; // id dei badge sbloccati
   streak: number;
@@ -133,6 +142,8 @@ const initialState: GamificationState = {
   lezioni: {},
   premium: false,
   audioAttivo: true,
+  promemoriaAttivo: false,
+  oraPromemoria: ORA_PREDEFINITA,
   tracceLette: [],
   badges: [],
   streak: 0,
@@ -189,6 +200,12 @@ interface GamificationContextValue {
   attivaPremium(): void;
   /** Attiva/disattiva gli effetti sonori. */
   toggleAudio(): void;
+  /**
+   * Accende o spegne il promemoria giornaliero. Restituisce `false` se il
+   * permesso alle notifiche è stato negato: l'interruttore non deve
+   * restare acceso promettendo qualcosa che non accadrà.
+   */
+  impostaPromemoria(attivo: boolean, ora?: number): Promise<boolean>;
   /**
    * Riporta i progressi a zero su questo dispositivo, conservando le
    * preferenze locali (audio). Usato quando si elimina l'account: i dati
@@ -279,7 +296,12 @@ export function conBadgeAggiornati(s: GamificationState): {
  * eliminando un account.
  */
 export function progressiAzzerati(s: GamificationState): GamificationState {
-  return { ...initialState, audioAttivo: s.audioAttivo };
+  return {
+    ...initialState,
+    audioAttivo: s.audioAttivo,
+    promemoriaAttivo: s.promemoriaAttivo,
+    oraPromemoria: s.oraPromemoria,
+  };
 }
 
 export function livelloPerPunti(punti: number): Livello {
@@ -459,6 +481,30 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
     setState(progressiAzzerati);
   }, []);
 
+  const impostaPromemoria = useCallback(async (attivo: boolean, ora?: number) => {
+    if (!attivo) {
+      await annullaPromemoria();
+      setState((prev) => ({ ...prev, promemoriaAttivo: false }));
+      return true;
+    }
+    const permesso = await chiediPermesso();
+    if (!permesso) return false;
+    const oraScelta = ora ?? ORA_PREDEFINITA;
+    await programmaPromemoria(oraScelta);
+    setState((prev) => ({ ...prev, promemoriaAttivo: true, oraPromemoria: oraScelta }));
+    return true;
+  }, []);
+
+  /**
+   * Le notifiche programmate vivono nel sistema operativo, non nell'app:
+   * dopo un riavvio del telefono o una reinstallazione potrebbero non
+   * esserci più. Riprogrammarle all'avvio le rimette in fila.
+   */
+  useEffect(() => {
+    if (!caricato || !state.promemoriaAttivo) return;
+    programmaPromemoria(state.oraPromemoria).catch(() => {});
+  }, [caricato, state.promemoriaAttivo, state.oraPromemoria]);
+
   // Mantiene il gestore suoni allineato alla preferenza salvata.
   useEffect(() => {
     setAudioEnabled(state.audioAttivo);
@@ -505,6 +551,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
       registraTracciaLetta,
       attivaPremium,
       toggleAudio,
+      impostaPromemoria,
       azzeraProgressi,
     };
   }, [
@@ -515,6 +562,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
     registraTracciaLetta,
     attivaPremium,
     toggleAudio,
+    impostaPromemoria,
     azzeraProgressi,
   ]);
 
