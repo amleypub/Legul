@@ -60,6 +60,25 @@ describe('percorsoPerMateria', () => {
     }
   });
 
+  /**
+   * Il percorso è calcolato una volta e riusato: senza, ogni render della
+   * schermata Quiz rileggeva l'intera banca domande sei volte.
+   */
+  it('riusa lo stesso percorso invece di ricostruirlo', () => {
+    expect(percorsoPerMateria('Diritto civile')).toBe(percorsoPerMateria('Diritto civile'));
+    expect(lezioniInOrdine('Diritto penale')).toBe(lezioniInOrdine('Diritto penale'));
+  });
+
+  it('non duplica domande quando viene richiesto più volte', () => {
+    const conta = () =>
+      percorsoPerMateria('Deontologia forense')
+        .flatMap((u) => u.lezioni)
+        .reduce((acc, l) => acc + l.domande.length, 0);
+    const prima = conta();
+    conta();
+    expect(conta()).toBe(prima);
+  });
+
   it('ritrova una lezione dal suo identificatore', () => {
     const materia: Materia = 'Diritto civile';
     const prima = lezioniInOrdine(materia)[0];

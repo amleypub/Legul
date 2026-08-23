@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { Animated, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -6,7 +6,7 @@ import * as Haptics from 'expo-haptics';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { materie } from '../data/quizzes';
-import { lezioniInOrdine } from '../data/percorso';
+import { percorsoPerMateria, unitaGratuita } from '../data/percorso';
 import { useGamification } from '../gamification/GamificationContext';
 import type { RootStackParamList } from '../navigation/types';
 import type { Materia } from '../types';
@@ -30,7 +30,17 @@ function MateriaBlock({
 }) {
   const { state } = useGamification();
   const tinte = materiaColors[materia];
-  const lezioni = lezioniInOrdine(materia);
+
+  // Conta solo le lezioni che l'utente può davvero aprire: mostrare
+  // «0/64» a chi non ha Premium significa indicare un traguardo
+  // irraggiungibile e una barra che non arriverà mai in fondo.
+  const lezioni = useMemo(
+    () =>
+      percorsoPerMateria(materia)
+        .filter((u) => state.premium || unitaGratuita(u.difficolta))
+        .flatMap((u) => u.lezioni),
+    [materia, state.premium]
+  );
   const completate = lezioni.filter((l) => (state.lezioni[l.id] ?? 0) >= 1).length;
   const stelleTotali = lezioni.reduce((acc, l) => acc + (state.lezioni[l.id] ?? 0), 0);
   const quota = lezioni.length > 0 ? completate / lezioni.length : 0;
@@ -61,7 +71,7 @@ function MateriaBlock({
                 <View style={styles.metaRow}>
                   <Ionicons name="star" size={13} color="#FFE08A" />
                   <Text style={styles.blockMeta}>
-                    {stelleTotali} · {completate}/{lezioni.length} lezioni
+                    {stelleTotali} · {completate}/{lezioni.length} lezioni{state.premium ? '' : ' gratuite'}
                   </Text>
                 </View>
               </View>

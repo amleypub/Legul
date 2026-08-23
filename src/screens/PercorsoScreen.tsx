@@ -3,8 +3,8 @@ import {
   Alert,
   Animated,
   Easing,
+  FlatList,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -18,6 +18,8 @@ import {
   statiLezioni,
   unitaGratuita,
   type Lezione,
+  type StatoLezione,
+  type Unita,
 } from '../data/percorso';
 import { useGamification } from '../gamification/GamificationContext';
 import { Mascot } from '../components/Mascot';
@@ -239,10 +241,28 @@ function spiegaBlocco(indicePrecedente: number) {
   );
 }
 
+/** Le righe che compongono il percorso, appiattite per la lista. */
+type Riga =
+  | { chiave: string; tipo: 'testata'; stelleFatte: number }
+  | { chiave: string; tipo: 'unita'; unita: Unita; premium: boolean; completate: number }
+  | { chiave: string; tipo: 'premium'; unita: Unita }
+  | {
+      chiave: string;
+      tipo: 'nodo';
+      lezione: Lezione;
+      stato: StatoLezione;
+      stelle: number;
+      inizia: boolean;
+      offset: number;
+      indicePrecedente: number;
+    };
+
 export default function PercorsoScreen({ route, navigation }: RootStackScreenProps<'Percorso'>) {
   const { materia } = route.params;
   const { state } = useGamification();
   const tinte = materiaColors[materia];
+  const lista = useRef<FlatList<Riga>>(null);
+
   const unita = percorsoPerMateria(materia);
   const ordine = useMemo(() => unita.flatMap((u) => u.lezioni), [unita]);
 
@@ -250,95 +270,160 @@ export default function PercorsoScreen({ route, navigation }: RootStackScreenPro
   // dell'app. Prima era riscritta a mano qui, e le due potevano divergere.
   const stati = useMemo(() => statiLezioni(ordine, state.lezioni), [ordine, state.lezioni]);
 
-  // Il fumetto «INIZIA» va su una sola lezione, anche nel caso anomalo in
-  // cui più di una risultasse aperta e non ancora superata.
-  const primaDaFare = ordine.find((l) => stati.get(l.id) === 'corrente')?.id;
+  const righe = useMemo<Riga[]>(() => {
+    const stelleFatte = ordine.reduce((acc, l) => acc + (state.lezioni[l.id] ?? 0), 0);
+    // Il fumetto «INIZIA» va su una sola lezione, anche nel caso anomalo
+    // in cui più d'una risultasse aperta e non ancora superata.
+    const primaDaFare = ordine.find((l) => stati.get(l.id) === 'corrente')?.id;
 
-  let contatoreGlobale = -1;
+    const out: Riga[] = [{ chiave: 'testata', tipo: 'testata', stelleFatte }];
+    let contatore = -1;
 
-  const stelleFatte = ordine.reduce((acc, l) => acc + (state.lezioni[l.id] ?? 0), 0);
+    for (const u of unita) {
+      const premium = !unitaGratuita(u.difficolta) && !state.premium;
+      out.push({
+        chiave: `unita-${u.difficolta}`,
+        tipo: 'unita',
+        unita: u,
+        premium,
+        completate: u.lezioni.filter((l) => (state.lezioni[l.id] ?? 0) >= 1).length,
+      });
 
-  return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <View style={styles.pathHeader}>
-        <Mascot state="studying" size={68} />
-        <View style={styles.pathHeaderText}>
-          <Text style={styles.pathHeaderTitle}>
-            {stelleFatte > 0 ? 'Continua da dove eri!' : 'Si comincia da qui'}
-          </Text>
-          <View style={styles.pathHeaderStars}>
-            <Ionicons name="star" size={15} color={colors.accent} />
-            <Text style={styles.pathHeaderStarsText}>
-              {stelleFatte > 0
-                ? `${stelleFatte} stelle conquistate`
-                : 'Completa la prima lezione per la tua prima stella'}
-            </Text>
-          </View>
-        </View>
-      </View>
+      if (premium) {
+        out.push({ chiave: `premium-${u.difficolta}`, tipo: 'premium', unita: u });
+        continue;
+      }
+      u.lezioni.forEach((lezione, i) => {
+        contatore += 1;
+        out.push({
+          chiave: lezione.id,
+          tipo: 'nodo',
+          lezione,
+          stato: stati.get(lezione.id) ?? 'bloccata',
+          stelle: state.lezioni[lezione.id] ?? 0,
+          inizia: lezione.id === primaDaFare,
+          offset: OFFSETS[contatore % OFFSETS.length],
+          indicePrecedente: u.lezioni[i - 1]?.indice ?? lezione.indice,
+        });
+      });
+    }
+    return out;
+  }, [unita, ordine, stati, state.lezioni, state.premium]);
 
-      {unita.map((u) => {
-        const richiedePremium = !unitaGratuita(u.difficolta) && !state.premium;
+  /**
+   * Il percorso si apriva sempre in cima: più lezioni completavi, più
+   * dovevi scorrere per ritrovare il punto in cui eri. Ora parte da lì.
+   * Solo al primo montaggio: durante l'uso lo scorrimento è dell'utente.
+   */
+  const indiceCorrente = righe.findIndex((r) => r.tipo === 'nodo' && r.inizia);
+  const giaPosizionato = useRef(false);
+  useEffect(() => {
+    if (giaPosizionato.current || indiceCorrente < 2) return;
+    giaPosizionato.current = true;
+    const t = setTimeout(() => {
+      lista.current?.scrollToIndex({ index: indiceCorrente, viewPosition: 0.45, animated: false });
+    }, 60);
+    return () => clearTimeout(t);
+  }, [indiceCorrente]);
+
+  const renderRiga = ({ item }: { item: Riga }) => {
+    switch (item.tipo) {
+      case 'testata':
         return (
-          <View key={u.difficolta}>
-            <LinearGradient
-              colors={richiedePremium ? ['#3A4358', '#242B3B'] : [tinte.start, tinte.end]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={[styles.unitaBanner, softShadow]}
-            >
-              <View style={styles.unitaTextWrap}>
-                <Text style={styles.unitaKicker}>Unità {u.difficolta}</Text>
-                <Text style={styles.unitaNome}>{u.nome}</Text>
-              </View>
-              {richiedePremium ? (
-                <View style={styles.premiumChip}>
-                  <MaterialCommunityIcons name="crown" size={16} color={colors.primary} />
-                  <Text style={styles.premiumChipTesto}>PREMIUM</Text>
-                </View>
-              ) : (
-                <Text style={styles.unitaMeta}>
-                  {u.lezioni.filter((l) => (state.lezioni[l.id] ?? 0) >= 1).length}/
-                  {u.lezioni.length} lezioni
+          <View style={styles.pathHeader}>
+            <Mascot state="studying" size={68} />
+            <View style={styles.pathHeaderText}>
+              <Text style={styles.pathHeaderTitle}>
+                {item.stelleFatte > 0 ? 'Continua da dove eri!' : 'Si comincia da qui'}
+              </Text>
+              <View style={styles.pathHeaderStars}>
+                <Ionicons name="star" size={15} color={colors.accent} />
+                <Text style={styles.pathHeaderStarsText}>
+                  {item.stelleFatte > 0
+                    ? `${item.stelleFatte} stelle conquistate`
+                    : 'Completa la prima lezione per la tua prima stella'}
                 </Text>
-              )}
-            </LinearGradient>
-
-            {richiedePremium ? (
-              <BloccoPremium
-                unita={u}
-                tinte={tinte}
-                onPress={() => navigation.navigate('Paywall')}
-              />
-            ) : (
-              <View style={styles.nodi}>
-                {u.lezioni.map((lezione, i) => {
-                  contatoreGlobale += 1;
-                  const stelle = state.lezioni[lezione.id] ?? 0;
-                  const stato = stati.get(lezione.id) ?? 'bloccata';
-                  return (
-                    <Nodo
-                      key={lezione.id}
-                      lezione={lezione}
-                      stato={stato}
-                      stelle={stelle}
-                      mostraInizia={lezione.id === primaDaFare}
-                      offset={OFFSETS[contatoreGlobale % OFFSETS.length]}
-                      tinte={tinte}
-                      onPress={() =>
-                        stato === 'bloccata'
-                          ? spiegaBlocco(u.lezioni[i - 1]?.indice ?? lezione.indice)
-                          : navigation.navigate('Lezione', { materia, lezioneId: lezione.id })
-                      }
-                    />
-                  );
-                })}
               </View>
-            )}
+            </View>
           </View>
         );
-      })}
-    </ScrollView>
+
+      case 'unita':
+        return (
+          <LinearGradient
+            colors={item.premium ? ['#3A4358', '#242B3B'] : [tinte.start, tinte.end]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={[styles.unitaBanner, softShadow]}
+          >
+            <View style={styles.unitaTextWrap}>
+              <Text style={styles.unitaKicker}>Unità {item.unita.difficolta}</Text>
+              <Text style={styles.unitaNome}>{item.unita.nome}</Text>
+            </View>
+            {item.premium ? (
+              <View style={styles.premiumChip}>
+                <MaterialCommunityIcons name="crown" size={16} color={colors.primary} />
+                <Text style={styles.premiumChipTesto}>PREMIUM</Text>
+              </View>
+            ) : (
+              <Text style={styles.unitaMeta}>
+                {item.completate}/{item.unita.lezioni.length} lezioni
+              </Text>
+            )}
+          </LinearGradient>
+        );
+
+      case 'premium':
+        return (
+          <BloccoPremium
+            unita={item.unita}
+            tinte={tinte}
+            onPress={() => navigation.navigate('Paywall')}
+          />
+        );
+
+      case 'nodo':
+        return (
+          <View style={styles.nodoRigaWrap}>
+            <Nodo
+              lezione={item.lezione}
+              stato={item.stato}
+              stelle={item.stelle}
+              mostraInizia={item.inizia}
+              offset={item.offset}
+              tinte={tinte}
+              onPress={() =>
+                item.stato === 'bloccata'
+                  ? spiegaBlocco(item.indicePrecedente)
+                  : navigation.navigate('Lezione', { materia, lezioneId: item.lezione.id })
+              }
+            />
+          </View>
+        );
+    }
+  };
+
+  return (
+    <FlatList
+      ref={lista}
+      style={styles.container}
+      contentContainerStyle={styles.content}
+      data={righe}
+      keyExtractor={(r) => r.chiave}
+      renderItem={renderRiga}
+      // Le righe hanno altezze diverse: senza getItemLayout lo scorrimento
+      // a un indice non ancora montato fallisce, e va ritentato.
+      onScrollToIndexFailed={({ index, averageItemLength }) => {
+        lista.current?.scrollToOffset({ offset: index * averageItemLength, animated: false });
+        setTimeout(
+          () => lista.current?.scrollToIndex({ index, viewPosition: 0.45, animated: false }),
+          80
+        );
+      }}
+      initialNumToRender={12}
+      windowSize={9}
+      removeClippedSubviews
+    />
   );
 }
 
@@ -444,7 +529,7 @@ const styles = StyleSheet.create({
   },
   premiumBtn: { alignSelf: 'stretch', marginTop: spacing.md },
 
-  nodi: { alignItems: 'center', gap: spacing.md, marginBottom: spacing.lg },
+  nodoRigaWrap: { alignItems: 'center', marginBottom: spacing.md },
   nodoRiga: { alignItems: 'center' },
   nodoWrap: { width: NODE, height: NODE + EDGE },
   halo: {

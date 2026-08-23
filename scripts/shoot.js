@@ -65,12 +65,11 @@ async function main() {
       risposteCorrette: 128,
       risposteErrate: 22,
       quizCompletati: 14,
-      lezioni: {
-        'Diritto civile|1|0': 3,
-        'Diritto civile|1|1': 3,
-        'Diritto civile|1|2': 2,
-        'Diritto civile|1|3': 1,
-      },
+      // Undici lezioni superate: serve anche a verificare che il percorso
+      // si apra sulla lezione corrente invece che in cima.
+      lezioni: Object.fromEntries(
+        Array.from({ length: 11 }, (_, i) => [`Diritto civile|1|${i}`, 3 - (i % 3)])
+      ),
       premium: false,
       audioAttivo: true,
       tracceLette: ['2023-civile', '2023-penale', '2022-civile'],

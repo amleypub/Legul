@@ -37,11 +37,29 @@ export function unitaGratuita(difficolta: Difficolta): boolean {
 const DIFFICOLTA: Difficolta[] = [1, 2, 3, 4];
 
 /**
+ * Il percorso di una materia dipende solo dalla banca domande, che non
+ * cambia a runtime: si costruisce una volta e si riusa.
+ *
+ * Senza questa cache la schermata Quiz rileggeva tutte e 3.500 le domande
+ * sei volte per ogni render — una per materia — e lo rifaceva a ogni
+ * risposta data, perché lo stato cambia.
+ */
+const cachePercorsi = new Map<Materia, Unita[]>();
+
+/**
  * Costruisce il percorso di una materia: unità per difficoltà crescente,
  * ciascuna suddivisa in lezioni da DOMANDE_PER_LEZIONE domande.
  * Una coda finale con meno di 5 domande viene accorpata all'ultima lezione.
  */
 export function percorsoPerMateria(materia: Materia): Unita[] {
+  const inCache = cachePercorsi.get(materia);
+  if (inCache) return inCache;
+  const costruito = costruisciPercorso(materia);
+  cachePercorsi.set(materia, costruito);
+  return costruito;
+}
+
+function costruisciPercorso(materia: Materia): Unita[] {
   const perDifficolta: Record<Difficolta, QuizQuestion[]> = { 1: [], 2: [], 3: [], 4: [] };
   for (const q of tutteLeDomande) {
     if (q.materia === materia) perDifficolta[q.difficolta].push(q);
@@ -68,13 +86,29 @@ export function percorsoPerMateria(materia: Materia): Unita[] {
   }).filter((u) => u.lezioni.length > 0);
 }
 
+const cacheOrdine = new Map<Materia, Lezione[]>();
+
 /** Tutte le lezioni della materia in ordine di percorso (per la logica di sblocco). */
 export function lezioniInOrdine(materia: Materia): Lezione[] {
-  return percorsoPerMateria(materia).flatMap((u) => u.lezioni);
+  const inCache = cacheOrdine.get(materia);
+  if (inCache) return inCache;
+  const ordine = percorsoPerMateria(materia).flatMap((u) => u.lezioni);
+  cacheOrdine.set(materia, ordine);
+  return ordine;
+}
+
+const cacheIndici = new Map<Materia, Map<string, Lezione>>();
+
+function indicePerId(materia: Materia): Map<string, Lezione> {
+  const inCache = cacheIndici.get(materia);
+  if (inCache) return inCache;
+  const indice = new Map(lezioniInOrdine(materia).map((l) => [l.id, l]));
+  cacheIndici.set(materia, indice);
+  return indice;
 }
 
 export function trovaLezione(materia: Materia, lezioneId: string): Lezione | undefined {
-  return lezioniInOrdine(materia).find((l) => l.id === lezioneId);
+  return indicePerId(materia).get(lezioneId);
 }
 
 /**
