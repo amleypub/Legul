@@ -20,39 +20,95 @@ import { Mascot } from '../components/Mascot';
 import { SpazioStatusBar } from '../components/TitoloSchermata';
 import { Button3D } from '../components/Button3D';
 import type { RootStackParamList } from '../navigation/types';
-import { colors, EDGE_3D, radius, softShadow, spacing } from '../theme';
+import { colors, EDGE_3D, radius, spacing } from '../theme';
 
-const VANTAGGI: { icona: keyof typeof Ionicons.glyphMap; testo: string }[] = [
-  { icona: 'sync', testo: 'Ritrova i tuoi progressi su ogni dispositivo' },
-  { icona: 'cloud-done', testo: 'Backup automatico di punti, streak e stelle' },
-  { icona: 'shield-checkmark', testo: 'Accesso sicuro con Apple, Google o email' },
+const VANTAGGI = [
+  'Ritrova i tuoi progressi su ogni dispositivo',
+  'Backup automatico di punti, streak e stelle',
+  'Accesso sicuro con Apple, Google o email',
 ];
 
-/** Riga di rimando a un documento legale, nella card Impostazioni. */
-function VoceLegale({
-  etichetta,
+/**
+ * Riga di impostazione.
+ *
+ * L'icona sta su una tessera a tinta piena, una per voce: le tessere
+ * beige tutte uguali con l'icona blu erano il linguaggio delle
+ * impostazioni di dieci anni fa, e non davano alcuna gerarchia. Il
+ * colore distingue le voci a colpo d'occhio e si scorre più in fretta.
+ */
+function Voce({
   icona,
+  tinta,
+  etichetta,
+  sottotitolo,
+  valore,
+  interruttore,
   onPress,
+  distruttiva = false,
+  occupata = false,
 }: {
-  etichetta: string;
   icona: keyof typeof Ionicons.glyphMap;
-  onPress: () => void;
+  tinta: string;
+  etichetta: string;
+  sottotitolo?: string;
+  valore?: string;
+  interruttore?: { acceso: boolean; cambia: (v: boolean) => void };
+  onPress?: () => void;
+  distruttiva?: boolean;
+  occupata?: boolean;
 }) {
+  const contenuto = (
+    <>
+      <View style={[styles.voceIcona, { backgroundColor: tinta }]}>
+        {occupata ? (
+          <ActivityIndicator size="small" color="#FFFFFF" />
+        ) : (
+          <Ionicons name={icona} size={17} color="#FFFFFF" />
+        )}
+      </View>
+      <View style={styles.voceTesto}>
+        <Text style={[styles.voceEtichetta, distruttiva && styles.voceDistruttiva]}>
+          {etichetta}
+        </Text>
+        {sottotitolo ? <Text style={styles.voceSottotitolo}>{sottotitolo}</Text> : null}
+      </View>
+      {interruttore ? (
+        <Switch
+          value={interruttore.acceso}
+          onValueChange={interruttore.cambia}
+          trackColor={{ true: colors.success, false: '#D7DCE6' }}
+          thumbColor="#FFFFFF"
+        />
+      ) : valore ? (
+        <Text style={styles.voceValore}>{valore}</Text>
+      ) : onPress ? (
+        <Ionicons name="chevron-forward" size={17} color="#B6BECC" />
+      ) : null}
+    </>
+  );
+
+  if (!onPress) return <View style={styles.voce}>{contenuto}</View>;
+
   return (
     <Pressable
       onPress={onPress}
-      accessibilityRole="link"
+      disabled={occupata}
+      accessibilityRole="button"
       accessibilityLabel={etichetta}
-      style={({ pressed }) => [styles.settingRow, pressed && styles.settingPremuto]}
+      style={({ pressed }) => [styles.voce, pressed && styles.vocePremuta]}
     >
-      <View style={styles.settingLeft}>
-        <View style={styles.settingIcona}>
-          <Ionicons name={icona} size={18} color={colors.primary} />
-        </View>
-        <Text style={styles.settingLabel}>{etichetta}</Text>
-      </View>
-      <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
+      {contenuto}
     </Pressable>
+  );
+}
+
+/** Titoletto di gruppo, fuori dalla card: dà struttura senza righe divisorie. */
+function Gruppo({ titolo, children }: { titolo: string; children: React.ReactNode }) {
+  return (
+    <View style={styles.gruppo}>
+      <Text style={styles.gruppoTitolo}>{titolo}</Text>
+      <View style={styles.gruppoCard}>{children}</View>
+    </View>
   );
 }
 
@@ -214,28 +270,14 @@ export default function ProfiloScreen() {
       </View>
 
       {utente ? (
-        /* Account collegato: i progressi viaggiano con l'utente */
-        <View style={styles.card}>
-          <View style={styles.sincroRiga}>
-            <View style={styles.sincroIcona}>
-              <Ionicons name="cloud-done" size={20} color={colors.success} />
-            </View>
-            <View style={styles.sincroTesto}>
-              <Text style={styles.cardTitolo}>Progressi al sicuro</Text>
-              <Text style={styles.cardSub}>
-                Punti, streak e stelle sono salvati sul tuo account: li ritrovi su ogni dispositivo
-                dove accedi.
-              </Text>
-            </View>
-          </View>
-          <Button3D
-            label="Esci dall’account"
-            onPress={confermaUscita}
-            color="#FFFFFF"
-            edgeColor="#D3D8E2"
-            textColor={colors.text}
-            style={styles.cta}
-          />
+        /* Fascia di stato, non una card: dice una cosa sola, e l'uscita
+           dall'account vive ora nel gruppo in fondo alla schermata. */
+        <View style={styles.sincro}>
+          <Ionicons name="cloud-done" size={20} color={colors.successEdge} />
+          <Text style={styles.sincroTesto}>
+            <Text style={styles.sincroForte}>Progressi sincronizzati.</Text> Li ritrovi su ogni
+            dispositivo dove accedi.
+          </Text>
         </View>
       ) : (
         /* Invito ad accedere */
@@ -247,11 +289,9 @@ export default function ProfiloScreen() {
           </Text>
           <View style={styles.vantaggi}>
             {VANTAGGI.map((v) => (
-              <View key={v.testo} style={styles.vantaggioRiga}>
-                <View style={styles.vantaggioIcona}>
-                  <Ionicons name={v.icona} size={18} color={colors.primary} />
-                </View>
-                <Text style={styles.vantaggioTesto}>{v.testo}</Text>
+              <View key={v} style={styles.vantaggioRiga}>
+                <Ionicons name="checkmark-circle" size={19} color={colors.success} />
+                <Text style={styles.vantaggioTesto}>{v}</Text>
               </View>
             ))}
           </View>
@@ -265,134 +305,83 @@ export default function ProfiloScreen() {
         </View>
       )}
 
-      {/* Impostazioni */}
-      <Text style={styles.sezioneTitolo}>Impostazioni</Text>
-      <View style={styles.settingsCard}>
-        <View style={styles.settingRow}>
-          <View style={styles.settingLeft}>
-            <View style={styles.settingIcona}>
-              <Ionicons name="volume-high" size={18} color={colors.primary} />
-            </View>
-            <Text style={styles.settingLabel}>Effetti sonori</Text>
-          </View>
-          <Switch
-            value={state.audioAttivo}
-            onValueChange={toggleAudio}
-            trackColor={{ true: colors.success, false: '#CBD2DE' }}
-            thumbColor="#FFFFFF"
-          />
-        </View>
-
-        <View style={styles.settingSeparatore} />
-
-        <View style={styles.settingRow}>
-          <View style={styles.settingLeft}>
-            <View style={styles.settingIcona}>
-              <Ionicons name="notifications" size={18} color={colors.primary} />
-            </View>
-            <View style={styles.settingTesto}>
-              <Text style={styles.settingLabel}>Promemoria giornaliero</Text>
-              <Text style={styles.settingSub}>
-                {state.promemoriaAttivo
-                  ? `Ogni giorno alle ${String(state.oraPromemoria).padStart(2, '0')}:00`
-                  : 'Un invito a studiare, per non perdere la streak'}
-              </Text>
-            </View>
-          </View>
-          <Switch
-            value={state.promemoriaAttivo}
-            onValueChange={(v) => void cambiaPromemoria(v)}
-            trackColor={{ true: colors.success, false: '#CBD2DE' }}
-            thumbColor="#FFFFFF"
-          />
-        </View>
-
+      <Gruppo titolo="Preferenze">
+        <Voce
+          icona="volume-high"
+          tinta="#7C5CE0"
+          etichetta="Effetti sonori"
+          interruttore={{ acceso: state.audioAttivo, cambia: toggleAudio }}
+        />
+        <Voce
+          icona="notifications"
+          tinta="#F5842B"
+          etichetta="Promemoria giornaliero"
+          sottotitolo={
+            state.promemoriaAttivo
+              ? undefined
+              : 'Un invito a studiare, per non perdere la streak'
+          }
+          interruttore={{
+            acceso: state.promemoriaAttivo,
+            cambia: (v) => void cambiaPromemoria(v),
+          }}
+        />
         {state.promemoriaAttivo && (
-          <>
-            <View style={styles.settingSeparatore} />
-            <Pressable
-              onPress={scegliOra}
-              accessibilityRole="button"
-              accessibilityLabel="Cambia l’ora del promemoria"
-              style={({ pressed }) => [styles.settingRow, pressed && styles.settingPremuto]}
-            >
-              <View style={styles.settingLeft}>
-                <View style={styles.settingIcona}>
-                  <Ionicons name="time" size={18} color={colors.primary} />
-                </View>
-                <Text style={styles.settingLabel}>Ora del promemoria</Text>
-              </View>
-              <Text style={styles.settingValore}>
-                {String(state.oraPromemoria).padStart(2, '0')}:00
-              </Text>
-            </Pressable>
-          </>
+          <Voce
+            icona="time"
+            tinta="#2FA8A0"
+            etichetta="Ora del promemoria"
+            valore={`${String(state.oraPromemoria).padStart(2, '0')}:00`}
+            onPress={scegliOra}
+          />
         )}
+      </Gruppo>
 
-        <View style={styles.settingSeparatore} />
-
-        <VoceLegale
-          etichetta="Informativa sulla privacy"
+      <Gruppo titolo="Documenti">
+        <Voce
           icona="lock-closed"
+          tinta="#4F7CF3"
+          etichetta="Informativa sulla privacy"
           onPress={() => navigation.navigate('DocumentoLegale', { documento: 'privacy' })}
         />
-        <View style={styles.settingSeparatore} />
-        <VoceLegale
-          etichetta="Termini di servizio"
+        <Voce
           icona="document-text"
+          tinta="#64748B"
+          etichetta="Termini di servizio"
           onPress={() => navigation.navigate('DocumentoLegale', { documento: 'termini' })}
         />
-      </View>
+      </Gruppo>
 
       {/* Azioni irreversibili, in fondo, dove ci si aspetta di trovarle. */}
-      <View style={styles.pericoloCard}>
-        <Pressable
-          onPress={confermaAzzeramento}
-          accessibilityRole="button"
-          accessibilityLabel="Azzera i progressi"
-          style={({ pressed }) => [styles.pericoloRiga, pressed && styles.pericoloPremuto]}
-        >
-          <View style={styles.pericoloIcona}>
-            <Ionicons name="refresh" size={19} color={colors.error} />
-          </View>
-          <View style={styles.pericoloTesto}>
-            <Text style={styles.pericoloLabel}>Azzera i progressi</Text>
-            <Text style={styles.pericoloSub}>
-              Riparti da zero mantenendo l’account e i contenuti.
-            </Text>
-          </View>
-        </Pressable>
-
+      <Gruppo titolo="Account">
         {utente && (
-          <>
-            <View style={styles.settingSeparatore} />
-            <Pressable
-            onPress={confermaEliminazione}
-            disabled={eliminazioneInCorso}
-            accessibilityRole="button"
-            accessibilityLabel="Elimina account"
-            accessibilityHint="Cancella per sempre account e progressi"
-            style={({ pressed }) => [styles.pericoloRiga, pressed && styles.pericoloPremuto]}
-          >
-            <View style={styles.pericoloIcona}>
-              {eliminazioneInCorso ? (
-                <ActivityIndicator size="small" color={colors.error} />
-              ) : (
-                <Ionicons name="trash-outline" size={19} color={colors.error} />
-              )}
-            </View>
-            <View style={styles.pericoloTesto}>
-              <Text style={styles.pericoloLabel}>
-                {eliminazioneInCorso ? 'Eliminazione in corso…' : 'Elimina account'}
-              </Text>
-              <Text style={styles.pericoloSub}>
-                Cancella per sempre account e progressi, su questo dispositivo e sul server.
-              </Text>
-            </View>
-            </Pressable>
-          </>
+          <Voce
+            icona="log-out"
+            tinta="#64748B"
+            etichetta="Esci dall’account"
+            onPress={confermaUscita}
+          />
         )}
-      </View>
+        <Voce
+          icona="refresh"
+          tinta="#C2610A"
+          etichetta="Azzera i progressi"
+          sottotitolo="Riparti da zero mantenendo account e contenuti"
+          onPress={confermaAzzeramento}
+          distruttiva
+        />
+        {utente && (
+          <Voce
+            icona="trash"
+            tinta={colors.error}
+            etichetta={eliminazioneInCorso ? 'Eliminazione in corso…' : 'Elimina account'}
+            sottotitolo="Cancella per sempre account e progressi, qui e sul server"
+            onPress={confermaEliminazione}
+            distruttiva
+            occupata={eliminazioneInCorso}
+          />
+        )}
+      </Gruppo>
     </ScrollView>
   );
 }
@@ -419,16 +408,18 @@ const styles = StyleSheet.create({
   heroTesto: { flex: 1, gap: 2 },
   heroNome: { color: '#FFFFFF', fontSize: 21, fontWeight: '900' },
   heroEmail: { color: 'rgba(255,255,255,0.6)', fontSize: 13 },
-  sincroRiga: { flexDirection: 'row', gap: spacing.sm + 2 },
-  sincroTesto: { flex: 1 },
-  sincroIcona: {
-    width: 40,
-    height: 40,
-    borderRadius: 13,
-    backgroundColor: colors.successSoft,
+  sincro: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    gap: spacing.sm,
+    backgroundColor: colors.successSoft,
+    borderRadius: radius.lg,
+    paddingVertical: spacing.sm + 2,
+    paddingHorizontal: spacing.md - 2,
+    marginTop: spacing.md,
   },
+  sincroTesto: { flex: 1, fontSize: 13.5, color: colors.text, lineHeight: 19 },
+  sincroForte: { fontWeight: '800', color: colors.successEdge },
   heroLivelloRow: { flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 3 },
   heroLivello: { color: 'rgba(255,255,255,0.85)', fontSize: 13, fontWeight: '700' },
   heroStats: {
@@ -453,88 +444,55 @@ const styles = StyleSheet.create({
   heroDivider: { width: 1, height: 30, backgroundColor: 'rgba(255,255,255,0.18)' },
   card: {
     backgroundColor: colors.card,
-    borderRadius: radius.xl,
+    borderRadius: radius.xxl,
     padding: spacing.lg,
     marginTop: spacing.lg,
-    ...softShadow,
-    shadowOpacity: 0.06,
   },
   cardTitolo: { fontSize: 20, fontWeight: '800', color: colors.text },
   cardSub: { fontSize: 14, color: colors.textMuted, lineHeight: 21, marginTop: spacing.xs },
-  vantaggi: { gap: spacing.sm, marginTop: spacing.md },
+  // Spunte al posto delle tessere beige: sono tre benefici in elenco,
+  // non tre voci di menu, e le tessere davano loro un peso che non hanno.
+  vantaggi: { gap: spacing.sm + 2, marginTop: spacing.md },
   vantaggioRiga: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
-  vantaggioIcona: {
-    width: 34,
-    height: 34,
-    borderRadius: 10,
-    backgroundColor: colors.accentSoft,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  vantaggioTesto: { flex: 1, fontSize: 14, color: colors.text },
+  vantaggioTesto: { flex: 1, fontSize: 14.5, color: colors.text, lineHeight: 20 },
   cta: { marginTop: spacing.lg },
-  sezioneTitolo: {
-    fontSize: 18,
+  // ——— Impostazioni ———
+  gruppo: { marginTop: spacing.lg },
+  gruppoTitolo: {
+    fontSize: 11,
     fontWeight: '800',
-    color: colors.text,
-    marginTop: spacing.lg,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
+    color: colors.textMuted,
+    marginLeft: spacing.xs,
     marginBottom: spacing.sm,
   },
-  settingsCard: {
+  // Niente filetti fra le righe: lo spazio e le tessere colorate bastano
+  // a separarle, e il risultato respira invece di sembrare un elenco.
+  gruppoCard: {
     backgroundColor: colors.card,
     borderRadius: radius.xl,
-    paddingHorizontal: spacing.md,
-    ...softShadow,
-    shadowOpacity: 0.06,
-  },
-  settingRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: spacing.md,
-  },
-  settingLeft: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
-  settingIcona: {
-    width: 34,
-    height: 34,
-    borderRadius: 10,
-    backgroundColor: colors.accentSoft,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  settingLabel: { fontSize: 15, fontWeight: '600', color: colors.text },
-  settingTesto: { flex: 1 },
-  settingSub: { fontSize: 12, color: colors.textMuted, lineHeight: 16, marginTop: 1 },
-  settingValore: { fontSize: 15, fontWeight: '700', color: colors.primary },
-  settingPremuto: { backgroundColor: '#F4F6FB' },
-  settingSeparatore: { height: 1, backgroundColor: '#EEF1F7', marginLeft: 34 + spacing.sm },
-
-  // Azione irreversibile: niente blocco 3D invitante, un riquadro sobrio
-  // che si distingue senza gridare.
-  pericoloCard: {
-    marginTop: spacing.lg,
-    backgroundColor: colors.card,
-    borderRadius: radius.xl,
-    borderWidth: 1,
-    borderColor: '#F3D5D8',
     overflow: 'hidden',
+    paddingVertical: 4,
   },
-  pericoloRiga: {
+  voce: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.sm,
-    padding: spacing.md,
+    gap: spacing.sm + 2,
+    paddingVertical: spacing.sm + 3,
+    paddingHorizontal: spacing.md - 2,
   },
-  pericoloPremuto: { backgroundColor: colors.errorSoft },
-  pericoloIcona: {
-    width: 34,
-    height: 34,
+  vocePremuta: { backgroundColor: '#F3F6FC' },
+  voceIcona: {
+    width: 32,
+    height: 32,
     borderRadius: 10,
-    backgroundColor: colors.errorSoft,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  pericoloTesto: { flex: 1 },
-  pericoloLabel: { fontSize: 15, fontWeight: '700', color: colors.error },
-  pericoloSub: { fontSize: 12, color: colors.textMuted, lineHeight: 17, marginTop: 2 },
+  voceTesto: { flex: 1 },
+  voceEtichetta: { fontSize: 15, fontWeight: '700', color: colors.text },
+  voceDistruttiva: { color: colors.error },
+  voceSottotitolo: { fontSize: 12.5, color: colors.textMuted, lineHeight: 17, marginTop: 1 },
+  voceValore: { fontSize: 15, fontWeight: '700', color: colors.textMuted },
 });
