@@ -1,3 +1,9 @@
+/**
+ * Calcoli sulla streak che dipendono dal calendario e non dallo stato
+ * salvato: quanti giorni di fila valgono *oggi*, e come si presenta la
+ * settimana corrente.
+ */
+
 /** Un giorno della settimana corrente, come lo mostra la striscia in Home. */
 export interface GiornoSettimana {
   /** Iniziale del giorno in italiano (L, M, M, G, V, S, D). */
@@ -24,6 +30,29 @@ function piuGiorni(data: string, giorni: number): string {
   const d = new Date(`${data}T00:00:00Z`);
   d.setUTCDate(d.getUTCDate() + giorni);
   return d.toISOString().slice(0, 10);
+}
+
+/**
+ * Quanti giorni di fila valgono oggi.
+ *
+ * Il valore salvato è la streak al momento dell'ultima attività, e viene
+ * ricalcolato solo quando si guadagnano punti: preso alla lettera,
+ * continuerebbe a dichiarare «4 giorni di fila» a chi ha studiato
+ * l'ultima volta la settimana scorsa. La serie è ancora viva soltanto se
+ * l'ultima attività è di oggi o di ieri; altrimenti è finita, anche se
+ * nessuno l'ha ancora scritto da nessuna parte.
+ */
+export function streakEffettiva(
+  streakSalvata: number,
+  ultimaAttivita: string | null,
+  oggi: string
+): number {
+  if (!ultimaAttivita || streakSalvata <= 0) return 0;
+  const distanza = distanzaGiorni(oggi, ultimaAttivita);
+  // Distanza negativa: data futura, dispositivo con l'orologio spostato.
+  // Meglio non fidarsi e non regalare una streak.
+  if (distanza < 0 || distanza > 1) return 0;
+  return streakSalvata;
 }
 
 /**

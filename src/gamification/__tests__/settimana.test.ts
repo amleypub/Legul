@@ -1,7 +1,38 @@
-import { settimanaCorrente } from '../settimana';
+import { settimanaCorrente, streakEffettiva } from '../settimana';
 
 // Sabato 22 agosto 2026: la settimana va da lunedì 17 a domenica 23.
 const SABATO = '2026-08-22';
+
+describe('streakEffettiva', () => {
+  it('vale il numero salvato se hai studiato oggi', () => {
+    expect(streakEffettiva(4, SABATO, SABATO)).toBe(4);
+  });
+
+  it('resta viva se l’ultima attività è di ieri', () => {
+    // La giornata non è finita: la serie può ancora essere allungata.
+    expect(streakEffettiva(4, '2026-08-21', SABATO)).toBe(4);
+  });
+
+  /**
+   * Il difetto che questa funzione esiste per evitare: il valore salvato
+   * viene aggiornato solo quando si guadagnano punti, quindi da solo
+   * continuerebbe a dichiarare una serie finita da giorni.
+   */
+  it('si azzera dopo un giorno saltato', () => {
+    expect(streakEffettiva(4, '2026-08-20', SABATO)).toBe(0);
+    expect(streakEffettiva(30, '2026-07-01', SABATO)).toBe(0);
+  });
+
+  it('vale zero senza alcuna attività registrata', () => {
+    expect(streakEffettiva(0, null, SABATO)).toBe(0);
+    expect(streakEffettiva(5, null, SABATO)).toBe(0);
+  });
+
+  it('non si fida di una data futura', () => {
+    // Orologio del dispositivo spostato indietro, o dato manomesso.
+    expect(streakEffettiva(9, '2026-09-01', SABATO)).toBe(0);
+  });
+});
 
 describe('settimanaCorrente', () => {
   it('restituisce sette giorni da lunedì a domenica', () => {

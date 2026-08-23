@@ -3,6 +3,7 @@ import {
   lezioneSbloccata,
   lezioniInOrdine,
   percorsoPerMateria,
+  statiLezioni,
   trovaLezione,
   unitaGratuita,
 } from '../percorso';
@@ -73,6 +74,50 @@ describe('unitaGratuita', () => {
     expect(unitaGratuita(2)).toBe(true);
     expect(unitaGratuita(3)).toBe(false);
     expect(unitaGratuita(4)).toBe(false);
+  });
+});
+
+describe('statiLezioni', () => {
+  const ordine = lezioniInOrdine('Diritto civile');
+
+  it('apre la prima e chiude tutte le altre a percorso vuoto', () => {
+    const stati = statiLezioni(ordine, {});
+    expect(stati.get(ordine[0].id)).toBe('corrente');
+    expect(stati.get(ordine[1].id)).toBe('bloccata');
+    expect(stati.get(ordine[10].id)).toBe('bloccata');
+  });
+
+  it('sposta il fronte avanti man mano che si completa', () => {
+    const stati = statiLezioni(ordine, { [ordine[0].id]: 3, [ordine[1].id]: 1 });
+    expect(stati.get(ordine[0].id)).toBe('completata');
+    expect(stati.get(ordine[1].id)).toBe('completata');
+    expect(stati.get(ordine[2].id)).toBe('corrente');
+    expect(stati.get(ordine[3].id)).toBe('bloccata');
+  });
+
+  it('non considera completata una lezione senza stelle', () => {
+    const stati = statiLezioni(ordine, { [ordine[0].id]: 0 });
+    expect(stati.get(ordine[0].id)).toBe('corrente');
+    expect(stati.get(ordine[1].id)).toBe('bloccata');
+  });
+
+  it('assegna uno stato a ogni lezione del percorso', () => {
+    const stati = statiLezioni(ordine, {});
+    expect(stati.size).toBe(ordine.length);
+  });
+
+  /**
+   * `lezioneSbloccata` e la schermata del percorso devono rispondere alla
+   * stessa regola: prima erano due implementazioni separate, libere di
+   * divergere alla prima modifica.
+   */
+  it('concorda con lezioneSbloccata', () => {
+    const stelle = { [ordine[0].id]: 2, [ordine[1].id]: 3 };
+    const stati = statiLezioni(ordine, stelle);
+    for (const l of ordine.slice(0, 12)) {
+      const sbloccata = lezioneSbloccata('Diritto civile', l.id, stelle);
+      expect(sbloccata).toBe(stati.get(l.id) !== 'bloccata');
+    }
   });
 });
 

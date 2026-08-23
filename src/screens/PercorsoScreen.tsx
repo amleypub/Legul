@@ -1,12 +1,21 @@
-import React, { useEffect, useRef } from 'react';
-import { Animated, Easing, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useMemo, useRef } from 'react';
+import {
+  Alert,
+  Animated,
+  Easing,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
 import * as Haptics from 'expo-haptics';
 import {
-  lezioniInOrdine,
   percorsoPerMateria,
+  statiLezioni,
   unitaGratuita,
   type Lezione,
 } from '../data/percorso';
@@ -23,10 +32,19 @@ const OFFSETS = [0, 55, 88, 55, 0, -55, -88, -55];
 
 type StatoNodo = 'bloccata' | 'corrente' | 'completata' | 'premium';
 
+/** Come il nodo viene letto ad alta voce da VoiceOver e TalkBack. */
+const ETICHETTA_STATO: Record<StatoNodo, string> = {
+  bloccata: 'ancora chiusa',
+  corrente: 'da fare',
+  completata: 'completata',
+  premium: 'riservata a Premium',
+};
+
 function Nodo({
   lezione,
   stato,
   stelle,
+  mostraInizia = false,
   offset,
   tinte,
   onPress,
@@ -34,6 +52,8 @@ function Nodo({
   lezione: Lezione;
   stato: StatoNodo;
   stelle: number;
+  /** Il fumetto «INIZIA» compare su una sola lezione del percorso. */
+  mostraInizia?: boolean;
   offset: number;
   tinte: { start: string; end: string; edge: string; soft: string };
   onPress: () => void;
@@ -43,7 +63,7 @@ function Nodo({
   const halo = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    if (stato !== 'corrente') return;
+    if (!mostraInizia) return;
     const loopBounce = Animated.loop(
       Animated.sequence([
         Animated.timing(bounce, { toValue: -7, duration: 550, useNativeDriver: true }),
@@ -62,7 +82,7 @@ function Nodo({
       loopBounce.stop();
       loopHalo.stop();
     };
-  }, [stato, bounce, halo]);
+  }, [mostraInizia, bounce, halo]);
 
   const bloccata = stato === 'bloccata';
   const premium = stato === 'premium';
@@ -83,14 +103,15 @@ function Nodo({
 
   return (
     <View style={[styles.nodoRiga, { transform: [{ translateX: offset }] }]}>
-      {stato === 'corrente' && (
+      {mostraInizia && (
         <Animated.View style={[styles.iniziaBubble, { transform: [{ translateY: bounce }] }]}>
           <Text style={[styles.iniziaTesto, { color: tinte.end }]}>INIZIA</Text>
           <View style={styles.iniziaFreccia} />
         </Animated.View>
       )}
       <Pressable
-        disabled={bloccata && !premium}
+        accessibilityRole="button"
+        accessibilityLabel={`Lezione ${lezione.indice + 1}, ${ETICHETTA_STATO[stato]}`}
         onPressIn={() => {
           Animated.spring(translateY, {
             toValue: EDGE,
@@ -111,7 +132,7 @@ function Nodo({
         onPress={onPress}
         style={styles.nodoWrap}
       >
-        {stato === 'corrente' && (
+        {mostraInizia && (
           <Animated.View
             pointerEvents="none"
             style={[
@@ -205,15 +226,33 @@ function BloccoPremium({
   );
 }
 
+/**
+ * Un nodo bloccato prima non reagiva al tocco: premevi e non succedeva
+ * nulla, che è come si comporta un'app rotta. Ora dice perché.
+ */
+function spiegaBlocco(indicePrecedente: number) {
+  Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning).catch(() => {});
+  Alert.alert(
+    'Lezione ancora chiusa',
+    `Completa la lezione ${indicePrecedente + 1} con almeno una stella per sbloccare questa.`,
+    [{ text: 'Ho capito' }]
+  );
+}
+
 export default function PercorsoScreen({ route, navigation }: RootStackScreenProps<'Percorso'>) {
   const { materia } = route.params;
   const { state } = useGamification();
   const tinte = materiaColors[materia];
   const unita = percorsoPerMateria(materia);
-  const ordine = lezioniInOrdine(materia);
+  const ordine = useMemo(() => unita.flatMap((u) => u.lezioni), [unita]);
 
-  // Prima lezione non ancora completata: è il nodo "corrente".
-  const correnteId = ordine.find((l) => (state.lezioni[l.id] ?? 0) < 1)?.id;
+  // Regola di sblocco: una sola implementazione, condivisa con il resto
+  // dell'app. Prima era riscritta a mano qui, e le due potevano divergere.
+  const stati = useMemo(() => statiLezioni(ordine, state.lezioni), [ordine, state.lezioni]);
+
+  // Il fumetto «INIZIA» va su una sola lezione, anche nel caso anomalo in
+  // cui più di una risultasse aperta e non ancora superata.
+  const primaDaFare = ordine.find((l) => stati.get(l.id) === 'corrente')?.id;
 
   let contatoreGlobale = -1;
 
@@ -273,25 +312,23 @@ export default function PercorsoScreen({ route, navigation }: RootStackScreenPro
               />
             ) : (
               <View style={styles.nodi}>
-                {u.lezioni.map((lezione) => {
+                {u.lezioni.map((lezione, i) => {
                   contatoreGlobale += 1;
                   const stelle = state.lezioni[lezione.id] ?? 0;
-                  const stato: StatoNodo =
-                    stelle >= 1
-                      ? 'completata'
-                      : lezione.id === correnteId
-                        ? 'corrente'
-                        : 'bloccata';
+                  const stato = stati.get(lezione.id) ?? 'bloccata';
                   return (
                     <Nodo
                       key={lezione.id}
                       lezione={lezione}
                       stato={stato}
                       stelle={stelle}
+                      mostraInizia={lezione.id === primaDaFare}
                       offset={OFFSETS[contatoreGlobale % OFFSETS.length]}
                       tinte={tinte}
                       onPress={() =>
-                        navigation.navigate('Lezione', { materia, lezioneId: lezione.id })
+                        stato === 'bloccata'
+                          ? spiegaBlocco(u.lezioni[i - 1]?.indice ?? lezione.indice)
+                          : navigation.navigate('Lezione', { materia, lezioneId: lezione.id })
                       }
                     />
                   );

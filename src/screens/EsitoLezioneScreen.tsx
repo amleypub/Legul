@@ -20,7 +20,13 @@ function Stella({ accesa, ritardo }: { accesa: boolean; ritardo: number }) {
       Animated.delay(ritardo),
       Animated.spring(scale, { toValue: 1, speed: 10, bounciness: 14, useNativeDriver: true }),
     ]).start();
-  }, [ritardo, scale]);
+
+    // Ogni stella che si accende ha il suo scatto sonoro, sincronizzato
+    // con la comparsa: tre stelle, tre note in sequenza.
+    if (!accesa) return;
+    const t = setTimeout(() => playSound('star'), ritardo);
+    return () => clearTimeout(t);
+  }, [ritardo, scale, accesa]);
 
   return (
     <Animated.View style={{ transform: [{ scale }] }}>

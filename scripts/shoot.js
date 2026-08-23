@@ -79,6 +79,13 @@ async function main() {
       ultimoGiornoAttivita: oggi,
       puntiOggi: 30,
     };
+    // `--streak-rotta`: ultima attività di cinque giorni fa. Serve a
+    // controllare che il contatore dei giorni di fila non menta.
+    if (process.argv.includes('--streak-rotta')) {
+      const vecchio = new Date(Date.now() - 5 * 86400000).toISOString().slice(0, 10);
+      stato.ultimoGiornoAttivita = vecchio;
+      stato.puntiOggi = 0;
+    }
     await page.addInitScript(
       ([chiave, valore]) => window.localStorage.setItem(chiave, valore),
       ['@legul/gamification/v1', JSON.stringify(stato)]

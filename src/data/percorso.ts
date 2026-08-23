@@ -78,16 +78,49 @@ export function trovaLezione(materia: Materia, lezioneId: string): Lezione | und
 }
 
 /**
+ * Stato di una lezione lungo il percorso.
+ * `corrente` è quella su cui riprendere: sbloccata ma non ancora superata.
+ */
+export type StatoLezione = 'completata' | 'corrente' | 'bloccata';
+
+/**
+ * Calcola in un colpo solo lo stato di tutte le lezioni di un percorso.
+ *
+ * Regola: la prima lezione è sempre aperta, le successive si aprono
+ * quando la precedente ha conquistato almeno una stella.
+ *
+ * Riceve l'elenco già ordinato invece di ricostruirlo: la schermata del
+ * percorso ce l'ha in mano, e ricalcolarlo per ogni nodo significherebbe
+ * rileggere l'intera banca domande decine di volte.
+ */
+export function statiLezioni(
+  ordine: Lezione[],
+  stellePerLezione: Record<string, number>
+): Map<string, StatoLezione> {
+  const stati = new Map<string, StatoLezione>();
+  let precedenteSuperata = true; // la prima lezione non ha vincoli
+  for (const lezione of ordine) {
+    const stelle = stellePerLezione[lezione.id] ?? 0;
+    if (stelle >= 1) {
+      stati.set(lezione.id, 'completata');
+    } else {
+      stati.set(lezione.id, precedenteSuperata ? 'corrente' : 'bloccata');
+    }
+    precedenteSuperata = stelle >= 1;
+  }
+  return stati;
+}
+
+/**
  * Una lezione è sbloccata se è la prima del percorso o se la precedente
- * è stata completata con almeno una stella.
+ * è stata completata con almeno una stella. Comodo per un controllo
+ * isolato; per un'intera schermata usare `statiLezioni`.
  */
 export function lezioneSbloccata(
   materia: Materia,
   lezioneId: string,
   stellePerLezione: Record<string, number>
 ): boolean {
-  const ordine = lezioniInOrdine(materia);
-  const idx = ordine.findIndex((l) => l.id === lezioneId);
-  if (idx <= 0) return idx === 0;
-  return (stellePerLezione[ordine[idx - 1].id] ?? 0) >= 1;
+  const stato = statiLezioni(lezioniInOrdine(materia), stellePerLezione).get(lezioneId);
+  return stato !== undefined && stato !== 'bloccata';
 }

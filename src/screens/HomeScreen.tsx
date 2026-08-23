@@ -10,7 +10,7 @@ import { ProgressBar } from '../components/ProgressBar';
 import { AnelloProgresso, EtichettaAnello } from '../components/AnelloProgresso';
 import { Button3D } from '../components/Button3D';
 import { Mascot } from '../components/Mascot';
-import { colors, EDGE_3D, radius, softShadow, spacing } from '../theme';
+import { colors, EDGE_3D, radius, spacing } from '../theme';
 
 /** Obiettivo giornaliero in punti: la ragione per riaprire l'app domani. */
 export const OBIETTIVO_GIORNALIERO = 50;
@@ -69,7 +69,7 @@ function GiornoPill({ g }: { g: GiornoSettimana }) {
 }
 
 export default function HomeScreen() {
-  const { state, livello, prossimoLivello, progressoLivello } = useGamification();
+  const { state, streak, livello, prossimoLivello, progressoLivello } = useGamification();
   // La Home sta dentro il tab navigator: la tab «Quiz» è una sorella.
   const navigation = useNavigation<{ navigate: (schermata: string) => void }>();
 
@@ -85,31 +85,40 @@ export default function HomeScreen() {
       ? `Ti mancano ${mancanti} punti: circa ${Math.ceil(mancanti / 10)} risposte esatte.`
       : `${OBIETTIVO_GIORNALIERO} punti al giorno: bastano cinque risposte esatte.`;
 
+  // Alla striscia serve la streak *salvata*, non quella corretta: i giorni
+  // accesi sono la cronologia vera, e vanno mostrati anche quando la serie
+  // si è interrotta. È proprio il confronto fra le fiamme di lunedì e lo
+  // zero di oggi a far capire che cosa è successo.
   const settimana = useMemo(
     () => settimanaCorrente(oggiISO(), state.ultimoGiornoAttivita, state.streak),
     [state.ultimoGiornoAttivita, state.streak]
   );
 
-  // Animazioni streak: bagliore pulsante + fiamma che respira.
-  const glow = useRef(new Animated.Value(0)).current;
+  // La fiamma della streak respira. Si anima solo quando la streak è
+  // accesa: un ciclo infinito che nessuno vede consuma batteria e basta.
   const flame = useRef(new Animated.Value(0)).current;
+  const streakAccesa = streak > 0;
   useEffect(() => {
-    const mk = (v: Animated.Value, d: number) =>
-      Animated.loop(
-        Animated.sequence([
-          Animated.timing(v, { toValue: 1, duration: d, easing: Easing.inOut(Easing.quad), useNativeDriver: true }),
-          Animated.timing(v, { toValue: 0, duration: d, easing: Easing.inOut(Easing.quad), useNativeDriver: true }),
-        ])
-      );
-    const a = mk(glow, 1400);
-    const b = mk(flame, 700);
-    a.start();
-    b.start();
-    return () => {
-      a.stop();
-      b.stop();
-    };
-  }, [glow, flame]);
+    if (!streakAccesa) return;
+    const respiro = Animated.loop(
+      Animated.sequence([
+        Animated.timing(flame, {
+          toValue: 1,
+          duration: 700,
+          easing: Easing.inOut(Easing.quad),
+          useNativeDriver: true,
+        }),
+        Animated.timing(flame, {
+          toValue: 0,
+          duration: 700,
+          easing: Easing.inOut(Easing.quad),
+          useNativeDriver: true,
+        }),
+      ])
+    );
+    respiro.start();
+    return () => respiro.stop();
+  }, [flame, streakAccesa]);
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -196,16 +205,16 @@ export default function HomeScreen() {
                 <Ionicons
                   name="flame"
                   size={22}
-                  color={state.streak > 0 ? colors.streakTo : 'rgba(255,255,255,0.28)'}
+                  color={streak > 0 ? colors.streakTo : 'rgba(255,255,255,0.28)'}
                 />
               </Animated.View>
               <Text style={styles.streakNumero}>
-                {state.streak}
+                {streak}
                 <Text style={styles.streakNumeroLabel}>
-                  {state.streak === 1 ? ' giorno di fila' : ' giorni di fila'}
+                  {streak === 1 ? ' giorno di fila' : ' giorni di fila'}
                 </Text>
               </Text>
-              {state.streak > 0 && <Mascot state="celebrating" size={40} />}
+              {streak > 0 && <Mascot state="celebrating" size={40} />}
             </View>
 
             <View style={styles.giorni}>

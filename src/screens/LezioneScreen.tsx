@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
+  Alert,
   Animated,
   Pressable,
   ScrollView,
@@ -114,9 +115,46 @@ export default function LezioneScreen({ route, navigation }: RootStackScreenProp
   const progress = useRef(new Animated.Value(0)).current;
   const sheet = useRef(new Animated.Value(400)).current;
   const heartShake = useRef(new Animated.Value(0)).current;
+  /** Alzata quando siamo noi a uscire (fine lezione o abbandono confermato). */
+  const uscitaConsentita = useRef(false);
 
   const domande = lezione?.domande ?? [];
   const domanda = domande[indice];
+
+  // Nulla da perdere finché non si è risposto alla prima domanda.
+  const lezioneIniziata = indice > 0 || confermata || selezionata !== null;
+
+  /**
+   * Chiede conferma prima di abbandonare una lezione già iniziata: le
+   * risposte date non vengono salvate da nessuna parte, e prima bastava
+   * sfiorare la X alla nona domanda su dieci per perdere tutto.
+   *
+   * Intercetta l'uscita e non solo il tocco sulla X, così vale anche per
+   * il tasto indietro di Android e per il gesto di trascinamento su iOS.
+   */
+  useEffect(
+    () =>
+      navigation.addListener('beforeRemove', (e) => {
+        if (uscitaConsentita.current || !lezioneIniziata) return;
+        e.preventDefault();
+        Alert.alert(
+          'Vuoi uscire dalla lezione?',
+          'Le risposte date finora andranno perse e la lezione ripartirà da capo.',
+          [
+            { text: 'Continua la lezione', style: 'cancel' },
+            {
+              text: 'Esci',
+              style: 'destructive',
+              onPress: () => {
+                uscitaConsentita.current = true;
+                navigation.dispatch(e.data.action);
+              },
+            },
+          ]
+        );
+      }),
+    [navigation, lezioneIniziata]
+  );
 
   useEffect(() => {
     Animated.timing(progress, {
@@ -174,6 +212,7 @@ export default function LezioneScreen({ route, navigation }: RootStackScreenProp
   function continua() {
     // `cuori` è già stato decrementato in conferma() al momento dell'errore.
     if (!giusta && cuori <= 0) {
+      uscitaConsentita.current = true;
       navigation.replace('EsitoLezione', {
         materia,
         lezioneId,
@@ -194,6 +233,7 @@ export default function LezioneScreen({ route, navigation }: RootStackScreenProp
       return;
     }
     const esito = registraLezioneCompletata(lezioneId, corrette.current, domande.length);
+    uscitaConsentita.current = true;
     navigation.replace('EsitoLezione', {
       materia,
       lezioneId,

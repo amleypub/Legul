@@ -56,7 +56,7 @@ function VoceLegale({
 
 export default function ProfiloScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const { state, livello, toggleAudio, azzeraProgressi } = useGamification();
+  const { state, streak, livello, toggleAudio, azzeraProgressi } = useGamification();
   const { utente, esci, eliminaAccount } = useAuth();
   const [eliminazioneInCorso, setEliminazioneInCorso] = useState(false);
 
@@ -138,7 +138,7 @@ export default function ProfiloScreen() {
           </View>
           <View style={styles.heroDivider} />
           <View style={styles.heroStat}>
-            <Text style={styles.heroStatValore}>{state.streak}</Text>
+            <Text style={styles.heroStatValore}>{streak}</Text>
             <Text style={styles.heroStatLabel}>streak</Text>
           </View>
           <View style={styles.heroDivider} />

@@ -11,6 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { Ionicons } from '@expo/vector-icons';
 import { setAudioEnabled } from '../audio/sounds';
 import { useAuth } from '../auth/AuthContext';
+import { streakEffettiva } from './settimana';
 import {
   caricaProgressi,
   scaricaProgressi,
@@ -144,6 +145,12 @@ export interface EventoGamification {
 
 interface GamificationContextValue {
   state: GamificationState;
+  /**
+   * Giorni di fila validi oggi. Da usare al posto di `state.streak`, che
+   * è il valore congelato all'ultima attività: dopo un giorno saltato
+   * quello resta alto finché non si guadagnano nuovi punti.
+   */
+  streak: number;
   livello: Livello;
   prossimoLivello: Livello | null;
   /** Avanzamento (0–1) verso il prossimo livello. */
@@ -445,6 +452,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
       : 1;
     return {
       state,
+      streak: streakEffettiva(state.streak, state.ultimoGiornoAttivita, oggiISO()),
       livello,
       prossimoLivello,
       progressoLivello: Math.min(Math.max(progressoLivello, 0), 1),
