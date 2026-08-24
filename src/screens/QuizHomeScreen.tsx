@@ -11,7 +11,7 @@ import { useGamification } from '../gamification/GamificationContext';
 import type { RootStackParamList } from '../navigation/types';
 import type { Materia } from '../types';
 import { TitoloSchermata } from '../components/TitoloSchermata';
-import { colors, materiaColors, radius, spacing, SCALA_PRESSIONE } from '../theme';
+import { colors, materiaColors, radius, spacing, SCALA_PRESSIONE, SPAZIO_TAB } from '../theme';
 
 export const ICONA_MATERIA: Record<Materia, string> = {
   'Diritto civile': 'handshake',
@@ -148,7 +148,7 @@ export default function QuizHomeScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, },
-  content: { padding: spacing.md, paddingBottom: spacing.xl, gap: spacing.md },
+  content: { padding: spacing.md, paddingBottom: SPAZIO_TAB, gap: spacing.md },
   titolo: { fontSize: 28, fontWeight: '900', color: colors.text },
   sottotitolo: { fontSize: 14, color: colors.textMuted, lineHeight: 20, marginBottom: spacing.xs },
 

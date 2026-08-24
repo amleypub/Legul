@@ -10,7 +10,7 @@ import { Superficie } from '../components/Superficie';
 import type { RootStackParamList } from '../navigation/types';
 import type { TipoTraccia } from '../types';
 import { TitoloSchermata } from '../components/TitoloSchermata';
-import { colors, materiaColors, radius, spacing } from '../theme';
+import { colors, materiaColors, radius, spacing, SPAZIO_TAB } from '../theme';
 
 /** Tracce che hanno uno svolgimento pubblicato: l'elenco non cambia a runtime. */
 const svolto = new Set(tracceConSvolgimento());
@@ -131,7 +131,7 @@ export default function TracceScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, },
-  content: { padding: spacing.md, paddingBottom: spacing.xl },
+  content: { padding: spacing.md, paddingBottom: SPAZIO_TAB },
   intro: { fontSize: 14, color: colors.textMuted, marginBottom: spacing.sm, lineHeight: 20 },
   riformaWrap: { marginBottom: spacing.md },
   riforma: {

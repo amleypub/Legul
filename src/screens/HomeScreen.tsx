@@ -21,7 +21,7 @@ import { Mascot } from '../components/Mascot';
 import { Sfondo } from '../components/Sfondo';
 import { Superficie } from '../components/Superficie';
 import { TitoloSchermata } from '../components/TitoloSchermata';
-import { alone, alpha, colors, materiaColors, ombra, radius, spacing, type } from '../theme';
+import { alone, alpha, colors, materiaColors, ombra, radius, spacing, type, SPAZIO_TAB } from '../theme';
 
 /** Obiettivo giornaliero in punti: la ragione per riaprire l'app domani. */
 export const OBIETTIVO_GIORNALIERO = 50;
@@ -436,7 +436,7 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  content: { padding: spacing.md, paddingBottom: spacing.xl },
+  content: { padding: spacing.md, paddingBottom: SPAZIO_TAB },
 
   heroWrap: { borderRadius: radius.xxl },
   hero: {

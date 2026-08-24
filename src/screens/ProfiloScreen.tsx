@@ -20,7 +20,7 @@ import { Mascot } from '../components/Mascot';
 import { SpazioStatusBar } from '../components/TitoloSchermata';
 import { Bottone } from '../components/Bottone';
 import type { RootStackParamList } from '../navigation/types';
-import { alpha, colors, radius, spacing } from '../theme';
+import { alpha, colors, radius, spacing, SPAZIO_TAB } from '../theme';
 
 const VANTAGGI = [
   'Ritrova i tuoi progressi su ogni dispositivo',
@@ -398,7 +398,7 @@ export default function ProfiloScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, },
-  content: { padding: spacing.md, paddingBottom: spacing.xl },
+  content: { padding: spacing.md, paddingBottom: SPAZIO_TAB },
   heroWrap: { },
   hero: {
     borderRadius: radius.xxl,

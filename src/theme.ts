@@ -62,6 +62,15 @@ export const alpha = {
   vetroForte: 'rgba(255,255,255,0.86)',
   /** Superficie appoggiata su una superficie: va un filo più densa. */
   vetroInterno: 'rgba(255,255,255,0.55)',
+  /**
+   * Barra dei tab: più densa delle superfici di contenuto.
+   *
+   * È un elemento di comando, non di lettura: deve lasciar intuire che
+   * sotto scorre qualcosa senza che quel qualcosa competa con le
+   * etichette. Al settanta per cento un pulsante giallo che le passa
+   * dietro le rende illeggibili.
+   */
+  vetroChrome: 'rgba(255,255,255,0.93)',
 
   /** Bordo standard: nero a bassissima opacità, prende la tinta del fondo. */
   bordo: 'rgba(16,20,34,0.07)',
@@ -203,6 +212,16 @@ export const molla = {
   /** Movimenti ampi, tipo fogli che salgono. */
   ampia: { damping: 24, stiffness: 140, mass: 1 },
 } as const;
+
+/**
+ * Spazio da lasciare in fondo alle schermate a tab.
+ *
+ * La barra dei tab è traslucida e posizionata in assoluto, così il
+ * contenuto le scorre sotto e si intravede: in cambio non riserva più
+ * il proprio spazio, e senza questo margine l'ultima riga di ogni
+ * elenco resterebbe nascosta dietro di essa.
+ */
+export const SPAZIO_TAB = 96;
 
 /** Scala a cui scende un elemento premuto. */
 export const SCALA_PRESSIONE = 0.972;

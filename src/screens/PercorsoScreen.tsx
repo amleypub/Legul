@@ -27,10 +27,9 @@ import { useGamification } from '../gamification/GamificationContext';
 import { Mascot } from '../components/Mascot';
 import { Bottone } from '../components/Bottone';
 import type { RootStackScreenProps } from '../navigation/types';
-import { alpha, colors, materiaColors, radius, softShadow, spacing } from '../theme';
+import { alone, alpha, colors, materiaColors, radius, softShadow, spacing, SCALA_PRESSIONE } from '../theme';
 
 const NODE = 76;
-const EDGE = 7;
 /** Offset orizzontali ciclici che disegnano la serpentina del percorso. */
 const OFFSETS = [0, 55, 88, 55, 0, -55, -88, -55];
 
@@ -62,7 +61,7 @@ function Nodo({
   tinte: { start: string; end: string; edge: string; soft: string };
   onPress: () => void;
 }) {
-  const translateY = useRef(new Animated.Value(0)).current;
+  const premuto = useRef(new Animated.Value(0)).current;
   const bounce = useRef(new Animated.Value(0)).current;
   const halo = useRef(new Animated.Value(0)).current;
 
@@ -117,8 +116,8 @@ function Nodo({
         accessibilityRole="button"
         accessibilityLabel={`Lezione ${lezione.indice + 1}, ${ETICHETTA_STATO[stato]}`}
         onPressIn={() => {
-          Animated.spring(translateY, {
-            toValue: EDGE,
+          Animated.spring(premuto, {
+            toValue: 1,
             speed: 40,
             bounciness: 0,
             useNativeDriver: true,
@@ -126,7 +125,7 @@ function Nodo({
           Haptics.selectionAsync().catch(() => {});
         }}
         onPressOut={() =>
-          Animated.spring(translateY, {
+          Animated.spring(premuto, {
             toValue: 0,
             speed: 40,
             bounciness: 0,
@@ -150,7 +149,21 @@ function Nodo({
           />
         )}
         <Animated.View
-          style={[styles.nodoFace, { backgroundColor: faccia, transform: [{ translateY }] }]}
+          style={[
+            styles.nodoFace,
+            !bloccata && alone(tinte.end, 'tenue'),
+            {
+              backgroundColor: faccia,
+              transform: [
+                {
+                  scale: premuto.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [1, SCALA_PRESSIONE],
+                  }),
+                },
+              ],
+            },
+          ]}
         >
           {premium ? (
             <MaterialCommunityIcons name="crown" size={30} color={colors.accent} />
@@ -533,7 +546,7 @@ const styles = StyleSheet.create({
 
   nodoRigaWrap: { alignItems: 'center', marginBottom: spacing.md },
   nodoRiga: { alignItems: 'center' },
-  nodoWrap: { width: NODE, height: NODE + EDGE },
+  nodoWrap: { width: NODE, height: NODE },
   halo: {
     position: 'absolute',
     left: 0,
@@ -541,14 +554,6 @@ const styles = StyleSheet.create({
     height: NODE,
     borderRadius: NODE / 2,
     borderWidth: 4,
-    top: EDGE,
-  },
-  nodoEdge: {
-    position: 'absolute',
-    top: EDGE,
-    width: NODE,
-    height: NODE,
-    borderRadius: NODE / 2,
   },
   nodoFace: {
     width: NODE,

@@ -7,7 +7,7 @@ import { Superficie } from '../components/Superficie';
 import { Mascot } from '../components/Mascot';
 import type { MaterialeEsame } from '../types';
 import { TitoloSchermata } from '../components/TitoloSchermata';
-import { alpha, colors, radius, spacing } from '../theme';
+import { alpha, colors, radius, spacing, SPAZIO_TAB } from '../theme';
 
 const CATEGORIE: MaterialeEsame['categoria'][] = ['Codici', 'Manuali', 'Cancelleria e utilità'];
 
@@ -97,7 +97,7 @@ export default function MaterialeScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, },
-  content: { padding: spacing.md, paddingBottom: spacing.xl },
+  content: { padding: spacing.md, paddingBottom: SPAZIO_TAB },
   headerCard: {
     flexDirection: 'row',
     alignItems: 'center',
