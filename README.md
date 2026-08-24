@@ -2,13 +2,36 @@
 
 App mobile per **Android e iOS** (React Native + Expo) per prepararsi all'esame di abilitazione alla professione forense, con studio **gamificato**: punti, livelli, streak giornaliera, badge e messaggi di incoraggiamento.
 
+## Linguaggio visivo
+
+Superfici bianche non del tutto opache posate su un fondale con velature
+appena percepibili, separate dallo sfondo da un filo di bordo scuro a
+bassissima opacità e da un'ombra ampia e morbida. Niente bordi duri.
+
+- **Perché il bordo è scuro-trasparente e non grigio pieno**: il fondale
+  cambia tinta da una zona all'altra, e un grigio fisso stacca mentre un
+  nero al sette per cento prende il colore di ciò che ha sotto
+- **Il fondale non è un colore piatto**: due velature più una macchia
+  colorata, tutte a opacità bassissima. Una superficie traslucida sopra
+  un fondo uniforme è indistinguibile da una superficie opaca
+- **Il glow è un'ombra colorata**, non un bagliore: su fondo chiaro un
+  alone luminoso non si vedrebbe. L'elemento tinge l'aria intorno a sé
+- **Alla pressione gli elementi rimpiccioliscono**, non scendono: la
+  traslazione verticale aveva senso quando sotto c'era uno spessore da
+  schiacciare
+- **Tipografia con crenatura stretta in scala**: il valore negativo
+  cresce col corpo del testo, le etichette in maiuscoletto vanno invece
+  nella direzione opposta
+- Animazioni con **Reanimated** e **Moti** (l'equivalente React Native di
+  Framer Motion), sfocature con **expo-blur**, icone **Lucide**
+
 ## Funzionalità
 
 ### Percorso quiz in stile Duolingo
 - 6 materie del nucleo comune: Diritto civile, Diritto penale, Procedura civile, Procedura penale, Diritto amministrativo, Deontologia forense
 - **Materie a scelta dell'orale**: Diritto costituzionale, Diritto commerciale, Diritto del lavoro. Il d.l. 100/2026 ne fa portare **una sola**, scelta fra costituzionale, commerciale, lavoro, internazionale, UE e tributario: la schermata Quiz le tiene in un blocco a parte per non far credere che vadano studiate tutte. Le tre coperte sono quelle statisticamente più scelte; le altre tre restano fuori finché non risultino richieste
 - **Percorso a nodi** con 4 unità per materia (Fondamenti, Consolidamento, Avanzato, Eccellenza) e lezioni da 10 domande a sblocco progressivo
-- **Cuori**: 4 tentativi per lezione; **stelle** (1-3) in base alla precisione; pulsanti "chunky" 3D, gradienti, animazioni a molla e feedback aptico
+- **Cuori**: 4 tentativi per lezione; **stelle** (1-3) in base alla precisione, gradienti, animazioni a molla e feedback aptico
 - Dopo ogni risposta viene mostrata la **spiegazione del perché**, con i riferimenti normativi (articoli di codice, leggi speciali, riforma Cartabia, ecc.)
 - Anche le risposte errate valgono qualche punto: studiare conta sempre
 
@@ -40,6 +63,26 @@ App mobile per **Android e iOS** (React Native + Expo) per prepararsi all'esame 
 - Leggere una traccia assegna punti e sblocca badge dedicati
 
 > I testi presenti in `src/data/tracce.ts` sono sintesi a scopo di studio; i testi ufficiali integrali (pubblicati dal Ministero della Giustizia) possono essere incollati nel campo `testo` di ciascuna traccia.
+
+### Svolgimenti proposti
+- **Tutte e dieci** le tracce in archivio hanno uno svolgimento, a sezioni che si aprono una alla volta e partono tutte chiuse: aprirle senza aver almeno impostato la traccia toglie alla lettura quasi tutto il suo valore
+- Si chiama **«svolgimento proposto» e mai «soluzione corretta»**: all'esame non esiste una risposta esatta depositata da qualche parte, esiste un elaborato che regge o non regge
+- **Ogni blocco porta i riferimenti puntuali**, norma o pronuncia: un blocco senza aggancio è un'opinione, e il test lo rifiuta
+- **Dove la giurisprudenza è divisa si mostra il contrasto** invece di scegliere il vincitore al posto del candidato: due tesi, i rispettivi argomenti e — la parte che serve davvero — che cosa cambia in concreto per il cliente
+- Trappole ricorrenti e **griglia di autovalutazione** spuntabile, con il totale dichiarato per quello che è: un promemoria, non un criterio ufficiale
+- `stato` è un cancello interno di pubblicazione, non un bollino: le bozze non escono da `svolgimentoDi()` e all'utente non compare nessuna medaglia di qualità
+
+> Un file per traccia in `src/data/svolgimenti/`. Raggiungibili dalla scheda della traccia e via `legul://svolgimento/<id>`.
+
+### Simulatore del caso pratico
+- La prova introdotta dalla riforma è l'unica per cui **non esistono prove passate**: questi casi sono scritti da zero sull'unica indicazione che la norma dà, un caso che richieda insieme diritto sostanziale e processuale
+- Il ciclo è quello vero: leggi e prepari con un cronometro, **esponi ad alta voce con la scaletta nascosta**, poi confronti punto per punto quello che hai davvero detto
+- La misura che conta non è il totale ma la **copertura per versante**: con un totale unico lo squilibrio fra sostanziale e processuale sparisce dentro una media, separandoli resta visibile e il consiglio finale nomina il versante scoperto
+- **Sei casi**, due per ciascuna delle tre materie fra cui la prova si sceglie, con le domande di approfondimento della commissione e le insidie proprie di ciascun caso
+- **I tempi non sono fissati dal decreto**: le durate sono una nostra impostazione di lavoro, modificabili, e la nota che lo dice sta accanto ai pulsanti che le scelgono
+- Il cronometro ricalcola sempre da un istante di scadenza assoluto: un timer basato su tick mente appena l'app va in background
+
+> Casi in `src/data/casi/`, logica in `src/simulatore/`. Raggiungibile dalla Home, dalla schermata dell'esame e via `legul://caso-pratico`.
 
 ### Discussione fra candidati
 - In fondo a ogni traccia, due ingressi: **Commenti degli utenti** e **Suggerisci un'altra soluzione**
@@ -134,6 +177,10 @@ src/
   data/questions/                # Banca domande (un file per materia-livello)
   data/percorso.ts               # Costruzione di unità e lezioni dal percorso
   data/tracce.ts                 # Archivio tracce anni passati
+  data/svolgimenti/              # Svolgimenti proposti (un file per traccia)
+  data/casi/                     # Casi pratici per l'orale (un file per materia)
+  data/esame.ts                  # Come funziona l'esame dopo la riforma
+  simulatore/                    # Fasi, cronometro e punteggio del caso pratico
   discussione/                   # Commenti, soluzioni proposte, voti, moderazione
   data/materiali.ts              # Materiale per l'esame (codici, manuali…)
   fonts.ts                       # Nunito applicato a tutta l'app
@@ -141,8 +188,9 @@ src/
   gamification/sync.ts           # Fusione dei progressi fra dispositivo e cloud
   navigation/linking.ts          # Deep link (schema legul://)
   screens/                       # Home, Quiz, Percorso, Lezione, Tracce, Materiale, Profilo
-  components/                    # Componenti condivisi (mascotte, blocchi 3D, coriandoli)
-  theme.ts                       # Colori e spaziature
+  components/                    # Superfici in vetro, bottoni, icone, mascotte, coriandoli
+  components/Icona.tsx           # Mappa dei nomi di icona sui glifi Lucide
+  theme.ts                       # Colori, trasparenze, tipografia, ombre, movimento
 supabase/sql/discussione.sql     # Schema e regole della discussione (RLS + funzioni)
 supabase/functions/              # Edge Function (cancellazione account)
 docs/supabase.md                 # Configurazione dell'accesso e della sincronizzazione
@@ -167,9 +215,23 @@ scripts/shoot.js                 # Cattura delle schermate per la verifica grafi
 - **`legale.test.ts`** — fra l'altro: che i Termini continuino a dire chi
   risponde dei contenuti scritti dagli utenti e che la privacy continui a
   spiegare che cosa diventa pubblico
+- **`esame.test.ts`** — che la schermata sulla riforma non annunci date che
+  il decreto di indizione non ha ancora fissato, e non trasformi in norma le
+  stime che circolano nei corsi
+- **`svolgimenti.test.ts`** — che l'archivio resti coperto per intero, che
+  ogni blocco porti almeno due riferimenti puntuali in forma verificabile,
+  che ogni svolgimento esponga almeno un contrasto con due tesi e la sua
+  ricaduta pratica, e che nessuno prometta «soluzioni corrette»
+- **`simulatore/modello.test.ts`** — che ogni caso copra entrambi i versanti
+  senza che uno faccia la comparsa, e che il consiglio finale nomini davvero
+  il versante rimasto scoperto invece di lodare il totale
+- **`icone.test.ts`** — che ogni nome di icona usato nel codice esista nella
+  mappa: un nome mancante non fa crashare nulla, sparisce e basta, ed è il
+  tipo di buco che non si distingue da una scelta di design
 
 ## Come aggiungere contenuti
 
 - **Nuove domande di quiz**: aggiungi un oggetto a `quizQuestions` in `src/data/quizzes.ts` (domanda, 4 opzioni, indice della risposta corretta e spiegazione).
-- **Nuove tracce**: aggiungi un oggetto a `tracce` in `src/data/tracce.ts`; gli anni e i raggruppamenti si aggiornano automaticamente.
+- **Nuove tracce**: aggiungi un oggetto a `tracce` in `src/data/tracce.ts`; gli anni e i raggruppamenti si aggiornano automaticamente. Il test pretende che ogni traccia abbia il proprio svolgimento: aggiungine uno in `src/data/svolgimenti/` e registralo in `index.ts`.
+- **Nuovi casi pratici**: aggiungi un oggetto al file della materia in `src/data/casi/`. I pesi della scaletta devono sommare a cento e ogni caso deve toccare sia il sostanziale sia il processuale.
 - **Nuovo materiale**: aggiungi un oggetto a `materiali` in `src/data/materiali.ts` con categoria, descrizione e (quando disponibile) ASIN.
