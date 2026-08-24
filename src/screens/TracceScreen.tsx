@@ -15,6 +15,8 @@ import { colors, materiaColors, radius, spacing } from '../theme';
 /** Tracce che hanno uno svolgimento pubblicato: l'elenco non cambia a runtime. */
 const svolto = new Set(tracceConSvolgimento());
 const totaleTracce = tracce.length;
+const svolte = quanteConSvolgimento();
+const parzialmenteCoperto = svolte < totaleTracce;
 
 const TIPO_STYLE: Record<TipoTraccia, { icona: keyof typeof Ionicons.glyphMap; tinta: string }> = {
   'Parere di diritto civile': { icona: 'book', tinta: materiaColors['Diritto civile'].start },
@@ -63,12 +65,13 @@ export default function TracceScreen() {
             <Ionicons name="chevron-forward" size={18} color="#8A5B00" />
           </Card3D>
 
-          {/* Gli svolgimenti sono ancora pochi e scriverne uno decente
-              costa tempo: meglio dire quanti sono che lasciare credere
-              che l'archivio sia coperto tutto. */}
+          {/* La frase cambia da sola quando l'archivio è coperto: una
+              riga che promette «le altre arrivano» quando non ne mancano
+              più è il tipo di dettaglio che fa dubitare del resto. */}
           <Text style={styles.copertura}>
-            {quanteConSvolgimento()} tracce su {totaleTracce} hanno lo svolgimento proposto. Le
-            altre arrivano: ne pubblichiamo una solo quando regge alla rilettura.
+            {svolte === totaleTracce
+              ? `Tutte e ${totaleTracce} le tracce in archivio hanno lo svolgimento proposto, con le questioni da individuare, i contrasti giurisprudenziali e la griglia per rileggerti.`
+              : `${svolte} tracce su ${totaleTracce} hanno lo svolgimento proposto. Le altre arrivano: ne pubblichiamo una solo quando regge alla rilettura.`}
           </Text>
         </>
       }
@@ -98,9 +101,10 @@ export default function TracceScreen() {
               <Text style={[styles.tipo, { color: tipo.tinta }]}>{item.tipo}</Text>
               <Text style={styles.titolo}>{item.titolo}</Text>
               <View style={styles.chipRow}>
-                {/* Le tracce con svolgimento sono ancora poche: dirlo
-                    nell'elenco evita di aprirne dieci per trovarle. */}
-                {svolto.has(item.id) && (
+                {/* Il distintivo serve finché la copertura è parziale:
+                    quando c'è su tutte non distingue più nulla e diventa
+                    rumore ripetuto dieci volte. */}
+                {parzialmenteCoperto && svolto.has(item.id) && (
                   <View style={[styles.chip, styles.chipSvolta]}>
                     <Ionicons name="bulb" size={11} color={colors.accentEdge} />
                     <Text style={[styles.chipText, styles.chipSvoltaText]}>Con svolgimento</Text>

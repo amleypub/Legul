@@ -152,6 +152,53 @@ describe('svolgimenti proposti', () => {
     expect(svolgimentoDi('traccia-che-non-esiste')).toBeUndefined();
   });
 
+  /**
+   * L'archivio è coperto per intero. Se domani si aggiunge una traccia
+   * senza svolgimento il controllo fallisce: è voluto, perché serve a
+   * ricordare che la copertura dichiarata in schermata deve restare
+   * vera, non a impedire di aggiungere tracce.
+   */
+  it('copre tutte le tracce in archivio', () => {
+    const coperte = new Set(tracceConSvolgimento());
+    const scoperte = tracce.filter((t) => !coperte.has(t.id)).map((t) => t.id);
+    expect(scoperte).toEqual([]);
+  });
+
+  /**
+   * Uno svolgimento tutto norme e niente pronunce è un riassunto del
+   * codice: sulle tracce d'esame il valore sta nel come la
+   * giurisprudenza ha sciolto i nodi.
+   */
+  it('porta almeno una pronuncia per ogni svolgimento', () => {
+    for (const s of svolgimenti) {
+      const pronunce = [
+        ...s.blocchi.flatMap((b) => b.riferimenti),
+        ...s.contrasti.flatMap((c) => c.orientamenti.flatMap((o) => o.riferimenti)),
+      ].filter((r) => r.tipo === 'giurisprudenza');
+      expect(pronunce.length).toBeGreaterThan(0);
+    }
+  });
+
+  it('non ripete lo stesso riferimento dentro il medesimo blocco', () => {
+    for (const s of svolgimenti) {
+      for (const b of s.blocchi) {
+        const testi = b.riferimenti.map((r) => r.testo);
+        expect(new Set(testi).size).toBe(testi.length);
+      }
+    }
+  });
+
+  /**
+   * Ogni traccia porta il suo contrasto: è la promessa fatta a chi
+   * studia, ed è anche il motivo per cui queste schede valgono più di
+   * uno svolgimento che sceglie il vincitore e tace il resto.
+   */
+  it('espone almeno un contrasto per ogni svolgimento', () => {
+    for (const s of svolgimenti) {
+      expect(s.contrasti.length).toBeGreaterThan(0);
+    }
+  });
+
   it('conta solo le tracce dell’archivio effettivamente coperte', () => {
     const pubblicate = tracceConSvolgimento();
     expect(quanteConSvolgimento()).toBe(
