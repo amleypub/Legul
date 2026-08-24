@@ -26,6 +26,14 @@ App mobile per **Android e iOS** (React Native + Expo) per prepararsi all'esame 
 - Id univoci verificati, nessuna emoji, diritto vigente: riforme Cartabia, codice contratti d.lgs. 36/2023, l. cost. 1/2022 su artt. 9 e 41 Cost., Codice della crisi come modificato dal d.lgs. 136/2024, e le pronunce della Corte costituzionale che hanno riscritto il d.lgs. 23/2015 (nn. 194/2018, 150/2020, 59/2021, 125/2022, 22/2024, 128/2024)
 - La posizione della risposta corretta è bilanciata **dentro ogni materia**, non solo sul totale: chi studia una materia sola non deve poter imparare la posizione invece della norma
 
+### Come funziona l'esame
+- Schermata dedicata alla riforma: **due prove scritte** e un **orale in cinque parti**, dalla sessione 2026-2027 (d.l. 100/2026, conv. l. 145/2026)
+- Linea del tempo delle prove, tabella **prima / adesso**, punteggi e soglie, che cosa si può portare in aula
+- Una sezione dice esplicitamente **che cosa non si sa ancora**: il decreto di indizione non è uscito, e i tempi del caso pratico che circolano nei corsi non stanno nella norma
+- Ogni affermazione porta il riferimento normativo e la data di verifica; `esame.test.ts` impedisce che una riscrittura futura annunci date inesistenti o trasformi in norma le stime dei corsi
+
+> Contenuti in `src/data/esame.ts`, sorgente unica della schermata. Raggiungibile dalla Home, dalla schermata Tracce e via `legul://esame`.
+
 ### Tracce degli esami degli anni passati
 - Archivio consultabile per anno delle tracce delle prove scritte (pareri di civile e penale, atti giudiziari)
 - Ogni traccia riporta sessione, tipologia, argomenti trattati e testo

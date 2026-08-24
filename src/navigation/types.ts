@@ -41,6 +41,8 @@ export type RootStackParamList = {
     /** Apre la casella già in modalità «soluzione proposta». */
     genereIniziale?: 'commento' | 'soluzione';
   };
+  /** Come funziona l'esame: prove, punteggi, che cosa è cambiato. */
+  Esame: undefined;
   /** Nome pubblico e persone bloccate. */
   Comunita: undefined;
   /** Informativa sulla privacy o termini di servizio. */

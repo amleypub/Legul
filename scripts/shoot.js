@@ -195,6 +195,7 @@ async function main() {
     ['13-tracce.png', '/tracce'],
     ['14-traccia.png', '/traccia/2023-atto-civile'],
     ['14b-ripasso.png', '/ripasso'],
+    ['0-esame.png', '/esame'],
     ['14c-discussione.png', `/discussione/${encodeURIComponent('traccia:2023-atto-civile')}`],
     ['14d-comunita.png', '/comunita'],
     ['15-privacy.png', '/legale/privacy'],

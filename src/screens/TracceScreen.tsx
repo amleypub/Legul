@@ -34,10 +34,30 @@ export default function TracceScreen() {
       keyExtractor={(t) => t.id}
       stickySectionHeadersEnabled={false}
       ListHeaderComponent={
-        <TitoloSchermata
-          titolo="Tracce d’esame"
-          sottotitolo="Le prove scritte degli anni passati: capire cosa è già stato chiesto è il modo migliore per prevedere cosa arriverà. Ogni traccia letta vale punti."
-        />
+        <>
+          <TitoloSchermata
+            titolo="Tracce d’esame"
+            sottotitolo="Le prove scritte degli anni passati: capire cosa è già stato chiesto è il modo migliore per prevedere cosa arriverà. Ogni traccia letta vale punti."
+          />
+          {/* Le tracce in archivio sono tre per sessione, le prove ora
+              sono due: chi legge deve poter capire subito perché, senza
+              credere che l'archivio sia sbagliato. */}
+          <Card3D
+            edgeColor="#F3DCB6"
+            color={colors.accentSoft}
+            radiusSize={radius.lg}
+            style={styles.riformaWrap}
+            contentStyle={styles.riforma}
+            onPress={() => navigation.navigate('Esame')}
+          >
+            <Ionicons name="information-circle" size={20} color="#8A5B00" />
+            <Text style={styles.riformaTesto}>
+              Dalla sessione 2026-2027 le prove scritte sono due, non più tre.{' '}
+              <Text style={styles.riformaLink}>Vedi come funziona l’esame</Text>
+            </Text>
+            <Ionicons name="chevron-forward" size={18} color="#8A5B00" />
+          </Card3D>
+        </>
       }
       renderSectionHeader={({ section }) => (
         <View style={styles.annoRow}>
@@ -88,6 +108,17 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   content: { padding: spacing.md, paddingBottom: spacing.xl },
   intro: { fontSize: 14, color: colors.textMuted, marginBottom: spacing.sm, lineHeight: 20 },
+  riformaWrap: { marginBottom: spacing.md },
+  riforma: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    paddingHorizontal: spacing.md - 4,
+    paddingVertical: spacing.sm + 4,
+  },
+  riformaTesto: { flex: 1, fontSize: 13, color: '#6B4600', lineHeight: 19 },
+  riformaLink: { fontWeight: '800', textDecorationLine: 'underline' },
+
   annoRow: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -159,6 +159,34 @@ export default function HomeScreen() {
       </View>
 
       {/*
+        L'esame è appena cambiato: chi apre l'app oggi ha bisogno di
+        sapere che cosa deve preparare prima ancora di sapere a che
+        punto è. La card sta perciò sopra i progressi, non in fondo.
+      */}
+      <Card3D
+        edgeColor="#0E1830"
+        color={colors.primary}
+        radiusSize={radius.xl}
+        style={styles.esameWrap}
+        contentStyle={styles.esame}
+        onPress={() => navigation.navigate('Esame')}
+      >
+        <View style={styles.esameIcona}>
+          <Ionicons name="school" size={24} color={colors.primary} />
+        </View>
+        <View style={styles.esameTesto}>
+          <View style={styles.esameChip}>
+            <Text style={styles.esameChipTesto}>NUOVE REGOLE</Text>
+          </View>
+          <Text style={styles.esameTitolo}>Come funziona l’esame</Text>
+          <Text style={styles.esameSub}>
+            Due scritti e un orale in cinque parti: che cosa cambia dalla sessione 2026-2027.
+          </Text>
+        </View>
+        <Ionicons name="chevron-forward" size={22} color="rgba(255,255,255,0.9)" />
+      </Card3D>
+
+      {/*
         Obiettivo di oggi, streak e settimana in un solo pannello: la
         striscia dei giorni racconta già la streak, tenerli separati
         significava dire due volte la stessa cosa.
@@ -468,6 +496,29 @@ const styles = StyleSheet.create({
   giornoPuntoFuturo: { backgroundColor: 'rgba(255,255,255,0.15)' },
 
   // ——— Ripasso degli errori ———
+  esameWrap: { marginTop: spacing.lg },
+  esame: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm + 4, padding: spacing.md - 2 },
+  esameIcona: {
+    width: 44,
+    height: 44,
+    borderRadius: 15,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  esameTesto: { flex: 1 },
+  esameChip: {
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(255,255,255,0.16)',
+    borderRadius: radius.pill,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    marginBottom: 3,
+  },
+  esameChipTesto: { fontSize: 9.5, fontWeight: '900', letterSpacing: 0.9, color: '#FFE08A' },
+  esameTitolo: { fontSize: 16.5, fontWeight: '800', color: '#FFFFFF' },
+  esameSub: { fontSize: 12.5, color: 'rgba(255,255,255,0.85)', lineHeight: 18, marginTop: 2 },
+
   ripassoWrap: { marginTop: spacing.md },
   ripasso: {
     flexDirection: 'row',

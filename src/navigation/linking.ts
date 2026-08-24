@@ -43,6 +43,7 @@ export const linking: LinkingOptions<RootStackParamList> = {
       Login: 'accedi',
       TracciaDetail: 'traccia/:tracciaId',
       Discussione: 'discussione/:argomento',
+      Esame: 'esame',
       Comunita: 'comunita',
       DocumentoLegale: 'legale/:documento',
     },
