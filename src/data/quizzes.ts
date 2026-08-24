@@ -8,6 +8,8 @@ export const materie: Materia[] = [
   'Diritto amministrativo',
   'Deontologia forense',
   'Diritto costituzionale',
+  'Diritto commerciale',
+  'Diritto del lavoro',
 ];
 
 /**
@@ -21,7 +23,11 @@ export const materie: Materia[] = [
  * porta una. È un'informazione che cambia il piano di studio, non una
  * questione di ordinamento visivo.
  */
-export const MATERIE_A_SCELTA: Materia[] = ['Diritto costituzionale'];
+export const MATERIE_A_SCELTA: Materia[] = [
+  'Diritto costituzionale',
+  'Diritto commerciale',
+  'Diritto del lavoro',
+];
 
 export const materieObbligatorie: Materia[] = materie.filter(
   (m) => !MATERIE_A_SCELTA.includes(m)

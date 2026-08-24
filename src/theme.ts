@@ -50,6 +50,8 @@ export const materiaColors: Record<
   // Materia a scelta dell'orale: tinta propria, così si distingue a colpo
   // d'occhio dalle sei che valgono per tutti.
   'Diritto costituzionale': { start: '#E0607F', end: '#B92E56', edge: '#8C1B3C', soft: '#FBE7EC' },
+  'Diritto commerciale': { start: '#3FA9C9', end: '#1D7FA0', edge: '#125D77', soft: '#E2F2F8' },
+  'Diritto del lavoro': { start: '#7BB661', end: '#4F8C3A', edge: '#356626', soft: '#EAF4E4' },
   // Il ripasso non è una materia: ha un colore proprio, così si distingue
   // a colpo d'occhio da una lezione del percorso.
   Ripasso: { start: '#F6A93B', end: '#E1751A', edge: '#AD570F', soft: '#FDEEDC' },

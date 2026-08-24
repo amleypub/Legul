@@ -21,6 +21,8 @@ export const ICONA_MATERIA: Record<Materia, keyof typeof Ionicons.glyphMap> = {
   'Diritto amministrativo': 'business',
   'Deontologia forense': 'people',
   'Diritto costituzionale': 'library',
+  'Diritto commerciale': 'briefcase',
+  'Diritto del lavoro': 'construct',
 };
 
 function MateriaBlock({
@@ -113,7 +115,7 @@ export default function QuizHomeScreen() {
       {MATERIE_A_SCELTA.length > 0 && (
         <>
           <View style={styles.gruppo}>
-            <Text style={styles.gruppoTitolo}>Materia a scelta</Text>
+            <Text style={styles.gruppoTitolo}>Materie a scelta</Text>
             <Text style={styles.gruppoNota}>
               All’orale ne porti <Text style={styles.gruppoForte}>una sola</Text>, scelta fra
               costituzionale, commerciale, del lavoro, internazionale, dell’Unione europea e

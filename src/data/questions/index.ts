@@ -28,6 +28,14 @@ import { costituzionaleL1 } from './costituzionale-l1';
 import { costituzionaleL2 } from './costituzionale-l2';
 import { costituzionaleL3 } from './costituzionale-l3';
 import { costituzionaleL4 } from './costituzionale-l4';
+import { commercialeL1 } from './commerciale-l1';
+import { commercialeL2 } from './commerciale-l2';
+import { commercialeL3 } from './commerciale-l3';
+import { commercialeL4 } from './commerciale-l4';
+import { lavoroL1 } from './lavoro-l1';
+import { lavoroL2 } from './lavoro-l2';
+import { lavoroL3 } from './lavoro-l3';
+import { lavoroL4 } from './lavoro-l4';
 
 /**
  * Aggregatore della banca domande: unisce tutti i moduli materia/livello.
@@ -64,4 +72,12 @@ export const tutteLeDomande: QuizQuestion[] = [
   ...costituzionaleL2,
   ...costituzionaleL3,
   ...costituzionaleL4,
+  ...commercialeL1,
+  ...commercialeL2,
+  ...commercialeL3,
+  ...commercialeL4,
+  ...lavoroL1,
+  ...lavoroL2,
+  ...lavoroL3,
+  ...lavoroL4,
 ];
