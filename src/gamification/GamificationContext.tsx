@@ -37,6 +37,13 @@ export const PUNTI = {
   quizPerfetto: 30, // bonus aggiuntivo se tutte le risposte sono corrette
   perStella: 10, // bonus per ogni stella ottenuta in una lezione
   tracciaLetta: 5,
+  /**
+   * Il caso pratico costa venti minuti di lavoro vero, non trenta
+   * secondi di quiz: il premio riflette lo sforzo, e la parte variabile
+   * riflette quanto della scaletta si è effettivamente coperto.
+   */
+  casoPratico: 25,
+  casoPraticoPerDieciPunti: 4,
 } as const;
 
 export interface Livello {
@@ -80,6 +87,8 @@ export const BADGES: BadgeDef[] = [
   { id: 'prima-traccia', nome: 'Storico del diritto', descrizione: 'Leggi la tua prima traccia d’esame', icona: 'archive' },
   { id: 'cinque-tracce', nome: 'Archivista', descrizione: 'Leggi 5 tracce degli anni passati', icona: 'file-tray-full' },
   { id: 'mille-punti', nome: 'Mille di questi punti', descrizione: 'Raggiungi 1.000 punti', icona: 'trophy' },
+  { id: 'primo-caso', nome: 'Davanti alla commissione', descrizione: 'Completa il tuo primo caso pratico', icona: 'mic' },
+  { id: 'caso-completo', nome: 'Niente fuori', descrizione: 'Copri l’intera scaletta di un caso pratico', icona: 'checkmark-done' },
 ];
 
 const INCORAGGIAMENTI_CORRETTA = [
@@ -132,6 +141,14 @@ export interface GamificationState {
    * più recente. Una risposta corretta in ripasso la toglie dall'elenco.
    */
   erroriDaRipassare: string[];
+  /**
+   * Miglior punteggio (0–100) ottenuto in ciascun caso pratico.
+   *
+   * Resta sul dispositivo e non viene sincronizzato: la simulazione è
+   * un'autovalutazione, e un dato che l'utente si assegna da solo non
+   * ha lo stesso significato di un risultato misurato dall'app.
+   */
+  casiSvolti: Record<string, number>;
 }
 
 const initialState: GamificationState = {
@@ -150,6 +167,7 @@ const initialState: GamificationState = {
   ultimoGiornoAttivita: null,
   puntiOggi: 0,
   erroriDaRipassare: [],
+  casiSvolti: {},
 };
 
 export interface EventoGamification {
@@ -193,6 +211,15 @@ interface GamificationContextValue {
     totale: number
   ): EventoGamification;
   registraTracciaLetta(tracciaId: string): EventoGamification;
+  /**
+   * Registra una simulazione del caso pratico. `punteggio` è la quota
+   * di scaletta che l'utente si è riconosciuto, da 0 a 100.
+   *
+   * A differenza delle lezioni, i punti si guadagnano ogni volta: il
+   * valore dell'esercizio sta nel rifarlo, e premiare solo il primo
+   * tentativo scoraggerebbe proprio la ripetizione che serve.
+   */
+  registraCasoPratico(casoId: string, punteggio: number): EventoGamification;
   /**
    * Attiva Premium. Oggi è un flag locale (modalità demo); quando verrà
    * integrato l'acquisto in-app, andrà chiamato dopo la conferma dello store.
@@ -283,6 +310,8 @@ export function conBadgeAggiornati(s: GamificationState): {
     'prima-traccia': s.tracceLette.length >= 1,
     'cinque-tracce': s.tracceLette.length >= 5,
     'mille-punti': s.punti >= 1000,
+    'primo-caso': Object.keys(s.casiSvolti).length >= 1,
+    'caso-completo': Object.values(s.casiSvolti).some((p) => p >= 100),
   };
   const nuovi = BADGES.filter((b) => criteri[b.id] && !unlocked.has(b.id));
   if (nuovi.length === 0) return { state: s, nuovi };
@@ -531,6 +560,33 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
     [applica, state.tracceLette]
   );
 
+  const registraCasoPratico = useCallback(
+    (casoId: string, punteggioCaso: number): EventoGamification => {
+      const quota = Math.min(100, Math.max(0, Math.round(punteggioCaso)));
+      const punti =
+        PUNTI.casoPratico + Math.floor(quota / 10) * PUNTI.casoPraticoPerDieciPunti;
+      const messaggio =
+        quota >= 85
+          ? 'Esposizione completa: se all’orale va così, il caso pratico è tuo.'
+          : quota >= 55
+            ? 'Simulazione registrata. Rifallo fra qualche giorno: la seconda volta si vede la differenza.'
+            : 'Simulazione registrata. Rileggi la scaletta e riprova: è esattamente a questo che serve.';
+      return applica(
+        (s) => ({
+          ...s,
+          punti: s.punti + punti,
+          casiSvolti: {
+            ...s.casiSvolti,
+            [casoId]: Math.max(s.casiSvolti[casoId] ?? 0, quota),
+          },
+        }),
+        messaggio,
+        punti
+      );
+    },
+    [applica]
+  );
+
   const value = useMemo<GamificationContextValue>(() => {
     const livello = livelloPerPunti(state.punti);
     const idx = LIVELLI.indexOf(livello);
@@ -549,6 +605,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
       registraRisposta,
       registraLezioneCompletata,
       registraTracciaLetta,
+      registraCasoPratico,
       attivaPremium,
       toggleAudio,
       impostaPromemoria,
@@ -560,6 +617,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
     registraRisposta,
     registraLezioneCompletata,
     registraTracciaLetta,
+    registraCasoPratico,
     attivaPremium,
     toggleAudio,
     impostaPromemoria,

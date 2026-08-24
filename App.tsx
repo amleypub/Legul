@@ -29,6 +29,8 @@ import LoginScreen from './src/screens/LoginScreen';
 import DiscussioneScreen from './src/screens/DiscussioneScreen';
 import EsameScreen from './src/screens/EsameScreen';
 import SvolgimentoScreen from './src/screens/SvolgimentoScreen';
+import SimulatoreScreen from './src/screens/SimulatoreScreen';
+import CasoPraticoScreen from './src/screens/CasoPraticoScreen';
 import ComunitaScreen from './src/screens/ComunitaScreen';
 import DocumentoLegaleScreen from './src/screens/DocumentoLegaleScreen';
 import { DOCUMENTI } from './src/data/legale';
@@ -168,6 +170,16 @@ export default function App() {
             name="Esame"
             component={EsameScreen}
             options={{ title: 'Come funziona l’esame' }}
+          />
+          <Stack.Screen
+            name="Simulatore"
+            component={SimulatoreScreen}
+            options={{ title: 'Caso pratico' }}
+          />
+          <Stack.Screen
+            name="CasoPratico"
+            component={CasoPraticoScreen}
+            options={{ title: 'Simulazione' }}
           />
           <Stack.Screen
             name="Comunita"

@@ -45,6 +45,10 @@ export type RootStackParamList = {
   };
   /** Come funziona l'esame: prove, punteggi, che cosa è cambiato. */
   Esame: undefined;
+  /** Elenco dei casi pratici per la prima parte dell'orale. */
+  Simulatore: undefined;
+  /** Simulazione di un singolo caso: preparazione, esposizione, confronto. */
+  CasoPratico: { casoId: string };
   /** Nome pubblico e persone bloccate. */
   Comunita: undefined;
   /** Informativa sulla privacy o termini di servizio. */

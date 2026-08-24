@@ -27,6 +27,7 @@ const base: GamificationState = {
   ultimoGiornoAttivita: null,
   puntiOggi: 0,
   erroriDaRipassare: [],
+  casiSvolti: {},
 };
 
 const con = (p: Partial<GamificationState>): GamificationState => ({ ...base, ...p });
@@ -99,6 +100,19 @@ describe('conBadgeAggiornati', () => {
     const { state, nuovi } = conBadgeAggiornati(con({ risposteCorrette: 10 }));
     expect(nuovi.map((b) => b.id)).toContain('dieci-corrette');
     expect(state.badges).toContain('dieci-corrette');
+  });
+
+  it('assegna il primo caso pratico appena ne compare uno', () => {
+    const { nuovi } = conBadgeAggiornati(con({ casiSvolti: { 'privato-locazione-morosita': 40 } }));
+    expect(nuovi.map((b) => b.id)).toContain('primo-caso');
+    expect(nuovi.map((b) => b.id)).not.toContain('caso-completo');
+  });
+
+  it('assegna la scaletta completa solo alla copertura piena', () => {
+    const parziale = conBadgeAggiornati(con({ casiSvolti: { 'penale-furto-abitazione': 95 } }));
+    expect(parziale.nuovi.map((b) => b.id)).not.toContain('caso-completo');
+    const pieno = conBadgeAggiornati(con({ casiSvolti: { 'penale-furto-abitazione': 100 } }));
+    expect(pieno.nuovi.map((b) => b.id)).toContain('caso-completo');
   });
 
   it('non riassegna un badge già ottenuto', () => {

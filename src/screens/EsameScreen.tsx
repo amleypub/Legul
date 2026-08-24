@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
@@ -17,7 +17,7 @@ import { colors, EDGE_3D, radius, spacing } from '../theme';
 const TINTA_SCRITTO = { chiaro: '#E8EEFD', scuro: '#2D4FC7', bordo: '#C7D5F7' };
 const TINTA_ORALE = { chiaro: '#FDF0DC', scuro: '#B0640F', bordo: '#F3DCB6' };
 
-function BloccoProva({ prova }: { prova: Prova }) {
+function BloccoProva({ prova, onEsercitati }: { prova: Prova; onEsercitati?: () => void }) {
   const tinta = prova.tipo === 'scritto' ? TINTA_SCRITTO : TINTA_ORALE;
   return (
     <View style={styles.provaRiga}>
@@ -51,13 +51,33 @@ function BloccoProva({ prova }: { prova: Prova }) {
               <Text style={styles.puntoTesto}>{d}</Text>
             </View>
           ))}
+
+          {/* Sulla prova nuova la descrizione da sola lascia a mani
+              vuote: da qui si passa direttamente all'esercizio. */}
+          {onEsercitati && (
+            <Pressable
+              onPress={onEsercitati}
+              accessibilityRole="button"
+              style={({ pressed }) => [
+                styles.esercitati,
+                { backgroundColor: tinta.chiaro },
+                pressed && styles.esercitatiPremuto,
+              ]}
+            >
+              <Ionicons name="mic" size={16} color={tinta.scuro} />
+              <Text style={[styles.esercitatiTesto, { color: tinta.scuro }]}>
+                Esercitati sul caso pratico
+              </Text>
+              <Ionicons name="chevron-forward" size={15} color={tinta.scuro} />
+            </Pressable>
+          )}
         </View>
       </View>
     </View>
   );
 }
 
-export default function EsameScreen(_: RootStackScreenProps<'Esame'>) {
+export default function EsameScreen({ navigation }: RootStackScreenProps<'Esame'>) {
   const scritti = PROVE.filter((p) => p.tipo === 'scritto');
   const orali = PROVE.filter((p) => p.tipo === 'orale');
 
@@ -109,7 +129,13 @@ export default function EsameScreen(_: RootStackScreenProps<'Esame'>) {
         Un colloquio unico, articolato in cinque parti valutate separatamente.
       </Text>
       {orali.map((p) => (
-        <BloccoProva key={p.id} prova={p} />
+        <BloccoProva
+          key={p.id}
+          prova={p}
+          onEsercitati={
+            p.id === 'orale-caso' ? () => navigation.navigate('Simulatore') : undefined
+          }
+        />
       ))}
 
       {/* Confronto con il regime precedente: è la domanda che si fanno tutti */}
@@ -292,6 +318,18 @@ const styles = StyleSheet.create({
   provaSceltaTesto: { flex: 1, fontSize: 12.5, fontWeight: '700', lineHeight: 17 },
   puntoRiga: { flexDirection: 'row', alignItems: 'flex-start', gap: 8 },
   puntoPallino: { width: 5, height: 5, borderRadius: 3, marginTop: 7 },
+  esercitati: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    borderRadius: radius.md,
+    paddingHorizontal: 10,
+    paddingVertical: 9,
+    marginTop: spacing.sm + 2,
+  },
+  esercitatiPremuto: { opacity: 0.75 },
+  esercitatiTesto: { flex: 1, fontSize: 13.5, fontWeight: '800' },
+
   puntoTesto: { flex: 1, fontSize: 13, color: colors.textMuted, lineHeight: 19 },
 
   tabella: {

@@ -45,6 +45,8 @@ export const linking: LinkingOptions<RootStackParamList> = {
       Svolgimento: 'svolgimento/:tracciaId',
       Discussione: 'discussione/:argomento',
       Esame: 'esame',
+      Simulatore: 'caso-pratico',
+      CasoPratico: 'caso-pratico/:casoId',
       Comunita: 'comunita',
       DocumentoLegale: 'legale/:documento',
     },

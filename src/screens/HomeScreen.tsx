@@ -187,6 +187,36 @@ export default function HomeScreen() {
       </Card3D>
 
       {/*
+        Il caso pratico è la prova che prima non esisteva, quindi quella
+        su cui nessuno ha materiale e nessuno si è mai esercitato: sta
+        subito sotto le nuove regole perché è la conseguenza pratica di
+        quelle regole.
+      */}
+      <Card3D
+        edgeColor="#8C1B3C"
+        color="#B92E56"
+        radiusSize={radius.xl}
+        style={styles.esameWrap}
+        contentStyle={styles.esame}
+        onPress={() => navigation.navigate('Simulatore')}
+      >
+        <View style={styles.esameIcona}>
+          <Ionicons name="mic" size={24} color="#B92E56" />
+        </View>
+        <View style={styles.esameTesto}>
+          <View style={styles.esameChip}>
+            <Text style={styles.esameChipTesto}>PROVA NUOVA</Text>
+          </View>
+          <Text style={styles.esameTitolo}>Simula il caso pratico</Text>
+          <Text style={styles.esameSub}>
+            Ti diamo il caso e il tempo per prepararlo. Poi confronti quello che hai detto con la
+            scaletta.
+          </Text>
+        </View>
+        <Ionicons name="chevron-forward" size={22} color="rgba(255,255,255,0.9)" />
+      </Card3D>
+
+      {/*
         Obiettivo di oggi, streak e settimana in un solo pannello: la
         striscia dei giorni racconta già la streak, tenerli separati
         significava dire due volte la stessa cosa.

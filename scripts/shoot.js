@@ -203,6 +203,8 @@ async function main() {
       async () => tap('Qualificazione del contratto', { exact: false }),
     ],
     ['0-esame.png', '/esame'],
+    ['0b-caso-elenco.png', '/caso-pratico'],
+    ['0c-caso.png', '/caso-pratico/privato-locazione-morosita'],
     ['14c-discussione.png', `/discussione/${encodeURIComponent('traccia:2023-atto-civile')}`],
     ['14d-comunita.png', '/comunita'],
     ['15-privacy.png', '/legale/privacy'],
