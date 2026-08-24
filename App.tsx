@@ -98,11 +98,15 @@ function Tabs() {
         // calcolate dalla navigazione, che tiene conto della safe area.
         // Ogni valore imposto a mano qui finisce per tagliare le
         // etichette su qualche dispositivo.
+        // Il riempimento sta anche qui e non solo in `tabBarBackground`:
+        // quello è un componente reso dietro la barra, e dove non arriva
+        // — sul web, per esempio — resterebbe solo il vuoto, con il
+        // contenuto che scorre sotto e le etichette illeggibili.
         tabBarBackground: () => <FondoTab />,
         tabBarStyle: {
           borderTopWidth: StyleSheet.hairlineWidth * 1.5,
           borderTopColor: alpha.bordo,
-          backgroundColor: 'transparent',
+          backgroundColor: alpha.vetroChrome,
           position: 'absolute',
           elevation: 0,
         },

@@ -10,7 +10,7 @@ import { Superficie } from '../components/Superficie';
 import type { RootStackParamList } from '../navigation/types';
 import type { TipoTraccia } from '../types';
 import { TitoloSchermata } from '../components/TitoloSchermata';
-import { colors, materiaColors, radius, spacing, SPAZIO_TAB } from '../theme';
+import { alpha, colors, materiaColors, radius, spacing, SPAZIO_TAB } from '../theme';
 
 /** Tracce che hanno uno svolgimento pubblicato: l'elenco non cambia a runtime. */
 const svolto = new Set(tracceConSvolgimento());
@@ -50,10 +50,8 @@ export default function TracceScreen() {
               sono due: chi legge deve poter capire subito perché, senza
               credere che l'archivio sia sbagliato. */}
           <Superficie
-            tono="piena"
+            tinta={colors.accentSoft}
             raggio={radius.lg}
-            glow={colors.accent}
-            attiva
             style={styles.riformaWrap}
             contentStyle={styles.riforma}
             onPress={() => navigation.navigate('Esame')}
@@ -135,7 +133,6 @@ const styles = StyleSheet.create({
   intro: { fontSize: 14, color: colors.textMuted, marginBottom: spacing.sm, lineHeight: 20 },
   riformaWrap: { marginBottom: spacing.md },
   riforma: {
-    backgroundColor: colors.accentSoft,
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm,
@@ -179,6 +176,9 @@ const styles = StyleSheet.create({
   titolo: { fontSize: 15, fontWeight: '700', color: colors.text, marginTop: 2 },
   chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 4, marginTop: 6 },
   chip: {
+    // Velo scuro invece del vecchio grigio pieno: la pastiglia sta sopra
+    // una superficie chiara e deve prenderne la tinta, non coprirla.
+    backgroundColor: alpha.velo,
     borderRadius: radius.pill,
     paddingHorizontal: 8,
     paddingVertical: 3,

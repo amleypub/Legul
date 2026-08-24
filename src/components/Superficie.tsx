@@ -24,6 +24,15 @@ interface Props {
   glow?: string;
   /** Alone sempre acceso, per gli elementi selezionati. */
   attiva?: boolean;
+  /**
+   * Riempimento colorato al posto del vetro, per le superfici che devono
+   * segnalare qualcosa con la tinta — un avviso, una nota.
+   *
+   * Serve una prop apposta perché il riempimento del tono è disegnato in
+   * una vista sovrapposta: un colore messo in `contentStyle` finirebbe
+   * sotto di essa e non si vedrebbe mai.
+   */
+  tinta?: string;
   accessibilityLabel?: string;
 }
 
@@ -71,6 +80,7 @@ export function Superficie({
   contentStyle,
   glow,
   attiva = false,
+  tinta,
   accessibilityLabel,
 }: Props) {
   const scala = useSharedValue(1);
@@ -85,13 +95,13 @@ export function Superficie({
         La sfocatura sta sotto al riempimento, non al posto suo: da sola
         renderebbe il fondo lattiginoso e illeggibile sotto al testo.
       */}
-      {SFOCA[tono] && Platform.OS !== 'web' && (
+      {!tinta && SFOCA[tono] && Platform.OS !== 'web' && (
         <BlurView intensity={SFOCATURA} tint="light" style={StyleSheet.absoluteFill} />
       )}
       <View
         style={[
           StyleSheet.absoluteFill,
-          { backgroundColor: RIEMPIMENTO[tono], borderRadius: raggio },
+          { backgroundColor: tinta ?? RIEMPIMENTO[tono], borderRadius: raggio },
         ]}
       />
       {/* Filo di luce in alto: è ciò che dà lo spessore al vetro. */}
