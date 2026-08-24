@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors, spacing } from '../theme';
+import { colors, spacing, type } from '../theme';
 
 /**
  * Titolo in testa a una schermata con tab.
@@ -37,11 +37,11 @@ export function SpazioStatusBar({ extra = 0 }: { extra?: number }) {
 
 const styles = StyleSheet.create({
   wrap: { marginBottom: spacing.md },
-  titolo: { fontSize: 28, fontWeight: '900', color: colors.text, letterSpacing: -0.3 },
+  titolo: { ...type.display, color: colors.text },
   sottotitolo: {
-    fontSize: 14,
+    ...type.corpo,
     color: colors.textMuted,
-    lineHeight: 20,
-    marginTop: 4,
+    marginTop: 5,
+    maxWidth: 460,
   },
 });

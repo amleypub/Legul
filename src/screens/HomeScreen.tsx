@@ -1,17 +1,27 @@
-import React, { useEffect, useMemo, useRef } from 'react';
-import { Animated, Easing, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React, { useEffect, useMemo } from 'react';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withSequence,
+  withTiming,
+} from 'react-native-reanimated';
 import { BADGES, useGamification } from '../gamification/GamificationContext';
 import { settimanaCorrente, type GiornoSettimana } from '../gamification/settimana';
 import { useNavigation } from '@react-navigation/native';
 import { ProgressBar } from '../components/ProgressBar';
 import { AnelloProgresso, EtichettaAnello } from '../components/AnelloProgresso';
-import { Button3D } from '../components/Button3D';
-import { Card3D } from '../components/Card3D';
+import { Bottone } from '../components/Bottone';
+import { Entrata, scaglione } from '../components/Entrata';
+import { Icona } from '../components/Icona';
 import { Mascot } from '../components/Mascot';
+import { Sfondo } from '../components/Sfondo';
+import { Superficie } from '../components/Superficie';
 import { TitoloSchermata } from '../components/TitoloSchermata';
-import { colors, EDGE_3D, materiaColors, radius, spacing } from '../theme';
+import { alone, alpha, colors, materiaColors, ombra, radius, spacing, type } from '../theme';
 
 /** Obiettivo giornaliero in punti: la ragione per riaprire l'app domani. */
 export const OBIETTIVO_GIORNALIERO = 50;
@@ -30,12 +40,12 @@ function Statistica({
 }: {
   valore: string | number;
   label: string;
-  icona: keyof typeof Ionicons.glyphMap;
+  icona: string;
   tint: string;
 }) {
   return (
     <View style={styles.stat}>
-      <Ionicons name={icona} size={15} color={tint} />
+      <Icona nome={icona} size={15} color={tint} />
       <Text style={styles.statValore} numberOfLines={1} adjustsFontSizeToFit>
         {valore}
       </Text>
@@ -55,17 +65,69 @@ function GiornoPill({ g }: { g: GiornoSettimana }) {
         style={[
           styles.giorno,
           g.attivo && styles.giornoAttivo,
+          g.attivo && alone(colors.streakTo, 'tenue'),
           !g.attivo && g.futuro && styles.giornoFuturo,
           g.oggi && styles.giornoOggi,
         ]}
       >
         {g.attivo ? (
-          <Ionicons name="flame" size={15} color="#FFFFFF" />
+          <Icona nome="flame" size={15} color="#FFFFFF" pieno />
         ) : (
           <View style={[styles.giornoPunto, g.futuro && styles.giornoPuntoFuturo]} />
         )}
       </View>
     </View>
+  );
+}
+
+/**
+ * Scorciatoia a tinta piena verso una sezione: l'unico elemento saturo
+ * di una schermata fatta di superfici chiare, così la gerarchia si legge
+ * senza bisogno di titoli in grassetto.
+ */
+function Scorciatoia({
+  gradiente,
+  glow,
+  icona,
+  etichetta,
+  titolo,
+  sottotitolo,
+  onPress,
+}: {
+  gradiente: [string, string];
+  glow: string;
+  icona: string;
+  etichetta: string;
+  titolo: string;
+  sottotitolo: string;
+  onPress: () => void;
+}) {
+  return (
+    <Superficie
+      tono="piena"
+      rilievo="nessuno"
+      raggio={radius.xl}
+      onPress={onPress}
+      style={[styles.scorciatoia, alone(glow, 'tenue')] as never}
+      accessibilityLabel={titolo}
+    >
+      <LinearGradient
+        colors={gradiente}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.scorciatoiaCorpo}
+      >
+        <View style={styles.scorciatoiaIcona}>
+          <Icona nome={icona} size={22} color={gradiente[1]} />
+        </View>
+        <View style={styles.scorciatoiaTesti}>
+          <Text style={styles.scorciatoiaEtichetta}>{etichetta}</Text>
+          <Text style={styles.scorciatoiaTitolo}>{titolo}</Text>
+          <Text style={styles.scorciatoiaSub}>{sottotitolo}</Text>
+        </View>
+        <Icona nome="chevron-forward" size={20} color="rgba(255,255,255,0.85)" />
+      </LinearGradient>
+    </Superficie>
   );
 }
 
@@ -97,324 +159,293 @@ export default function HomeScreen() {
 
   // La fiamma della streak respira. Si anima solo quando la streak è
   // accesa: un ciclo infinito che nessuno vede consuma batteria e basta.
-  const flame = useRef(new Animated.Value(0)).current;
+  const respiro = useSharedValue(0);
   const streakAccesa = streak > 0;
   useEffect(() => {
-    if (!streakAccesa) return;
-    const respiro = Animated.loop(
-      Animated.sequence([
-        Animated.timing(flame, {
-          toValue: 1,
-          duration: 700,
-          easing: Easing.inOut(Easing.quad),
-          useNativeDriver: true,
-        }),
-        Animated.timing(flame, {
-          toValue: 0,
-          duration: 700,
-          easing: Easing.inOut(Easing.quad),
-          useNativeDriver: true,
-        }),
-      ])
+    if (!streakAccesa) {
+      respiro.value = 0;
+      return;
+    }
+    respiro.value = withRepeat(
+      withSequence(
+        withTiming(1, { duration: 700, easing: Easing.inOut(Easing.quad) }),
+        withTiming(0, { duration: 700, easing: Easing.inOut(Easing.quad) })
+      ),
+      -1,
+      false
     );
-    respiro.start();
-    return () => respiro.stop();
-  }, [flame, streakAccesa]);
+  }, [respiro, streakAccesa]);
+  const stileFiamma = useAnimatedStyle(() => ({
+    transform: [
+      { scale: 1 + respiro.value * 0.14 },
+      { rotate: `${-5 + respiro.value * 10}deg` },
+    ],
+  }));
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <TitoloSchermata titolo="Legul" sottotitolo="La tua preparazione, un giorno alla volta." />
-      {/*
-        Intestazione compatta: prima occupava mezza schermata per dire il
-        livello e i punti, spingendo sotto la piega la parte che conta.
-      */}
-      <View style={styles.heroWrap}>
-        <View style={styles.heroEdge} />
-        <LinearGradient
-          colors={['#2E4370', '#1B2A4A']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.hero}
-        >
-          <Mascot state="neutral" size={78} animated />
-          <View style={styles.heroTesto}>
-            <View style={styles.heroBadgeLivello}>
-              <Ionicons name={livello.icona} size={13} color={colors.primary} />
-              <Text style={styles.heroLivello} numberOfLines={1}>
-                {livello.nome}
-              </Text>
-            </View>
-            <Text style={styles.heroPunti}>
-              {state.punti}
-              <Text style={styles.heroPuntiLabel}> punti</Text>
-            </Text>
-            <ProgressBar progress={progressoLivello} />
-            <Text style={styles.heroProssimo} numberOfLines={1}>
-              {prossimoLivello
-                ? `${prossimoLivello.sogliaPunti - state.punti} punti a «${prossimoLivello.nome}»`
-                : 'Hai raggiunto l’ultimo livello.'}
-            </Text>
-          </View>
-        </LinearGradient>
-      </View>
+    <Sfondo tinta={colors.accent}>
+      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+        <TitoloSchermata titolo="Legul" sottotitolo="La tua preparazione, un giorno alla volta." />
 
-      {/*
-        L'esame è appena cambiato: chi apre l'app oggi ha bisogno di
-        sapere che cosa deve preparare prima ancora di sapere a che
-        punto è. La card sta perciò sopra i progressi, non in fondo.
-      */}
-      <Card3D
-        edgeColor="#0E1830"
-        color={colors.primary}
-        radiusSize={radius.xl}
-        style={styles.esameWrap}
-        contentStyle={styles.esame}
-        onPress={() => navigation.navigate('Esame')}
-      >
-        <View style={styles.esameIcona}>
-          <Ionicons name="school" size={24} color={colors.primary} />
-        </View>
-        <View style={styles.esameTesto}>
-          <View style={styles.esameChip}>
-            <Text style={styles.esameChipTesto}>NUOVE REGOLE</Text>
-          </View>
-          <Text style={styles.esameTitolo}>Come funziona l’esame</Text>
-          <Text style={styles.esameSub}>
-            Due scritti e un orale in cinque parti: che cosa cambia dalla sessione 2026-2027.
-          </Text>
-        </View>
-        <Ionicons name="chevron-forward" size={22} color="rgba(255,255,255,0.9)" />
-      </Card3D>
-
-      {/*
-        Il caso pratico è la prova che prima non esisteva, quindi quella
-        su cui nessuno ha materiale e nessuno si è mai esercitato: sta
-        subito sotto le nuove regole perché è la conseguenza pratica di
-        quelle regole.
-      */}
-      <Card3D
-        edgeColor="#8C1B3C"
-        color="#B92E56"
-        radiusSize={radius.xl}
-        style={styles.esameWrap}
-        contentStyle={styles.esame}
-        onPress={() => navigation.navigate('Simulatore')}
-      >
-        <View style={styles.esameIcona}>
-          <Ionicons name="mic" size={24} color="#B92E56" />
-        </View>
-        <View style={styles.esameTesto}>
-          <View style={styles.esameChip}>
-            <Text style={styles.esameChipTesto}>PROVA NUOVA</Text>
-          </View>
-          <Text style={styles.esameTitolo}>Simula il caso pratico</Text>
-          <Text style={styles.esameSub}>
-            Ti diamo il caso e il tempo per prepararlo. Poi confronti quello che hai detto con la
-            scaletta.
-          </Text>
-        </View>
-        <Ionicons name="chevron-forward" size={22} color="rgba(255,255,255,0.9)" />
-      </Card3D>
-
-      {/*
-        Obiettivo di oggi, streak e settimana in un solo pannello: la
-        striscia dei giorni racconta già la streak, tenerli separati
-        significava dire due volte la stessa cosa.
-      */}
-      <Text style={styles.sectionTitle}>I tuoi progressi</Text>
-
-      <View style={styles.obiettivoWrap}>
-        <View style={styles.obiettivoEdge} />
-        <LinearGradient
-          colors={['#33406B', '#1B2540']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.obiettivo}
-        >
-          <View style={styles.obiettivoTop}>
-            <AnelloProgresso progresso={state.puntiOggi / OBIETTIVO_GIORNALIERO} size={106}>
-              <EtichettaAnello valore={`${state.puntiOggi}`} unita="punti" />
-            </AnelloProgresso>
-            <View style={styles.obiettivoTesto}>
-              <Text style={styles.obiettivoTitolo}>Obiettivo di oggi</Text>
-              <Text style={styles.obiettivoSub}>{messaggioObiettivo}</Text>
-              {obiettivoRaggiunto && (
-                <View style={styles.obiettivoChip}>
-                  <Ionicons name="checkmark-circle" size={14} color={colors.primary} />
-                  <Text style={styles.obiettivoChipTesto}>COMPLETATO</Text>
+        {/*
+          Intestazione compatta: prima occupava mezza schermata per dire il
+          livello e i punti, spingendo sotto la piega la parte che conta.
+        */}
+        <Entrata>
+          <View style={[styles.heroWrap, alone(colors.primary, 'tenue')]}>
+            <LinearGradient
+              colors={['#33436E', colors.primary]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.hero}
+            >
+              <Mascot state="neutral" size={78} animated />
+              <View style={styles.heroTesto}>
+                <View style={styles.heroBadgeLivello}>
+                  <Icona nome={livello.icona} size={13} color={colors.primary} />
+                  <Text style={styles.heroLivello} numberOfLines={1}>
+                    {livello.nome}
+                  </Text>
                 </View>
-              )}
-            </View>
-          </View>
-
-          <View style={styles.settimana}>
-            <View style={styles.streakRiga}>
-              <Animated.View
-                style={{
-                  transform: [
-                    { scale: flame.interpolate({ inputRange: [0, 1], outputRange: [1, 1.14] }) },
-                    {
-                      rotate: flame.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: ['-5deg', '5deg'],
-                      }),
-                    },
-                  ],
-                }}
-              >
-                <Ionicons
-                  name="flame"
-                  size={22}
-                  color={streak > 0 ? colors.streakTo : 'rgba(255,255,255,0.28)'}
-                />
-              </Animated.View>
-              <Text style={styles.streakNumero}>
-                {streak}
-                <Text style={styles.streakNumeroLabel}>
-                  {streak === 1 ? ' giorno di fila' : ' giorni di fila'}
+                <Text style={styles.heroPunti}>
+                  {state.punti}
+                  <Text style={styles.heroPuntiLabel}> punti</Text>
                 </Text>
-              </Text>
-              {streak > 0 && <Mascot state="celebrating" size={40} />}
-            </View>
-
-            <View style={styles.giorni}>
-              {settimana.map((g) => (
-                <GiornoPill key={g.data} g={g} />
-              ))}
-            </View>
-          </View>
-
-          {/* Dalla Home mancava un modo per iniziare a studiare. */}
-          <Button3D
-            label={state.quizCompletati > 0 ? 'Continua a studiare' : 'Inizia la prima lezione'}
-            onPress={() => navigation.navigate('Quiz')}
-            color={colors.accent}
-            edgeColor="#A8861B"
-            textColor={colors.primary}
-          />
-        </LinearGradient>
-      </View>
-
-      {/* Ripasso: compare solo se c'è davvero qualcosa da recuperare */}
-      {state.erroriDaRipassare.length > 0 && (
-        <Card3D
-          edgeColor={materiaColors.Ripasso.edge}
-          color={materiaColors.Ripasso.soft}
-          radiusSize={radius.xl}
-          style={styles.ripassoWrap}
-          contentStyle={styles.ripasso}
-          onPress={() => navigation.navigate('Ripasso')}
-        >
-          <View style={styles.ripassoIcona}>
-            <Ionicons name="refresh-circle" size={26} color="#FFFFFF" />
-          </View>
-          <View style={styles.ripassoTesto}>
-            <Text style={styles.ripassoTitolo}>Ripassa i tuoi errori</Text>
-            <Text style={styles.ripassoSub}>
-              {state.erroriDaRipassare.length}{' '}
-              {state.erroriDaRipassare.length === 1 ? 'domanda sbagliata' : 'domande sbagliate'} da
-              recuperare.
-            </Text>
-          </View>
-          <Ionicons name="chevron-forward" size={22} color={materiaColors.Ripasso.edge} />
-        </Card3D>
-      )}
-
-      {/* Numeri complessivi, su una riga sola */}
-      <View style={styles.statsWrap}>
-        <View style={styles.statsEdge} />
-        <View style={styles.stats}>
-          <Statistica
-            valore={state.risposteCorrette}
-            label="Esatte"
-            icona="checkmark-done"
-            tint={colors.success}
-          />
-          <View style={styles.statsDivider} />
-          <Statistica
-            valore={precisione !== null ? `${precisione}%` : '0%'}
-            label="Precisione"
-            icona="analytics"
-            tint="#4F7CF3"
-          />
-          <View style={styles.statsDivider} />
-          <Statistica
-            valore={state.quizCompletati}
-            label="Lezioni"
-            icona="ribbon"
-            tint="#9B6BFF"
-          />
-          <View style={styles.statsDivider} />
-          <Statistica
-            valore={state.tracceLette.length}
-            label="Tracce"
-            icona="document-text"
-            tint={colors.accentEdge}
-          />
-        </View>
-      </View>
-
-      {/* Badge con vetro smerigliato sui bloccati */}
-      <Text style={styles.sectionTitle}>
-        Badge ({state.badges.length}/{BADGES.length})
-      </Text>
-      <View style={styles.badgeGrid}>
-        {BADGES.map((badge) => {
-          const sbloccato = state.badges.includes(badge.id);
-          return (
-            <View key={badge.id} style={styles.badgeWrap}>
-              <View style={[styles.badgeEdge, sbloccato && styles.badgeEdgeOn]} />
-              <View style={[styles.badgeCard, sbloccato && styles.badgeCardOn]}>
-                <View style={[styles.badgeIconWrap, sbloccato && styles.badgeIconWrapOn]}>
-                  <Ionicons
-                    name={badge.icona}
-                    size={26}
-                    color={sbloccato ? colors.accent : '#9AA3B2'}
-                  />
-                </View>
-                <Text style={[styles.badgeNome, !sbloccato && styles.badgeSpento]}>
-                  {badge.nome}
+                <ProgressBar progress={progressoLivello} />
+                <Text style={styles.heroProssimo} numberOfLines={1}>
+                  {prossimoLivello
+                    ? `${prossimoLivello.sogliaPunti - state.punti} punti a «${prossimoLivello.nome}»`
+                    : 'Hai raggiunto l’ultimo livello.'}
                 </Text>
-                <Text style={[styles.badgeDescr, !sbloccato && styles.badgeSpento]}>
-                  {badge.descrizione}
-                </Text>
-                {!sbloccato && (
-                  /* Il lucchetto sta in un angolo, non sopra il testo: un
-                     badge bloccato deve incuriosire, e per farlo bisogna
-                     poter leggere che cosa si sta per sbloccare. */
-                  <View style={styles.badgeLockPill}>
-                    <Ionicons name="lock-closed" size={12} color="#8B93A3" />
-                  </View>
-                )}
               </View>
-            </View>
-          );
-        })}
-      </View>
-    </ScrollView>
+            </LinearGradient>
+          </View>
+        </Entrata>
+
+        {/*
+          L'esame è appena cambiato: chi apre l'app oggi ha bisogno di
+          sapere che cosa deve preparare prima ancora di sapere a che
+          punto è. La card sta perciò sopra i progressi, non in fondo.
+        */}
+        <Entrata ritardo={scaglione(1)}>
+          <Scorciatoia
+            gradiente={['#2E3B5C', colors.primary]}
+            glow={colors.primary}
+            icona="school"
+            etichetta="Nuove regole"
+            titolo="Come funziona l’esame"
+            sottotitolo="Due scritti e un orale in cinque parti: che cosa cambia dalla sessione 2026-2027."
+            onPress={() => navigation.navigate('Esame')}
+          />
+        </Entrata>
+
+        {/*
+          Il caso pratico è la prova che prima non esisteva, quindi quella
+          su cui nessuno ha materiale e nessuno si è mai esercitato: sta
+          subito sotto le nuove regole perché è la conseguenza pratica di
+          quelle regole.
+        */}
+        <Entrata ritardo={scaglione(2)}>
+          <Scorciatoia
+            gradiente={[materiaColors['Diritto costituzionale'].start, '#B32D53']}
+            glow="#B32D53"
+            icona="mic"
+            etichetta="Prova nuova"
+            titolo="Simula il caso pratico"
+            sottotitolo="Ti diamo il caso e il tempo per prepararlo. Poi confronti quello che hai detto con la scaletta."
+            onPress={() => navigation.navigate('Simulatore')}
+          />
+        </Entrata>
+
+        {/*
+          Obiettivo di oggi, streak e settimana in un solo pannello: la
+          striscia dei giorni racconta già la streak, tenerli separati
+          significava dire due volte la stessa cosa.
+        */}
+        <Entrata ritardo={scaglione(3)}>
+          <Text style={styles.sectionTitle}>I tuoi progressi</Text>
+
+          <View style={[styles.obiettivoWrap, ombra.alta]}>
+            <LinearGradient
+              colors={['#37456F', '#1A2340']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.obiettivo}
+            >
+              <View style={styles.obiettivoTop}>
+                <AnelloProgresso progresso={state.puntiOggi / OBIETTIVO_GIORNALIERO} size={106}>
+                  <EtichettaAnello valore={`${state.puntiOggi}`} unita="punti" />
+                </AnelloProgresso>
+                <View style={styles.obiettivoTesto}>
+                  <Text style={styles.obiettivoTitolo}>Obiettivo di oggi</Text>
+                  <Text style={styles.obiettivoSub}>{messaggioObiettivo}</Text>
+                  {obiettivoRaggiunto && (
+                    <View style={styles.obiettivoChip}>
+                      <Icona nome="checkmark-circle" size={14} color={colors.primary} />
+                      <Text style={styles.obiettivoChipTesto}>COMPLETATO</Text>
+                    </View>
+                  )}
+                </View>
+              </View>
+
+              <View style={styles.settimana}>
+                <View style={styles.streakRiga}>
+                  <Animated.View style={stileFiamma}>
+                    <Icona
+                      nome="flame"
+                      size={22}
+                      color={streak > 0 ? colors.streakTo : 'rgba(255,255,255,0.28)'}
+                      pieno={streak > 0}
+                    />
+                  </Animated.View>
+                  <Text style={styles.streakNumero}>
+                    {streak}
+                    <Text style={styles.streakNumeroLabel}>
+                      {streak === 1 ? ' giorno di fila' : ' giorni di fila'}
+                    </Text>
+                  </Text>
+                  {streak > 0 && <Mascot state="celebrating" size={40} />}
+                </View>
+
+                <View style={styles.giorni}>
+                  {settimana.map((g) => (
+                    <GiornoPill key={g.data} g={g} />
+                  ))}
+                </View>
+              </View>
+
+              {/* Dalla Home mancava un modo per iniziare a studiare. */}
+              <Bottone
+                label={state.quizCompletati > 0 ? 'Continua a studiare' : 'Inizia la prima lezione'}
+                onPress={() => navigation.navigate('Quiz')}
+                variante="accento"
+              />
+            </LinearGradient>
+          </View>
+        </Entrata>
+
+        {/* Ripasso: compare solo se c'è davvero qualcosa da recuperare */}
+        {state.erroriDaRipassare.length > 0 && (
+          <Entrata ritardo={scaglione(4)}>
+            <Superficie
+              tono="forte"
+              raggio={radius.xl}
+              onPress={() => navigation.navigate('Ripasso')}
+              glow={materiaColors.Ripasso.end}
+              style={styles.ripassoWrap}
+              contentStyle={styles.ripasso}
+            >
+              <LinearGradient
+                colors={[materiaColors.Ripasso.start, materiaColors.Ripasso.end]}
+                style={styles.ripassoIcona}
+              >
+                <Icona nome="refresh-circle" size={24} color="#FFFFFF" />
+              </LinearGradient>
+              <View style={styles.ripassoTesto}>
+                <Text style={styles.ripassoTitolo}>Ripassa i tuoi errori</Text>
+                <Text style={styles.ripassoSub}>
+                  {state.erroriDaRipassare.length}{' '}
+                  {state.erroriDaRipassare.length === 1 ? 'domanda sbagliata' : 'domande sbagliate'}{' '}
+                  da recuperare.
+                </Text>
+              </View>
+              <Icona nome="chevron-forward" size={20} color={materiaColors.Ripasso.edge} />
+            </Superficie>
+          </Entrata>
+        )}
+
+        {/* Numeri complessivi, su una riga sola */}
+        <Entrata ritardo={scaglione(5)}>
+          <Superficie tono="vetro" raggio={radius.xl} contentStyle={styles.stats}>
+            <Statistica
+              valore={state.risposteCorrette}
+              label="Esatte"
+              icona="checkmark-done"
+              tint={colors.success}
+            />
+            <View style={styles.statsDivider} />
+            <Statistica
+              valore={precisione !== null ? `${precisione}%` : '0%'}
+              label="Precisione"
+              icona="pulse"
+              tint={materiaColors['Diritto civile'].start}
+            />
+            <View style={styles.statsDivider} />
+            <Statistica
+              valore={state.quizCompletati}
+              label="Lezioni"
+              icona="trophy"
+              tint={materiaColors['Procedura penale'].start}
+            />
+            <View style={styles.statsDivider} />
+            <Statistica
+              valore={state.tracceLette.length}
+              label="Tracce"
+              icona="document-text"
+              tint={colors.accentEdge}
+            />
+          </Superficie>
+        </Entrata>
+
+        <Text style={styles.sectionTitle}>
+          Badge ({state.badges.length}/{BADGES.length})
+        </Text>
+        <View style={styles.badgeGrid}>
+          {BADGES.map((badge, i) => {
+            const sbloccato = state.badges.includes(badge.id);
+            return (
+              <Entrata key={badge.id} ritardo={scaglione(6 + i, 30)} style={styles.badgeWrap}>
+                <Superficie
+                  tono={sbloccato ? 'forte' : 'interno'}
+                  rilievo={sbloccato ? 'media' : 'tenue'}
+                  raggio={radius.lg}
+                  glow={colors.accent}
+                  attiva={sbloccato}
+                  contentStyle={styles.badgeCard}
+                >
+                  <View style={[styles.badgeIconWrap, sbloccato && styles.badgeIconWrapOn]}>
+                    <Icona
+                      nome={badge.icona}
+                      size={24}
+                      color={sbloccato ? colors.accentEdge : colors.textFaint}
+                    />
+                  </View>
+                  <Text style={[styles.badgeNome, !sbloccato && styles.badgeSpento]}>
+                    {badge.nome}
+                  </Text>
+                  <Text style={[styles.badgeDescr, !sbloccato && styles.badgeSpento]}>
+                    {badge.descrizione}
+                  </Text>
+                  {!sbloccato && (
+                    /* Il lucchetto sta in un angolo, non sopra il testo: un
+                       badge bloccato deve incuriosire, e per farlo bisogna
+                       poter leggere che cosa si sta per sbloccare. */
+                    <View style={styles.badgeLockPill}>
+                      <Icona nome="lock-closed" size={11} color={colors.textFaint} />
+                    </View>
+                  )}
+                </Superficie>
+              </Entrata>
+            );
+          })}
+        </View>
+      </ScrollView>
+    </Sfondo>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1 },
   content: { padding: spacing.md, paddingBottom: spacing.xl },
 
-  heroWrap: { paddingBottom: EDGE_3D },
-  heroEdge: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: EDGE_3D,
-    bottom: 0,
-    borderRadius: radius.xxl,
-    backgroundColor: '#111A2E',
-  },
+  heroWrap: { borderRadius: radius.xxl },
   hero: {
     borderRadius: radius.xxl,
     padding: spacing.md,
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm + 2,
+    overflow: 'hidden',
   },
   heroTesto: { flex: 1, gap: 5 },
   heroBadgeLivello: {
@@ -427,92 +458,109 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 4,
   },
-  heroLivello: { color: colors.primary, fontSize: 12, fontWeight: '800' },
-  heroPunti: { color: '#FFFFFF', fontSize: 28, fontWeight: '900' },
+  heroLivello: { color: colors.primary, fontSize: 12, fontWeight: '800', letterSpacing: -0.2 },
+  heroPunti: { color: '#FFFFFF', fontSize: 30, fontWeight: '800', letterSpacing: -1 },
   heroPuntiLabel: {
     color: 'rgba(255,255,255,0.6)',
     fontSize: 14,
     fontWeight: '700',
+    letterSpacing: -0.2,
   },
-  heroProssimo: { color: 'rgba(255,255,255,0.7)', fontSize: 12 },
+  heroProssimo: { color: 'rgba(255,255,255,0.7)', ...type.minuto, fontWeight: '500' },
 
-  streakRiga: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
-  streakNumero: { flex: 1, fontSize: 20, fontWeight: '900', color: '#FFFFFF' },
-  streakNumeroLabel: { fontSize: 14, fontWeight: '700', color: 'rgba(255,255,255,0.7)' },
+  scorciatoia: { marginTop: spacing.md },
+  scorciatoiaCorpo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm + 4,
+    padding: spacing.md - 2,
+  },
+  scorciatoiaIcona: {
+    width: 44,
+    height: 44,
+    borderRadius: 15,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  scorciatoiaTesti: { flex: 1 },
+  scorciatoiaEtichetta: { ...type.etichetta, fontSize: 9.5, color: 'rgba(255,255,255,0.7)' },
+  scorciatoiaTitolo: {
+    ...type.scheda,
+    fontSize: 17,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    marginTop: 2,
+  },
+  scorciatoiaSub: {
+    ...type.minuto,
+    fontWeight: '500',
+    color: 'rgba(255,255,255,0.78)',
+    marginTop: 2,
+    lineHeight: 17,
+  },
 
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: '800',
+    ...type.sezione,
     color: colors.text,
     marginTop: spacing.lg,
-    marginBottom: spacing.sm,
+    marginBottom: spacing.sm + 2,
   },
 
-  // ——— Obiettivo di oggi ———
-  obiettivoWrap: { paddingBottom: EDGE_3D },
-  obiettivoEdge: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: EDGE_3D,
-    bottom: 0,
-    borderRadius: radius.xxl,
-    backgroundColor: '#111A2E',
-  },
+  obiettivoWrap: { borderRadius: radius.xxl },
   obiettivo: {
     borderRadius: radius.xxl,
     padding: spacing.md,
     gap: spacing.md,
+    overflow: 'hidden',
   },
   obiettivoTop: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
-  obiettivoTesto: { flex: 1 },
-  obiettivoTitolo: { color: '#FFFFFF', fontSize: 18, fontWeight: '900' },
-  obiettivoSub: {
-    color: 'rgba(255,255,255,0.72)',
-    fontSize: 13,
-    lineHeight: 19,
-    marginTop: 3,
-  },
+  obiettivoTesto: { flex: 1, gap: 4 },
+  obiettivoTitolo: { color: '#FFFFFF', ...type.sezione, fontSize: 19 },
+  obiettivoSub: { color: 'rgba(255,255,255,0.75)', ...type.piccolo, lineHeight: 19 },
   obiettivoChip: {
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'flex-start',
     gap: 4,
-    marginTop: spacing.sm,
     backgroundColor: colors.accent,
     borderRadius: radius.pill,
     paddingHorizontal: 9,
     paddingVertical: 3,
+    marginTop: 2,
   },
-  obiettivoChipTesto: {
-    fontSize: 10,
-    fontWeight: '800',
-    letterSpacing: 0.8,
-    color: colors.primary,
+  obiettivoChipTesto: { ...type.etichetta, fontSize: 9.5, color: colors.primary },
+
+  settimana: {
+    gap: spacing.sm + 2,
+    borderTopWidth: StyleSheet.hairlineWidth * 1.5,
+    borderTopColor: 'rgba(255,255,255,0.14)',
+    paddingTop: spacing.md,
+  },
+  streakRiga: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
+  streakNumero: { flex: 1, color: '#FFFFFF', fontSize: 21, fontWeight: '800', letterSpacing: -0.6 },
+  streakNumeroLabel: {
+    color: 'rgba(255,255,255,0.62)',
+    fontSize: 13,
+    fontWeight: '600',
+    letterSpacing: -0.1,
   },
 
-  // ——— Streak e striscia della settimana ———
-  settimana: {
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255,255,255,0.10)',
-    paddingTop: spacing.md,
-    gap: spacing.sm + 2,
-  },
   giorni: { flexDirection: 'row', justifyContent: 'space-between' },
-  giornoCol: { alignItems: 'center', gap: 6 },
+  giornoCol: { alignItems: 'center', gap: 5 },
   giornoLettera: {
-    fontSize: 11,
-    fontWeight: '800',
+    ...type.etichetta,
+    fontSize: 10,
     color: 'rgba(255,255,255,0.45)',
   },
   giornoLetteraOggi: { color: colors.accent },
   giorno: {
-    width: 32,
-    height: 32,
-    borderRadius: 11,
-    backgroundColor: 'rgba(255,255,255,0.10)',
+    width: 34,
+    height: 34,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.09)',
   },
   giornoAttivo: { backgroundColor: colors.streakTo },
   giornoFuturo: { backgroundColor: 'rgba(255,255,255,0.05)' },
@@ -521,125 +569,81 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: 'rgba(255,255,255,0.30)',
+    backgroundColor: 'rgba(255,255,255,0.32)',
   },
-  giornoPuntoFuturo: { backgroundColor: 'rgba(255,255,255,0.15)' },
-
-  // ——— Ripasso degli errori ———
-  esameWrap: { marginTop: spacing.lg },
-  esame: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm + 4, padding: spacing.md - 2 },
-  esameIcona: {
-    width: 44,
-    height: 44,
-    borderRadius: 15,
-    backgroundColor: '#FFFFFF',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  esameTesto: { flex: 1 },
-  esameChip: {
-    alignSelf: 'flex-start',
-    backgroundColor: 'rgba(255,255,255,0.16)',
-    borderRadius: radius.pill,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    marginBottom: 3,
-  },
-  esameChipTesto: { fontSize: 9.5, fontWeight: '900', letterSpacing: 0.9, color: '#FFE08A' },
-  esameTitolo: { fontSize: 16.5, fontWeight: '800', color: '#FFFFFF' },
-  esameSub: { fontSize: 12.5, color: 'rgba(255,255,255,0.85)', lineHeight: 18, marginTop: 2 },
+  giornoPuntoFuturo: { backgroundColor: 'rgba(255,255,255,0.16)' },
 
   ripassoWrap: { marginTop: spacing.md },
   ripasso: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.sm + 2,
-    paddingVertical: spacing.sm + 4,
-    paddingHorizontal: spacing.md - 2,
+    gap: spacing.sm + 4,
+    padding: spacing.md - 2,
   },
   ripassoIcona: {
-    width: 42,
-    height: 42,
-    borderRadius: 14,
-    backgroundColor: materiaColors.Ripasso.end,
+    width: 44,
+    height: 44,
+    borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
   },
   ripassoTesto: { flex: 1 },
-  ripassoTitolo: { fontSize: 16, fontWeight: '800', color: colors.text },
-  ripassoSub: { fontSize: 13, color: colors.textMuted, lineHeight: 18, marginTop: 2 },
+  ripassoTitolo: { ...type.scheda, color: colors.text },
+  ripassoSub: { ...type.minuto, fontWeight: '500', color: colors.textMuted, marginTop: 2 },
 
-  // ——— Riga dei numeri complessivi ———
-  statsWrap: { paddingBottom: EDGE_3D, marginTop: spacing.sm },
-  statsEdge: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: EDGE_3D,
-    bottom: 0,
-    borderRadius: radius.xl,
-    backgroundColor: '#DFE4EF',
-  },
   stats: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.card,
-    borderRadius: radius.xl,
     paddingVertical: spacing.md - 2,
-    paddingHorizontal: spacing.xs,
+    paddingHorizontal: spacing.sm,
+    marginTop: spacing.md,
   },
-  statsDivider: { width: 1, height: 32, backgroundColor: '#EAEEF6' },
-  stat: { flex: 1, alignItems: 'center', gap: 2, paddingHorizontal: 2 },
-  statValore: { fontSize: 21, fontWeight: '900', color: colors.text },
-  statLabel: {
-    fontSize: 10,
-    fontWeight: '800',
-    letterSpacing: 0.4,
-    textTransform: 'uppercase',
-    color: colors.textMuted,
-  },
+  stat: { flex: 1, alignItems: 'center', gap: 3 },
+  statValore: { ...type.sezione, fontSize: 21, color: colors.text },
+  statLabel: { ...type.etichetta, fontSize: 9.5, color: colors.textFaint },
+  statsDivider: { width: StyleSheet.hairlineWidth * 1.5, height: 34, backgroundColor: alpha.bordo },
 
-  badgeGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
-  badgeWrap: { width: '48%', flexGrow: 1, paddingBottom: EDGE_3D },
-  badgeEdge: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: EDGE_3D,
-    bottom: 0,
-    borderRadius: radius.xl,
-    backgroundColor: '#DFE4EF',
-  },
-  badgeEdgeOn: { backgroundColor: colors.accentEdge },
+  badgeGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm + 2 },
+  badgeWrap: { width: '47.6%' },
   badgeCard: {
-    backgroundColor: colors.card,
-    borderRadius: radius.xl,
-    padding: spacing.md,
     alignItems: 'center',
-    overflow: 'hidden',
+    padding: spacing.md - 2,
+    gap: 5,
+    minHeight: 156,
   },
-  badgeCardOn: { backgroundColor: colors.accentSoft },
   badgeIconWrap: {
-    width: 48,
-    height: 48,
-    borderRadius: 16,
+    width: 52,
+    height: 52,
+    borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#EEF1F6',
+    backgroundColor: alpha.velo,
+    marginBottom: 2,
   },
-  badgeIconWrapOn: { backgroundColor: '#FFFFFF' },
-  badgeNome: { fontSize: 14, fontWeight: '800', color: colors.text, marginTop: spacing.sm },
-  badgeDescr: { fontSize: 11, color: colors.textMuted, textAlign: 'center', marginTop: 2 },
-  badgeSpento: { color: '#9AA3B2' },
+  badgeIconWrapOn: { backgroundColor: colors.accentSoft },
+  badgeNome: {
+    ...type.scheda,
+    fontSize: 14.5,
+    color: colors.text,
+    textAlign: 'center',
+  },
+  badgeDescr: {
+    ...type.minuto,
+    fontWeight: '500',
+    color: colors.textMuted,
+    textAlign: 'center',
+    lineHeight: 16,
+  },
+  badgeSpento: { color: colors.textFaint },
   badgeLockPill: {
     position: 'absolute',
-    top: spacing.sm,
-    right: spacing.sm,
+    top: 10,
+    right: 10,
     width: 22,
     height: 22,
     borderRadius: 11,
-    backgroundColor: '#EEF1F6',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: alpha.velo,
   },
 });

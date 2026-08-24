@@ -1,5 +1,5 @@
 import React from 'react';
-import { Ionicons } from '@expo/vector-icons';
+import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -35,14 +35,21 @@ import ComunitaScreen from './src/screens/ComunitaScreen';
 import DocumentoLegaleScreen from './src/screens/DocumentoLegaleScreen';
 import { DOCUMENTI } from './src/data/legale';
 import { ConfineErrori } from './src/components/ConfineErrori';
-import { colors, materiaColors } from './src/theme';
+import { Icona } from './src/components/Icona';
+import { alpha, colors, materiaColors } from './src/theme';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
 
-function tabIcon(name: keyof typeof Ionicons.glyphMap, outline: keyof typeof Ionicons.glyphMap) {
+/**
+ * Icona di una tab. Lucide è un set di soli contorni, quindi la
+ * differenza fra tab attiva e inattiva non passa più dal glifo pieno ma
+ * dallo spessore del tratto e dal colore: la tab attiva ha un tratto
+ * più marcato, che a queste dimensioni si legge meglio del riempimento.
+ */
+function tabIcon(nome: string) {
   return ({ focused, color }: { focused: boolean; color: string }) => (
-    <Ionicons name={focused ? name : outline} size={22} color={color} />
+    <Icona nome={nome} size={22} color={color} strokeWidth={focused ? 2.4 : 1.8} />
   );
 }
 
@@ -60,11 +67,11 @@ function Tabs() {
         // Ogni valore imposto a mano qui finisce per tagliare le
         // etichette su qualche dispositivo.
         tabBarStyle: {
-          borderTopWidth: 1,
-          borderTopColor: '#E6EAF2',
+          borderTopWidth: StyleSheet.hairlineWidth * 1.5,
+          borderTopColor: alpha.bordo,
           backgroundColor: '#FFFFFF',
         },
-        tabBarLabelStyle: { fontWeight: '700' },
+        tabBarLabelStyle: { fontWeight: '700', letterSpacing: -0.2, fontSize: 11.5 },
       }}
     >
       <Tab.Screen
@@ -73,13 +80,13 @@ function Tabs() {
         options={{
           title: 'Legul',
           tabBarLabel: 'Home',
-          tabBarIcon: tabIcon('home', 'home-outline'),
+          tabBarIcon: tabIcon('home'),
         }}
       />
       <Tab.Screen
         name="Quiz"
         component={QuizHomeScreen}
-        options={{ title: 'Quiz', tabBarIcon: tabIcon('help-circle', 'help-circle-outline') }}
+        options={{ title: 'Quiz', tabBarIcon: tabIcon('help-circle') }}
       />
       <Tab.Screen
         name="Tracce"
@@ -87,7 +94,7 @@ function Tabs() {
         options={{
           title: 'Tracce anni passati',
           tabBarLabel: 'Tracce',
-          tabBarIcon: tabIcon('document-text', 'document-text-outline'),
+          tabBarIcon: tabIcon('document-text'),
         }}
       />
       <Tab.Screen
@@ -96,13 +103,13 @@ function Tabs() {
         options={{
           title: 'Materiale per l’esame',
           tabBarLabel: 'Materiale',
-          tabBarIcon: tabIcon('cart', 'cart-outline'),
+          tabBarIcon: tabIcon('cart'),
         }}
       />
       <Tab.Screen
         name="Profilo"
         component={ProfiloScreen}
-        options={{ headerShown: false, tabBarIcon: tabIcon('person', 'person-outline') }}
+        options={{ headerShown: false, tabBarIcon: tabIcon('person') }}
       />
     </Tab.Navigator>
   );
@@ -118,11 +125,18 @@ export default function App() {
       <GamificationProvider>
       <NavigationContainer linking={linking}>
         <StatusBar style="dark" />
+        {/*
+          Intestazioni chiare, non più la fascia blu piena: su un
+          linguaggio fatto di superfici traslucide su fondo chiaro una
+          barra scura in cima taglia la schermata in due e sembra
+          appartenere a un'altra app.
+        */}
         <Stack.Navigator
           screenOptions={{
-            headerStyle: { backgroundColor: colors.primary },
-            headerTintColor: '#FFFFFF',
-            headerTitleStyle: { fontWeight: '700' },
+            headerStyle: { backgroundColor: colors.background },
+            headerTintColor: colors.text,
+            headerShadowVisible: false,
+            headerTitleStyle: { fontWeight: '800', fontSize: 17 },
           }}
         >
           <Stack.Screen name="Tabs" component={Tabs} options={{ headerShown: false }} />
