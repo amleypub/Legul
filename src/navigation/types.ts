@@ -27,6 +27,8 @@ export type RootStackParamList = {
   /** Accesso: Apple / Google / email (UI; backend in arrivo). */
   Login: undefined;
   TracciaDetail: { tracciaId: string };
+  /** Svolgimento proposto di una traccia, a sezioni che si aprono. */
+  Svolgimento: { tracciaId: string };
   /**
    * Discussione degli utenti su un contenuto.
    *

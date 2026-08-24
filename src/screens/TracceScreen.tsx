@@ -3,13 +3,18 @@ import { SectionList, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { anniDisponibili, tracceByAnno } from '../data/tracce';
+import { anniDisponibili, tracce, tracceByAnno } from '../data/tracce';
+import { quanteConSvolgimento, tracceConSvolgimento } from '../data/svolgimenti';
 import { useGamification } from '../gamification/GamificationContext';
 import { Card3D } from '../components/Card3D';
 import type { RootStackParamList } from '../navigation/types';
 import type { TipoTraccia } from '../types';
 import { TitoloSchermata } from '../components/TitoloSchermata';
 import { colors, materiaColors, radius, spacing } from '../theme';
+
+/** Tracce che hanno uno svolgimento pubblicato: l'elenco non cambia a runtime. */
+const svolto = new Set(tracceConSvolgimento());
+const totaleTracce = tracce.length;
 
 const TIPO_STYLE: Record<TipoTraccia, { icona: keyof typeof Ionicons.glyphMap; tinta: string }> = {
   'Parere di diritto civile': { icona: 'book', tinta: materiaColors['Diritto civile'].start },
@@ -57,6 +62,14 @@ export default function TracceScreen() {
             </Text>
             <Ionicons name="chevron-forward" size={18} color="#8A5B00" />
           </Card3D>
+
+          {/* Gli svolgimenti sono ancora pochi e scriverne uno decente
+              costa tempo: meglio dire quanti sono che lasciare credere
+              che l'archivio sia coperto tutto. */}
+          <Text style={styles.copertura}>
+            {quanteConSvolgimento()} tracce su {totaleTracce} hanno lo svolgimento proposto. Le
+            altre arrivano: ne pubblichiamo una solo quando regge alla rilettura.
+          </Text>
         </>
       }
       renderSectionHeader={({ section }) => (
@@ -85,6 +98,14 @@ export default function TracceScreen() {
               <Text style={[styles.tipo, { color: tipo.tinta }]}>{item.tipo}</Text>
               <Text style={styles.titolo}>{item.titolo}</Text>
               <View style={styles.chipRow}>
+                {/* Le tracce con svolgimento sono ancora poche: dirlo
+                    nell'elenco evita di aprirne dieci per trovarle. */}
+                {svolto.has(item.id) && (
+                  <View style={[styles.chip, styles.chipSvolta]}>
+                    <Ionicons name="bulb" size={11} color={colors.accentEdge} />
+                    <Text style={[styles.chipText, styles.chipSvoltaText]}>Con svolgimento</Text>
+                  </View>
+                )}
                 {item.argomenti.map((a) => (
                   <View key={a} style={styles.chip}>
                     <Text style={styles.chipText}>{a}</Text>
@@ -159,4 +180,18 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
   },
   chipText: { fontSize: 11, color: colors.textMuted, fontWeight: '600' },
+  chipSvolta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+    backgroundColor: colors.accentSoft,
+  },
+  chipSvoltaText: { color: colors.accentEdge, fontWeight: '800' },
+  copertura: {
+    fontSize: 12.5,
+    color: colors.textMuted,
+    lineHeight: 18,
+    marginTop: spacing.sm,
+    paddingHorizontal: 2,
+  },
 });

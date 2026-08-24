@@ -42,6 +42,7 @@ export const linking: LinkingOptions<RootStackParamList> = {
       Paywall: 'premium',
       Login: 'accedi',
       TracciaDetail: 'traccia/:tracciaId',
+      Svolgimento: 'svolgimento/:tracciaId',
       Discussione: 'discussione/:argomento',
       Esame: 'esame',
       Comunita: 'comunita',

@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import { tracce } from '../data/tracce';
+import { svolgimentoDi } from '../data/svolgimenti';
 import { useGamification } from '../gamification/GamificationContext';
 import { argomentoTraccia } from '../discussione/modello';
 import { useConteggioDiscussione } from '../discussione/useConteggio';
@@ -32,6 +33,7 @@ export default function TracciaDetailScreen({
 }: RootStackScreenProps<'TracciaDetail'>) {
   const { tracciaId } = route.params;
   const traccia = tracce.find((t) => t.id === tracciaId);
+  const svolgimento = svolgimentoDi(tracciaId);
   const { state, registraTracciaLetta } = useGamification();
   const [premio, setPremio] = useState<number | null>(null);
   const registrata = useRef(false);
@@ -145,8 +147,50 @@ export default function TracciaDetailScreen({
         </Text>
       </View>
 
-      {/* Confronto con gli altri candidati: la traccia da sola dice poco,
-          il valore sta nel come la si scioglie. */}
+      {/* La traccia da sola dice poco: il valore sta nel come la si
+          scioglie. Prima lo svolgimento proposto, poi il confronto con
+          gli altri candidati. */}
+      {svolgimento && (
+        <>
+          <View style={styles.sezioneTestata}>
+            <Ionicons name="bulb-outline" size={16} color={colors.textMuted} />
+            <Text style={styles.sezioneTitolo}>Come si scioglie</Text>
+          </View>
+
+          <View style={styles.svolgimentoWrap}>
+            <View style={[styles.svolgimentoEdge, { backgroundColor: tinte.edge }]} />
+            <Pressable
+              onPress={() => navigation.navigate('Svolgimento', { tracciaId: traccia.id })}
+              accessibilityRole="button"
+              style={({ pressed }) => [
+                styles.svolgimento,
+                { backgroundColor: tinte.end },
+                pressed && styles.svolgimentoPremuto,
+              ]}
+            >
+              <View style={styles.svolgimentoIcona}>
+                <Ionicons name="bulb" size={20} color={tinte.end} />
+              </View>
+              <View style={styles.svolgimentoTesti}>
+                <Text style={styles.svolgimentoEtichetta}>Svolgimento proposto</Text>
+                <Text style={styles.svolgimentoSottotitolo}>
+                  {svolgimento.questioni.length} questioni da individuare,{' '}
+                  {svolgimento.contrasti.length === 1
+                    ? 'un contrasto giurisprudenziale'
+                    : `${svolgimento.contrasti.length} contrasti giurisprudenziali`}{' '}
+                  e la griglia per rileggerti
+                </Text>
+              </View>
+              <Ionicons name="chevron-forward" size={18} color="rgba(255,255,255,0.75)" />
+            </Pressable>
+          </View>
+
+          <Text style={styles.svolgimentoNota}>
+            Prima di aprirlo, prova a impostarla: le sezioni sono chiuse apposta.
+          </Text>
+        </>
+      )}
+
       <View style={styles.sezioneTestata}>
         <Ionicons name="people-outline" size={16} color={colors.textMuted} />
         <Text style={styles.sezioneTitolo}>Confronto</Text>
@@ -343,6 +387,49 @@ const styles = StyleSheet.create({
   // Il testo di una traccia si legge come un documento: righe larghe e
   // ariose, non compresse come una didascalia.
   testo: { fontSize: 15.5, color: colors.text, lineHeight: 26 },
+
+  // Lo svolgimento è la ragione per cui si apre una traccia: si prende
+  // il colore pieno della materia, mentre il confronto resta bianco.
+  svolgimentoWrap: { paddingBottom: EDGE_3D },
+  svolgimentoEdge: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: EDGE_3D,
+    bottom: 0,
+    borderRadius: radius.xl,
+  },
+  svolgimento: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm + 2,
+    borderRadius: radius.xl,
+    padding: spacing.md - 2,
+  },
+  svolgimentoPremuto: { opacity: 0.9 },
+  svolgimentoIcona: {
+    width: 38,
+    height: 38,
+    borderRadius: 13,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  svolgimentoTesti: { flex: 1 },
+  svolgimentoEtichetta: { fontSize: 15.5, fontWeight: '800', color: '#FFFFFF' },
+  svolgimentoSottotitolo: {
+    fontSize: 12.5,
+    color: 'rgba(255,255,255,0.85)',
+    marginTop: 2,
+    lineHeight: 17,
+  },
+  svolgimentoNota: {
+    fontSize: 12,
+    color: colors.textMuted,
+    lineHeight: 18,
+    marginTop: spacing.sm,
+    paddingHorizontal: 2,
+  },
 
   // Stesso linguaggio delle impostazioni: tessera a tinta piena per voce,
   // una card sola senza righe divisorie.
