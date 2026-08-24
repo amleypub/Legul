@@ -10,18 +10,18 @@ import {
   UIManager,
   View,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Icona } from '../components/Icona';
 import { tracce } from '../data/tracce';
 import { svolgimentoDi } from '../data/svolgimenti';
 import type { Riferimento } from '../data/svolgimenti';
 import { DA_COMPLETARE, TITOLARE } from '../data/legale';
 import { argomentoTraccia } from '../discussione/modello';
-import { Button3D } from '../components/Button3D';
+import { Bottone } from '../components/Bottone';
 import { Mascot } from '../components/Mascot';
 import type { RootStackScreenProps } from '../navigation/types';
 import type { TipoTraccia } from '../types';
-import { colors, EDGE_3D, materiaColors, radius, spacing } from '../theme';
+import { colors, materiaColors, radius, spacing } from '../theme';
 
 const TINTA_TIPO: Record<TipoTraccia, keyof typeof materiaColors> = {
   'Parere di diritto civile': 'Diritto civile',
@@ -47,8 +47,8 @@ function Pastiglia({ riferimento }: { riferimento: Riferimento }) {
   const norma = riferimento.tipo === 'norma';
   return (
     <View style={[styles.rif, norma ? styles.rifNorma : styles.rifGiuri]}>
-      <Ionicons
-        name={norma ? 'bookmark' : 'hammer'}
+      <Icona
+        nome={norma ? 'bookmark' : 'hammer'}
         size={11}
         color={norma ? '#20399B' : '#8C1B3C'}
       />
@@ -62,7 +62,7 @@ function Pastiglia({ riferimento }: { riferimento: Riferimento }) {
 interface SezioneProps {
   titolo: string;
   sintesi?: string;
-  icona: keyof typeof Ionicons.glyphMap;
+  icona: string;
   tinta: string;
   aperta: boolean;
   onToggle: () => void;
@@ -79,7 +79,6 @@ interface SezioneProps {
 function Sezione({ titolo, sintesi, icona, tinta, aperta, onToggle, children }: SezioneProps) {
   return (
     <View style={styles.sezioneWrap}>
-      <View style={styles.sezioneEdge} />
       <View style={styles.sezione}>
         <Pressable
           onPress={() => {
@@ -91,7 +90,7 @@ function Sezione({ titolo, sintesi, icona, tinta, aperta, onToggle, children }: 
           style={({ pressed }) => [styles.sezioneTesta, pressed && styles.sezionePremuta]}
         >
           <View style={[styles.sezioneIcona, { backgroundColor: tinta }]}>
-            <Ionicons name={icona} size={17} color="#FFFFFF" />
+            <Icona nome={icona} size={17} color="#FFFFFF" />
           </View>
           <View style={styles.sezioneTesti}>
             <Text style={styles.sezioneTitolo}>{titolo}</Text>
@@ -101,8 +100,8 @@ function Sezione({ titolo, sintesi, icona, tinta, aperta, onToggle, children }: 
               </Text>
             )}
           </View>
-          <Ionicons
-            name={aperta ? 'chevron-up' : 'chevron-down'}
+          <Icona
+            nome={aperta ? 'chevron-up' : 'chevron-down'}
             size={18}
             color="#9AA3B2"
             style={styles.sezioneFreccia}
@@ -142,11 +141,10 @@ export default function SvolgimentoScreen({
           Per questa traccia non è ancora pubblicato uno svolgimento proposto. Nel frattempo puoi
           confrontarti con gli altri candidati nella discussione.
         </Text>
-        <Button3D
+        <Bottone
           label="Torna alla traccia"
           onPress={() => navigation.goBack()}
-          color={colors.primary}
-          edgeColor="#0E1830"
+          variante="scuro"
           style={styles.vuotoBtn}
         />
       </View>
@@ -182,7 +180,6 @@ export default function SvolgimentoScreen({
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.testataWrap}>
-        <View style={[styles.testataEdge, { backgroundColor: tinte.edge }]} />
         <LinearGradient
           colors={[tinte.start, tinte.end]}
           start={{ x: 0, y: 0 }}
@@ -200,7 +197,7 @@ export default function SvolgimentoScreen({
       {/* Il nudge che dà senso a tutto il resto: aprire lo svolgimento
           senza aver provato vale poco più che leggere un manuale. */}
       <View style={styles.provaCard}>
-        <Ionicons name="stopwatch-outline" size={20} color={colors.accentEdge} />
+        <Icona nome="stopwatch-outline" size={20} color={colors.accentEdge} />
         <Text style={styles.provaTesto}>
           <Text style={styles.provaForte}>Prima prova tu.</Text> Le sezioni qui sotto sono chiuse
           apposta: aprirle senza aver almeno impostato la traccia toglie alla lettura quasi tutto il
@@ -287,7 +284,7 @@ export default function SvolgimentoScreen({
                 </View>
               ))}
               <View style={styles.ricaduta}>
-                <Ionicons name="arrow-forward-circle" size={16} color={colors.accentEdge} />
+                <Icona nome="arrow-forward-circle" size={16} color={colors.accentEdge} />
                 <Text style={styles.ricadutaTesto}>
                   <Text style={styles.ricadutaEtichetta}>Che cosa cambia. </Text>
                   {c.ricaduta}
@@ -312,7 +309,7 @@ export default function SvolgimentoScreen({
       >
         {svolgimento.trappole.map((t) => (
           <View key={t} style={styles.voce}>
-            <Ionicons name="alert-circle" size={17} color={colors.error} style={styles.voceIcona} />
+            <Icona nome="alert-circle" size={17} color={colors.error} style={styles.voceIcona} />
             <Text style={styles.voceTesto}>{t}</Text>
           </View>
         ))}
@@ -336,8 +333,8 @@ export default function SvolgimentoScreen({
               accessibilityState={{ checked: presa }}
               style={({ pressed }) => [styles.griglia, pressed && styles.grigliaPremuta]}
             >
-              <Ionicons
-                name={presa ? 'checkbox' : 'square-outline'}
+              <Icona
+                nome={presa ? 'checkbox' : 'square-outline'}
                 size={22}
                 color={presa ? colors.successEdge : '#B6BECC'}
               />
@@ -374,13 +371,13 @@ export default function SvolgimentoScreen({
           accessibilityRole="button"
           style={({ pressed }) => [styles.segnala, pressed && styles.segnalaPremuto]}
         >
-          <Ionicons name="flag-outline" size={16} color={colors.textMuted} />
+          <Icona nome="flag-outline" size={16} color={colors.textMuted} />
           <Text style={styles.segnalaTesto}>
             {emailPubblica ? 'Segnala un errore' : 'Segnala un errore nella discussione'}
           </Text>
         </Pressable>
 
-        <Button3D
+        <Bottone
           label="Confrontati con gli altri"
           onPress={() =>
             navigation.navigate('Discussione', {
@@ -388,9 +385,7 @@ export default function SvolgimentoScreen({
               titolo: traccia.titolo,
             })
           }
-          color={colors.accent}
-          edgeColor="#A8861B"
-          textColor={colors.primary}
+          variante="accento"
           style={styles.chiusuraBtn}
         />
       </View>
@@ -399,12 +394,11 @@ export default function SvolgimentoScreen({
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1, },
   content: { padding: spacing.md, paddingBottom: spacing.xl },
 
   vuoto: {
     flex: 1,
-    backgroundColor: colors.background,
     alignItems: 'center',
     justifyContent: 'center',
     padding: spacing.lg,
@@ -414,15 +408,7 @@ const styles = StyleSheet.create({
   vuotoTesto: { fontSize: 14, color: colors.textMuted, textAlign: 'center', lineHeight: 20 },
   vuotoBtn: { alignSelf: 'stretch', marginTop: spacing.md },
 
-  testataWrap: { paddingBottom: EDGE_3D },
-  testataEdge: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: EDGE_3D,
-    bottom: 0,
-    borderRadius: radius.xxl,
-  },
+  testataWrap: { },
   testata: { borderRadius: radius.xxl, padding: spacing.md, gap: 3 },
   occhiello: {
     fontSize: 11,
@@ -455,16 +441,7 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
   },
 
-  sezioneWrap: { paddingBottom: EDGE_3D, marginTop: spacing.sm },
-  sezioneEdge: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: EDGE_3D,
-    bottom: 0,
-    borderRadius: radius.xl,
-    backgroundColor: '#DFE4EF',
-  },
+  sezioneWrap: { marginTop: spacing.sm },
   sezione: { backgroundColor: colors.card, borderRadius: radius.xl, overflow: 'hidden' },
   // Le domande dei contrasti occupano anche cinque righe: icona e freccia
   // si allineano alla prima riga, non al centro di un blocco alto.

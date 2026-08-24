@@ -21,12 +21,26 @@ describe('mappa delle icone', () => {
 
   const sorgenti = fileSorgente(radice).filter((f) => !f.endsWith('Icona.tsx'));
 
-  /** Nomi passati a `<Icona nome="…">` e memorizzati nei dati come `icona:`. */
+  /**
+   * Nomi passati a `<Icona nome="…">`, memorizzati nei dati come
+   * `icona:` e — questo è il caso che era sfuggito — raccolti nelle
+   * mappe tipizzate `Record<…, string>` che associano un'icona a una
+   * materia o a una categoria. Lì la chiave non si chiama `icona`, e
+   * cercare solo quella parola lasciava passare nomi inesistenti che a
+   * schermo diventavano buchi silenziosi.
+   */
   const usati = new Set<string>();
   for (const f of sorgenti) {
     const testo = fs.readFileSync(f, 'utf8');
     for (const m of testo.matchAll(/<Icona\s[^>]*nome=["']([a-z0-9-]+)["']/g)) usati.add(m[1]);
     for (const m of testo.matchAll(/icona:\s*'([a-z0-9-]+)'/g)) usati.add(m[1]);
+    for (const m of testo.matchAll(
+      /(?:ICONA|Icona|icone)\w*\s*:\s*Record<[^>]*>\s*=\s*\{([^}]*)\}/g
+    )) {
+      for (const v of m[1].matchAll(/:\s*'([a-z][a-z0-9-]*)'/g)) usati.add(v[1]);
+    }
+    // Mappe che tengono l'icona dentro un oggetto: `{ icona: 'x', … }`.
+    for (const m of testo.matchAll(/icona:\s*["']([a-z0-9-]+)["']/g)) usati.add(m[1]);
   }
 
   it('trova nomi di icone nei sorgenti', () => {

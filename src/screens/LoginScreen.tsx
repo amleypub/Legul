@@ -11,12 +11,12 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
+import { Icona } from '../components/Icona';
 import { Mascot } from '../components/Mascot';
 import { useAuth } from '../auth/AuthContext';
 import type { RootStackScreenProps } from '../navigation/types';
-import { colors, EDGE_3D, radius, spacing } from '../theme';
+import { alpha, colors, radius, spacing, SCALA_PRESSIONE } from '../theme';
 
 const EMAIL_VALIDA = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -41,7 +41,7 @@ function SocialButton({
   onPress,
 }: {
   label: string;
-  icona: keyof typeof Ionicons.glyphMap;
+  icona: string;
   bg: string;
   fg: string;
   edge: string;
@@ -50,9 +50,14 @@ function SocialButton({
   disabilitato?: boolean;
   onPress: () => void;
 }) {
-  const ty = useRef(new Animated.Value(0)).current;
+  const premuto = useRef(new Animated.Value(0)).current;
   const press = (down: boolean) => {
-    Animated.spring(ty, { toValue: down ? EDGE_3D : 0, speed: 40, bounciness: 0, useNativeDriver: true }).start();
+    Animated.spring(premuto, {
+      toValue: down ? 1 : 0,
+      speed: 40,
+      bounciness: 0,
+      useNativeDriver: true,
+    }).start();
     if (down) Haptics.selectionAsync().catch(() => {});
   };
   return (
@@ -63,18 +68,24 @@ function SocialButton({
       onPress={onPress}
     >
       <View style={[styles.socialWrap, disabilitato && styles.socialSpento]}>
-        <View style={[styles.socialEdge, { backgroundColor: edge }]} />
         <Animated.View
           style={[
             styles.social,
-            { backgroundColor: bg, borderColor: bordo ?? bg, transform: [{ translateY: ty }] },
+            { backgroundColor: bg, borderColor: bordo ?? bg, transform: [
+                {
+                  scale: premuto.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [1, SCALA_PRESSIONE],
+                  }),
+                },
+              ] },
           ]}
         >
           {occupato ? (
             <ActivityIndicator color={fg} />
           ) : (
             <>
-              <Ionicons name={icona} size={22} color={fg} style={styles.socialIcon} />
+              <Icona nome={icona} size={22} color={fg} style={styles.socialIcon} />
               <Text style={[styles.socialLabel, { color: fg }]}>{label}</Text>
             </>
           )}
@@ -129,7 +140,7 @@ export default function LoginScreen({ navigation }: RootStackScreenProps<'Login'
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <Pressable style={styles.chiudi} hitSlop={12} onPress={() => navigation.goBack()}>
-        <Ionicons name="close" size={28} color={colors.textMuted} />
+        <Icona nome="close" size={28} color={colors.textMuted} />
       </Pressable>
 
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
@@ -142,7 +153,7 @@ export default function LoginScreen({ navigation }: RootStackScreenProps<'Login'
         {linkInviato ? (
           <View style={styles.inviatoWrap}>
             <View style={styles.inviatoIcona}>
-              <Ionicons name="mail-open" size={28} color={colors.success} />
+              <Icona nome="mail-open" size={28} color={colors.success} />
             </View>
             <Text style={styles.inviatoTitolo}>Controlla la posta</Text>
             <Text style={styles.inviatoTesto}>
@@ -220,7 +231,7 @@ export default function LoginScreen({ navigation }: RootStackScreenProps<'Login'
 
             {!configurato && (
               <View style={styles.avvisoWrap}>
-                <Ionicons name="construct" size={16} color={colors.textMuted} />
+                <Icona nome="construct" size={16} color={colors.textMuted} />
                 <Text style={styles.avviso}>
                   Server di accesso non configurato in questa versione: puoi studiare come ospite, i
                   progressi restano salvati su questo dispositivo.
@@ -253,7 +264,7 @@ export default function LoginScreen({ navigation }: RootStackScreenProps<'Login'
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1, },
   chiudi: { paddingHorizontal: spacing.md, paddingTop: spacing.sm },
   content: { padding: spacing.lg, alignItems: 'center', paddingBottom: spacing.xl },
   titolo: { fontSize: 26, fontWeight: '900', color: colors.text, marginTop: spacing.sm },
@@ -266,7 +277,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.sm,
   },
   buttons: { alignSelf: 'stretch', gap: spacing.md, marginTop: spacing.xl },
-  socialWrap: { paddingBottom: EDGE_3D },
+  socialWrap: { },
   socialSpento: { opacity: 0.45 },
   emailWrap: { gap: spacing.sm },
   emailInput: {
@@ -287,6 +298,8 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
     marginTop: spacing.xl,
     gap: spacing.sm,
+    borderWidth: StyleSheet.hairlineWidth * 1.5,
+    borderColor: alpha.bordo,
   },
   inviatoIcona: {
     width: 56,
@@ -309,14 +322,6 @@ const styles = StyleSheet.create({
     color: colors.primary,
     marginTop: spacing.xs,
   },
-  socialEdge: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: EDGE_3D,
-    bottom: 0,
-    borderRadius: radius.pill,
-  },
   social: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -335,6 +340,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
     padding: spacing.md,
     marginTop: spacing.lg,
+    borderWidth: StyleSheet.hairlineWidth * 1.5,
+    borderColor: alpha.bordo,
   },
   avviso: { flex: 1, fontSize: 13, color: colors.textMuted, lineHeight: 19 },
   privacy: {

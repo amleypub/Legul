@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { Icona } from '../components/Icona';
 import {
   ActivityIndicator,
   Pressable,
@@ -8,13 +9,12 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { nomeVisualizzato, useAuth } from '../auth/AuthContext';
 import * as api from '../discussione/api';
 import { abbreviaNome } from '../discussione/modello';
-import { Button3D } from '../components/Button3D';
+import { Bottone } from '../components/Bottone';
 import type { RootStackScreenProps } from '../navigation/types';
-import { colors, radius, spacing } from '../theme';
+import { alpha, colors, radius, spacing } from '../theme';
 
 /**
  * Nome pubblico e persone bloccate.
@@ -92,16 +92,15 @@ export default function ComunitaScreen({ navigation }: RootStackScreenProps<'Com
   if (!utente) {
     return (
       <View style={styles.centro}>
-        <Ionicons name="people-outline" size={40} color={colors.textMuted} />
+        <Icona nome="people-outline" size={40} color={colors.textMuted} />
         <Text style={styles.centroTitolo}>Serve l’accesso</Text>
         <Text style={styles.centroTesto}>
           Il nome pubblico e le persone bloccate sono legati al tuo account.
         </Text>
-        <Button3D
+        <Bottone
           label="Accedi"
           onPress={() => navigation.navigate('Login')}
-          color={colors.primary}
-          edgeColor="#0E1830"
+          variante="scuro"
           style={styles.centroBtn}
         />
       </View>
@@ -133,12 +132,11 @@ export default function ComunitaScreen({ navigation }: RootStackScreenProps<'Com
           style={styles.casella}
           accessibilityLabel="Nome nella discussione"
         />
-        <Button3D
+        <Bottone
           label={salvataggio ? 'Salvataggio…' : 'Salva il nome'}
           onPress={() => void salva()}
           disabled={!cambiato || !valido || salvataggio}
-          color={colors.primary}
-          edgeColor="#0E1830"
+          variante="scuro"
         />
         {esito ? <Text style={styles.esito}>{esito}</Text> : null}
       </View>
@@ -175,7 +173,7 @@ export default function ComunitaScreen({ navigation }: RootStackScreenProps<'Com
 
       {errore ? (
         <View style={styles.errore}>
-          <Ionicons name="alert-circle" size={17} color={colors.errorEdge} />
+          <Icona nome="alert-circle" size={17} color={colors.errorEdge} />
           <Text style={styles.erroreTesto}>{errore}</Text>
         </View>
       ) : null}
@@ -184,7 +182,7 @@ export default function ComunitaScreen({ navigation }: RootStackScreenProps<'Com
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1, },
   content: { padding: spacing.md, paddingBottom: spacing.xl },
 
   gruppoTitolo: {
@@ -202,6 +200,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.xl,
     padding: spacing.md,
     gap: spacing.sm + 2,
+    borderWidth: StyleSheet.hairlineWidth * 1.5,
+    borderColor: alpha.bordo,
   },
   spiega: { fontSize: 13.5, color: colors.textMuted, lineHeight: 20 },
   forte: { fontWeight: '800', color: colors.text },
@@ -249,7 +249,6 @@ const styles = StyleSheet.create({
 
   centro: {
     flex: 1,
-    backgroundColor: colors.background,
     alignItems: 'center',
     justifyContent: 'center',
     padding: spacing.lg,

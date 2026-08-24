@@ -1,9 +1,9 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { Button3D } from './Button3D';
+import { Icona } from './Icona';
+import { Bottone } from './Bottone';
 import { Mascot } from './Mascot';
-import { colors, radius, spacing } from '../theme';
+import { alpha, colors, radius, spacing } from '../theme';
 
 interface Stato {
   errore: Error | null;
@@ -48,11 +48,10 @@ export class ConfineErrori extends React.Component<{ children: React.ReactNode }
             se succede di nuovo chiudi e riapri Legul.
           </Text>
 
-          <Button3D
+          <Bottone
             label="Riprova"
             onPress={this.riprova}
-            color={colors.primary}
-            edgeColor="#0E1830"
+          variante="scuro"
             style={styles.bottone}
           />
 
@@ -60,7 +59,7 @@ export class ConfineErrori extends React.Component<{ children: React.ReactNode }
               deve essere la prima cosa che si legge. */}
           <View style={styles.dettaglio}>
             <View style={styles.dettaglioTestata}>
-              <Ionicons name="bug-outline" size={14} color={colors.textMuted} />
+              <Icona nome="bug-outline" size={14} color={colors.textMuted} />
               <Text style={styles.dettaglioTitolo}>Dettaglio tecnico</Text>
             </View>
             <Text style={styles.dettaglioTesto}>{errore.message || String(errore)}</Text>
@@ -94,6 +93,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     padding: spacing.md,
     marginTop: spacing.lg,
+    borderWidth: StyleSheet.hairlineWidth * 1.5,
+    borderColor: alpha.bordo,
   },
   dettaglioTestata: { flexDirection: 'row', alignItems: 'center', gap: 5 },
   dettaglioTitolo: {

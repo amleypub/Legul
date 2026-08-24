@@ -236,17 +236,6 @@ export const materiaColors: Record<
   Ripasso: { start: '#F8B048', end: '#E37B1E', edge: '#AF5C13', soft: '#FEF0E0' },
 };
 
-/**
- * Ombra morbida per le card.
- * @deprecated Usa `ombra.media`. Resta finché tutte le schermate non sono migrate.
- */
+/** @deprecated Usa `ombra.media`. */
 export const softShadow = ombra.media;
 
-/**
- * Spessore del vecchio bordo 3D.
- * @deprecated Il linguaggio a blocchi è stato sostituito da superfici in
- * vetro. Resta al valore originale finché tutte le schermate non sono
- * migrate — azzerarlo prima lascerebbe il bordo colorato scoperto sotto
- * le superfici traslucide — e va rimosso quando l'ultima sarà passata.
- */
-export const EDGE_3D = 5;

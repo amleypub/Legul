@@ -1,13 +1,14 @@
 import React, { useRef, useState } from 'react';
 import { Animated, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
+import { Icona } from '../components/Icona';
 import { useGamification } from '../gamification/GamificationContext';
-import { Button3D } from '../components/Button3D';
+import { Bottone } from '../components/Bottone';
 import type { RootStackScreenProps } from '../navigation/types';
-import { colors, EDGE_3D, radius, spacing } from '../theme';
+import { colors, radius, spacing, SCALA_PRESSIONE } from '../theme';
 
 const VANTAGGI = [
   'Unità Avanzato ed Eccellenza per tutte le materie',
@@ -34,10 +35,10 @@ function Piano({
   attivo: boolean;
   onPress: () => void;
 }) {
-  const ty = useRef(new Animated.Value(0)).current;
+  const premuto = useRef(new Animated.Value(0)).current;
   const giu = (down: boolean) =>
-    Animated.spring(ty, {
-      toValue: down ? EDGE_3D : 0,
+    Animated.spring(premuto, {
+      toValue: down ? 1 : 0,
       speed: 40,
       bounciness: 0,
       useNativeDriver: true,
@@ -46,12 +47,18 @@ function Piano({
   return (
     <Pressable style={styles.pianoPress} onPressIn={() => giu(true)} onPressOut={() => giu(false)} onPress={onPress}>
       <View style={styles.pianoWrap}>
-        <View style={[styles.pianoEdge, attivo && styles.pianoEdgeAttivo]} />
         <Animated.View
           style={[
             styles.piano,
             attivo && styles.pianoAttivo,
-            { transform: [{ translateY: ty }] },
+            { transform: [
+                {
+                  scale: premuto.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [1, SCALA_PRESSIONE],
+                  }),
+                },
+              ] },
           ]}
         >
           {etichetta ? (
@@ -68,7 +75,7 @@ function Piano({
           <Text style={styles.pianoDettaglio}>{dettaglio}</Text>
           {attivo && (
             <View style={styles.pianoSpunta}>
-              <Ionicons name="checkmark" size={15} color={colors.primary} />
+              <Icona nome="checkmark" size={15} color={colors.primary} />
             </View>
           )}
         </Animated.View>
@@ -87,7 +94,7 @@ export default function PaywallScreen({ navigation }: RootStackScreenProps<'Payw
       <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
         <ScrollView contentContainerStyle={styles.content}>
           <Pressable onPress={() => navigation.goBack()} hitSlop={12} style={styles.chiudi}>
-            <Ionicons name="close" size={28} color="rgba(255,255,255,0.7)" />
+            <Icona nome="close" size={28} color="rgba(255,255,255,0.7)" />
           </Pressable>
 
           <View style={styles.coronaBubble}>
@@ -101,7 +108,7 @@ export default function PaywallScreen({ navigation }: RootStackScreenProps<'Payw
           <View style={styles.vantaggi}>
             {VANTAGGI.map((v) => (
               <View key={v} style={styles.vantaggioRiga}>
-                <Ionicons name="checkmark-circle" size={22} color={colors.accent} />
+                <Icona nome="checkmark-circle" size={22} color={colors.accent} />
                 <Text style={styles.vantaggioTesto}>{v}</Text>
               </View>
             ))}
@@ -125,15 +132,13 @@ export default function PaywallScreen({ navigation }: RootStackScreenProps<'Payw
             />
           </View>
 
-          <Button3D
+          <Bottone
             label="Attiva Premium"
             onPress={() => {
               attivaPremium();
               navigation.goBack();
             }}
-            color={colors.accent}
-            edgeColor="#A8861B"
-            textColor={colors.primary}
+          variante="accento"
           />
           <Text style={styles.nota}>
             Prezzi di esempio. L’acquisto in-app (App Store / Google Play) sarà integrato prima
@@ -179,16 +184,7 @@ const styles = StyleSheet.create({
     marginVertical: spacing.lg,
   },
   pianoPress: { flex: 1 },
-  pianoWrap: { flex: 1, paddingBottom: EDGE_3D },
-  pianoEdge: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: EDGE_3D,
-    bottom: 0,
-    borderRadius: radius.xl,
-    backgroundColor: 'rgba(0,0,0,0.35)',
-  },
+  pianoWrap: { flex: 1, },
   pianoEdgeAttivo: { backgroundColor: '#A8861B' },
   // Sfondo pieno (non traslucido) così il bordo 3D non traspare e sporca il colore.
   piano: {

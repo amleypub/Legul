@@ -1,24 +1,24 @@
 import React from 'react';
 import { Linking, SectionList, StyleSheet, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Icona } from '../components/Icona';
 import { buildAffiliateUrl } from '../config/affiliate';
 import { materiali } from '../data/materiali';
-import { Card3D } from '../components/Card3D';
+import { Superficie } from '../components/Superficie';
 import { Mascot } from '../components/Mascot';
 import type { MaterialeEsame } from '../types';
 import { TitoloSchermata } from '../components/TitoloSchermata';
-import { colors, radius, spacing } from '../theme';
+import { alpha, colors, radius, spacing } from '../theme';
 
 const CATEGORIE: MaterialeEsame['categoria'][] = ['Codici', 'Manuali', 'Cancelleria e utilità'];
 
-const ICONA_CATEGORIA: Record<MaterialeEsame['categoria'], keyof typeof Ionicons.glyphMap> = {
+const ICONA_CATEGORIA: Record<MaterialeEsame['categoria'], string> = {
   Codici: 'library',
   Manuali: 'school',
   'Cancelleria e utilità': 'color-wand',
 };
 
 /** Icona mostrata nella tessera del singolo prodotto. */
-const ICONA_MATERIALE: Record<MaterialeEsame['categoria'], keyof typeof Ionicons.glyphMap> = {
+const ICONA_MATERIALE: Record<MaterialeEsame['categoria'], string> = {
   Codici: 'book',
   Manuali: 'reader',
   'Cancelleria e utilità': 'briefcase',
@@ -59,20 +59,19 @@ export default function MaterialeScreen() {
       }
       renderSectionHeader={({ section }) => (
         <View style={styles.categoriaRow}>
-          <Ionicons name={ICONA_CATEGORIA[section.title]} size={20} color={colors.primary} />
+          <Icona nome={ICONA_CATEGORIA[section.title]} size={20} color={colors.primary} />
           <Text style={styles.categoria}>{section.title}</Text>
         </View>
       )}
       renderItem={({ item }) => (
-        <Card3D
-          edgeColor="#DFE4EF"
-          radiusSize={radius.xl}
+        <Superficie
+          raggio={radius.xl}
           style={styles.cardOuter}
           contentStyle={styles.card}
           onPress={() => apriSuAmazon(item)}
         >
           <View style={styles.iconTile}>
-            <Ionicons name={ICONA_MATERIALE[item.categoria]} size={22} color={colors.accentEdge} />
+            <Icona nome={ICONA_MATERIALE[item.categoria]} size={22} color={colors.accentEdge} />
           </View>
           <View style={styles.cardText}>
             <Text style={styles.titolo}>{item.titolo}</Text>
@@ -80,11 +79,11 @@ export default function MaterialeScreen() {
               {item.descrizione}
             </Text>
             <View style={styles.chip}>
-              <Ionicons name="cart" size={13} color={colors.primary} />
+              <Icona nome="cart" size={13} color={colors.primary} />
               <Text style={styles.chipTesto}>Vedi su Amazon</Text>
             </View>
           </View>
-        </Card3D>
+        </Superficie>
       )}
       ListFooterComponent={
         <Text style={styles.disclosure}>
@@ -97,7 +96,7 @@ export default function MaterialeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1, },
   content: { padding: spacing.md, paddingBottom: spacing.xl },
   headerCard: {
     flexDirection: 'row',
@@ -107,6 +106,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     padding: spacing.md,
     marginBottom: spacing.sm,
+    borderWidth: StyleSheet.hairlineWidth * 1.5,
+    borderColor: alpha.bordo,
   },
   headerText: { flex: 1, fontSize: 13, color: colors.textMuted, lineHeight: 19 },
   categoriaRow: {

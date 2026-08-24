@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StatusBar } from 'expo-status-bar';
@@ -36,7 +36,18 @@ import DocumentoLegaleScreen from './src/screens/DocumentoLegaleScreen';
 import { DOCUMENTI } from './src/data/legale';
 import { ConfineErrori } from './src/components/ConfineErrori';
 import { Icona } from './src/components/Icona';
+import { Sfondo } from './src/components/Sfondo';
 import { alpha, colors, materiaColors } from './src/theme';
+
+/**
+ * Le schermate devono lasciar vedere il fondale che sta sotto la
+ * navigazione: senza questo tema React Navigation dipinge il proprio
+ * bianco opaco su ogni schermata e la velatura non si vede mai.
+ */
+const TEMA_TRASPARENTE = {
+  ...DefaultTheme,
+  colors: { ...DefaultTheme.colors, background: 'transparent', card: 'transparent' },
+};
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
@@ -57,6 +68,7 @@ function Tabs() {
   return (
     <Tab.Navigator
       screenOptions={{
+        sceneStyle: { backgroundColor: 'transparent' },
         // Le schermate a tab hanno già il proprio titolo nel contenuto:
         // una barra piena sopra ripeteva l'informazione e rubava spazio.
         headerShown: false,
@@ -69,7 +81,7 @@ function Tabs() {
         tabBarStyle: {
           borderTopWidth: StyleSheet.hairlineWidth * 1.5,
           borderTopColor: alpha.bordo,
-          backgroundColor: '#FFFFFF',
+          backgroundColor: 'rgba(255,255,255,0.94)',
         },
         tabBarLabelStyle: { fontWeight: '700', letterSpacing: -0.2, fontSize: 11.5 },
       }}
@@ -123,7 +135,8 @@ export default function App() {
     <ConfineErrori>
     <AuthProvider>
       <GamificationProvider>
-      <NavigationContainer linking={linking}>
+      <Sfondo>
+      <NavigationContainer linking={linking} theme={TEMA_TRASPARENTE}>
         <StatusBar style="dark" />
         {/*
           Intestazioni chiare, non più la fascia blu piena: su un
@@ -133,7 +146,8 @@ export default function App() {
         */}
         <Stack.Navigator
           screenOptions={{
-            headerStyle: { backgroundColor: colors.background },
+            contentStyle: { backgroundColor: 'transparent' },
+            headerStyle: { backgroundColor: 'transparent' },
             headerTintColor: colors.text,
             headerShadowVisible: false,
             headerTitleStyle: { fontWeight: '800', fontSize: 17 },
@@ -209,6 +223,7 @@ export default function App() {
           />
         </Stack.Navigator>
       </NavigationContainer>
+      </Sfondo>
       </GamificationProvider>
     </AuthProvider>
     </ConfineErrori>

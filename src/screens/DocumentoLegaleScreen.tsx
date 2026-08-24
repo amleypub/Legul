@@ -39,7 +39,7 @@ export default function DocumentoLegaleScreen({
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1, },
   content: { padding: spacing.md, paddingBottom: spacing.xl * 2 },
   occhiello: {
     fontSize: 15,

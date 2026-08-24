@@ -9,8 +9,8 @@ import {
   Text,
   View,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Icona } from '../components/Icona';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useGamification } from '../gamification/GamificationContext';
@@ -18,9 +18,9 @@ import { nomeVisualizzato, useAuth } from '../auth/AuthContext';
 import { ORE_PROPOSTE } from '../notifiche/promemoria';
 import { Mascot } from '../components/Mascot';
 import { SpazioStatusBar } from '../components/TitoloSchermata';
-import { Button3D } from '../components/Button3D';
+import { Bottone } from '../components/Bottone';
 import type { RootStackParamList } from '../navigation/types';
-import { colors, EDGE_3D, radius, spacing } from '../theme';
+import { alpha, colors, radius, spacing } from '../theme';
 
 const VANTAGGI = [
   'Ritrova i tuoi progressi su ogni dispositivo',
@@ -47,7 +47,7 @@ function Voce({
   distruttiva = false,
   occupata = false,
 }: {
-  icona: keyof typeof Ionicons.glyphMap;
+  icona: string;
   tinta: string;
   etichetta: string;
   sottotitolo?: string;
@@ -63,7 +63,7 @@ function Voce({
         {occupata ? (
           <ActivityIndicator size="small" color="#FFFFFF" />
         ) : (
-          <Ionicons name={icona} size={17} color="#FFFFFF" />
+          <Icona nome={icona} size={17} color="#FFFFFF" />
         )}
       </View>
       <View style={styles.voceTesto}>
@@ -82,7 +82,7 @@ function Voce({
       ) : valore ? (
         <Text style={styles.voceValore}>{valore}</Text>
       ) : onPress ? (
-        <Ionicons name="chevron-forward" size={17} color="#B6BECC" />
+        <Icona nome="chevron-forward" size={17} color="#B6BECC" />
       ) : null}
     </>
   );
@@ -224,7 +224,6 @@ export default function ProfiloScreen() {
           affiancata al testo, blocco con bordo 3D, niente ritratto
           sovrapposto che sfonda il riquadro. */}
       <View style={styles.heroWrap}>
-        <View style={styles.heroEdge} />
         <LinearGradient
           colors={['#2E4370', '#1B2A4A']}
           start={{ x: 0, y: 0 }}
@@ -243,7 +242,7 @@ export default function ProfiloScreen() {
               </Text>
             )}
             <View style={styles.heroLivelloRow}>
-              <Ionicons name={livello.icona} size={13} color={colors.accent} />
+              <Icona nome={livello.icona} size={13} color={colors.accent} />
               <Text style={styles.heroLivello} numberOfLines={1}>
                 {livello.nome}
               </Text>
@@ -273,7 +272,7 @@ export default function ProfiloScreen() {
         /* Fascia di stato, non una card: dice una cosa sola, e l'uscita
            dall'account vive ora nel gruppo in fondo alla schermata. */
         <View style={styles.sincro}>
-          <Ionicons name="cloud-done" size={20} color={colors.successEdge} />
+          <Icona nome="cloud-done" size={20} color={colors.successEdge} />
           <Text style={styles.sincroTesto}>
             <Text style={styles.sincroForte}>Progressi sincronizzati.</Text> Li ritrovi su ogni
             dispositivo dove accedi.
@@ -290,16 +289,15 @@ export default function ProfiloScreen() {
           <View style={styles.vantaggi}>
             {VANTAGGI.map((v) => (
               <View key={v} style={styles.vantaggioRiga}>
-                <Ionicons name="checkmark-circle" size={19} color={colors.success} />
+                <Icona nome="checkmark-circle" size={19} color={colors.success} />
                 <Text style={styles.vantaggioTesto}>{v}</Text>
               </View>
             ))}
           </View>
-          <Button3D
+          <Bottone
             label="Accedi o registrati"
             onPress={() => navigation.navigate('Login')}
-            color={colors.primary}
-            edgeColor="#0E1830"
+          variante="scuro"
             style={styles.cta}
           />
         </View>
@@ -399,18 +397,9 @@ export default function ProfiloScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1, },
   content: { padding: spacing.md, paddingBottom: spacing.xl },
-  heroWrap: { paddingBottom: EDGE_3D },
-  heroEdge: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: EDGE_3D,
-    bottom: 0,
-    borderRadius: radius.xxl,
-    backgroundColor: '#111A2E',
-  },
+  heroWrap: { },
   hero: {
     borderRadius: radius.xxl,
     padding: spacing.md,
@@ -459,6 +448,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.xxl,
     padding: spacing.lg,
     marginTop: spacing.lg,
+    borderWidth: StyleSheet.hairlineWidth * 1.5,
+    borderColor: alpha.bordo,
   },
   cardTitolo: { fontSize: 20, fontWeight: '800', color: colors.text },
   cardSub: { fontSize: 14, color: colors.textMuted, lineHeight: 21, marginTop: spacing.xs },
@@ -486,6 +477,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.xl,
     overflow: 'hidden',
     paddingVertical: 4,
+    borderWidth: StyleSheet.hairlineWidth * 1.5,
+    borderColor: alpha.bordo,
   },
   voce: {
     flexDirection: 'row',

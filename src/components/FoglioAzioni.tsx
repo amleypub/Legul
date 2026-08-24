@@ -1,13 +1,13 @@
 import React from 'react';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Icona } from './Icona';
 import { colors, radius, spacing } from '../theme';
 
 export interface AzioneFoglio {
   chiave: string;
   etichetta: string;
   descrizione?: string;
-  icona: keyof typeof Ionicons.glyphMap;
+  icona: string;
   tinta: string;
   distruttiva?: boolean;
   onPress: () => void;
@@ -57,7 +57,7 @@ export function FoglioAzioni({
               style={({ pressed }) => [styles.riga, pressed && styles.rigaPremuta]}
             >
               <View style={[styles.icona, { backgroundColor: azione.tinta }]}>
-                <Ionicons name={azione.icona} size={17} color="#FFFFFF" />
+                <Icona nome={azione.icona} size={17} color="#FFFFFF" />
               </View>
               <View style={styles.testi}>
                 <Text style={[styles.etichetta, azione.distruttiva && styles.distruttiva]}>

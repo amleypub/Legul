@@ -1,17 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Animated, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import * as Haptics from 'expo-haptics';
+import { Icona } from '../components/Icona';
 import { BADGES } from '../gamification/GamificationContext';
-import { Button3D } from '../components/Button3D';
+import { Bottone } from '../components/Bottone';
 import { Mascot } from '../components/Mascot';
 import { Confetti } from '../components/Confetti';
 import { playSound } from '../audio/sounds';
 import type { RootStackScreenProps } from '../navigation/types';
-import { colors, EDGE_3D, materiaColors, radius, softShadow, spacing } from '../theme';
+import { colors, materiaColors, radius, softShadow, spacing } from '../theme';
 
 function Stella({ accesa, ritardo }: { accesa: boolean; ritardo: number }) {
   const scale = useRef(new Animated.Value(0)).current;
@@ -31,7 +31,12 @@ function Stella({ accesa, ritardo }: { accesa: boolean; ritardo: number }) {
 
   return (
     <Animated.View style={{ transform: [{ scale }] }}>
-      <Ionicons name="star" size={54} color={accesa ? colors.accent : 'rgba(255,255,255,0.25)'} />
+      <Icona
+        nome="star"
+        size={54}
+        color={accesa ? colors.accent : 'rgba(255,255,255,0.25)'}
+        pieno={accesa}
+      />
     </Animated.View>
   );
 }
@@ -44,11 +49,11 @@ function StatBlocco({
 }: {
   label: string;
   valore: string;
-  icona: keyof typeof Ionicons.glyphMap;
+  icona: string;
 }) {
   return (
     <View style={styles.statCard}>
-      <Ionicons name={icona} size={16} color="rgba(255,255,255,0.7)" />
+      <Icona nome={icona} size={16} color="rgba(255,255,255,0.7)" />
       <Text style={styles.statValore} numberOfLines={1} adjustsFontSizeToFit>
         {valore}
       </Text>
@@ -147,7 +152,7 @@ export default function EsitoLezioneScreen({
               <Text style={styles.badgeTitolo}>Nuovi badge sbloccati</Text>
               {badgeSbloccati.map((b) => (
                 <View key={b.id} style={styles.badgeCard}>
-                  <Ionicons name={b.icona} size={26} color={colors.accent} />
+                  <Icona nome={b.icona} size={26} color={colors.accent} />
                   <View style={styles.badgeTextWrap}>
                     <Text style={styles.badgeNome}>{b.nome}</Text>
                     <Text style={styles.badgeDescr}>{b.descrizione}</Text>
@@ -160,19 +165,16 @@ export default function EsitoLezioneScreen({
 
         <View style={styles.footer}>
           {materia !== 'Ripasso' && (fallito || stelle < 3) && (
-            <Button3D
+            <Bottone
               label="Riprova la lezione"
               onPress={() => navigation.replace('Lezione', { materia, lezioneId })}
-              color="rgba(255,255,255,0.16)"
-              edgeColor="rgba(0,0,0,0.25)"
+              gradiente={['rgba(255,255,255,0.22)', 'rgba(255,255,255,0.12)']}
             />
           )}
-          <Button3D
+          <Bottone
             label="Continua"
             onPress={() => navigation.goBack()}
-            color={colors.accent}
-            edgeColor="#A8861B"
-            textColor={colors.primary}
+          variante="accento"
           />
         </View>
       </SafeAreaView>
@@ -217,8 +219,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgba(255,255,255,0.18)',
     borderRadius: radius.lg,
-    borderBottomWidth: EDGE_3D,
-    borderBottomColor: 'rgba(0,0,0,0.22)',
     paddingVertical: spacing.sm + 4,
     paddingHorizontal: spacing.xs,
     alignItems: 'center',

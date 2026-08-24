@@ -1,7 +1,7 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Icona } from '../components/Icona';
 import {
   casoDaId,
   DURATA_ESPOSIZIONE_PREDEFINITA,
@@ -20,11 +20,11 @@ import {
 } from '../simulatore/modello';
 import { useCronometro } from '../simulatore/useCronometro';
 import { useGamification } from '../gamification/GamificationContext';
-import { Button3D } from '../components/Button3D';
+import { Bottone } from '../components/Bottone';
 import { Mascot } from '../components/Mascot';
 import { ProgressBar } from '../components/ProgressBar';
 import type { RootStackScreenProps } from '../navigation/types';
-import { colors, EDGE_3D, materiaColors, radius, spacing } from '../theme';
+import { alpha, colors, materiaColors, radius, spacing } from '../theme';
 
 const TINTA: Record<MateriaCaso, keyof typeof materiaColors> = {
   'Diritto privato': 'Diritto civile',
@@ -64,11 +64,10 @@ export default function CasoPraticoScreen({
       <View style={styles.vuoto}>
         <Mascot state="studying" size={96} />
         <Text style={styles.vuotoTitolo}>Caso non trovato</Text>
-        <Button3D
+        <Bottone
           label="Torna ai casi"
           onPress={() => navigation.goBack()}
-          color={colors.primary}
-          edgeColor="#0E1830"
+          variante="scuro"
           style={styles.vuotoBtn}
         />
       </View>
@@ -87,7 +86,6 @@ export default function CasoPraticoScreen({
 
   const testata = (
     <View style={styles.testataWrap}>
-      <View style={[styles.testataEdge, { backgroundColor: tinte.edge }]} />
       <LinearGradient
         colors={[tinte.start, tinte.end]}
         start={{ x: 0, y: 0 }}
@@ -103,11 +101,10 @@ export default function CasoPraticoScreen({
   const fattoCard = (
     <>
       <View style={styles.sezione}>
-        <Ionicons name="reader-outline" size={16} color={colors.textMuted} />
+        <Icona nome="reader-outline" size={16} color={colors.textMuted} />
         <Text style={styles.sezioneTitolo}>Il caso</Text>
       </View>
       <View style={styles.fattoWrap}>
-        <View style={styles.fattoEdge} />
         <View style={styles.fatto}>
           {caso.fatto.map((f, i) => (
             <Text key={i} style={styles.fattoTesto}>
@@ -129,7 +126,6 @@ export default function CasoPraticoScreen({
         {testata}
 
         <View style={styles.passiWrap}>
-          <View style={styles.passiEdge} />
           <View style={styles.passi}>
             {[
               ['1', 'Leggi e prepara', 'Il caso resta visibile. Prendi appunti su carta, come farai all’esame.'],
@@ -150,7 +146,7 @@ export default function CasoPraticoScreen({
         </View>
 
         <View style={styles.sezione}>
-          <Ionicons name="timer-outline" size={16} color={colors.textMuted} />
+          <Icona nome="timer-outline" size={16} color={colors.textMuted} />
           <Text style={styles.sezioneTitolo}>Quanto tempo ti dai</Text>
         </View>
 
@@ -198,12 +194,10 @@ export default function CasoPraticoScreen({
           </Text>
         </View>
 
-        <Button3D
+        <Bottone
           label="Comincia"
           onPress={() => setFase('preparazione')}
-          color={colors.accent}
-          edgeColor="#A8861B"
-          textColor={colors.primary}
+          variante="accento"
           style={styles.azione}
         />
       </ScrollView>
@@ -218,8 +212,8 @@ export default function CasoPraticoScreen({
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
         <View style={[styles.cronoWrap, crono.scaduto && styles.cronoScadutoWrap]}>
           <View style={styles.cronoTesta}>
-            <Ionicons
-              name={inPreparazione ? 'create-outline' : 'mic-outline'}
+            <Icona
+              nome={inPreparazione ? 'create-outline' : 'mic-outline'}
               size={18}
               color={crono.scaduto ? colors.error : tinte.end}
             />
@@ -252,7 +246,7 @@ export default function CasoPraticoScreen({
 
         {inPreparazione && (
           <View style={styles.suggerimento}>
-            <Ionicons name="bulb-outline" size={17} color={colors.accentEdge} />
+            <Icona nome="bulb-outline" size={17} color={colors.accentEdge} />
             <Text style={styles.suggerimentoTesto}>
               Dividi gli appunti in due colonne: sostanziale e processuale. La prova chiede
               entrambi, ed è il secondo quello che si dimentica.
@@ -260,12 +254,10 @@ export default function CasoPraticoScreen({
           </View>
         )}
 
-        <Button3D
+        <Bottone
           label={inPreparazione ? 'Sono pronto, comincio a esporre' : 'Ho finito di esporre'}
           onPress={() => setFase(inPreparazione ? 'esposizione' : 'autovalutazione')}
-          color={colors.accent}
-          edgeColor="#A8861B"
-          textColor={colors.primary}
+          variante="accento"
           style={styles.azione}
         />
         <Pressable onPress={() => navigation.goBack()} style={styles.abbandona}>
@@ -280,7 +272,7 @@ export default function CasoPraticoScreen({
     return (
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
         <View style={styles.sezione}>
-          <Ionicons name="list-outline" size={16} color={colors.textMuted} />
+          <Icona nome="list-outline" size={16} color={colors.textMuted} />
           <Text style={styles.sezioneTitolo}>Che cosa hai detto davvero</Text>
         </View>
         <Text style={styles.istruzione}>
@@ -304,8 +296,8 @@ export default function CasoPraticoScreen({
                 preso && styles.puntoPreso,
               ]}
             >
-              <Ionicons
-                name={preso ? 'checkbox' : 'square-outline'}
+              <Icona
+                nome={preso ? 'checkbox' : 'square-outline'}
                 size={22}
                 color={preso ? colors.successEdge : '#B6BECC'}
                 style={styles.puntoSpunta}
@@ -358,12 +350,10 @@ export default function CasoPraticoScreen({
           <Text style={styles.correnteValore}>{totale}/100</Text>
         </View>
 
-        <Button3D
+        <Bottone
           label="Vedi l’esito"
           onPress={chiudi}
-          color={colors.accent}
-          edgeColor="#A8861B"
-          textColor={colors.primary}
+          variante="accento"
           style={styles.azione}
         />
       </ScrollView>
@@ -417,7 +407,7 @@ export default function CasoPraticoScreen({
 
       {premio && premio.punti > 0 && (
         <View style={styles.premio}>
-          <Ionicons name="add-circle" size={20} color={colors.successEdge} />
+          <Icona nome="add-circle" size={20} color={colors.successEdge} />
           <Text style={styles.premioTesto}>
             <Text style={styles.premioPunti}>+{premio.punti} punti</Text> {premio.messaggio}
           </Text>
@@ -425,36 +415,35 @@ export default function CasoPraticoScreen({
       )}
 
       <View style={styles.sezione}>
-        <Ionicons name="help-circle-outline" size={16} color={colors.textMuted} />
+        <Icona nome="help-circle-outline" size={16} color={colors.textMuted} />
         <Text style={styles.sezioneTitolo}>Se la commissione insiste</Text>
       </View>
       <View style={styles.listaCard}>
         {caso.domandeCommissione.map((d) => (
           <View key={d} style={styles.voce}>
-            <Ionicons name="chatbubble-ellipses-outline" size={16} color={colors.primary} />
+            <Icona nome="chatbubble-ellipses-outline" size={16} color={colors.primary} />
             <Text style={styles.voceTesto}>{d}</Text>
           </View>
         ))}
       </View>
 
       <View style={styles.sezione}>
-        <Ionicons name="warning-outline" size={16} color={colors.textMuted} />
+        <Icona nome="warning-outline" size={16} color={colors.textMuted} />
         <Text style={styles.sezioneTitolo}>Insidie di questo caso</Text>
       </View>
       <View style={styles.listaCard}>
         {caso.insidie.map((i) => (
           <View key={i} style={styles.voce}>
-            <Ionicons name="alert-circle" size={16} color={colors.error} />
+            <Icona nome="alert-circle" size={16} color={colors.error} />
             <Text style={styles.voceTesto}>{i}</Text>
           </View>
         ))}
       </View>
 
-      <Button3D
+      <Bottone
         label="Torna ai casi"
         onPress={() => navigation.goBack()}
-        color={colors.primary}
-        edgeColor="#0E1830"
+          variante="scuro"
         style={styles.azione}
       />
     </ScrollView>
@@ -462,12 +451,11 @@ export default function CasoPraticoScreen({
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1, },
   content: { padding: spacing.md, paddingBottom: spacing.xl },
 
   vuoto: {
     flex: 1,
-    backgroundColor: colors.background,
     alignItems: 'center',
     justifyContent: 'center',
     padding: spacing.lg,
@@ -476,15 +464,7 @@ const styles = StyleSheet.create({
   vuotoTitolo: { fontSize: 20, fontWeight: '800', color: colors.text },
   vuotoBtn: { alignSelf: 'stretch', marginTop: spacing.md },
 
-  testataWrap: { paddingBottom: EDGE_3D },
-  testataEdge: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: EDGE_3D,
-    bottom: 0,
-    borderRadius: radius.xxl,
-  },
+  testataWrap: { },
   testata: { borderRadius: radius.xxl, padding: spacing.md, gap: 3 },
   occhiello: {
     fontSize: 11,
@@ -495,21 +475,14 @@ const styles = StyleSheet.create({
   },
   titolo: { fontSize: 20, fontWeight: '900', color: '#FFFFFF', lineHeight: 26 },
 
-  passiWrap: { paddingBottom: EDGE_3D, marginTop: spacing.md },
-  passiEdge: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: EDGE_3D,
-    bottom: 0,
-    borderRadius: radius.xl,
-    backgroundColor: '#DFE4EF',
-  },
+  passiWrap: { marginTop: spacing.md },
   passi: {
     backgroundColor: colors.card,
     borderRadius: radius.xl,
     padding: spacing.md - 2,
     gap: spacing.md - 2,
+    borderWidth: StyleSheet.hairlineWidth * 1.5,
+    borderColor: alpha.bordo,
   },
   passo: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.sm + 2 },
   passoNumero: {
@@ -559,6 +532,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.xl,
     padding: spacing.md,
     gap: spacing.sm,
+    borderWidth: StyleSheet.hairlineWidth * 1.5,
+    borderColor: alpha.bordo,
   },
   cronoScadutoWrap: { backgroundColor: colors.errorSoft },
   cronoTesta: { flexDirection: 'row', alignItems: 'center', gap: 6 },
@@ -579,16 +554,7 @@ const styles = StyleSheet.create({
   cronoTempoScaduto: { color: colors.errorEdge },
   cronoNota: { fontSize: 13, color: colors.textMuted, lineHeight: 19 },
 
-  fattoWrap: { paddingBottom: EDGE_3D },
-  fattoEdge: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: EDGE_3D,
-    bottom: 0,
-    borderRadius: radius.xl,
-    backgroundColor: '#DFE4EF',
-  },
+  fattoWrap: { },
   fatto: { backgroundColor: colors.card, borderRadius: radius.xl, padding: spacing.md },
   fattoTesto: { fontSize: 15.5, color: colors.text, lineHeight: 26, marginBottom: spacing.sm },
   consegna: {
@@ -620,6 +586,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.xl,
     padding: spacing.md - 4,
     marginBottom: spacing.sm,
+    borderWidth: StyleSheet.hairlineWidth * 1.5,
+    borderColor: alpha.bordo,
   },
   puntoPremuto: { backgroundColor: '#F2F5FB' },
   puntoPreso: { backgroundColor: '#F4FBF7' },
@@ -686,6 +654,8 @@ const styles = StyleSheet.create({
     padding: spacing.md - 2,
     gap: spacing.sm + 2,
     marginTop: spacing.lg,
+    borderWidth: StyleSheet.hairlineWidth * 1.5,
+    borderColor: alpha.bordo,
   },
   versanteRiga: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   versanteNome: { fontSize: 13, fontWeight: '700', color: colors.text, width: 96 },
@@ -718,6 +688,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.xl,
     padding: spacing.md - 2,
     gap: spacing.sm + 2,
+    borderWidth: StyleSheet.hairlineWidth * 1.5,
+    borderColor: alpha.bordo,
   },
   voce: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.sm },
   voceTesto: { flex: 1, fontSize: 13.5, color: colors.text, lineHeight: 20 },

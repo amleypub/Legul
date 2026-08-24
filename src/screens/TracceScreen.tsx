@@ -1,12 +1,12 @@
 import React from 'react';
 import { SectionList, StyleSheet, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Icona } from '../components/Icona';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { anniDisponibili, tracce, tracceByAnno } from '../data/tracce';
 import { quanteConSvolgimento, tracceConSvolgimento } from '../data/svolgimenti';
 import { useGamification } from '../gamification/GamificationContext';
-import { Card3D } from '../components/Card3D';
+import { Superficie } from '../components/Superficie';
 import type { RootStackParamList } from '../navigation/types';
 import type { TipoTraccia } from '../types';
 import { TitoloSchermata } from '../components/TitoloSchermata';
@@ -18,7 +18,7 @@ const totaleTracce = tracce.length;
 const svolte = quanteConSvolgimento();
 const parzialmenteCoperto = svolte < totaleTracce;
 
-const TIPO_STYLE: Record<TipoTraccia, { icona: keyof typeof Ionicons.glyphMap; tinta: string }> = {
+const TIPO_STYLE: Record<TipoTraccia, { icona: string; tinta: string }> = {
   'Parere di diritto civile': { icona: 'book', tinta: materiaColors['Diritto civile'].start },
   'Parere di diritto penale': { icona: 'shield-half', tinta: materiaColors['Diritto penale'].start },
   'Atto giudiziario': { icona: 'document-text', tinta: materiaColors['Procedura civile'].start },
@@ -49,21 +49,22 @@ export default function TracceScreen() {
           {/* Le tracce in archivio sono tre per sessione, le prove ora
               sono due: chi legge deve poter capire subito perché, senza
               credere che l'archivio sia sbagliato. */}
-          <Card3D
-            edgeColor="#F3DCB6"
-            color={colors.accentSoft}
-            radiusSize={radius.lg}
+          <Superficie
+            tono="piena"
+            raggio={radius.lg}
+            glow={colors.accent}
+            attiva
             style={styles.riformaWrap}
             contentStyle={styles.riforma}
             onPress={() => navigation.navigate('Esame')}
           >
-            <Ionicons name="information-circle" size={20} color="#8A5B00" />
+            <Icona nome="information-circle" size={20} color="#8A5B00" />
             <Text style={styles.riformaTesto}>
               Dalla sessione 2026-2027 le prove scritte sono due, non più tre.{' '}
               <Text style={styles.riformaLink}>Vedi come funziona l’esame</Text>
             </Text>
-            <Ionicons name="chevron-forward" size={18} color="#8A5B00" />
-          </Card3D>
+            <Icona nome="chevron-forward" size={18} color="#8A5B00" />
+          </Superficie>
 
           {/* La frase cambia da sola quando l'archivio è coperto: una
               riga che promette «le altre arrivano» quando non ne mancano
@@ -87,15 +88,14 @@ export default function TracceScreen() {
         const letta = state.tracceLette.includes(item.id);
         const tipo = TIPO_STYLE[item.tipo];
         return (
-          <Card3D
-            edgeColor="#DfE3EC"
-            radiusSize={radius.lg}
+          <Superficie
+            raggio={radius.lg}
             style={styles.cardOuter}
             contentStyle={styles.card}
             onPress={() => navigation.navigate('TracciaDetail', { tracciaId: item.id })}
           >
             <View style={[styles.iconTile, { backgroundColor: tipo.tinta + '1A' }]}>
-              <Ionicons name={tipo.icona} size={24} color={tipo.tinta} />
+              <Icona nome={tipo.icona} size={24} color={tipo.tinta} />
             </View>
             <View style={styles.cardText}>
               <Text style={[styles.tipo, { color: tipo.tinta }]}>{item.tipo}</Text>
@@ -106,7 +106,7 @@ export default function TracceScreen() {
                     rumore ripetuto dieci volte. */}
                 {parzialmenteCoperto && svolto.has(item.id) && (
                   <View style={[styles.chip, styles.chipSvolta]}>
-                    <Ionicons name="bulb" size={11} color={colors.accentEdge} />
+                    <Icona nome="bulb" size={11} color={colors.accentEdge} />
                     <Text style={[styles.chipText, styles.chipSvoltaText]}>Con svolgimento</Text>
                   </View>
                 )}
@@ -117,12 +117,12 @@ export default function TracceScreen() {
                 ))}
               </View>
             </View>
-            <Ionicons
-              name={letta ? 'checkmark-circle' : 'chevron-forward'}
+            <Icona
+              nome={letta ? 'checkmark-circle' : 'chevron-forward'}
               size={22}
               color={letta ? colors.success : colors.textMuted}
             />
-          </Card3D>
+          </Superficie>
         );
       }}
     />
@@ -130,11 +130,12 @@ export default function TracceScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1, },
   content: { padding: spacing.md, paddingBottom: spacing.xl },
   intro: { fontSize: 14, color: colors.textMuted, marginBottom: spacing.sm, lineHeight: 20 },
   riformaWrap: { marginBottom: spacing.md },
   riforma: {
+    backgroundColor: colors.accentSoft,
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm,
@@ -178,7 +179,6 @@ const styles = StyleSheet.create({
   titolo: { fontSize: 15, fontWeight: '700', color: colors.text, marginTop: 2 },
   chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 4, marginTop: 6 },
   chip: {
-    backgroundColor: colors.background,
     borderRadius: radius.pill,
     paddingHorizontal: 8,
     paddingVertical: 3,

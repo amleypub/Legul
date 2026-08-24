@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Animated, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
+import { Icona } from '../components/Icona';
 import { playSound } from '../audio/sounds';
 import { useGamification } from '../gamification/GamificationContext';
-import { Button3D } from '../components/Button3D';
+import { Bottone } from '../components/Bottone';
 import type { QuizQuestion } from '../types';
-import { colors, EDGE_3D, radius, softShadow, spacing } from '../theme';
+import { colors, radius, softShadow, spacing, SCALA_PRESSIONE } from '../theme';
 
 export const CUORI_INIZIALI = 4;
 
@@ -41,10 +41,10 @@ function Opzione({
   disabled: boolean;
   onPress: () => void;
 }) {
-  const ty = useRef(new Animated.Value(0)).current;
+  const premuto = useRef(new Animated.Value(0)).current;
   const giu = (down: boolean) =>
-    Animated.spring(ty, {
-      toValue: down ? EDGE_3D : 0,
+    Animated.spring(premuto, {
+      toValue: down ? 1 : 0,
       speed: 40,
       bounciness: 0,
       useNativeDriver: true,
@@ -84,12 +84,18 @@ function Opzione({
       onPress={onPress}
     >
       <View style={styles.opzioneWrap}>
-        <View style={[styles.opzioneEdge, { backgroundColor: palette.edge }]} />
         <Animated.View
           style={[
             styles.opzione,
             { backgroundColor: palette.bg, borderColor: palette.bordo },
-            { transform: [{ translateY: ty }] },
+            { transform: [
+                {
+                  scale: premuto.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [1, SCALA_PRESSIONE],
+                  }),
+                },
+              ] },
           ]}
         >
           <Text
@@ -102,9 +108,9 @@ function Opzione({
             {testo}
           </Text>
           {stato === 'corretta' && (
-            <Ionicons name="checkmark-circle" size={22} color={colors.success} />
+            <Icona nome="checkmark-circle" size={22} color={colors.success} />
           )}
-          {stato === 'errata' && <Ionicons name="close-circle" size={22} color={colors.error} />}
+          {stato === 'errata' && <Icona nome="close-circle" size={22} color={colors.error} />}
         </Animated.View>
       </View>
     </Pressable>
@@ -246,7 +252,7 @@ export function EsecuzioneQuiz({
       {/* Barra superiore: chiudi, avanzamento, cuori */}
       <View style={styles.topBar}>
         <Pressable onPress={onEsci} hitSlop={12} accessibilityRole="button" accessibilityLabel="Chiudi">
-          <Ionicons name="close" size={28} color={colors.textMuted} />
+          <Icona nome="close" size={28} color={colors.textMuted} />
         </Pressable>
         <View style={styles.progressTrack}>
           <Animated.View
@@ -268,7 +274,7 @@ export function EsecuzioneQuiz({
           </Text>
         ) : (
           <Animated.View style={[styles.cuoriWrap, { transform: [{ translateX: heartShake }] }]}>
-            <Ionicons name="heart" size={22} color="#E4405F" />
+            <Icona nome="heart" size={22} color="#E4405F" />
             <Text style={styles.cuoriTesto}>{cuori}</Text>
           </Animated.View>
         )}
@@ -309,11 +315,11 @@ export function EsecuzioneQuiz({
 
       {!confermata && (
         <View style={styles.footer}>
-          <Button3D
+          <Bottone
             label="Conferma"
             onPress={conferma}
-            color={selezionata === null ? '#D6DAE2' : tinte.start}
-            edgeColor={selezionata === null ? '#B4BAC6' : tinte.edge}
+            gradiente={[tinte.start, tinte.end]}
+            glow={tinte.end}
             disabled={selezionata === null}
           />
         </View>
@@ -328,8 +334,8 @@ export function EsecuzioneQuiz({
           ]}
         >
           <View style={styles.sheetHeader}>
-            <Ionicons
-              name={giusta ? 'checkmark-circle' : 'close-circle'}
+            <Icona
+              nome={giusta ? 'checkmark-circle' : 'close-circle'}
               size={28}
               color={giusta ? colors.success : colors.error}
             />
@@ -347,11 +353,11 @@ export function EsecuzioneQuiz({
             <Text style={styles.sheetSpiegazione}>{domanda.spiegazione}</Text>
             <Text style={styles.sheetMessaggio}>{messaggio}</Text>
           </ScrollView>
-          <Button3D
+          <Bottone
             label={ultima || (!giusta && senzaCuori) ? 'Vedi il risultato' : 'Continua'}
             onPress={continua}
-            color={giusta ? colors.success : colors.error}
-            edgeColor={giusta ? '#1F7A43' : '#9A2F2F'}
+            gradiente={giusta ? [colors.success, colors.successEdge] : [colors.error, colors.errorEdge]}
+            glow={giusta ? colors.success : colors.error}
           />
         </Animated.View>
       )}
@@ -360,7 +366,7 @@ export function EsecuzioneQuiz({
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1, },
   topBar: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -396,15 +402,7 @@ const styles = StyleSheet.create({
     lineHeight: 28,
     marginBottom: spacing.lg,
   },
-  opzioneWrap: { paddingBottom: EDGE_3D, marginBottom: spacing.sm },
-  opzioneEdge: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: EDGE_3D,
-    bottom: 0,
-    borderRadius: radius.lg,
-  },
+  opzioneWrap: { marginBottom: spacing.sm },
   opzione: {
     borderRadius: radius.lg,
     borderWidth: 2,

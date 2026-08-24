@@ -1,8 +1,8 @@
 import React, { useMemo, useRef } from 'react';
 import { Animated, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
+import { Icona } from '../components/Icona';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MATERIE_A_SCELTA, materieObbligatorie } from '../data/quizzes';
@@ -11,18 +11,18 @@ import { useGamification } from '../gamification/GamificationContext';
 import type { RootStackParamList } from '../navigation/types';
 import type { Materia } from '../types';
 import { TitoloSchermata } from '../components/TitoloSchermata';
-import { colors, EDGE_3D, materiaColors, radius, spacing } from '../theme';
+import { colors, materiaColors, radius, spacing, SCALA_PRESSIONE } from '../theme';
 
-export const ICONA_MATERIA: Record<Materia, keyof typeof Ionicons.glyphMap> = {
-  'Diritto civile': 'home',
+export const ICONA_MATERIA: Record<Materia, string> = {
+  'Diritto civile': 'handshake',
   'Diritto penale': 'shield-half',
-  'Procedura civile': 'reader',
-  'Procedura penale': 'search',
-  'Diritto amministrativo': 'business',
+  'Procedura civile': 'gavel',
+  'Procedura penale': 'scales',
+  'Diritto amministrativo': 'landmark',
   'Deontologia forense': 'people',
-  'Diritto costituzionale': 'library',
+  'Diritto costituzionale': 'library-outline',
   'Diritto commerciale': 'briefcase',
-  'Diritto del lavoro': 'construct',
+  'Diritto del lavoro': 'hard-hat',
 };
 
 function MateriaBlock({
@@ -49,17 +49,28 @@ function MateriaBlock({
   const stelleTotali = lezioni.reduce((acc, l) => acc + (state.lezioni[l.id] ?? 0), 0);
   const quota = lezioni.length > 0 ? completate / lezioni.length : 0;
 
-  const ty = useRef(new Animated.Value(0)).current;
+  const premuto = useRef(new Animated.Value(0)).current;
   const press = (down: boolean) => {
-    Animated.spring(ty, { toValue: down ? EDGE_3D : 0, speed: 40, bounciness: 0, useNativeDriver: true }).start();
+    Animated.spring(premuto, {
+      toValue: down ? 1 : 0,
+      speed: 40,
+      bounciness: 0,
+      useNativeDriver: true,
+    }).start();
     if (down) Haptics.selectionAsync().catch(() => {});
   };
 
   return (
     <Pressable onPressIn={() => press(true)} onPressOut={() => press(false)} onPress={onPress}>
       <View style={styles.blockWrap}>
-        <View style={[styles.blockEdge, { backgroundColor: tinte.edge }]} />
-        <Animated.View style={{ transform: [{ translateY: ty }] }}>
+        <Animated.View style={{ transform: [
+                {
+                  scale: premuto.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [1, SCALA_PRESSIONE],
+                  }),
+                },
+              ] }}>
           <LinearGradient
             colors={[tinte.start, tinte.end]}
             start={{ x: 0, y: 0 }}
@@ -68,18 +79,18 @@ function MateriaBlock({
           >
             <View style={styles.blockHeader}>
               <View style={styles.iconBubble}>
-                <Ionicons name={ICONA_MATERIA[materia]} size={26} color={tinte.end} />
+                <Icona nome={ICONA_MATERIA[materia]} size={26} color={tinte.end} />
               </View>
               <View style={styles.blockText}>
                 <Text style={styles.materia}>{materia}</Text>
                 <View style={styles.metaRow}>
-                  <Ionicons name="star" size={13} color="#FFE08A" />
+                  <Icona nome="star" size={13} color="#FFE08A" pieno />
                   <Text style={styles.blockMeta}>
                     {stelleTotali} · {completate}/{lezioni.length} lezioni{state.premium ? '' : ' gratuite'}
                   </Text>
                 </View>
               </View>
-              <Ionicons name="chevron-forward" size={22} color="rgba(255,255,255,0.9)" />
+              <Icona nome="chevron-forward" size={22} color="rgba(255,255,255,0.9)" />
             </View>
             <View style={styles.progressTrack}>
               <View style={[styles.progressFill, { width: `${quota * 100}%` }]} />
@@ -136,20 +147,12 @@ export default function QuizHomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1, },
   content: { padding: spacing.md, paddingBottom: spacing.xl, gap: spacing.md },
   titolo: { fontSize: 28, fontWeight: '900', color: colors.text },
   sottotitolo: { fontSize: 14, color: colors.textMuted, lineHeight: 20, marginBottom: spacing.xs },
 
-  blockWrap: { paddingBottom: EDGE_3D },
-  blockEdge: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: EDGE_3D,
-    bottom: 0,
-    borderRadius: radius.xxl,
-  },
+  blockWrap: { },
   block: { borderRadius: radius.xxl, paddingVertical: spacing.sm + 2, paddingHorizontal: spacing.md, gap: spacing.sm },
   blockHeader: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   iconBubble: {

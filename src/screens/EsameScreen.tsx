@@ -1,7 +1,7 @@
 import React from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Icona } from '../components/Icona';
 import {
   AGGIORNATO_IL,
   CONFRONTO,
@@ -12,7 +12,7 @@ import {
   type Prova,
 } from '../data/esame';
 import type { RootStackScreenProps } from '../navigation/types';
-import { colors, EDGE_3D, radius, spacing } from '../theme';
+import { alpha, colors, radius, spacing } from '../theme';
 
 const TINTA_SCRITTO = { chiaro: '#E8EEFD', scuro: '#2D4FC7', bordo: '#C7D5F7' };
 const TINTA_ORALE = { chiaro: '#FDF0DC', scuro: '#B0640F', bordo: '#F3DCB6' };
@@ -31,14 +31,13 @@ function BloccoProva({ prova, onEsercitati }: { prova: Prova; onEsercitati?: () 
       </View>
 
       <View style={styles.provaCorpoWrap}>
-        <View style={[styles.provaBordo, { backgroundColor: tinta.bordo }]} />
         <View style={styles.provaCorpo}>
           <Text style={styles.provaTitolo}>{prova.titolo}</Text>
           <Text style={styles.provaSintesi}>{prova.sintesi}</Text>
 
           {prova.scelta ? (
             <View style={[styles.provaScelta, { backgroundColor: tinta.chiaro }]}>
-              <Ionicons name="options-outline" size={14} color={tinta.scuro} />
+              <Icona nome="options-outline" size={14} color={tinta.scuro} />
               <Text style={[styles.provaSceltaTesto, { color: tinta.scuro }]}>
                 Scegli fra {prova.scelta}
               </Text>
@@ -64,11 +63,11 @@ function BloccoProva({ prova, onEsercitati }: { prova: Prova; onEsercitati?: () 
                 pressed && styles.esercitatiPremuto,
               ]}
             >
-              <Ionicons name="mic" size={16} color={tinta.scuro} />
+              <Icona nome="mic" size={16} color={tinta.scuro} />
               <Text style={[styles.esercitatiTesto, { color: tinta.scuro }]}>
                 Esercitati sul caso pratico
               </Text>
-              <Ionicons name="chevron-forward" size={15} color={tinta.scuro} />
+              <Icona nome="chevron-forward" size={15} color={tinta.scuro} />
             </Pressable>
           )}
         </View>
@@ -85,7 +84,6 @@ export default function EsameScreen({ navigation }: RootStackScreenProps<'Esame'
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       {/* Testata: che cosa è cambiato e da quando, prima di ogni dettaglio */}
       <View style={styles.testataWrap}>
-        <View style={styles.testataEdge} />
         <LinearGradient
           colors={['#2E4370', '#1B2A4A']}
           start={{ x: 0, y: 0 }}
@@ -93,7 +91,7 @@ export default function EsameScreen({ navigation }: RootStackScreenProps<'Esame'
           style={styles.testata}
         >
           <View style={styles.testataChip}>
-            <Ionicons name="sparkles" size={12} color="#FFE08A" />
+            <Icona nome="sparkles" size={12} color="#FFE08A" />
             <Text style={styles.testataChipTesto}>NUOVE REGOLE</Text>
           </View>
           <Text style={styles.testataTitolo}>Due prove scritte e un orale in cinque parti</Text>
@@ -106,9 +104,8 @@ export default function EsameScreen({ navigation }: RootStackScreenProps<'Esame'
 
       {/* Il dato più importante da sapere subito: manca ancora il bando */}
       <View style={styles.avvisoWrap}>
-        <View style={styles.avvisoBordo} />
         <View style={styles.avviso}>
-          <Ionicons name="time-outline" size={18} color="#8A5B00" />
+          <Icona nome="time-outline" size={18} color="#8A5B00" />
           <Text style={styles.avvisoTesto}>
             Il decreto ministeriale di indizione non è ancora uscito: date, sedi e modalità
             operative della sessione non sono ancora note.
@@ -159,11 +156,10 @@ export default function EsameScreen({ navigation }: RootStackScreenProps<'Esame'
 
       {SEZIONI.map((sezione) => (
         <View key={sezione.id} style={styles.schedaWrap}>
-          <View style={styles.schedaBordo} />
           <View style={styles.scheda}>
             <View style={styles.schedaTestata}>
-              <Ionicons
-                name={sezione.icona as keyof typeof Ionicons.glyphMap}
+              <Icona
+                nome={sezione.icona as string}
                 size={19}
                 color={colors.primary}
               />
@@ -183,8 +179,8 @@ export default function EsameScreen({ navigation }: RootStackScreenProps<'Esame'
         {CONSIGLI.map((c) => (
           <View key={c.id} style={styles.consiglio}>
             <View style={styles.consiglioIcona}>
-              <Ionicons
-                name={c.icona as keyof typeof Ionicons.glyphMap}
+              <Icona
+                nome={c.icona as string}
                 size={17}
                 color="#FFFFFF"
               />
@@ -200,7 +196,7 @@ export default function EsameScreen({ navigation }: RootStackScreenProps<'Esame'
       {/* Ogni affermazione deve poter essere verificata alla fonte, e il
           lettore deve sapere a quando risale la verifica. */}
       <View style={styles.fonte}>
-        <Ionicons name="document-attach-outline" size={15} color={colors.textMuted} />
+        <Icona nome="document-attach-outline" size={15} color={colors.textMuted} />
         <Text style={styles.fonteTesto}>
           Fonte: {RIFORMA.decreto}, convertito con {RIFORMA.conversione} ({RIFORMA.gazzetta}), che
           ha abrogato gli {RIFORMA.abrogati}. Contenuti aggiornati al {AGGIORNATO_IL}: verifica
@@ -212,19 +208,10 @@ export default function EsameScreen({ navigation }: RootStackScreenProps<'Esame'
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1, },
   content: { padding: spacing.md, paddingBottom: spacing.xl },
 
-  testataWrap: { paddingBottom: EDGE_3D },
-  testataEdge: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: EDGE_3D,
-    bottom: 0,
-    borderRadius: radius.xxl,
-    backgroundColor: '#0E1830',
-  },
+  testataWrap: { },
   testata: { borderRadius: radius.xxl, padding: spacing.md, gap: spacing.sm },
   testataChip: {
     flexDirection: 'row',
@@ -240,16 +227,7 @@ const styles = StyleSheet.create({
   testataTitolo: { fontSize: 21, fontWeight: '900', color: '#FFFFFF', lineHeight: 27 },
   testataTesto: { fontSize: 13.5, color: 'rgba(255,255,255,0.88)', lineHeight: 20 },
 
-  avvisoWrap: { paddingBottom: EDGE_3D, marginTop: spacing.md },
-  avvisoBordo: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: EDGE_3D,
-    bottom: 0,
-    borderRadius: radius.lg,
-    backgroundColor: '#F3DCB6',
-  },
+  avvisoWrap: { marginTop: spacing.md },
   avviso: {
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -289,20 +267,14 @@ const styles = StyleSheet.create({
   provaNumero: { color: '#FFFFFF', fontWeight: '900', fontSize: 14 },
   provaLinea: { width: 3, flex: 1, borderRadius: 2, marginVertical: 4 },
 
-  provaCorpoWrap: { flex: 1, paddingBottom: EDGE_3D, marginBottom: spacing.sm },
-  provaBordo: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: EDGE_3D,
-    bottom: 0,
-    borderRadius: radius.xl,
-  },
+  provaCorpoWrap: { flex: 1, marginBottom: spacing.sm },
   provaCorpo: {
     backgroundColor: colors.card,
     borderRadius: radius.xl,
     padding: spacing.md - 2,
     gap: 7,
+    borderWidth: StyleSheet.hairlineWidth * 1.5,
+    borderColor: alpha.bordo,
   },
   provaTitolo: { fontSize: 16.5, fontWeight: '800', color: colors.text },
   provaSintesi: { fontSize: 14, color: colors.text, lineHeight: 20 },
@@ -337,6 +309,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.xl,
     overflow: 'hidden',
     marginTop: spacing.md,
+    borderWidth: StyleSheet.hairlineWidth * 1.5,
+    borderColor: alpha.bordo,
   },
   tabellaIntestazione: {
     flexDirection: 'row',
@@ -357,21 +331,14 @@ const styles = StyleSheet.create({
   tabellaPrima: { color: colors.textMuted },
   tabellaAdesso: { color: '#1F7A4D', fontWeight: '700' },
 
-  schedaWrap: { paddingBottom: EDGE_3D, marginTop: spacing.md },
-  schedaBordo: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: EDGE_3D,
-    bottom: 0,
-    borderRadius: radius.xl,
-    backgroundColor: '#DFE4EF',
-  },
+  schedaWrap: { marginTop: spacing.md },
   scheda: {
     backgroundColor: colors.card,
     borderRadius: radius.xl,
     padding: spacing.md - 2,
     gap: spacing.sm,
+    borderWidth: StyleSheet.hairlineWidth * 1.5,
+    borderColor: alpha.bordo,
   },
   schedaTestata: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   schedaTitolo: { fontSize: 16, fontWeight: '800', color: colors.text },
@@ -383,6 +350,8 @@ const styles = StyleSheet.create({
     padding: spacing.md - 4,
     marginTop: spacing.md,
     gap: spacing.xs,
+    borderWidth: StyleSheet.hairlineWidth * 1.5,
+    borderColor: alpha.bordo,
   },
   consiglio: {
     flexDirection: 'row',

@@ -11,9 +11,9 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Icona } from '../components/Icona';
 import { useAuth } from '../auth/AuthContext';
 import { CartaMessaggio } from '../discussione/CartaMessaggio';
 import { discussioneDisponibile } from '../discussione/api';
@@ -22,7 +22,7 @@ import { useDiscussione } from '../discussione/useDiscussione';
 import { FoglioAzioni, type AzioneFoglio } from '../components/FoglioAzioni';
 import { Mascot } from '../components/Mascot';
 import type { RootStackScreenProps } from '../navigation/types';
-import { colors, EDGE_3D, radius, spacing } from '../theme';
+import { alpha, colors, radius, spacing } from '../theme';
 
 /** A chi si sta rispondendo, per la striscia sopra la casella di scrittura. */
 interface Destinatario {
@@ -163,9 +163,8 @@ export default function DiscussioneScreen({
         {/* Il quadro va messo prima di far leggere qualsiasi cosa: qui non
             scrive una redazione, scrivono altri candidati. */}
         <View style={styles.avvisoWrap}>
-          <View style={styles.avvisoBordo} />
           <View style={styles.avviso}>
-            <Ionicons name="people" size={17} color="#2D4FC7" />
+            <Icona nome="people" size={17} color="#2D4FC7" />
             <Text style={styles.avvisoTesto}>
               Quello che leggi qui è scritto da altri utenti. Non sono soluzioni ufficiali e
               nessuno le ha validate: valutale con il tuo giudizio e controlla sempre le fonti.
@@ -175,7 +174,7 @@ export default function DiscussioneScreen({
 
         {!discussioneDisponibile ? (
           <View style={styles.cartaInfo}>
-            <Ionicons name="cloud-offline-outline" size={20} color={colors.textMuted} />
+            <Icona nome="cloud-offline-outline" size={20} color={colors.textMuted} />
             <Text style={styles.cartaInfoTesto}>
               La discussione non è ancora attiva su questa installazione: manca la
               configurazione del server.
@@ -185,7 +184,7 @@ export default function DiscussioneScreen({
 
         {errore ? (
           <Pressable style={styles.errore} onPress={filoDati.ricarica} accessibilityRole="button">
-            <Ionicons name="alert-circle" size={18} color={colors.errorEdge} />
+            <Icona nome="alert-circle" size={18} color={colors.errorEdge} />
             <Text style={styles.erroreTesto}>{errore}</Text>
             <Text style={styles.erroreAzione}>Riprova</Text>
           </Pressable>
@@ -199,7 +198,7 @@ export default function DiscussioneScreen({
 
         {/* --- Soluzioni proposte --- */}
         <View style={styles.sezioneTestata}>
-          <Ionicons name="bulb-outline" size={15} color={colors.textMuted} />
+          <Icona nome="bulb-outline" size={15} color={colors.textMuted} />
           <Text style={styles.sezioneTitolo}>Soluzioni proposte</Text>
           <Text style={styles.sezioneConteggio}>{filo.soluzioni.length}</Text>
         </View>
@@ -226,13 +225,13 @@ export default function DiscussioneScreen({
             !puoInteragire && styles.spento,
           ]}
         >
-          <Ionicons name="create-outline" size={18} color="#8A5B00" />
+          <Icona nome="create-outline" size={18} color="#8A5B00" />
           <Text style={styles.proponiTesto}>Suggerisci un’altra soluzione</Text>
         </Pressable>
 
         {/* --- Commenti --- */}
         <View style={[styles.sezioneTestata, styles.sezioneStacco]}>
-          <Ionicons name="chatbubbles-outline" size={15} color={colors.textMuted} />
+          <Icona nome="chatbubbles-outline" size={15} color={colors.textMuted} />
           <Text style={styles.sezioneTitolo}>Commenti</Text>
           <Text style={styles.sezioneConteggio}>{filo.commenti.length}</Text>
         </View>
@@ -252,7 +251,7 @@ export default function DiscussioneScreen({
           accessibilityRole="link"
           style={styles.regole}
         >
-          <Ionicons name="shield-checkmark-outline" size={14} color={colors.textMuted} />
+          <Icona nome="shield-checkmark-outline" size={14} color={colors.textMuted} />
           <Text style={styles.regoleTesto}>
             Scrivendo accetti le regole della community, nei Termini di servizio.
           </Text>
@@ -272,29 +271,29 @@ export default function DiscussioneScreen({
             !discussioneDisponibile && styles.spento,
           ]}
         >
-          <Ionicons name="lock-closed" size={16} color="#FFFFFF" />
+          <Icona nome="lock-closed" size={16} color="#FFFFFF" />
           <Text style={styles.barraAccessoTesto}>Accedi per commentare e votare</Text>
         </Pressable>
       ) : (
         <View style={[styles.compositore, { paddingBottom: spacing.sm + insets.bottom }]}>
           {destinatario ? (
             <View style={styles.striscia}>
-              <Ionicons name="return-down-forward" size={14} color={colors.textMuted} />
+              <Icona nome="return-down-forward" size={14} color={colors.textMuted} />
               <Text style={styles.strisciaTesto} numberOfLines={1}>
                 Rispondi a {destinatario.pseudonimo}
               </Text>
               <Pressable onPress={() => setDestinatario(null)} hitSlop={8} accessibilityLabel="Annulla risposta">
-                <Ionicons name="close" size={16} color={colors.textMuted} />
+                <Icona nome="close" size={16} color={colors.textMuted} />
               </Pressable>
             </View>
           ) : genere === 'soluzione' ? (
             <View style={[styles.striscia, styles.strisciaOro]}>
-              <Ionicons name="bulb" size={14} color="#8A5B00" />
+              <Icona nome="bulb" size={14} color="#8A5B00" />
               <Text style={[styles.strisciaTesto, styles.strisciaTestoOro]} numberOfLines={1}>
                 Stai proponendo una soluzione
               </Text>
               <Pressable onPress={() => setGenere('commento')} hitSlop={8} accessibilityLabel="Torna a commento">
-                <Ionicons name="close" size={16} color="#8A5B00" />
+                <Icona nome="close" size={16} color="#8A5B00" />
               </Pressable>
             </View>
           ) : null}
@@ -332,7 +331,7 @@ export default function DiscussioneScreen({
               {invioInCorso ? (
                 <ActivityIndicator size="small" color="#FFFFFF" />
               ) : (
-                <Ionicons name="arrow-up" size={20} color="#FFFFFF" />
+                <Icona nome="arrow-up" size={20} color="#FFFFFF" />
               )}
             </Pressable>
           </View>
@@ -356,7 +355,7 @@ export default function DiscussioneScreen({
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1, },
   scroll: { flex: 1 },
   content: { padding: spacing.md, paddingBottom: spacing.xl },
 
@@ -367,16 +366,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
 
-  avvisoWrap: { paddingBottom: EDGE_3D, marginBottom: spacing.md },
-  avvisoBordo: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: EDGE_3D,
-    bottom: 0,
-    borderRadius: radius.lg,
-    backgroundColor: '#C7D5F7',
-  },
+  avvisoWrap: { marginBottom: spacing.md },
   avviso: {
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -395,6 +385,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     padding: spacing.md - 2,
     marginBottom: spacing.md,
+    borderWidth: StyleSheet.hairlineWidth * 1.5,
+    borderColor: alpha.bordo,
   },
   cartaInfoTesto: { flex: 1, fontSize: 13, color: colors.textMuted, lineHeight: 19 },
 
@@ -446,6 +438,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.xl,
     padding: spacing.md,
     marginBottom: spacing.md,
+    borderWidth: StyleSheet.hairlineWidth * 1.5,
+    borderColor: alpha.bordo,
   },
   vuotoTesto: {
     fontSize: 13.5,

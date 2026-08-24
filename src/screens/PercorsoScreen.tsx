@@ -9,11 +9,12 @@ import {
   Text,
   View,
 } from 'react-native';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import { BlurView } from 'expo-blur';
 import * as Haptics from 'expo-haptics';
+import { Icona } from '../components/Icona';
 import {
   percorsoPerMateria,
   statiLezioni,
@@ -24,9 +25,9 @@ import {
 } from '../data/percorso';
 import { useGamification } from '../gamification/GamificationContext';
 import { Mascot } from '../components/Mascot';
-import { Button3D } from '../components/Button3D';
+import { Bottone } from '../components/Bottone';
 import type { RootStackScreenProps } from '../navigation/types';
-import { colors, materiaColors, radius, softShadow, spacing } from '../theme';
+import { alpha, colors, materiaColors, radius, softShadow, spacing } from '../theme';
 
 const NODE = 76;
 const EDGE = 7;
@@ -148,15 +149,14 @@ function Nodo({
             ]}
           />
         )}
-        <View style={[styles.nodoEdge, { backgroundColor: bordo }]} />
         <Animated.View
           style={[styles.nodoFace, { backgroundColor: faccia, transform: [{ translateY }] }]}
         >
           {premium ? (
             <MaterialCommunityIcons name="crown" size={30} color={colors.accent} />
           ) : (
-            <Ionicons
-              name={bloccata ? 'lock-closed' : stato === 'completata' ? 'checkmark' : 'play'}
+            <Icona
+              nome={bloccata ? 'lock-closed' : stato === 'completata' ? 'checkmark' : 'play'}
               size={30}
               color={bloccata ? '#8B93A3' : '#FFFFFF'}
             />
@@ -165,9 +165,10 @@ function Nodo({
       </Pressable>
       <View style={styles.stelleRow}>
         {[1, 2, 3].map((n) => (
-          <Ionicons
+          <Icona
             key={n}
-            name="star"
+            nome="star"
+            pieno={stelle >= n}
             size={15}
             color={stelle >= n ? colors.accent : '#D6DAE2'}
           />
@@ -216,12 +217,10 @@ function BloccoPremium({
         <Text style={styles.premiumSub}>
           {unita.lezioni.length} lezioni e {domande} domande di livello «{unita.nome}» ti aspettano.
         </Text>
-        <Button3D
+        <Bottone
           label="Sblocca con Premium"
           onPress={onPress}
-          color={colors.accent}
-          edgeColor="#A8861B"
-          textColor={colors.primary}
+          variante="accento"
           style={styles.premiumBtn}
         />
       </BlurView>
@@ -338,7 +337,7 @@ export default function PercorsoScreen({ route, navigation }: RootStackScreenPro
                 {item.stelleFatte > 0 ? 'Continua da dove eri!' : 'Si comincia da qui'}
               </Text>
               <View style={styles.pathHeaderStars}>
-                <Ionicons name="star" size={15} color={colors.accent} />
+                <Icona nome="star" size={15} color={colors.accent} pieno />
                 <Text style={styles.pathHeaderStarsText}>
                   {item.stelleFatte > 0
                     ? `${item.stelleFatte} stelle conquistate`
@@ -429,7 +428,7 @@ export default function PercorsoScreen({ route, navigation }: RootStackScreenPro
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1, },
   content: { padding: spacing.md, paddingBottom: spacing.xl * 2 },
   pathHeader: {
     flexDirection: 'row',
@@ -442,6 +441,8 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
     ...softShadow,
     shadowOpacity: 0.06,
+    borderWidth: StyleSheet.hairlineWidth * 1.5,
+    borderColor: alpha.bordo,
   },
   pathHeaderText: { flex: 1 },
   pathHeaderTitle: { fontSize: 16, fontWeight: '800', color: colors.text },

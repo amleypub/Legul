@@ -1,14 +1,14 @@
 import React from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Icona } from '../components/Icona';
 import { casi, MATERIE_CASO, type MateriaCaso } from '../data/casi';
 import { casoSuggerito } from '../simulatore/modello';
 import { useGamification } from '../gamification/GamificationContext';
-import { Button3D } from '../components/Button3D';
+import { Bottone } from '../components/Bottone';
 import { TitoloSchermata } from '../components/TitoloSchermata';
 import type { RootStackScreenProps } from '../navigation/types';
-import { colors, EDGE_3D, materiaColors, radius, spacing } from '../theme';
+import { alpha, colors, materiaColors, radius, spacing } from '../theme';
 
 /** Ogni materia della prova prende in prestito la tinta della materia affine. */
 const TINTA: Record<MateriaCaso, keyof typeof materiaColors> = {
@@ -17,7 +17,7 @@ const TINTA: Record<MateriaCaso, keyof typeof materiaColors> = {
   'Diritto amministrativo': 'Diritto amministrativo',
 };
 
-const ICONA: Record<MateriaCaso, keyof typeof Ionicons.glyphMap> = {
+const ICONA: Record<MateriaCaso, string> = {
   'Diritto privato': 'people',
   'Diritto penale': 'shield-half',
   'Diritto amministrativo': 'business',
@@ -38,9 +38,8 @@ export default function SimulatoreScreen({ navigation }: RootStackScreenProps<'S
       {/* Il confine da tenere fermo: la prova è nuova, di prove passate
           non ne esistono, e i tempi non stanno nel decreto. */}
       <View style={styles.avvisoWrap}>
-        <View style={styles.avvisoEdge} />
         <View style={styles.avviso}>
-          <Ionicons name="information-circle" size={20} color="#8A5B00" />
+          <Icona nome="information-circle" size={20} color="#8A5B00" />
           <Text style={styles.avvisoTesto}>
             Il caso pratico è stato introdotto dalla riforma del 2026: prove passate non ne esistono
             e questi casi sono scritti da noi. Anche i tempi che proponiamo{' '}
@@ -55,24 +54,18 @@ export default function SimulatoreScreen({ navigation }: RootStackScreenProps<'S
         accessibilityRole="button"
         style={({ pressed }) => [styles.rimando, pressed && styles.rimandoPremuto]}
       >
-        <Ionicons name="school-outline" size={17} color={colors.primary} />
+        <Icona nome="school-outline" size={17} color={colors.primary} />
         <Text style={styles.rimandoTesto}>Come funziona l’esame dopo la riforma</Text>
-        <Ionicons name="chevron-forward" size={16} color="#9AA3B2" />
+        <Icona nome="chevron-forward" size={16} color="#9AA3B2" />
       </Pressable>
 
       {suggerito && (
         <>
           <View style={styles.sezione}>
-            <Ionicons name="play-circle-outline" size={16} color={colors.textMuted} />
+            <Icona nome="play-circle-outline" size={16} color={colors.textMuted} />
             <Text style={styles.sezioneTitolo}>Riprendi da qui</Text>
           </View>
           <View style={styles.suggeritoWrap}>
-            <View
-              style={[
-                styles.suggeritoEdge,
-                { backgroundColor: materiaColors[TINTA[suggerito.materia]].edge },
-              ]}
-            />
             <LinearGradient
               colors={[
                 materiaColors[TINTA[suggerito.materia]].start,
@@ -89,12 +82,10 @@ export default function SimulatoreScreen({ navigation }: RootStackScreenProps<'S
                   ? 'Non l’hai ancora affrontato.'
                   : `Il tuo miglior risultato: ${svolti[suggerito.id]} punti su 100.`}
               </Text>
-              <Button3D
+              <Bottone
                 label="Inizia la simulazione"
                 onPress={() => navigation.navigate('CasoPratico', { casoId: suggerito.id })}
-                color="#FFFFFF"
-                edgeColor="#D3D8E2"
-                textColor={colors.primary}
+          variante="chiaro"
                 style={styles.suggeritoBtn}
               />
             </LinearGradient>
@@ -109,21 +100,20 @@ export default function SimulatoreScreen({ navigation }: RootStackScreenProps<'S
         return (
           <View key={materia}>
             <View style={styles.sezione}>
-              <Ionicons name={ICONA[materia]} size={16} color={colors.textMuted} />
+              <Icona nome={ICONA[materia]} size={16} color={colors.textMuted} />
               <Text style={styles.sezioneTitolo}>{materia}</Text>
             </View>
             {dellaMateria.map((caso) => {
               const migliore = svolti[caso.id];
               return (
                 <View key={caso.id} style={styles.cartaWrap}>
-                  <View style={styles.cartaEdge} />
                   <Pressable
                     onPress={() => navigation.navigate('CasoPratico', { casoId: caso.id })}
                     accessibilityRole="button"
                     style={({ pressed }) => [styles.carta, pressed && styles.cartaPremuta]}
                   >
                     <View style={[styles.cartaIcona, { backgroundColor: tinte.soft }]}>
-                      <Ionicons name={ICONA[materia]} size={20} color={tinte.end} />
+                      <Icona nome={ICONA[materia]} size={20} color={tinte.end} />
                     </View>
                     <View style={styles.cartaTesti}>
                       <Text style={styles.cartaTitolo}>{caso.titolo}</Text>
@@ -132,7 +122,7 @@ export default function SimulatoreScreen({ navigation }: RootStackScreenProps<'S
                       </Text>
                     </View>
                     {migliore === undefined ? (
-                      <Ionicons name="chevron-forward" size={17} color="#B6BECC" />
+                      <Icona nome="chevron-forward" size={17} color="#B6BECC" />
                     ) : (
                       <Text
                         style={[
@@ -161,19 +151,10 @@ export default function SimulatoreScreen({ navigation }: RootStackScreenProps<'S
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1, },
   content: { padding: spacing.md, paddingBottom: spacing.xl },
 
-  avvisoWrap: { paddingBottom: EDGE_3D, marginTop: spacing.sm },
-  avvisoEdge: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: EDGE_3D,
-    bottom: 0,
-    borderRadius: radius.lg,
-    backgroundColor: '#F3DCB6',
-  },
+  avvisoWrap: { marginTop: spacing.sm },
   avviso: {
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -194,6 +175,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md - 4,
     paddingVertical: 12,
     marginTop: spacing.sm,
+    borderWidth: StyleSheet.hairlineWidth * 1.5,
+    borderColor: alpha.bordo,
   },
   rimandoPremuto: { backgroundColor: '#F2F5FB' },
   rimandoTesto: { flex: 1, fontSize: 14, fontWeight: '700', color: colors.text },
@@ -213,15 +196,7 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
   },
 
-  suggeritoWrap: { paddingBottom: EDGE_3D },
-  suggeritoEdge: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: EDGE_3D,
-    bottom: 0,
-    borderRadius: radius.xxl,
-  },
+  suggeritoWrap: { },
   suggerito: { borderRadius: radius.xxl, padding: spacing.md, gap: 3 },
   suggeritoMateria: {
     fontSize: 11,
@@ -234,16 +209,7 @@ const styles = StyleSheet.create({
   suggeritoNota: { fontSize: 13, color: 'rgba(255,255,255,0.9)', marginTop: 2 },
   suggeritoBtn: { alignSelf: 'stretch', marginTop: spacing.sm + 2 },
 
-  cartaWrap: { paddingBottom: EDGE_3D, marginBottom: spacing.sm - 2 },
-  cartaEdge: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: EDGE_3D,
-    bottom: 0,
-    borderRadius: radius.lg,
-    backgroundColor: '#DFE4EF',
-  },
+  cartaWrap: { marginBottom: spacing.sm - 2 },
   carta: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -251,6 +217,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     borderRadius: radius.lg,
     padding: spacing.md - 4,
+    borderWidth: StyleSheet.hairlineWidth * 1.5,
+    borderColor: alpha.bordo,
   },
   cartaPremuta: { backgroundColor: '#F7F9FE' },
   cartaIcona: {

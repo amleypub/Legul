@@ -8,7 +8,6 @@ import React, {
   useState,
 } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import type { Ionicons } from '@expo/vector-icons';
 import { setAudioEnabled } from '../audio/sounds';
 import { useAuth } from '../auth/AuthContext';
 import { streakEffettiva } from './settimana';
@@ -25,7 +24,8 @@ import {
   type ProgressiRemoti,
 } from './sync';
 
-type IconName = keyof typeof Ionicons.glyphMap;
+/** Nome logico dell'icona: la mappa dei glifi sta in `components/Icona`. */
+type IconName = string;
 
 const STORAGE_KEY = '@legul/gamification/v1';
 

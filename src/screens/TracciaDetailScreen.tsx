@@ -1,18 +1,18 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
+import { Icona } from '../components/Icona';
 import { tracce } from '../data/tracce';
 import { svolgimentoDi } from '../data/svolgimenti';
 import { useGamification } from '../gamification/GamificationContext';
 import { argomentoTraccia } from '../discussione/modello';
 import { useConteggioDiscussione } from '../discussione/useConteggio';
-import { Button3D } from '../components/Button3D';
+import { Bottone } from '../components/Bottone';
 import { Mascot } from '../components/Mascot';
 import type { RootStackScreenProps } from '../navigation/types';
 import type { TipoTraccia } from '../types';
-import { colors, EDGE_3D, materiaColors, radius, spacing } from '../theme';
+import { alpha, colors, materiaColors, radius, spacing } from '../theme';
 
 /** Ogni tipo di prova ha il colore della materia a cui appartiene. */
 const TINTA_TIPO: Record<TipoTraccia, keyof typeof materiaColors> = {
@@ -21,7 +21,7 @@ const TINTA_TIPO: Record<TipoTraccia, keyof typeof materiaColors> = {
   'Atto giudiziario': 'Procedura civile',
 };
 
-const ICONA_TIPO: Record<TipoTraccia, keyof typeof Ionicons.glyphMap> = {
+const ICONA_TIPO: Record<TipoTraccia, string> = {
   'Parere di diritto civile': 'chatbox-ellipses',
   'Parere di diritto penale': 'shield-half',
   'Atto giudiziario': 'document-text',
@@ -66,11 +66,10 @@ export default function TracciaDetailScreen({
         <Text style={styles.vuotoTesto}>
           Potrebbe essere stata rimossa. Torna all’archivio per sceglierne un’altra.
         </Text>
-        <Button3D
+        <Bottone
           label="Torna all’archivio"
           onPress={() => navigation.goBack()}
-          color={colors.primary}
-          edgeColor="#0E1830"
+          variante="scuro"
           style={styles.vuotoBtn}
         />
       </View>
@@ -83,7 +82,6 @@ export default function TracciaDetailScreen({
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       {/* Testata colorata per tipo di prova, come i blocchi del quiz */}
       <View style={styles.testataWrap}>
-        <View style={[styles.testataEdge, { backgroundColor: tinte.edge }]} />
         <LinearGradient
           colors={[tinte.start, tinte.end]}
           start={{ x: 0, y: 0 }}
@@ -92,7 +90,7 @@ export default function TracciaDetailScreen({
         >
           <View style={styles.testataRiga}>
             <View style={styles.testataIcona}>
-              <Ionicons name={ICONA_TIPO[traccia.tipo]} size={22} color={tinte.end} />
+              <Icona nome={ICONA_TIPO[traccia.tipo]} size={22} color={tinte.end} />
             </View>
             <View style={styles.testataTesto}>
               <Text style={styles.tipo}>{traccia.tipo}</Text>
@@ -113,7 +111,7 @@ export default function TracciaDetailScreen({
       {premio !== null && (
         <View style={styles.premioCard}>
           <View style={styles.premioIcona}>
-            <Ionicons name="add-circle" size={20} color={colors.success} />
+            <Icona nome="add-circle" size={20} color={colors.success} />
           </View>
           <Text style={styles.premioTesto}>
             <Text style={styles.premioPunti}>+{premio} punti</Text> per aver studiato questa
@@ -123,20 +121,19 @@ export default function TracciaDetailScreen({
       )}
 
       <View style={styles.sezioneTestata}>
-        <Ionicons name="reader-outline" size={16} color={colors.textMuted} />
+        <Icona nome="reader-outline" size={16} color={colors.textMuted} />
         <Text style={styles.sezioneTitolo}>Traccia assegnata</Text>
       </View>
 
       <View style={styles.testoWrap}>
-        <View style={styles.testoEdge} />
         <View style={styles.testoCard}>
           <Text style={styles.testo}>{traccia.testo}</Text>
         </View>
       </View>
 
       <View style={styles.nota}>
-        <Ionicons
-          name={traccia.testoUfficiale ? 'checkmark-circle' : 'information-circle'}
+        <Icona
+          nome={traccia.testoUfficiale ? 'checkmark-circle' : 'information-circle'}
           size={16}
           color={traccia.testoUfficiale ? colors.success : colors.textMuted}
         />
@@ -153,12 +150,11 @@ export default function TracciaDetailScreen({
       {svolgimento && (
         <>
           <View style={styles.sezioneTestata}>
-            <Ionicons name="bulb-outline" size={16} color={colors.textMuted} />
+            <Icona nome="bulb-outline" size={16} color={colors.textMuted} />
             <Text style={styles.sezioneTitolo}>Come si scioglie</Text>
           </View>
 
           <View style={styles.svolgimentoWrap}>
-            <View style={[styles.svolgimentoEdge, { backgroundColor: tinte.edge }]} />
             <Pressable
               onPress={() => navigation.navigate('Svolgimento', { tracciaId: traccia.id })}
               accessibilityRole="button"
@@ -169,7 +165,7 @@ export default function TracciaDetailScreen({
               ]}
             >
               <View style={styles.svolgimentoIcona}>
-                <Ionicons name="bulb" size={20} color={tinte.end} />
+                <Icona nome="bulb" size={20} color={tinte.end} />
               </View>
               <View style={styles.svolgimentoTesti}>
                 <Text style={styles.svolgimentoEtichetta}>Svolgimento proposto</Text>
@@ -181,7 +177,7 @@ export default function TracciaDetailScreen({
                   e la griglia per rileggerti
                 </Text>
               </View>
-              <Ionicons name="chevron-forward" size={18} color="rgba(255,255,255,0.75)" />
+              <Icona nome="chevron-forward" size={18} color="rgba(255,255,255,0.75)" />
             </Pressable>
           </View>
 
@@ -192,7 +188,7 @@ export default function TracciaDetailScreen({
       )}
 
       <View style={styles.sezioneTestata}>
-        <Ionicons name="people-outline" size={16} color={colors.textMuted} />
+        <Icona nome="people-outline" size={16} color={colors.textMuted} />
         <Text style={styles.sezioneTitolo}>Confronto</Text>
       </View>
 
@@ -208,7 +204,7 @@ export default function TracciaDetailScreen({
           style={({ pressed }) => [styles.confrontoVoce, pressed && styles.confrontoPremuto]}
         >
           <View style={[styles.confrontoIcona, { backgroundColor: '#4F7CF3' }]}>
-            <Ionicons name="chatbubbles" size={18} color="#FFFFFF" />
+            <Icona nome="chatbubbles" size={18} color="#FFFFFF" />
           </View>
           <View style={styles.confrontoTesti}>
             <Text style={styles.confrontoEtichetta}>Commenti degli utenti</Text>
@@ -219,7 +215,7 @@ export default function TracciaDetailScreen({
           {conteggio !== null && conteggio > 0 ? (
             <Text style={styles.confrontoConteggio}>{conteggio}</Text>
           ) : (
-            <Ionicons name="chevron-forward" size={17} color="#B6BECC" />
+            <Icona nome="chevron-forward" size={17} color="#B6BECC" />
           )}
         </Pressable>
 
@@ -235,7 +231,7 @@ export default function TracciaDetailScreen({
           style={({ pressed }) => [styles.confrontoVoce, pressed && styles.confrontoPremuto]}
         >
           <View style={[styles.confrontoIcona, { backgroundColor: colors.accentEdge }]}>
-            <Ionicons name="bulb" size={18} color="#FFFFFF" />
+            <Icona nome="bulb" size={18} color="#FFFFFF" />
           </View>
           <View style={styles.confrontoTesti}>
             <Text style={styles.confrontoEtichetta}>Suggerisci un’altra soluzione</Text>
@@ -243,7 +239,7 @@ export default function TracciaDetailScreen({
               Come l’hai impostata tu, con le norme su cui ti sei basato
             </Text>
           </View>
-          <Ionicons name="chevron-forward" size={17} color="#B6BECC" />
+          <Icona nome="chevron-forward" size={17} color="#B6BECC" />
         </Pressable>
       </View>
 
@@ -256,21 +252,17 @@ export default function TracciaDetailScreen({
             : 'Hai studiato tutte le tracce in archivio. Ottimo lavoro.'}
         </Text>
         {prossima && (
-          <Button3D
+          <Bottone
             label="Traccia successiva"
             onPress={() => navigation.replace('TracciaDetail', { tracciaId: prossima.id })}
-            color={colors.accent}
-            edgeColor="#A8861B"
-            textColor={colors.primary}
+          variante="accento"
             style={styles.chiusuraBtn}
           />
         )}
-        <Button3D
+        <Bottone
           label="Torna all’archivio"
           onPress={() => navigation.goBack()}
-          color="#FFFFFF"
-          edgeColor="#D3D8E2"
-          textColor={colors.text}
+          variante="chiaro"
           style={styles.chiusuraBtn}
         />
       </View>
@@ -279,12 +271,11 @@ export default function TracciaDetailScreen({
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1, },
   content: { padding: spacing.md, paddingBottom: spacing.xl },
 
   vuoto: {
     flex: 1,
-    backgroundColor: colors.background,
     alignItems: 'center',
     justifyContent: 'center',
     padding: spacing.lg,
@@ -299,15 +290,7 @@ const styles = StyleSheet.create({
   },
   vuotoBtn: { alignSelf: 'stretch', marginTop: spacing.md },
 
-  testataWrap: { paddingBottom: EDGE_3D },
-  testataEdge: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: EDGE_3D,
-    bottom: 0,
-    borderRadius: radius.xxl,
-  },
+  testataWrap: { },
   testata: {
     borderRadius: radius.xxl,
     padding: spacing.md,
@@ -369,20 +352,13 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
   },
 
-  testoWrap: { paddingBottom: EDGE_3D },
-  testoEdge: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: EDGE_3D,
-    bottom: 0,
-    borderRadius: radius.xl,
-    backgroundColor: '#DFE4EF',
-  },
+  testoWrap: { },
   testoCard: {
     backgroundColor: colors.card,
     borderRadius: radius.xl,
     padding: spacing.md,
+    borderWidth: StyleSheet.hairlineWidth * 1.5,
+    borderColor: alpha.bordo,
   },
   // Il testo di una traccia si legge come un documento: righe larghe e
   // ariose, non compresse come una didascalia.
@@ -390,15 +366,7 @@ const styles = StyleSheet.create({
 
   // Lo svolgimento è la ragione per cui si apre una traccia: si prende
   // il colore pieno della materia, mentre il confronto resta bianco.
-  svolgimentoWrap: { paddingBottom: EDGE_3D },
-  svolgimentoEdge: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: EDGE_3D,
-    bottom: 0,
-    borderRadius: radius.xl,
-  },
+  svolgimentoWrap: { },
   svolgimento: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -438,6 +406,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.xl,
     paddingHorizontal: spacing.md - 4,
     paddingVertical: spacing.xs,
+    borderWidth: StyleSheet.hairlineWidth * 1.5,
+    borderColor: alpha.bordo,
   },
   confrontoVoce: {
     flexDirection: 'row',

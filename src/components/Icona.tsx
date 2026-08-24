@@ -1,4 +1,5 @@
 import React from 'react';
+import { View, type ViewStyle } from 'react-native';
 import {
   Archive,
   ArrowRightCircle,
@@ -7,6 +8,7 @@ import {
   BadgeCheck,
   Bell,
   BookOpen,
+  Briefcase,
   Bug,
   Calculator,
   CalendarDays,
@@ -27,11 +29,15 @@ import {
   Flame,
   Footprints,
   Gauge,
+  Gavel,
   GraduationCap,
   GitCompareArrows,
+  HardHat,
+  Handshake,
   Heart,
   House,
   Info,
+  Landmark,
   Leaf,
   Library,
   Lightbulb,
@@ -45,10 +51,12 @@ import {
   MoreHorizontal,
   Navigation,
   PenLine,
+  Play,
   PlayCircle,
   PlusCircle,
   Rocket,
   ScrollText,
+  Scale,
   Search,
   Settings2,
   Shield,
@@ -64,6 +72,7 @@ import {
   User,
   UserMinus,
   Users,
+  Wand2,
   X,
   XCircle,
   type LucideIcon,
@@ -89,6 +98,18 @@ const MAPPA: Record<string, LucideIcon> = {
   'arrow-forward-circle': ArrowRightCircle,
   'arrow-up': ArrowUp,
   book: BookOpen,
+  business: Landmark,
+  'chatbox-ellipses': MessageCircle,
+  'color-wand': Wand2,
+  library: Library,
+  play: Play,
+  reader: ScrollText,
+  briefcase: Briefcase,
+  gavel: Gavel,
+  handshake: Handshake,
+  'hard-hat': HardHat,
+  landmark: Landmark,
+  scales: Scale,
   'bug-outline': Bug,
   bulb: Lightbulb,
   'bulb-outline': Lightbulb,
@@ -186,6 +207,8 @@ interface Props {
    * sembra grossolano.
    */
   strokeWidth?: number;
+  /** Micro-allineamenti rispetto al testo accanto. */
+  style?: ViewStyle;
 }
 
 /**
@@ -196,12 +219,12 @@ export function glifoDi(nome: string): LucideIcon | null {
   return MAPPA[nome] ?? null;
 }
 
-export function Icona({ nome, size = 20, color = '#101422', pieno, strokeWidth }: Props) {
+export function Icona({ nome, size = 20, color = '#101422', pieno, strokeWidth, style }: Props) {
   const Glifo = MAPPA[nome];
   // Un nome non mappato non deve far esplodere una schermata: sparisce e
   // basta, e il test sulla copertura lo intercetta prima del rilascio.
   if (!Glifo) return null;
-  return (
+  const glifo = (
     <Glifo
       size={size}
       color={color}
@@ -209,4 +232,8 @@ export function Icona({ nome, size = 20, color = '#101422', pieno, strokeWidth }
       fill={pieno ? color : 'transparent'}
     />
   );
+  // I glifi Lucide sono SVG e non accettano tutte le proprietà di stile:
+  // l'involucro serve solo quando lo stile c'è davvero, per non aggiungere
+  // una View a ognuna delle centinaia di icone dell'app.
+  return style ? <View style={style}>{glifo}</View> : glifo;
 }

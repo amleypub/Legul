@@ -3,7 +3,7 @@ import { Alert, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { tutteLeDomande } from '../data/questions';
 import { useGamification } from '../gamification/GamificationContext';
-import { Button3D } from '../components/Button3D';
+import { Bottone } from '../components/Bottone';
 import { Mascot } from '../components/Mascot';
 import { EsecuzioneQuiz, type EsitoQuiz } from './EsecuzioneQuiz';
 import type { RootStackScreenProps } from '../navigation/types';
@@ -103,11 +103,10 @@ export default function RipassoScreen({ navigation }: RootStackScreenProps<'Ripa
           Le domande che sbagli finiscono qui, per essere riproposte finché non le indovini.
           Al momento non ce n’è nessuna in sospeso.
         </Text>
-        <Button3D
+        <Bottone
           label="Torna indietro"
           onPress={() => navigation.goBack()}
-          color={colors.primary}
-          edgeColor="#0E1830"
+          variante="scuro"
           style={styles.vuotoBtn}
         />
       </SafeAreaView>
@@ -128,10 +127,9 @@ export default function RipassoScreen({ navigation }: RootStackScreenProps<'Ripa
 }
 
 const styles = StyleSheet.create({
-  attesa: { flex: 1, backgroundColor: colors.background },
+  attesa: { flex: 1, },
   vuoto: {
     flex: 1,
-    backgroundColor: colors.background,
     alignItems: 'center',
     justifyContent: 'center',
     padding: spacing.lg,

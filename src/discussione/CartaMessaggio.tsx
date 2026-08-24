@@ -1,7 +1,7 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { colors, EDGE_3D, radius, spacing } from '../theme';
+import { Icona } from '../components/Icona';
+import { alpha, colors, radius, spacing } from '../theme';
 import { tempoRelativo, type Messaggio } from './modello';
 
 /** Iniziale dello pseudonimo su pastiglia colorata: distingue chi scrive senza foto. */
@@ -50,8 +50,8 @@ function BarraVoto({
         accessibilityLabel="Voto positivo"
         style={({ pressed }) => [styles.freccia, pressed && styles.frecciaPremuta]}
       >
-        <Ionicons
-          name={mioVoto === 1 ? 'arrow-up-circle' : 'arrow-up'}
+        <Icona
+          nome={mioVoto === 1 ? 'arrow-up-circle' : 'arrow-up'}
           size={mioVoto === 1 ? 18 : 16}
           color={mioVoto === 1 ? colors.successEdge : colors.textMuted}
         />
@@ -65,8 +65,8 @@ function BarraVoto({
         accessibilityLabel="Voto negativo"
         style={({ pressed }) => [styles.freccia, pressed && styles.frecciaPremuta]}
       >
-        <Ionicons
-          name={mioVoto === -1 ? 'arrow-down-circle' : 'arrow-down'}
+        <Icona
+          nome={mioVoto === -1 ? 'arrow-down-circle' : 'arrow-down'}
           size={mioVoto === -1 ? 18 : 16}
           color={mioVoto === -1 ? colors.errorEdge : colors.textMuted}
         />
@@ -96,7 +96,7 @@ export function CartaMessaggio({
   if (messaggio.eliminato) {
     return (
       <View style={[styles.lapide, risposta && styles.rientro]}>
-        <Ionicons name="remove-circle-outline" size={15} color="#B6BECC" />
+        <Icona nome="remove-circle-outline" size={15} color="#B6BECC" />
         <Text style={styles.lapideTesto}>Messaggio eliminato dall’autore</Text>
       </View>
     );
@@ -121,7 +121,7 @@ export function CartaMessaggio({
         </View>
         {messaggio.genere === 'soluzione' && !risposta ? (
           <View style={styles.distintivo}>
-            <Ionicons name="bulb" size={12} color="#8A5B00" />
+            <Icona nome="bulb" size={12} color="#8A5B00" />
             <Text style={styles.distintivoTesto}>Soluzione</Text>
           </View>
         ) : null}
@@ -142,13 +142,13 @@ export function CartaMessaggio({
           accessibilityRole="button"
           style={({ pressed }) => [styles.azione, pressed && styles.azionePremuta]}
         >
-          <Ionicons name="return-down-forward" size={15} color={colors.textMuted} />
+          <Icona nome="return-down-forward" size={15} color={colors.textMuted} />
           <Text style={styles.azioneTesto}>Rispondi</Text>
         </Pressable>
         <View style={styles.spazio} />
         {segnalato ? (
           <View style={styles.azione}>
-            <Ionicons name="flag" size={14} color={colors.textMuted} />
+            <Icona nome="flag" size={14} color={colors.textMuted} />
             <Text style={styles.azioneTesto}>Segnalato</Text>
           </View>
         ) : (
@@ -159,7 +159,7 @@ export function CartaMessaggio({
             hitSlop={8}
             style={({ pressed }) => [styles.azione, pressed && styles.azionePremuta]}
           >
-            <Ionicons name="ellipsis-horizontal" size={16} color={colors.textMuted} />
+            <Icona nome="ellipsis-horizontal" size={16} color={colors.textMuted} />
           </Pressable>
         )}
       </View>
@@ -168,36 +168,18 @@ export function CartaMessaggio({
 
   if (risposta) return <View style={styles.rientro}>{corpo}</View>;
 
-  // Il bordo inferiore dà lo stesso spessore "a blocco" del resto dell'app.
-  return (
-    <View style={styles.involucro}>
-      <View
-        style={[
-          styles.bordo,
-          messaggio.genere === 'soluzione' && { backgroundColor: colors.accentEdge },
-        ]}
-      />
-      {corpo}
-    </View>
-  );
+  return <View style={styles.involucro}>{corpo}</View>;
 }
 
 const styles = StyleSheet.create({
-  involucro: { paddingBottom: EDGE_3D },
-  bordo: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: EDGE_3D,
-    bottom: 0,
-    borderRadius: radius.xl,
-    backgroundColor: '#DFE4EF',
-  },
+  involucro: { },
   carta: {
     backgroundColor: colors.card,
     borderRadius: radius.xl,
     padding: spacing.md - 2,
     gap: spacing.sm,
+    borderWidth: StyleSheet.hairlineWidth * 1.5,
+    borderColor: alpha.bordo,
   },
   cartaRisposta: {
     backgroundColor: '#F7F9FD',
