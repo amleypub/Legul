@@ -16,6 +16,7 @@ import { coperturaProgramma } from '../data/percorso';
 import { OBIETTIVO_PREDEFINITO, puntiObiettivo, type Andatura } from './obiettivo';
 import { PROFILO_VUOTO, type ProfiloEsame } from '../data/scelte';
 import { materie } from '../data/quizzes';
+import type { QuizQuestion } from '../types';
 import {
   annullaPromemoria,
   chiediPermesso,
@@ -177,6 +178,16 @@ export interface GamificationState {
   /** Punti guadagnati oggi: si azzera al cambio di giorno. */
   puntiOggi: number;
   /**
+   * Risposte date, contate per materia.
+   *
+   * I contatori globali dicono quanto si sbaglia, non dove: sono la
+   * media che nasconde proprio l'informazione che serve a chi ha una
+   * data e poco tempo. Qui la precisione è misurata, non stimata dalle
+   * stelle delle lezioni — le stelle sono fasce, e una fascia non
+   * distingue il novanta per cento dal cento.
+   */
+  perMateria: Record<string, { corrette: number; errate: number }>;
+  /**
    * Il mazzo del ripasso a ripetizione dilazionata: ogni domanda
    * sbagliata diventa una carta con una data di scadenza che si allontana
    * a ogni risposta giusta. Vedi `ripasso.ts`.
@@ -221,6 +232,7 @@ const initialState: GamificationState = {
   streak: 0,
   ultimoGiornoAttivita: null,
   puntiOggi: 0,
+  perMateria: {},
   mazzoRipasso: [],
   casiSvolti: {},
 };
@@ -257,10 +269,15 @@ interface GamificationContextValue {
    */
   copertura: number;
   /**
-   * `domandaId` serve a tenere traccia degli errori per il ripasso:
-   * senza, una risposta sbagliata dava la spiegazione e spariva.
+   * Riceve la domanda intera e non il solo identificativo.
+   *
+   * L'identificativo serve al ripasso — senza, una risposta sbagliata
+   * dava la spiegazione e spariva — ma la materia serve al conteggio per
+   * materia, che è l'unico modo per sapere *dove* si sbaglia. Ricavarla
+   * da una tabella di quattromila voci sarebbe stato un giro inutile:
+   * chi chiama ha la domanda in mano.
    */
-  registraRisposta(corretta: boolean, domandaId?: string): EventoGamification;
+  registraRisposta(corretta: boolean, domanda?: QuizQuestion): EventoGamification;
   /**
    * Registra il completamento di una lezione del percorso.
    * Stelle: 3 = nessun errore, 2 = almeno 80%, 1 = almeno 60%.
@@ -411,6 +428,29 @@ function soloSincronizzabili(s: GamificationState): ProgressiRemoti {
 }
 
 /**
+ * Aggiorna i contatori per materia dopo una risposta.
+ *
+ * Senza materia non fa nulla: capita nelle sessioni che non provengono
+ * dal percorso, e sommare quelle risposte a una materia sbagliata
+ * sarebbe peggio che non contarle.
+ */
+export function conRispostaPerMateria(
+  perMateria: Record<string, { corrette: number; errate: number }>,
+  corretta: boolean,
+  materia?: string
+): Record<string, { corrette: number; errate: number }> {
+  if (!materia) return perMateria;
+  const attuale = perMateria[materia] ?? { corrette: 0, errate: 0 };
+  return {
+    ...perMateria,
+    [materia]: {
+      corrette: attuale.corrette + (corretta ? 1 : 0),
+      errate: attuale.errate + (corretta ? 0 : 1),
+    },
+  };
+}
+
+/**
  * Porta avanti i dati salvati da versioni precedenti.
  *
  * Il vecchio ripasso era un elenco di identificatori senza date: chi
@@ -522,7 +562,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
   );
 
   const registraRisposta = useCallback(
-    (corretta: boolean, domandaId?: string): EventoGamification => {
+    (corretta: boolean, domanda?: QuizQuestion): EventoGamification => {
       const punti = corretta ? PUNTI.rispostaCorretta : PUNTI.rispostaErrata;
       const pool = corretta ? INCORAGGIAMENTI_CORRETTA : INCORAGGIAMENTI_ERRATA;
       const seed = Math.floor(Math.random() * pool.length);
@@ -532,7 +572,8 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
           punti: s.punti + punti,
           risposteCorrette: s.risposteCorrette + (corretta ? 1 : 0),
           risposteErrate: s.risposteErrate + (corretta ? 0 : 1),
-          mazzoRipasso: conRisposta(s.mazzoRipasso, corretta, domandaId, oggiISO()),
+          perMateria: conRispostaPerMateria(s.perMateria, corretta, domanda?.materia),
+          mazzoRipasso: conRisposta(s.mazzoRipasso, corretta, domanda?.id, oggiISO()),
         }),
         pick(pool, seed),
         punti

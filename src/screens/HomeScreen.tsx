@@ -14,6 +14,8 @@ import { messaggioObiettivo } from '../gamification/obiettivo';
 import { settimanaCorrente, type GiornoSettimana } from '../gamification/settimana';
 import { dovuteOggi } from '../gamification/ripasso';
 import { giorniAllEsame, ritmoNecessario, testoConto } from '../data/scelte';
+import { diagnosi, materiaPiuDebole } from '../data/diagnosi';
+import { materiaDiDomanda } from '../data/questions';
 import { lezioneDoveRiprendere, totaleLezioni } from '../data/percorso';
 import { materie } from '../data/quizzes';
 import { useNavigation } from '@react-navigation/native';
@@ -192,6 +194,26 @@ export default function HomeScreen() {
     return { giorni, ritmo: ritmoNecessario(rimaste, giorni), rimaste };
   }, [state.esame.dataEsame, copertura]);
 
+  /**
+   * La materia su cui conviene lavorare adesso, se i dati bastano per
+   * dirlo. È `null` finché non c'è abbastanza: meglio non dire nulla che
+   * mandare qualcuno a rifare una materia che magari sa benissimo.
+   */
+  const debole = useMemo(
+    () =>
+      materiaPiuDebole(
+        diagnosi(
+          materie,
+          state.lezioni,
+          state.perMateria,
+          state.mazzoRipasso,
+          materiaDiDomanda,
+          state.esame
+        )
+      ),
+    [state.lezioni, state.perMateria, state.mazzoRipasso, state.esame]
+  );
+
   const obiettivoRaggiunto = state.puntiOggi >= obiettivoOggi;
   const testoObiettivo = messaggioObiettivo(
     state.puntiOggi,
@@ -317,6 +339,45 @@ export default function HomeScreen() {
                 </Text>
               </View>
               <Icona nome="chevron-forward" size={20} color={colors.accentEdge} />
+            </Superficie>
+          </Entrata>
+        )}
+
+        {/*
+          Dove sei debole.
+
+          Compare solo quando c'è davvero una materia sotto soglia e i
+          dati bastano per dirlo. È la risposta alla domanda che chi ha
+          una data si fa ogni mattina — che cosa studio adesso — e sta
+          subito sotto il conto alla rovescia perché è la conseguenza
+          pratica di quel numero.
+        */}
+        {!!debole && (
+          <Entrata ritardo={scaglione(1)}>
+            <Superficie
+              tono="forte"
+              raggio={radius.xl}
+              rilievo="media"
+              glow={colors.error}
+              onPress={() => navigation.navigate('Diagnosi')}
+              contentStyle={styles.conto}
+            >
+              <LinearGradient
+                colors={['#F4787A', colors.error]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.contoIcona}
+              >
+                <Icona nome="alert-circle" size={22} color="#FFFFFF" />
+              </LinearGradient>
+              <View style={styles.contoTesto}>
+                <Text style={styles.contoTitolo}>Comincia da {debole.materia}</Text>
+                <Text style={styles.contoSub}>
+                  È la materia in cui sbagli di più:{' '}
+                  {Math.round((debole.precisione ?? 0) * 100)}% di risposte esatte.
+                </Text>
+              </View>
+              <Icona nome="chevron-forward" size={20} color={colors.errorEdge} />
             </Superficie>
           </Entrata>
         )}

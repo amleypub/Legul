@@ -51,6 +51,8 @@ export type RootStackParamList = {
   CasoPratico: { casoId: string };
   /** Nome pubblico e persone bloccate. */
   Comunita: undefined;
+  /** Dove sei debole: diagnosi materia per materia. */
+  Diagnosi: undefined;
   /** Informativa sulla privacy o termini di servizio. */
   DocumentoLegale: { documento: 'privacy' | 'termini' };
 };

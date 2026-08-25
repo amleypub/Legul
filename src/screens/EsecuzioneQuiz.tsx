@@ -210,7 +210,7 @@ export function EsecuzioneQuiz({
   function conferma() {
     if (selezionata === null || confermata) return;
     const corretta = selezionata === domanda.rispostaCorretta;
-    const evento = registraRisposta(corretta, domanda.id);
+    const evento = registraRisposta(corretta, domanda);
     puntiTotali.current += evento.puntiGuadagnati;
     badgeRaccolti.current.push(...evento.nuoviBadge.map((b) => b.id));
     if (corretta) {

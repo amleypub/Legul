@@ -17,6 +17,7 @@ configuraNotifiche();
 import type { RootStackParamList } from './src/navigation/types';
 import { linking } from './src/navigation/linking';
 import AperturaScreen from './src/screens/AperturaScreen';
+import DiagnosiScreen from './src/screens/DiagnosiScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import QuizHomeScreen from './src/screens/QuizHomeScreen';
 import PercorsoScreen from './src/screens/PercorsoScreen';
@@ -262,6 +263,11 @@ function Radice() {
             name="Esame"
             component={EsameScreen}
             options={{ title: 'Come funziona l’esame' }}
+          />
+          <Stack.Screen
+            name="Diagnosi"
+            component={DiagnosiScreen}
+            options={{ title: 'Dove sei debole' }}
           />
           <Stack.Screen
             name="Simulatore"

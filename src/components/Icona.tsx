@@ -27,6 +27,7 @@ import {
   Circle,
   CircleHelp,
   Clock,
+  Compass,
   Cloud,
   CloudOff,
   Crown,
@@ -199,6 +200,7 @@ const MAPPA: Record<string, Glifo> = {
   // Passate come prop `icona=` ad altri componenti: per questo la mappa
   // non le aveva, e a schermo erano buchi.
   analytics: ChartColumn,
+  compass: Compass,
   flash: Zap,
   'log-out': LogOut,
   'logo-apple': LogoApple,

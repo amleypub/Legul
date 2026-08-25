@@ -97,3 +97,20 @@ export const tutteLeDomande: QuizQuestion[] = [
   ...previdenzaL3,
   ...previdenzaL4,
 ];
+
+/**
+ * Materia di una domanda, dato il suo identificativo.
+ *
+ * Serve alla diagnosi per attribuire alla materia giusta le carte rimaste
+ * nel mazzo del ripasso, che di sé portano solo l'identificativo. La
+ * tabella si costruisce una volta sola alla prima richiesta: quattromila
+ * voci non si scorrono a ogni carta.
+ */
+let indiceMaterie: Map<string, QuizQuestion['materia']> | null = null;
+
+export function materiaDiDomanda(domandaId: string): QuizQuestion['materia'] | undefined {
+  if (!indiceMaterie) {
+    indiceMaterie = new Map(tutteLeDomande.map((d) => [d.id, d.materia]));
+  }
+  return indiceMaterie.get(domandaId);
+}

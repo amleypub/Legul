@@ -35,6 +35,17 @@ bassissima opacità e da un'ombra ampia e morbida. Niente bordi duri.
 
 > Schermata in `src/screens/AperturaScreen.tsx`, dati in `src/data/scelte.ts`. Vive **prima** della navigazione: è l'unica schermata da cui non si può uscire lateralmente, e infilarla nello stack significherebbe poterla scavalcare con un deep link.
 
+### Dove sei debole
+- Una schermata che risponde a una domanda sola, quella che chi ha una data in calendario si fa ogni mattina: **che cosa studio adesso**
+- Tre misure per materia, **tutte esatte, nessuna stimata**: copertura (lezioni superate sul totale), precisione (risposte esatte sul totale date in quella materia) ed errori ancora aperti nel mazzo del ripasso
+- La precisione è **contata sulle risposte**, non ricavata dalle stelle: una stella è una fascia, e una fascia non distingue il novanta per cento dal cento
+- **Sotto una ventina di risposte la precisione non viene dichiarata affatto.** Una percentuale calcolata su sei risposte è rumore, e presentarla come misura manderebbe qualcuno a rifare una materia che magari sa benissimo
+- **Una materia mai affrontata non è una materia debole**: sta in fondo con la sua etichetta. Confonderle produrrebbe una classifica in cui il primo consiglio è sempre «studia quello che non hai ancora aperto» — vero per definizione, inutile per chiunque
+- L'ordine è quello del lavoro che ciascuna chiede adesso; la materia dichiarata all'apertura è solo il criterio di parità, non il criterio principale
+- In Home compare una scheda **solo quando c'è davvero una materia sotto soglia**: meglio tacere che dare un consiglio a caso
+
+> Modello in `src/data/diagnosi.ts`, schermata in `src/screens/DiagnosiScreen.tsx`. Raggiungibile dalla Home, dal Profilo e via `legul://dove-sei-debole`.
+
 ### Percorso quiz in stile Duolingo
 - 6 materie del nucleo comune: Diritto civile, Diritto penale, Procedura civile, Procedura penale, Diritto amministrativo, Deontologia forense
 - **Materie a scelta dell'orale**: Diritto costituzionale, Diritto commerciale, Diritto del lavoro. Il d.l. 100/2026 ne fa portare **una sola**, scelta fra costituzionale, commerciale, lavoro, internazionale, UE e tributario: la schermata Quiz le tiene in un blocco a parte per non far credere che vadano studiate tutte, mette in cima quella dichiarata dall'utente e **dichiara le tre che Legul non copre**. Tacerne l'esistenza farebbe sembrare l'app completa a chi guarda l'elenco e incompleta a chi porta tributario e la cerca per settimane
@@ -225,6 +236,7 @@ src/
   data/esame.ts                  # Come funziona l'esame dopo la riforma
   data/scelte.ts                 # Che cosa il candidato porta all'esame, e il conto alla rovescia
   data/accesso.ts                # Il confine fra gratuito e Premium, in un posto solo
+  data/diagnosi.ts               # Dove sei debole: copertura, precisione, errori aperti
   simulatore/                    # Fasi, cronometro e punteggio del caso pratico
   discussione/                   # Commenti, soluzioni proposte, voti, moderazione
   data/materiali.ts              # Materiale per l'esame (codici, manuali…)
@@ -286,6 +298,10 @@ scripts/shoot.js                 # Cattura delle schermate per la verifica grafi
   per chi aggiorna l'app senza perdere gli errori accumulati
 - **`obiettivo.test.ts`** — le tre andature e il messaggio che traduce i punti
   mancanti in risposte esatte, perché nessuno sa quanto valga un punto
+- **`diagnosi.test.ts`** — che una materia mai affrontata non venga mai
+  chiamata debole, che la precisione resti taciuta finché le risposte non
+  bastano, e che l'ordine non lasci una materia dichiarata ma intatta
+  scavalcare una su cui si è lavorato e in cui si sbaglia
 - **`previdenza.test.ts`** — che la previdenza forense resti coperta a tutti e
   quattro i livelli, che ogni spiegazione sia ancorata a una fonte, e che
   nessuna domanda sia costruita su un importo in euro: contributi minimi,

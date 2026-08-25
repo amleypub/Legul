@@ -67,9 +67,13 @@ async function main() {
       quizCompletati: 14,
       // Undici lezioni superate: serve anche a verificare che il percorso
       // si apra sulla lezione corrente invece che in cima.
-      lezioni: Object.fromEntries(
-        Array.from({ length: 11 }, (_, i) => [`Diritto civile|1|${i}`, 3 - (i % 3)])
-      ),
+      lezioni: Object.fromEntries([
+        ...Array.from({ length: 11 }, (_, i) => [`Diritto civile|1|${i}`, 3 - (i % 3)]),
+        // Un po' di penale e di procedura penale: servono alla diagnosi,
+        // che su una materia sola non avrebbe niente da confrontare.
+        ...Array.from({ length: 5 }, (_, i) => [`Diritto penale|1|${i}`, 3]),
+        ['Procedura penale|1|0', 2],
+      ]),
       premium: false,
       audioAttivo: true,
       tracceLette: ['2023-civile', '2023-penale', '2022-civile'],
@@ -86,6 +90,17 @@ async function main() {
         scritti: 'Diritto civile',
         procedura: 'Procedura civile',
         materiaScelta: 'Diritto costituzionale',
+      },
+      /*
+        Risposte contate per materia: senza, la diagnosi non ha nulla da
+        misurare. I numeri sono scelti perché la schermata mostri tutti
+        gli stati che sa rappresentare — una materia sotto soglia, una
+        buona, una con troppi pochi dati, e diverse mai iniziate.
+      */
+      perMateria: {
+        'Diritto civile': { corrette: 88, errate: 40 },
+        'Diritto penale': { corrette: 43, errate: 7 },
+        'Procedura penale': { corrette: 7, errate: 5 },
       },
       // Il vecchio elenco piatto: serve anche a verificare che la
       // conversione in carte di ripasso avvenga all'avvio.
@@ -240,6 +255,7 @@ async function main() {
     ['14f-svolgimento-muro.png', '/svolgimento/2022-atto-penale'],
     ['0d-caso-muro.png', '/caso-pratico/privato-custodia-caduta'],
     ['0-esame.png', '/esame'],
+    ['0g-diagnosi.png', '/dove-sei-debole'],
     ['0b-caso-elenco.png', '/caso-pratico'],
     ['0c-caso.png', '/caso-pratico/privato-locazione-morosita'],
     ['14c-discussione.png', `/discussione/${encodeURIComponent('traccia:2023-atto-civile')}`],

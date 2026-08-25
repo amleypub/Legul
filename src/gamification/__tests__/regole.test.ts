@@ -30,6 +30,7 @@ const base: GamificationState = {
   streak: 0,
   ultimoGiornoAttivita: null,
   puntiOggi: 0,
+  perMateria: {},
   mazzoRipasso: [],
   casiSvolti: {},
 };

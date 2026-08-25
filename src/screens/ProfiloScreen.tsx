@@ -500,6 +500,21 @@ export default function ProfiloScreen() {
       </Gruppo>
 
       {/*
+        La diagnosi è raggiungibile anche quando in Home non compare
+        nulla: là la scheda appare solo se c'è una materia sotto soglia,
+        e chi vuole guardare i propri numeri deve poterlo fare comunque.
+      */}
+      <Gruppo titolo="Preparazione">
+        <Voce
+          icona="analytics"
+          tinta={colors.errorEdge}
+          etichetta="Dove sei debole"
+          sottotitolo="Copertura, precisione ed errori aperti, materia per materia"
+          onPress={() => navigation.navigate('Diagnosi')}
+        />
+      </Gruppo>
+
+      {/*
         Le scelte d'esame stanno qui perché si cambia idea: l'apertura le
         chiede una volta, il Profilo è il posto dove correggerle senza
         dover reinstallare l'app.
