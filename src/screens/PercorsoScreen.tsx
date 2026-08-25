@@ -12,13 +12,11 @@ import {
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
-import { BlurView } from 'expo-blur';
 import * as Haptics from 'expo-haptics';
 import { Icona } from '../components/Icona';
 import {
   percorsoPerMateria,
   statiLezioni,
-  unitaGratuita,
   type Lezione,
   type StatoLezione,
   type Unita,
@@ -197,50 +195,6 @@ function Nodo({
  * percorso sfocato dietro un vetro smerigliato, con la proposta Premium.
  * Meglio di sedici lucchetti identici da scorrere.
  */
-function BloccoPremium({
-  unita,
-  tinte,
-  onPress,
-}: {
-  unita: { difficolta: number; nome: string; lezioni: Lezione[] };
-  tinte: { start: string; end: string; edge: string; soft: string };
-  onPress: () => void;
-}) {
-  const domande = unita.lezioni.reduce((acc, l) => acc + l.domande.length, 0);
-
-  return (
-    <View style={styles.premiumWrap}>
-      {/* Anteprima del percorso: nodi veri, ma sfocati e desaturati. */}
-      <View style={styles.premiumGhost} pointerEvents="none">
-        {[-72, 18, 72].map((dx) => (
-          <View
-            key={dx}
-            style={[
-              styles.premiumGhostNodo,
-              { backgroundColor: tinte.start, transform: [{ translateX: dx }] },
-            ]}
-          />
-        ))}
-      </View>
-      <BlurView intensity={30} tint="dark" style={styles.premiumFrost}>
-        <View style={styles.premiumCorona}>
-          <MaterialCommunityIcons name="crown" size={30} color={colors.primary} />
-        </View>
-        <Text style={styles.premiumTitolo}>Unità {unita.difficolta} bloccata</Text>
-        <Text style={styles.premiumSub}>
-          {unita.lezioni.length} lezioni e {domande} domande di livello «{unita.nome}» ti aspettano.
-        </Text>
-        <Bottone
-          label="Sblocca con Premium"
-          onPress={onPress}
-          variante="accento"
-          style={styles.premiumBtn}
-        />
-      </BlurView>
-    </View>
-  );
-}
-
 /**
  * Un nodo bloccato prima non reagiva al tocco: premevi e non succedeva
  * nulla, che è come si comporta un'app rotta. Ora dice perché.
@@ -257,8 +211,7 @@ function spiegaBlocco(indicePrecedente: number) {
 /** Le righe che compongono il percorso, appiattite per la lista. */
 type Riga =
   | { chiave: string; tipo: 'testata'; stelleFatte: number }
-  | { chiave: string; tipo: 'unita'; unita: Unita; premium: boolean; completate: number }
-  | { chiave: string; tipo: 'premium'; unita: Unita }
+  | { chiave: string; tipo: 'unita'; unita: Unita; completate: number }
   | {
       chiave: string;
       tipo: 'nodo';
@@ -293,19 +246,13 @@ export default function PercorsoScreen({ route, navigation }: RootStackScreenPro
     let contatore = -1;
 
     for (const u of unita) {
-      const premium = !unitaGratuita(u.difficolta) && !state.premium;
       out.push({
         chiave: `unita-${u.difficolta}`,
         tipo: 'unita',
         unita: u,
-        premium,
         completate: u.lezioni.filter((l) => (state.lezioni[l.id] ?? 0) >= 1).length,
       });
 
-      if (premium) {
-        out.push({ chiave: `premium-${u.difficolta}`, tipo: 'premium', unita: u });
-        continue;
-      }
       u.lezioni.forEach((lezione, i) => {
         contatore += 1;
         out.push({
@@ -321,7 +268,7 @@ export default function PercorsoScreen({ route, navigation }: RootStackScreenPro
       });
     }
     return out;
-  }, [unita, ordine, stati, state.lezioni, state.premium]);
+  }, [unita, ordine, stati, state.lezioni]);
 
   /**
    * Il percorso si apriva sempre in cima: più lezioni completavi, più
@@ -364,7 +311,7 @@ export default function PercorsoScreen({ route, navigation }: RootStackScreenPro
       case 'unita':
         return (
           <LinearGradient
-            colors={item.premium ? ['#3A4358', '#242B3B'] : [tinte.start, tinte.end]}
+            colors={[tinte.start, tinte.end]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={[styles.unitaBanner, softShadow]}
@@ -373,27 +320,12 @@ export default function PercorsoScreen({ route, navigation }: RootStackScreenPro
               <Text style={styles.unitaKicker}>Unità {item.unita.difficolta}</Text>
               <Text style={styles.unitaNome}>{item.unita.nome}</Text>
             </View>
-            {item.premium ? (
-              <View style={styles.premiumChip}>
-                <MaterialCommunityIcons name="crown" size={16} color={colors.primary} />
-                <Text style={styles.premiumChipTesto}>PREMIUM</Text>
-              </View>
-            ) : (
-              <Text style={styles.unitaMeta}>
-                {item.completate}/{item.unita.lezioni.length} lezioni
-              </Text>
-            )}
+            <Text style={styles.unitaMeta}>
+              {item.completate}/{item.unita.lezioni.length} lezioni
+            </Text>
           </LinearGradient>
         );
 
-      case 'premium':
-        return (
-          <BloccoPremium
-            unita={item.unita}
-            tinte={tinte}
-            onPress={() => navigation.navigate('Paywall')}
-          />
-        );
 
       case 'nodo':
         return (
@@ -486,63 +418,6 @@ const styles = StyleSheet.create({
   },
   unitaNome: { color: '#FFFFFF', fontSize: 20, fontWeight: '800', marginTop: 2 },
   unitaMeta: { color: 'rgba(255,255,255,0.85)', fontSize: 13, fontWeight: '600' },
-  premiumChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    backgroundColor: colors.accent,
-    borderRadius: radius.pill,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-  },
-  premiumChipTesto: {
-    fontSize: 11,
-    fontWeight: '800',
-    letterSpacing: 1,
-    color: colors.primary,
-  },
-  premiumWrap: {
-    borderRadius: radius.xxl,
-    overflow: 'hidden',
-    marginBottom: spacing.lg,
-    backgroundColor: '#2A3247',
-  },
-  premiumGhost: {
-    ...StyleSheet.absoluteFillObject,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: spacing.md,
-    opacity: 0.45,
-  },
-  premiumGhostNodo: { width: NODE, height: NODE, borderRadius: NODE / 2 },
-  premiumFrost: {
-    alignItems: 'center',
-    paddingVertical: spacing.lg,
-    paddingHorizontal: spacing.md,
-    backgroundColor: 'rgba(26,33,50,0.55)',
-  },
-  premiumCorona: {
-    width: 62,
-    height: 62,
-    borderRadius: 31,
-    backgroundColor: colors.accent,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  premiumTitolo: {
-    fontSize: 20,
-    fontWeight: '900',
-    color: '#FFFFFF',
-    marginTop: spacing.sm + 2,
-  },
-  premiumSub: {
-    fontSize: 14,
-    color: 'rgba(255,255,255,0.82)',
-    textAlign: 'center',
-    lineHeight: 20,
-    marginTop: 6,
-  },
-  premiumBtn: { alignSelf: 'stretch', marginTop: spacing.md },
 
   nodoRigaWrap: { alignItems: 'center', marginBottom: spacing.md },
   nodoRiga: { alignItems: 'center' },

@@ -26,14 +26,6 @@ export const NOMI_UNITA: Record<Difficolta, string> = {
   4: 'Eccellenza',
 };
 
-/**
- * Modello freemium: le unità 1 e 2 sono gratuite,
- * le unità 3 e 4 richiedono Premium.
- */
-export function unitaGratuita(difficolta: Difficolta): boolean {
-  return difficolta <= 2;
-}
-
 const DIFFICOLTA: Difficolta[] = [1, 2, 3, 4];
 
 /**

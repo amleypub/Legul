@@ -14,6 +14,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Icona } from '../components/Icona';
 import { tracce } from '../data/tracce';
 import { svolgimentoDi } from '../data/svolgimenti';
+import { svolgimentiRiservati, svolgimentoAccessibile } from '../data/accesso';
+import { useGamification } from '../gamification/GamificationContext';
+import { MuroPremium } from '../components/MuroPremium';
 import type { Riferimento } from '../data/svolgimenti';
 import { DA_COMPLETARE, TITOLARE } from '../data/legale';
 import { argomentoTraccia } from '../discussione/modello';
@@ -120,6 +123,8 @@ export default function SvolgimentoScreen({
   const { tracciaId } = route.params;
   const traccia = tracce.find((t) => t.id === tracciaId);
   const svolgimento = svolgimentoDi(tracciaId);
+  const { state } = useGamification();
+  const accessibile = svolgimentoAccessibile(tracciaId, state.premium);
 
   const [aperte, setAperte] = useState<Record<string, boolean>>({});
   /** Voci della griglia che l'utente si è riconosciuto. */
@@ -152,6 +157,26 @@ export default function SvolgimentoScreen({
   }
 
   const tinte = materiaColors[TINTA_TIPO[traccia.tipo]];
+
+  /*
+   * Il controllo sta qui e non solo sulla scheda della traccia: a questa
+   * schermata si arriva anche per collegamento diretto, e un muro che si
+   * aggira scrivendo un indirizzo non è un muro.
+   */
+  if (!accessibile) {
+    return (
+      <ScrollView style={styles.container} contentContainerStyle={styles.contenutoMuro}>
+        <MuroPremium
+          cosa="Questo svolgimento"
+          motivo={`Le questioni da individuare, i contrasti giurisprudenziali con le pronunce di entrambi gli orientamenti e la griglia per rileggerti. Su «${traccia.titolo}» e su tutte le altre tracce in archivio.`}
+          quantiAltri={svolgimentiRiservati()}
+          onSblocca={() => navigation.navigate('Paywall')}
+          onIndietro={() => navigation.goBack()}
+          etichettaIndietro="Torna alla traccia"
+        />
+      </ScrollView>
+    );
+  }
 
   /**
    * La segnalazione ha bisogno di un recapito pubblico. Finché l'indirizzo
@@ -396,6 +421,7 @@ export default function SvolgimentoScreen({
 const styles = StyleSheet.create({
   container: { flex: 1, },
   content: { padding: spacing.md, paddingBottom: spacing.xl },
+  contenutoMuro: { padding: spacing.md, paddingTop: spacing.xl, justifyContent: 'center', flexGrow: 1 },
 
   vuoto: {
     flex: 1,

@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Icona } from '../components/Icona';
 import { tracce } from '../data/tracce';
 import { svolgimentoDi } from '../data/svolgimenti';
+import { svolgimentoAccessibile } from '../data/accesso';
 import { useGamification } from '../gamification/GamificationContext';
 import { argomentoTraccia } from '../discussione/modello';
 import { useConteggioDiscussione } from '../discussione/useConteggio';
@@ -77,6 +78,7 @@ export default function TracciaDetailScreen({
   }
 
   const tinte = materiaColors[TINTA_TIPO[traccia.tipo]];
+  const svolgimentoLibero = svolgimentoAccessibile(traccia.id, state.premium);
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -156,7 +158,11 @@ export default function TracciaDetailScreen({
 
           <View style={styles.svolgimentoWrap}>
             <Pressable
-              onPress={() => navigation.navigate('Svolgimento', { tracciaId: traccia.id })}
+              onPress={() =>
+                svolgimentoLibero
+                  ? navigation.navigate('Svolgimento', { tracciaId: traccia.id })
+                  : navigation.navigate('Paywall')
+              }
               accessibilityRole="button"
               style={({ pressed }) => [
                 styles.svolgimento,
@@ -165,11 +171,12 @@ export default function TracciaDetailScreen({
               ]}
             >
               <View style={styles.svolgimentoIcona}>
-                <Icona nome="bulb" size={20} color={tinte.end} />
+                <Icona nome={svolgimentoLibero ? 'bulb' : 'lock-closed'} size={20} color={tinte.end} />
               </View>
               <View style={styles.svolgimentoTesti}>
                 <Text style={styles.svolgimentoEtichetta}>Svolgimento proposto</Text>
                 <Text style={styles.svolgimentoSottotitolo}>
+                  {!svolgimentoLibero && 'Riservato a Premium. '}
                   {svolgimento.questioni.length} questioni da individuare,{' '}
                   {svolgimento.contrasti.length === 1
                     ? 'un contrasto giurisprudenziale'

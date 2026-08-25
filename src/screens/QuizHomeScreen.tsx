@@ -6,7 +6,7 @@ import { Icona } from '../components/Icona';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MATERIE_A_SCELTA, materieObbligatorie } from '../data/quizzes';
-import { percorsoPerMateria, unitaGratuita } from '../data/percorso';
+import { percorsoPerMateria } from '../data/percorso';
 import { useGamification } from '../gamification/GamificationContext';
 import type { RootStackParamList } from '../navigation/types';
 import type { Materia } from '../types';
@@ -41,9 +41,8 @@ function MateriaBlock({
   const lezioni = useMemo(
     () =>
       percorsoPerMateria(materia)
-        .filter((u) => state.premium || unitaGratuita(u.difficolta))
         .flatMap((u) => u.lezioni),
-    [materia, state.premium]
+    [materia]
   );
   const completate = lezioni.filter((l) => (state.lezioni[l.id] ?? 0) >= 1).length;
   const stelleTotali = lezioni.reduce((acc, l) => acc + (state.lezioni[l.id] ?? 0), 0);
@@ -86,7 +85,7 @@ function MateriaBlock({
                 <View style={styles.metaRow}>
                   <Icona nome="star" size={13} color="#FFE08A" pieno />
                   <Text style={styles.blockMeta}>
-                    {stelleTotali} · {completate}/{lezioni.length} lezioni{state.premium ? '' : ' gratuite'}
+                    {stelleTotali} · {completate}/{lezioni.length} lezioni
                   </Text>
                 </View>
               </View>

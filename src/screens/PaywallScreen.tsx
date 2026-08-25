@@ -1,26 +1,75 @@
-import React, { useRef, useState } from 'react';
-import { Animated, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { Icona } from '../components/Icona';
 import { useGamification } from '../gamification/GamificationContext';
 import { Bottone } from '../components/Bottone';
+import {
+  CASI_IN_PROVA,
+  casiRiservati,
+  SVOLGIMENTI_IN_PROVA,
+  svolgimentiRiservati,
+} from '../data/accesso';
 import type { RootStackScreenProps } from '../navigation/types';
-import { colors, radius, spacing, SCALA_PRESSIONE } from '../theme';
+import { alone, colors, molla, radius, spacing, SCALA_PRESSIONE, type } from '../theme';
 
-const VANTAGGI = [
-  'Unità Avanzato ed Eccellenza per tutte le materie',
-  'Migliaia di domande con spiegazioni e riferimenti normativi',
-  'Il percorso completo per arrivare pronto all’esame',
-  'Sostieni lo sviluppo continuo di Legul',
-];
+/**
+ * Che cosa si compra.
+ *
+ * L'elenco è costruito sui numeri veri, contati dai dati: se domani
+ * arriva un altro svolgimento la promessa si aggiorna da sola. Un
+ * paywall che dice «contenuti esclusivi» chiede di fidarsi; uno che dice
+ * «otto svolgimenti e cinque casi» si può verificare, ed è l'unica
+ * differenza che conta quando qualcuno sta per pagare cinquanta euro.
+ */
+function vantaggi(): string[] {
+  const svolgimenti = svolgimentiRiservati();
+  const casi = casiRiservati();
+  return [
+    `${svolgimenti} svolgimenti completi delle tracce d'esame degli anni passati`,
+    'Ogni svolgimento con i contrasti giurisprudenziali, le trappole e la griglia con cui la commissione assegna il voto',
+    `${casi} casi pratici in più nel simulatore dell'orale, cronometrati come davanti alla commissione`,
+    "Nuove tracce e nuovi casi a ogni sessione d'esame, senza pagare di nuovo",
+  ];
+}
+
+/**
+ * Il confronto.
+ *
+ * Sta prima dei prezzi perché la domanda che viene prima del «quanto
+ * costa» è «che cosa mi manca se non pago», e nasconderla non la fa
+ * sparire: la fa diventare sospetto. La colonna gratuita è generosa sul
+ * serio — l'intero percorso quiz — e dirlo apertamente rende credibile
+ * anche l'altra colonna.
+ */
+function confronto(): { voce: string; gratis: string; premium: string }[] {
+  return [
+    { voce: 'Percorso quiz', gratis: 'Tutto', premium: 'Tutto' },
+    { voce: 'Tracce e testi', gratis: 'Tutti', premium: 'Tutti' },
+    {
+      voce: 'Svolgimenti',
+      gratis: `${SVOLGIMENTI_IN_PROVA.length} di prova`,
+      premium: 'Tutti',
+    },
+    {
+      voce: 'Simulatore orale',
+      gratis: CASI_IN_PROVA.length === 1 ? '1 caso' : `${CASI_IN_PROVA.length} casi`,
+      premium: 'Tutti',
+    },
+  ];
+}
 
 type Piano = 'mensile' | 'annuale';
 
-/** Card di un piano: blocco 3D che si abbassa quando lo scegli. */
-function Piano({
+const PREZZO_MENSILE = 7.99;
+const PREZZO_ANNUALE = 49.99;
+const GIORNI_PROVA = 7;
+
+/** Card di un piano: si abbassa quando la scegli. */
+function CartaPiano({
   nome,
   prezzo,
   dettaglio,
@@ -35,58 +84,66 @@ function Piano({
   attivo: boolean;
   onPress: () => void;
 }) {
-  const premuto = useRef(new Animated.Value(0)).current;
-  const giu = (down: boolean) =>
-    Animated.spring(premuto, {
-      toValue: down ? 1 : 0,
-      speed: 40,
-      bounciness: 0,
-      useNativeDriver: true,
-    }).start();
+  const premuto = useSharedValue(0);
+  const stileAnimato = useAnimatedStyle(() => ({
+    transform: [{ scale: 1 - premuto.value * (1 - SCALA_PRESSIONE) }],
+  }));
 
   return (
-    <Pressable style={styles.pianoPress} onPressIn={() => giu(true)} onPressOut={() => giu(false)} onPress={onPress}>
-      <View style={styles.pianoWrap}>
-        <Animated.View
-          style={[
-            styles.piano,
-            attivo && styles.pianoAttivo,
-            { transform: [
-                {
-                  scale: premuto.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [1, SCALA_PRESSIONE],
-                  }),
-                },
-              ] },
-          ]}
-        >
-          {etichetta ? (
-            <View style={[styles.pianoBadge, !attivo && styles.pianoBadgeSpento]}>
-              <Text style={[styles.pianoBadgeTesto, !attivo && styles.pianoBadgeTestoSpento]}>
-                {etichetta}
-              </Text>
-            </View>
-          ) : (
-            <View style={styles.pianoBadgeVuoto} />
-          )}
-          <Text style={styles.pianoNome}>{nome}</Text>
-          <Text style={styles.pianoPrezzo}>{prezzo}</Text>
-          <Text style={styles.pianoDettaglio}>{dettaglio}</Text>
-          {attivo && (
-            <View style={styles.pianoSpunta}>
-              <Icona nome="checkmark" size={15} color={colors.primary} />
-            </View>
-          )}
-        </Animated.View>
-      </View>
+    <Pressable
+      style={styles.pianoPress}
+      onPressIn={() => {
+        premuto.value = withSpring(1, molla.tocco);
+      }}
+      onPressOut={() => {
+        premuto.value = withSpring(0, molla.tocco);
+      }}
+      onPress={onPress}
+      accessibilityRole="radio"
+      accessibilityState={{ selected: attivo }}
+      accessibilityLabel={`${nome}, ${prezzo}, ${dettaglio}`}
+    >
+      <Animated.View
+        style={[
+          styles.piano,
+          attivo && styles.pianoAttivo,
+          attivo && alone(colors.accent, 'tenue'),
+          stileAnimato,
+        ]}
+      >
+        {etichetta ? (
+          <View style={[styles.pianoBadge, !attivo && styles.pianoBadgeSpento]}>
+            <Text style={[styles.pianoBadgeTesto, !attivo && styles.pianoBadgeTestoSpento]}>
+              {etichetta}
+            </Text>
+          </View>
+        ) : (
+          <View style={styles.pianoBadgeVuoto} />
+        )}
+        <Text style={styles.pianoNome}>{nome}</Text>
+        <Text style={styles.pianoPrezzo}>{prezzo}</Text>
+        <Text style={styles.pianoDettaglio}>{dettaglio}</Text>
+        {attivo && (
+          <View style={styles.pianoSpunta}>
+            <Icona nome="checkmark" size={15} color={colors.primary} />
+          </View>
+        )}
+      </Animated.View>
     </Pressable>
   );
+}
+
+function euro(v: number): string {
+  return `${v.toFixed(2).replace('.', ',')} €`;
 }
 
 export default function PaywallScreen({ navigation }: RootStackScreenProps<'Paywall'>) {
   const { attivaPremium } = useGamification();
   const [piano, setPiano] = useState<Piano>('annuale');
+  const elenco = vantaggi();
+  const righe = confronto();
+
+  const conProva = piano === 'annuale';
 
   return (
     <LinearGradient colors={['#22314F', '#101728']} style={styles.gradient}>
@@ -97,16 +154,22 @@ export default function PaywallScreen({ navigation }: RootStackScreenProps<'Payw
             <Icona nome="close" size={28} color="rgba(255,255,255,0.7)" />
           </Pressable>
 
-          <View style={styles.coronaBubble}>
-            <MaterialCommunityIcons name="crown" size={44} color={colors.primary} />
-          </View>
+          <LinearGradient
+            colors={['#F7BE3E', colors.accent]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={[styles.coronaBubble, alone(colors.accent)]}
+          >
+            <Icona nome="crown" size={40} color={colors.primary} />
+          </LinearGradient>
           <Text style={styles.titolo}>Legul Premium</Text>
           <Text style={styles.sottotitolo}>
-            Sblocca l’intero percorso e preparati all’esame senza limiti.
+            I quiz restano gratuiti per sempre. Premium apre la parte che si scrive: gli
+            svolgimenti delle tracce e il simulatore dell'orale.
           </Text>
 
           <View style={styles.vantaggi}>
-            {VANTAGGI.map((v) => (
+            {elenco.map((v) => (
               <View key={v} style={styles.vantaggioRiga}>
                 <Icona nome="checkmark-circle" size={22} color={colors.accent} />
                 <Text style={styles.vantaggioTesto}>{v}</Text>
@@ -114,36 +177,111 @@ export default function PaywallScreen({ navigation }: RootStackScreenProps<'Payw
             ))}
           </View>
 
+          <View style={styles.tabella}>
+            <View style={styles.tabellaIntestazione}>
+              <Text style={[styles.tabellaVoce, styles.tabellaTitolo]}> </Text>
+              <Text style={[styles.tabellaCella, styles.tabellaTitolo]}>Gratis</Text>
+              <Text style={[styles.tabellaCella, styles.tabellaTitolo, styles.tabellaOro]}>
+                Premium
+              </Text>
+            </View>
+            {righe.map((r) => (
+              <View key={r.voce} style={styles.tabellaRiga}>
+                <Text style={styles.tabellaVoce}>{r.voce}</Text>
+                <Text style={styles.tabellaCella}>{r.gratis}</Text>
+                <Text style={[styles.tabellaCella, styles.tabellaOro]}>{r.premium}</Text>
+              </View>
+            ))}
+          </View>
+
           <View style={styles.piani}>
-            <Piano
+            <CartaPiano
               nome="Annuale"
-              prezzo="49,99 €"
-              dettaglio="4,17 € al mese"
-              etichetta="RISPARMI IL 48%"
+              prezzo={euro(PREZZO_ANNUALE)}
+              dettaglio={`${euro(PREZZO_ANNUALE / 12)} al mese`}
+              etichetta={`${GIORNI_PROVA} GIORNI GRATIS`}
               attivo={piano === 'annuale'}
               onPress={() => setPiano('annuale')}
             />
-            <Piano
+            <CartaPiano
               nome="Mensile"
-              prezzo="7,99 €"
-              dettaglio="fatturazione mensile"
+              prezzo={euro(PREZZO_MENSILE)}
+              dettaglio="ogni mese"
               attivo={piano === 'mensile'}
               onPress={() => setPiano('mensile')}
             />
           </View>
 
+          {/*
+            Il conto per esteso invece della percentuale. «Risparmi il 48%»
+            è una cifra che nessuno può verificare senza fare la
+            moltiplicazione a mente; scritta la moltiplicazione, il
+            risparmio si vede e non c'è niente da credere sulla parola.
+          */}
+          <Text style={styles.confronto}>
+            Dodici mesi al piano mensile costano {euro(PREZZO_MENSILE * 12)}. L'annuale costa{' '}
+            {euro(PREZZO_ANNUALE)}: {euro(PREZZO_MENSILE * 12 - PREZZO_ANNUALE)} in meno.
+          </Text>
+
           <Bottone
-            label="Attiva Premium"
+            label={conProva ? `Inizia i ${GIORNI_PROVA} giorni gratis` : 'Attiva Premium'}
             onPress={() => {
               attivaPremium();
               navigation.goBack();
             }}
-          variante="accento"
+            variante="accento"
+            style={styles.cta}
           />
+
+          {/*
+            Le condizioni della prova stanno sotto il pulsante e non in
+            fondo alla pagina. Una prova gratuita di cui si scopre dopo
+            che si rinnova da sola è il motivo per cui la gente diffida
+            delle prove gratuite: dirlo prima costa qualche conversione e
+            ne salva molte di più al momento del rimborso.
+          */}
+          <Text style={styles.condizioni}>
+            {conProva
+              ? `Nessun addebito per ${GIORNI_PROVA} giorni. Al termine parte l'abbonamento annuale a ${euro(
+                  PREZZO_ANNUALE
+                )}, se non disdici prima. Puoi disdire in qualsiasi momento dalle impostazioni del tuo account App Store o Google Play.`
+              : `${euro(
+                  PREZZO_MENSILE
+                )} al mese, rinnovo automatico. Puoi disdire in qualsiasi momento dalle impostazioni del tuo account App Store o Google Play.`}
+          </Text>
+
+          <View style={styles.piedino}>
+            <Pressable
+              hitSlop={8}
+              onPress={() =>
+                Alert.alert(
+                  'Ripristina acquisti',
+                  "Gli acquisti in-app non sono ancora attivi in questa versione. Quando lo saranno, questo pulsante recupererà l'abbonamento già pagato senza doverlo comprare di nuovo."
+                )
+              }
+            >
+              <Text style={styles.link}>Ripristina acquisti</Text>
+            </Pressable>
+            <Text style={styles.separatore}>·</Text>
+            <Pressable
+              hitSlop={8}
+              onPress={() => navigation.navigate('DocumentoLegale', { documento: 'termini' })}
+            >
+              <Text style={styles.link}>Termini</Text>
+            </Pressable>
+            <Text style={styles.separatore}>·</Text>
+            <Pressable
+              hitSlop={8}
+              onPress={() => navigation.navigate('DocumentoLegale', { documento: 'privacy' })}
+            >
+              <Text style={styles.link}>Privacy</Text>
+            </Pressable>
+          </View>
+
           <Text style={styles.nota}>
-            Prezzi di esempio. L’acquisto in-app (App Store / Google Play) sarà integrato prima
+            Prezzi di esempio. L'acquisto in-app (App Store / Google Play) sarà integrato prima
             della pubblicazione: per ora il pulsante attiva Premium in modalità demo, per provare i
-            contenuti bloccati.
+            contenuti riservati.
           </Text>
         </ScrollView>
       </SafeAreaView>
@@ -159,34 +297,62 @@ const styles = StyleSheet.create({
   coronaBubble: {
     width: 84,
     height: 84,
-    borderRadius: 42,
-    backgroundColor: colors.accent,
+    borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: spacing.sm,
   },
-  titolo: { fontSize: 30, fontWeight: '800', color: '#FFFFFF', marginTop: spacing.md },
+  titolo: { ...type.titolo, color: '#FFFFFF', marginTop: spacing.md },
   sottotitolo: {
-    fontSize: 15,
-    color: 'rgba(255,255,255,0.8)',
+    ...type.corpo,
+    color: 'rgba(255,255,255,0.78)',
     textAlign: 'center',
-    lineHeight: 22,
     marginTop: spacing.xs,
+    maxWidth: 340,
   },
   vantaggi: { alignSelf: 'stretch', marginTop: spacing.lg, gap: spacing.sm },
-  vantaggioRiga: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
-  vantaggioTesto: { flex: 1, fontSize: 15, color: '#FFFFFF', lineHeight: 21 },
+  vantaggioRiga: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.sm },
+  vantaggioTesto: { ...type.corpo, flex: 1, color: '#FFFFFF' },
+
+  tabella: {
+    alignSelf: 'stretch',
+    marginTop: spacing.lg,
+    borderRadius: radius.lg,
+    backgroundColor: 'rgba(255,255,255,0.06)',
+    borderWidth: StyleSheet.hairlineWidth * 1.5,
+    borderColor: 'rgba(255,255,255,0.14)',
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.sm,
+  },
+  tabellaIntestazione: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 7,
+    borderBottomWidth: StyleSheet.hairlineWidth * 1.5,
+    borderBottomColor: 'rgba(255,255,255,0.14)',
+  },
+  tabellaRiga: { flexDirection: 'row', alignItems: 'center', paddingVertical: 7 },
+  tabellaVoce: { ...type.piccolo, flex: 1.5, color: 'rgba(255,255,255,0.82)' },
+  tabellaCella: {
+    ...type.piccolo,
+    flex: 1,
+    textAlign: 'center',
+    fontWeight: '700',
+    color: 'rgba(255,255,255,0.6)',
+  },
+  tabellaTitolo: { ...type.etichetta, color: 'rgba(255,255,255,0.55)' },
+  tabellaOro: { color: colors.accent },
+
   piani: {
     flexDirection: 'row',
     alignItems: 'stretch',
     gap: spacing.sm,
     alignSelf: 'stretch',
-    marginVertical: spacing.lg,
+    marginTop: spacing.lg,
   },
   pianoPress: { flex: 1 },
-  pianoWrap: { flex: 1, },
-  pianoEdgeAttivo: { backgroundColor: '#A8861B' },
-  // Sfondo pieno (non traslucido) così il bordo 3D non traspare e sporca il colore.
+  // Sfondo pieno (non traslucido) così il gradiente di fondo non sporca
+  // il colore delle due carte in modo diverso a seconda dell'altezza.
   piano: {
     flex: 1,
     backgroundColor: '#26314C',
@@ -209,16 +375,24 @@ const styles = StyleSheet.create({
   },
   pianoBadgeSpento: { backgroundColor: 'rgba(255,255,255,0.16)' },
   pianoBadgeVuoto: { height: 22, marginBottom: spacing.sm },
-  pianoBadgeTesto: {
-    fontSize: 9,
-    fontWeight: '800',
-    letterSpacing: 0.6,
-    color: colors.primary,
-  },
+  pianoBadgeTesto: { ...type.etichetta, fontSize: 9, letterSpacing: 0.6, color: colors.primary },
   pianoBadgeTestoSpento: { color: 'rgba(255,255,255,0.85)' },
-  pianoNome: { fontSize: 15, fontWeight: '700', color: '#FFFFFF' },
-  pianoPrezzo: { fontSize: 24, fontWeight: '900', color: '#FFFFFF', marginTop: 4 },
-  pianoDettaglio: { fontSize: 12, color: 'rgba(255,255,255,0.7)', marginTop: 2, textAlign: 'center' },
+  pianoNome: { ...type.scheda, color: '#FFFFFF' },
+  pianoPrezzo: {
+    fontSize: 24,
+    fontWeight: '900',
+    letterSpacing: -0.9,
+    color: '#FFFFFF',
+    marginTop: 4,
+    fontVariant: ['tabular-nums'],
+  },
+  pianoDettaglio: {
+    ...type.minuto,
+    fontWeight: '500',
+    color: 'rgba(255,255,255,0.7)',
+    marginTop: 2,
+    textAlign: 'center',
+  },
   pianoSpunta: {
     position: 'absolute',
     top: -1,
@@ -230,11 +404,38 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  nota: {
-    fontSize: 12,
-    color: 'rgba(255,255,255,0.6)',
+
+  confronto: {
+    ...type.minuto,
+    fontWeight: '500',
+    color: 'rgba(255,255,255,0.62)',
     textAlign: 'center',
-    lineHeight: 18,
+    marginTop: spacing.sm,
+    marginBottom: spacing.md,
+    maxWidth: 340,
+  },
+  cta: { alignSelf: 'stretch' },
+  condizioni: {
+    ...type.minuto,
+    fontWeight: '500',
+    color: 'rgba(255,255,255,0.62)',
+    textAlign: 'center',
+    marginTop: spacing.sm,
+    maxWidth: 340,
+  },
+  piedino: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    marginTop: spacing.md,
+  },
+  link: { ...type.piccolo, fontWeight: '600', color: 'rgba(255,255,255,0.8)' },
+  separatore: { ...type.piccolo, color: 'rgba(255,255,255,0.35)' },
+  nota: {
+    ...type.minuto,
+    fontWeight: '400',
+    color: 'rgba(255,255,255,0.45)',
+    textAlign: 'center',
     marginTop: spacing.md,
   },
 });

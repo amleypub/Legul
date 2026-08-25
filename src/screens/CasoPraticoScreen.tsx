@@ -20,6 +20,8 @@ import {
 } from '../simulatore/modello';
 import { useCronometro } from '../simulatore/useCronometro';
 import { useGamification } from '../gamification/GamificationContext';
+import { casiRiservati, casoAccessibile } from '../data/accesso';
+import { MuroPremium } from '../components/MuroPremium';
 import { Bottone } from '../components/Bottone';
 import { Mascot } from '../components/Mascot';
 import { ProgressBar } from '../components/ProgressBar';
@@ -38,7 +40,7 @@ export default function CasoPraticoScreen({
 }: RootStackScreenProps<'CasoPratico'>) {
   const { casoId } = route.params;
   const caso = casoDaId(casoId);
-  const { registraCasoPratico } = useGamification();
+  const { state, registraCasoPratico } = useGamification();
 
   const [fase, setFase] = useState<FaseSimulazione>('istruzioni');
   const [minutiPrep, setMinutiPrep] = useState<number>(DURATA_PREPARAZIONE_PREDEFINITA);
@@ -71,6 +73,25 @@ export default function CasoPraticoScreen({
           style={styles.vuotoBtn}
         />
       </View>
+    );
+  }
+
+  /*
+   * Come per gli svolgimenti: il collegamento diretto porta qui senza
+   * passare dall'elenco, quindi il controllo va ripetuto.
+   */
+  if (!casoAccessibile(caso.id, state.premium)) {
+    return (
+      <ScrollView style={styles.container} contentContainerStyle={styles.contenutoMuro}>
+        <MuroPremium
+          cosa="Questo caso pratico"
+          motivo="Il caso, il tempo per prepararlo e la scaletta punto per punto con cui confrontare quello che hai detto, separata fra sostanziale e processuale."
+          quantiAltri={casiRiservati()}
+          onSblocca={() => navigation.navigate('Paywall')}
+          onIndietro={() => navigation.goBack()}
+          etichettaIndietro="Torna ai casi"
+        />
+      </ScrollView>
     );
   }
 
@@ -453,6 +474,7 @@ export default function CasoPraticoScreen({
 const styles = StyleSheet.create({
   container: { flex: 1, },
   content: { padding: spacing.md, paddingBottom: spacing.xl },
+  contenutoMuro: { padding: spacing.md, paddingTop: spacing.xl, justifyContent: 'center', flexGrow: 1 },
 
   vuoto: {
     flex: 1,

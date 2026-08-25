@@ -41,6 +41,17 @@ describe('mappa delle icone', () => {
     }
     // Mappe che tengono l'icona dentro un oggetto: `{ icona: 'x', … }`.
     for (const m of testo.matchAll(/icona:\s*["']([a-z0-9-]+)["']/g)) usati.add(m[1]);
+    /*
+     * Nomi scelti da un'espressione: `nome={aperta ? 'chevron-up' : …}`.
+     * Erano il buco più grosso — le frecce dei voti nella discussione
+     * sono passate così, e a schermo restavano due pulsanti vuoti.
+     */
+    for (const m of testo.matchAll(/\bnome=\{([^}]*)\}/g)) {
+      // Le stringhe a destra di un confronto sono stati, non icone:
+      // `stato === 'completata' ? 'checkmark' : …` ne contiene di
+      // entrambi i tipi e solo i secondi vanno verificati.
+      for (const v of m[1].matchAll(/(?<![=!]=\s)'([a-z][a-z0-9-]*)'/g)) usati.add(v[1]);
+    }
   }
 
   it('trova nomi di icone nei sorgenti', () => {

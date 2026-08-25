@@ -5,7 +5,6 @@ import {
   percorsoPerMateria,
   statiLezioni,
   trovaLezione,
-  unitaGratuita,
 } from '../percorso';
 import { materie } from '../quizzes';
 import type { Materia } from '../../types';
@@ -84,15 +83,6 @@ describe('percorsoPerMateria', () => {
     const prima = lezioniInOrdine(materia)[0];
     expect(trovaLezione(materia, prima.id)?.id).toBe(prima.id);
     expect(trovaLezione(materia, 'inesistente')).toBeUndefined();
-  });
-});
-
-describe('unitaGratuita', () => {
-  it('lascia libere le prime due unità e chiude le altre', () => {
-    expect(unitaGratuita(1)).toBe(true);
-    expect(unitaGratuita(2)).toBe(true);
-    expect(unitaGratuita(3)).toBe(false);
-    expect(unitaGratuita(4)).toBe(false);
   });
 });
 

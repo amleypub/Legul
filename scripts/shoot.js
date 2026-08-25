@@ -149,11 +149,11 @@ async function main() {
   await tap('Diritto civile');
   await shot('3-percorso.png');
 
-  // Fondo del percorso: le unità a pagamento con il riquadro Premium.
+  // Fondo del percorso: ora è tutto libero, non c'è più il riquadro Premium.
   await page.mouse.move(201, 500);
   for (let n = 0; n < 40; n++) await page.mouse.wheel(0, 900);
   await page.waitForTimeout(1200);
-  await shot('3b-percorso-premium.png');
+  await shot('3b-percorso-fondo.png');
   for (let n = 0; n < 40; n++) await page.mouse.wheel(0, -900);
   await page.waitForTimeout(1000);
 
@@ -202,6 +202,10 @@ async function main() {
       '/svolgimento/2023-atto-civile',
       async () => tap('Qualificazione del contratto', { exact: false }),
     ],
+    // Un contenuto riservato raggiunto per deep link: deve trovare il muro,
+    // non il contenuto. È la prova che il confine non sta solo nell'elenco.
+    ['14f-svolgimento-muro.png', '/svolgimento/2022-atto-penale'],
+    ['0d-caso-muro.png', '/caso-pratico/privato-custodia-caduta'],
     ['0-esame.png', '/esame'],
     ['0b-caso-elenco.png', '/caso-pratico'],
     ['0c-caso.png', '/caso-pratico/privato-locazione-morosita'],

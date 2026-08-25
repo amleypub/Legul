@@ -4,6 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Icona } from '../components/Icona';
 import { casi, MATERIE_CASO, type MateriaCaso } from '../data/casi';
 import { casoSuggerito } from '../simulatore/modello';
+import { casoAccessibile } from '../data/accesso';
 import { useGamification } from '../gamification/GamificationContext';
 import { Bottone } from '../components/Bottone';
 import { TitoloSchermata } from '../components/TitoloSchermata';
@@ -105,6 +106,7 @@ export default function SimulatoreScreen({ navigation }: RootStackScreenProps<'S
             </View>
             {dellaMateria.map((caso) => {
               const migliore = svolti[caso.id];
+              const libero = casoAccessibile(caso.id, state.premium);
               return (
                 <View key={caso.id} style={styles.cartaWrap}>
                   <Pressable
@@ -113,7 +115,11 @@ export default function SimulatoreScreen({ navigation }: RootStackScreenProps<'S
                     style={({ pressed }) => [styles.carta, pressed && styles.cartaPremuta]}
                   >
                     <View style={[styles.cartaIcona, { backgroundColor: tinte.soft }]}>
-                      <Icona nome={ICONA[materia]} size={20} color={tinte.end} />
+                      <Icona
+                        nome={libero ? ICONA[materia] : 'lock-closed'}
+                        size={20}
+                        color={tinte.end}
+                      />
                     </View>
                     <View style={styles.cartaTesti}>
                       <Text style={styles.cartaTitolo}>{caso.titolo}</Text>
@@ -121,7 +127,9 @@ export default function SimulatoreScreen({ navigation }: RootStackScreenProps<'S
                         {caso.fatto[0]}
                       </Text>
                     </View>
-                    {migliore === undefined ? (
+                    {!libero ? (
+                      <Text style={styles.cartaRiservato}>PREMIUM</Text>
+                    ) : migliore === undefined ? (
                       <Icona nome="chevron-forward" size={17} color="#B6BECC" />
                     ) : (
                       <Text
@@ -242,6 +250,17 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   cartaPunteggioAlto: { color: colors.successEdge, backgroundColor: colors.successSoft },
+  cartaRiservato: {
+    fontSize: 9.5,
+    fontWeight: '800',
+    letterSpacing: 0.8,
+    color: colors.accentEdge,
+    backgroundColor: colors.accentSoft,
+    borderRadius: radius.pill,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    overflow: 'hidden',
+  },
 
   chiusura: {
     fontSize: 12,

@@ -303,6 +303,25 @@ export default function ProfiloScreen() {
         </View>
       )}
 
+      {/*
+        Premium non aveva alcun posto nel Profilo: chi paga non aveva
+        dove verificare di aver pagato, e chi non paga incontrava
+        l'offerta solo in fondo al percorso di una materia.
+      */}
+      <Gruppo titolo="Abbonamento">
+        <Voce
+          icona="crown"
+          tinta={state.premium ? colors.accentEdge : '#8A93AC'}
+          etichetta={state.premium ? 'Legul Premium attivo' : 'Passa a Premium'}
+          sottotitolo={
+            state.premium
+              ? 'Tutti gli svolgimenti e tutti i casi pratici sono sbloccati'
+              : 'Svolgimenti e casi pratici oltre l’assaggio'
+          }
+          onPress={() => navigation.navigate('Paywall')}
+        />
+      </Gruppo>
+
       <Gruppo titolo="Preferenze">
         <Voce
           icona="volume-high"
