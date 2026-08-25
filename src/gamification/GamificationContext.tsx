@@ -405,6 +405,8 @@ function soloSincronizzabili(s: GamificationState): ProgressiRemoti {
     badges: s.badges,
     streak: s.streak,
     ultimoGiornoAttivita: s.ultimoGiornoAttivita,
+    esame: s.esame,
+    aperturaFatta: s.aperturaFatta,
   };
 }
 

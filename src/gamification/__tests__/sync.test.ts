@@ -96,3 +96,70 @@ describe('unisciProgressi', () => {
     expect(remoto.badges).toEqual(['y']);
   });
 });
+
+describe('unisciProgressi: le scelte d’esame', () => {
+  /**
+   * Il telefono nuovo appena installato non ha nulla in locale: deve
+   * ricevere dal cloud che cosa il candidato porta, altrimenti si
+   * ritrova a rifare le domande d'apertura e, peggio, un percorso
+   * tarato su scelte che non ha mai espresso.
+   */
+  it('porta sul dispositivo nuovo le scelte già fatte altrove', () => {
+    const esito = unisciProgressi(
+      con({}),
+      con({
+        esame: {
+          dataEsame: '2027-05-10',
+          scritti: 'Diritto penale',
+          procedura: 'Procedura penale',
+          materiaScelta: 'Diritto commerciale',
+        },
+        aperturaFatta: true,
+      })
+    );
+    expect(esito.esame?.scritti).toBe('Diritto penale');
+    expect(esito.esame?.materiaScelta).toBe('Diritto commerciale');
+    expect(esito.aperturaFatta).toBe(true);
+  });
+
+  /**
+   * Il contrario invece no: chi ha appena cambiato idea sul dispositivo
+   * che ha in mano non deve vedersi riscrivere la scelta da una copia
+   * remota più vecchia.
+   */
+  it('fa prevalere la scelta locale su quella remota', () => {
+    const esito = unisciProgressi(
+      con({
+        esame: {
+          dataEsame: null,
+          scritti: 'Diritto amministrativo',
+          procedura: null,
+          materiaScelta: null,
+        },
+      }),
+      con({
+        esame: {
+          dataEsame: '2027-05-10',
+          scritti: 'Diritto civile',
+          procedura: 'Procedura civile',
+          materiaScelta: null,
+        },
+      })
+    );
+    expect(esito.esame?.scritti).toBe('Diritto amministrativo');
+    // Dove in locale non c'è nulla, il valore remoto subentra.
+    expect(esito.esame?.procedura).toBe('Procedura civile');
+    expect(esito.esame?.dataEsame).toBe('2027-05-10');
+  });
+
+  it('regge i dati salvati prima che le scelte esistessero', () => {
+    const esito = unisciProgressi(con({}), con({}));
+    expect(esito.esame).toEqual({
+      dataEsame: null,
+      scritti: null,
+      procedura: null,
+      materiaScelta: null,
+    });
+    expect(esito.aperturaFatta).toBe(false);
+  });
+});
