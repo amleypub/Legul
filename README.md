@@ -27,25 +27,37 @@ bassissima opacità e da un'ombra ampia e morbida. Niente bordi duri.
 
 ## Funzionalità
 
+### Domande d'apertura
+- Al primo avvio, **quattro domande** su che cosa il candidato porta: la materia dei due scritti, la procedura all'orale, la materia della rosa e, se la conosce, la data della prova
+- Dopo la riforma del 2026 quasi tutto è a scelta, e un piano di studio che ignora quelle scelte è il piano di nessuno
+- **Si può saltare tutto, da subito**, e rifarlo dal Profilo: un'app che chiede una decisione irreversibile al primo avvio si fa chiudere
+- **Non si chiedono permessi qui.** La proposta di attivare il promemoria arriva dopo la prima lezione completata, una volta sola: chiedere le notifiche prima che l'app abbia dimostrato di valere qualcosa è il modo più affidabile di farsele negare, e su iOS quel «no» si corregge solo dalle impostazioni di sistema
+
+> Schermata in `src/screens/AperturaScreen.tsx`, dati in `src/data/scelte.ts`. Vive **prima** della navigazione: è l'unica schermata da cui non si può uscire lateralmente, e infilarla nello stack significherebbe poterla scavalcare con un deep link.
+
 ### Percorso quiz in stile Duolingo
 - 6 materie del nucleo comune: Diritto civile, Diritto penale, Procedura civile, Procedura penale, Diritto amministrativo, Deontologia forense
-- **Materie a scelta dell'orale**: Diritto costituzionale, Diritto commerciale, Diritto del lavoro. Il d.l. 100/2026 ne fa portare **una sola**, scelta fra costituzionale, commerciale, lavoro, internazionale, UE e tributario: la schermata Quiz le tiene in un blocco a parte per non far credere che vadano studiate tutte. Le tre coperte sono quelle statisticamente più scelte; le altre tre restano fuori finché non risultino richieste
+- **Materie a scelta dell'orale**: Diritto costituzionale, Diritto commerciale, Diritto del lavoro. Il d.l. 100/2026 ne fa portare **una sola**, scelta fra costituzionale, commerciale, lavoro, internazionale, UE e tributario: la schermata Quiz le tiene in un blocco a parte per non far credere che vadano studiate tutte, mette in cima quella dichiarata dall'utente e **dichiara le tre che Legul non copre**. Tacerne l'esistenza farebbe sembrare l'app completa a chi guarda l'elenco e incompleta a chi porta tributario e la cerca per settimane
 - **Percorso a nodi** con 4 unità per materia (Fondamenti, Consolidamento, Avanzato, Eccellenza) e lezioni da 10 domande a sblocco progressivo
 - **Cuori**: 4 tentativi per lezione; **stelle** (1-3) in base alla precisione, gradienti, animazioni a molla e feedback aptico
 - Dopo ogni risposta viene mostrata la **spiegazione del perché**, con i riferimenti normativi (articoli di codice, leggi speciali, riforma Cartabia, ecc.)
 - Anche le risposte errate valgono qualche punto: studiare conta sempre
 
 ### Modello freemium
-- Le unità **1 e 2 sono gratuite**; le unità **3 e 4 richiedono Premium** (paywall con piani mensile/annuale di esempio)
+- **Il percorso quiz è interamente gratuito**, tutte e quattro le unità di tutte le materie
+- **Premium apre gli svolgimenti delle tracce e i casi pratici del simulatore**, con un assaggio gratuito: due svolgimenti (un atto e un parere) e un caso
+- Il confine sta in un solo file — `src/data/accesso.ts` — ed è fissato per identificativo, non per posizione: aggiungere una traccia in cima non cambia in silenzio che cosa è gratis per chi ha già l'app installata
+- Il muro è un *early return* dentro `SvolgimentoScreen` e `CasoPraticoScreen`, non solo un lucchetto nell'elenco: i deep link arrivano dritti alla schermata e devono trovarlo comunque
 - L'acquisto in-app non è ancora integrato: il pulsante del paywall attiva Premium in **modalità demo** (`attivaPremium()` in `src/gamification/GamificationContext.tsx`)
 
+> Perché il confine è stato ribaltato: prima si pagava per le unità 3 e 4 del percorso quiz — domande a risposta multipla, la merce più comune del settore — mentre restava gratuito tutto ciò che nessun altro ha. Si pagava per la commodity e si regalava il differenziale.
+
 ### Banca domande
-- **4.244 domande** in `src/data/questions/` (un file per materia-livello), aggregate in `index.ts`
-- **645 domande per ogni materia principale**, **245 per deontologia** e **248 per ciascuna materia a scelta**, distribuite sui 4 livelli:
-  - Unità 1 · Fondamenti — 158 per materia (58 deontologia, 62 per ogni materia a scelta)
-  - Unità 2 · Consolidamento — 162 per materia (62 deontologia, 62 per ogni materia a scelta)
-  - Unità 3 · Avanzato — 163 per materia (63 deontologia, 62 per ogni materia a scelta)
-  - Unità 4 · Eccellenza — 162 per materia (62 deontologia, 62 per ogni materia a scelta)
+- **4.324 domande** in `src/data/questions/` (un file per materia-livello), aggregate in `index.ts`
+- **650 domande per ogni materia principale**, **330 per deontologia** e **248 per ciascuna materia a scelta**, distribuite sui 4 livelli (163/162/163/162 per le principali, 62 per livello per le materie a scelta)
+- Dentro deontologia, due blocchi che nessun manuale dell'anno scorso copre:
+  - **64 domande di previdenza forense**, la parte dell'ordinamento professionale che all'orale viene chiesta e che quasi nessuno ripassa. Evitano di proposito gli importi in euro dei contributi minimi, che il Comitato dei delegati ridetermina ogni anno: una domanda costruita su una cifra diventa sbagliata da sola
+  - **16 domande sulle modifiche al codice deontologico in vigore dal 1° novembre 2025** (delibera CNF n. 636/2025): artt. 48, 50, 51, 56, 61, 62 e il nuovo 62-bis sulla negoziazione assistita
 - Id univoci verificati, nessuna emoji, diritto vigente: riforme Cartabia, codice contratti d.lgs. 36/2023, l. cost. 1/2022 su artt. 9 e 41 Cost., Codice della crisi come modificato dal d.lgs. 136/2024, e le pronunce della Corte costituzionale che hanno riscritto il d.lgs. 23/2015 (nn. 194/2018, 150/2020, 59/2021, 125/2022, 22/2024, 128/2024)
 - La posizione della risposta corretta è bilanciata **dentro ogni materia**, non solo sul totale: chi studia una materia sola non deve poter imparare la posizione invece della norma
 
@@ -58,14 +70,15 @@ bassissima opacità e da un'ombra ampia e morbida. Niente bordi duri.
 > Contenuti in `src/data/esame.ts`, sorgente unica della schermata. Raggiungibile dalla Home, dalla schermata Tracce e via `legul://esame`.
 
 ### Tracce degli esami degli anni passati
-- Archivio consultabile per anno delle tracce delle prove scritte (pareri di civile e penale, atti giudiziari)
+- Archivio consultabile per anno, **dodici tracce** che coprono tutte e tre le materie fra cui si sceglie: pareri e atti di civile, penale e amministrativo
+- Il tipo di una traccia dichiara insieme la forma della prova e la materia. Prima esisteva un generico «Atto giudiziario» che non diceva su che cosa vertesse, e l'amministrativo non era esprimibile affatto: la materia c'era già nella prova d'atto degli anni passati, ma qui non aveva un nome
 - Ogni traccia riporta sessione, tipologia, argomenti trattati e testo
 - Leggere una traccia assegna punti e sblocca badge dedicati
 
 > I testi presenti in `src/data/tracce.ts` sono sintesi a scopo di studio; i testi ufficiali integrali (pubblicati dal Ministero della Giustizia) possono essere incollati nel campo `testo` di ciascuna traccia.
 
 ### Svolgimenti proposti
-- **Tutte e dieci** le tracce in archivio hanno uno svolgimento, a sezioni che si aprono una alla volta e partono tutte chiuse: aprirle senza aver almeno impostato la traccia toglie alla lettura quasi tutto il suo valore
+- **Tutte e dodici** le tracce in archivio hanno uno svolgimento, a sezioni che si aprono una alla volta e partono tutte chiuse: aprirle senza aver almeno impostato la traccia toglie alla lettura quasi tutto il suo valore
 - Si chiama **«svolgimento proposto» e mai «soluzione corretta»**: all'esame non esiste una risposta esatta depositata da qualche parte, esiste un elaborato che regge o non regge
 - **Ogni blocco porta i riferimenti puntuali**, norma o pronuncia: un blocco senza aggancio è un'opinione, e il test lo rifiuta
 - **Dove la giurisprudenza è divisa si mostra il contrasto** invece di scegliere il vincitore al posto del candidato: due tesi, i rispettivi argomenti e — la parte che serve davvero — che cosa cambia in concreto per il cliente
@@ -96,17 +109,19 @@ bassissima opacità e da un'ombra ampia e morbida. Niente bordi duri.
 
 ### Gamification
 - **Punti** per ogni risposta, quiz completato e traccia letta (bonus per i quiz perfetti)
-- **Livelli** che misurano quanto sei pronto per l'esame — da «Al via» a «Più che pronto» — e non che titolo hai: chi usa Legul è già laureato e in pratica, una scala di qualifiche lo retrocederebbe o gli regalerebbe il traguardo che deve ancora conquistare
+- **Livelli agganciati al programma svolto**, non ai punti — da «Al via» a «Più che pronto». Con i punti l'ultimo livello arrivava avendo visto poco più del cinque per cento delle domande, perché i punti si accumulano anche sbagliando e anche rifacendo la stessa lezione: misuravano il tempo passato, non la preparazione. I nomi non sono qualifiche: chi usa Legul è già laureato e in pratica
 - **Streak** di giorni di studio consecutivi
 - **Badge** da sbloccare e **messaggi di incoraggiamento** ad ogni azione
-- **Obiettivo giornaliero** in punti, con anello di avanzamento e striscia dei sette giorni
-- **Ripasso degli errori**: ogni domanda sbagliata viene riproposta finché non la indovini, senza cuori e senza stelle
+- **Obiettivo giornaliero scelto dall'utente** — leggero, costante, intensivo — descritto in lezioni al giorno e non in punti, perché nessuno sa quanto valga un punto. Una costante uguale per tutti sbagliava in entrambe le direzioni
+- **Ripasso a ripetizione dilazionata**: ogni errore diventa una carta che torna dopo un giorno, poi tre, sette, sedici, trentacinque, e dopo l'ultimo intervallo esce dal mazzo; sbagliando riparte da zero. Senza cuori e senza stelle. Vedi `src/gamification/ripasso.ts`
+- **Conto alla rovescia all'esame**, se la data è stata indicata: non conta soltanto i giorni ma dice quante lezioni al giorno servono per arrivare in fondo al programma in tempo
 - **Promemoria giornaliero** con notifica locale, all'ora scelta: programmata dal telefono, non passa da alcun server
 - Progressi salvati sul dispositivo (AsyncStorage)
 
 ### Accesso e sincronizzazione (Supabase)
 - Accesso con **Apple**, **Google** o **email** (link magico, nessuna password)
 - I progressi vengono **fusi** fra dispositivo e cloud, mai sovrascritti: per ogni contatore vince il valore più alto e le liste si uniscono, così un dispositivo rimasto indietro non cancella il lavoro fatto altrove
+- Le **scelte d'esame** seguono l'account e non il dispositivo, con una regola diversa: lì vince il dispositivo su cui l'utente sta agendo adesso, e il valore remoto subentra solo dove in locale non c'è nulla
 - Senza credenziali configurate l'app resta pienamente utilizzabile **come ospite**, con i progressi sul solo dispositivo
 
 > Configurazione passo passo (progetto, tabella, policy RLS, provider): **[`docs/supabase.md`](docs/supabase.md)**
@@ -127,6 +142,34 @@ Il tag del Programma di Affiliazione è già impostato in `src/config/affiliate.
 Per puntare a una scheda prodotto precisa, aggiungi l'`asin` alla voce in
 `src/data/materiali.ts` (lo trovi nell'URL della scheda, es. `/dp/B0ABC12345`).
 Senza ASIN il link apre una ricerca Amazon mirata, comunque tracciata dal tag.
+
+## Prima di pubblicare
+
+Tutto ciò che segue richiede credenziali o dati che non stanno nel codice.
+L'app funziona già senza — come ospite, con i progressi sul solo
+dispositivo — ma questi passaggi vanno chiusi prima di metterla sugli store.
+
+- [ ] **Dati del titolare** in `src/data/legale.ts`: partita IVA, sede ed
+      email restano a `[[ da completare ]]`. Il GDPR impone di indicare il
+      titolare con esattezza: pubblicare l'informativa con quei campi vuoti
+      equivale a non averla, e `legale.test.ts` fallisce apposta finché lo
+      sono. L'email finisce nelle pagine pubbliche, quindi va scelta come
+      indirizzo di contatto del servizio. Vedi [`docs/legale.md`](docs/legale.md)
+- [ ] **Progetto Supabase**: creare la tabella dei progressi con le policy
+      RLS, eseguire `supabase/sql/discussione.sql`, attivare i provider di
+      accesso e pubblicare la funzione `elimina-account`. Vedi
+      [`docs/supabase.md`](docs/supabase.md)
+- [ ] **Pagine legali online**: `npm run legale` rigenera `docs/`, poi va
+      attivato GitHub Pages sulla cartella `docs/` e vanno dichiarati gli
+      indirizzi risultanti nelle schede degli store
+- [ ] **Acquisti in-app**: il paywall attiva Premium in modalità demo. Vanno
+      creati i prodotti su App Store Connect e Google Play Console e
+      collegati ad `attivaPremium()`, con il ripristino acquisti che oggi
+      mostra soltanto una spiegazione
+- [ ] **Testi ufficiali delle tracce**: quelli in `src/data/tracce.ts` sono
+      sintesi a scopo di studio. I testi integrali del Ministero della
+      Giustizia possono sostituirli nel campo `testo`, impostando
+      `testoUfficiale: true` e la `fonte`
 
 ## Avvio
 
@@ -180,12 +223,16 @@ src/
   data/svolgimenti/              # Svolgimenti proposti (un file per traccia)
   data/casi/                     # Casi pratici per l'orale (un file per materia)
   data/esame.ts                  # Come funziona l'esame dopo la riforma
+  data/scelte.ts                 # Che cosa il candidato porta all'esame, e il conto alla rovescia
+  data/accesso.ts                # Il confine fra gratuito e Premium, in un posto solo
   simulatore/                    # Fasi, cronometro e punteggio del caso pratico
   discussione/                   # Commenti, soluzioni proposte, voti, moderazione
   data/materiali.ts              # Materiale per l'esame (codici, manuali…)
   fonts.ts                       # Nunito applicato a tutta l'app
   gamification/                  # Punti, livelli, streak, badge, incoraggiamenti
   gamification/sync.ts           # Fusione dei progressi fra dispositivo e cloud
+  gamification/ripasso.ts        # Ripetizione dilazionata: le carte e i loro intervalli
+  gamification/obiettivo.ts      # Le tre andature dell'obiettivo giornaliero
   navigation/linking.ts          # Deep link (schema legul://)
   screens/                       # Home, Quiz, Percorso, Lezione, Tracce, Materiale, Profilo
   components/                    # Superfici in vetro, bottoni, icone, mascotte, coriandoli
@@ -227,7 +274,23 @@ scripts/shoot.js                 # Cattura delle schermate per la verifica grafi
   il versante rimasto scoperto invece di lodare il totale
 - **`icone.test.ts`** — che ogni nome di icona usato nel codice esista nella
   mappa: un nome mancante non fa crashare nulla, sparisce e basta, ed è il
-  tipo di buco che non si distingue da una scelta di design
+  tipo di buco che non si distingue da una scelta di design. Il controllo
+  legge tutte le forme in cui un nome arriva, compresa quella passata come
+  proprietà a un altro componente (`<Voce icona="volume-high" />`), che è
+  quella da cui erano passate undici icone invisibili
+- **`accesso.test.ts`** — l'integrità del confine Premium: che l'assaggio
+  gratuito resti ancorato agli identificativi e che i conteggi mostrati nel
+  paywall vengano dai dati e non da una costante scritta a mano
+- **`ripasso.test.ts`** — gli intervalli della ripetizione dilazionata, il
+  ritorno a zero dopo un errore, e la conversione del vecchio elenco piatto
+  per chi aggiorna l'app senza perdere gli errori accumulati
+- **`obiettivo.test.ts`** — le tre andature e il messaggio che traduce i punti
+  mancanti in risposte esatte, perché nessuno sa quanto valga un punto
+- **`previdenza.test.ts`** — che la previdenza forense resti coperta a tutti e
+  quattro i livelli, che ogni spiegazione sia ancorata a una fonte, e che
+  nessuna domanda sia costruita su un importo in euro: contributi minimi,
+  tetto e trattamento minimo cambiano ogni anno, e una domanda tarata su una
+  cifra diventa sbagliata da sola
 
 ## Come aggiungere contenuti
 
