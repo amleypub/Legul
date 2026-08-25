@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  Modal,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -15,6 +16,18 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useGamification } from '../gamification/GamificationContext';
 import { OBIETTIVI } from '../gamification/obiettivo';
+import { oggiISO, piuGiorni } from '../gamification/ripasso';
+import {
+  giorniAllEsame,
+  SCELTE_MATERIA,
+  SCELTE_PROCEDURA,
+  SCELTE_SCRITTI,
+  testoConto,
+  type MateriaScelta,
+  type MateriaScritti,
+  type ProceduraOrale,
+  type ProfiloEsame,
+} from '../data/scelte';
 import { nomeVisualizzato, useAuth } from '../auth/AuthContext';
 import { ORE_PROPOSTE } from '../notifiche/promemoria';
 import { Mascot } from '../components/Mascot';
@@ -104,6 +117,147 @@ function Voce({
   );
 }
 
+type CampoEsame = 'scritti' | 'procedura' | 'materia' | 'data';
+
+/** Le tre scadenze proposte, le stesse dell'apertura. */
+const ORIZZONTI = [
+  { etichetta: 'Fra circa 3 mesi', giorni: 90 },
+  { etichetta: 'Fra circa 6 mesi', giorni: 180 },
+  { etichetta: 'Fra circa un anno', giorni: 365 },
+];
+
+const TITOLI: Record<CampoEsame, string> = {
+  scritti: 'Materia degli scritti',
+  procedura: 'Procedura all’orale',
+  materia: 'Materia a scelta',
+  data: 'Data della prova',
+};
+
+/**
+ * Foglio per cambiare una scelta d'esame.
+ *
+ * Le stesse opzioni dell'apertura, con le stesse note: se qui dicessero
+ * qualcosa di diverso la scelta sembrerebbe un'altra scelta. Include
+ * sempre «non lo so ancora», perché una decisione che non si può
+ * disfare è una decisione che non si prende.
+ */
+function FoglioScelta({
+  campo,
+  profilo,
+  onScegli,
+  onChiudi,
+}: {
+  campo: CampoEsame;
+  profilo: ProfiloEsame;
+  onScegli: (parziale: Partial<ProfiloEsame>) => void;
+  onChiudi: () => void;
+}) {
+  const oggi = oggiISO();
+  const voci: { chiave: string; titolo: string; nota: string; scelta: boolean; applica: () => void }[] =
+    campo === 'scritti'
+      ? SCELTE_SCRITTI.map((o) => ({
+          chiave: o.valore,
+          titolo: o.valore,
+          nota: o.nota,
+          scelta: profilo.scritti === o.valore,
+          applica: () => onScegli({ scritti: o.valore as MateriaScritti }),
+        }))
+      : campo === 'procedura'
+        ? SCELTE_PROCEDURA.map((o) => ({
+            chiave: o.valore,
+            titolo: o.valore,
+            nota: o.nota,
+            scelta: profilo.procedura === o.valore,
+            applica: () => onScegli({ procedura: o.valore as ProceduraOrale }),
+          }))
+        : campo === 'materia'
+          ? SCELTE_MATERIA.map((o) => ({
+              chiave: o.valore,
+              titolo: o.valore,
+              nota: o.coperta
+                ? o.nota
+                : `${o.nota} — Legul non ha ancora un percorso su questa materia.`,
+              scelta: profilo.materiaScelta === o.valore,
+              applica: () => onScegli({ materiaScelta: o.valore as MateriaScelta }),
+            }))
+          : ORIZZONTI.map((o) => {
+              const data = piuGiorni(oggi, o.giorni);
+              return {
+                chiave: o.etichetta,
+                titolo: o.etichetta,
+                nota: testoConto(o.giorni),
+                scelta: profilo.dataEsame === data,
+                applica: () => onScegli({ dataEsame: data }),
+              };
+            });
+
+  const azzera =
+    campo === 'scritti'
+      ? () => onScegli({ scritti: null })
+      : campo === 'procedura'
+        ? () => onScegli({ procedura: null })
+        : campo === 'materia'
+          ? () => onScegli({ materiaScelta: null })
+          : () => onScegli({ dataEsame: null });
+
+  return (
+    <Modal visible animationType="slide" transparent onRequestClose={onChiudi}>
+      <Pressable style={styles.velo} onPress={onChiudi} />
+      <View style={styles.foglio}>
+        <View style={styles.maniglia} />
+        <Text style={styles.foglioTitolo}>{TITOLI[campo]}</Text>
+        <ScrollView contentContainerStyle={styles.foglioLista}>
+          {voci.map((v) => (
+            <Pressable
+              key={v.chiave}
+              onPress={() => {
+                v.applica();
+                onChiudi();
+              }}
+              accessibilityRole="radio"
+              accessibilityState={{ selected: v.scelta }}
+              style={({ pressed }) => [styles.voce, pressed && styles.vocePremuta]}
+            >
+              <View
+                style={[
+                  styles.voceIcona,
+                  { backgroundColor: v.scelta ? colors.success : '#B6BECC' },
+                ]}
+              >
+                <Icona
+                  nome={v.scelta ? 'checkmark' : 'ellipse-outline'}
+                  size={17}
+                  color="#FFFFFF"
+                />
+              </View>
+              <View style={styles.voceTesto}>
+                <Text style={styles.voceEtichetta}>{v.titolo}</Text>
+                <Text style={styles.voceSottotitolo}>{v.nota}</Text>
+              </View>
+            </Pressable>
+          ))}
+          <Pressable
+            onPress={() => {
+              azzera();
+              onChiudi();
+            }}
+            style={({ pressed }) => [styles.voce, pressed && styles.vocePremuta]}
+          >
+            <View style={[styles.voceIcona, { backgroundColor: '#B6BECC' }]}>
+              <Icona nome="close" size={17} color="#FFFFFF" />
+            </View>
+            <View style={styles.voceTesto}>
+              <Text style={styles.voceEtichetta}>Non lo so ancora</Text>
+              <Text style={styles.voceSottotitolo}>Puoi tornarci quando hai deciso.</Text>
+            </View>
+          </Pressable>
+        </ScrollView>
+        <Bottone label="Chiudi" onPress={onChiudi} variante="chiaro" style={styles.foglioChiudi} />
+      </View>
+    </Modal>
+  );
+}
+
 /** Titoletto di gruppo, fuori dalla card: dà struttura senza righe divisorie. */
 function Gruppo({ titolo, children }: { titolo: string; children: React.ReactNode }) {
   return (
@@ -123,11 +277,13 @@ export default function ProfiloScreen() {
     copertura,
     toggleAudio,
     impostaAndatura,
+    aggiornaEsame,
     impostaPromemoria,
     azzeraProgressi,
   } = useGamification();
   const { utente, esci, eliminaAccount } = useAuth();
   const [eliminazioneInCorso, setEliminazioneInCorso] = useState(false);
+  const [modifica, setModifica] = useState<CampoEsame | null>(null);
 
   /**
    * L'interruttore resta acceso solo se il permesso è stato concesso:
@@ -344,6 +500,46 @@ export default function ProfiloScreen() {
       </Gruppo>
 
       {/*
+        Le scelte d'esame stanno qui perché si cambia idea: l'apertura le
+        chiede una volta, il Profilo è il posto dove correggerle senza
+        dover reinstallare l'app.
+      */}
+      <Gruppo titolo="Il tuo esame">
+        <Voce
+          icona="document-text"
+          tinta={materiaColors['Diritto civile'].start}
+          etichetta="Materia degli scritti"
+          sottotitolo={state.esame.scritti ?? 'Non ancora indicata'}
+          onPress={() => setModifica('scritti')}
+        />
+        <Voce
+          icona="hammer"
+          tinta={materiaColors['Procedura civile'].start}
+          etichetta="Procedura all’orale"
+          sottotitolo={state.esame.procedura ?? 'Non ancora indicata'}
+          onPress={() => setModifica('procedura')}
+        />
+        <Voce
+          icona="library"
+          tinta={materiaColors['Diritto costituzionale'].start}
+          etichetta="Materia a scelta"
+          sottotitolo={state.esame.materiaScelta ?? 'Non ancora indicata'}
+          onPress={() => setModifica('materia')}
+        />
+        <Voce
+          icona="calendar"
+          tinta={colors.accentEdge}
+          etichetta="Data della prova"
+          sottotitolo={
+            state.esame.dataEsame
+              ? testoConto(giorniAllEsame(state.esame.dataEsame, oggiISO()))
+              : 'Non indicata: nessun conto alla rovescia'
+          }
+          onPress={() => setModifica('data')}
+        />
+      </Gruppo>
+
+      {/*
         L'obiettivo giornaliero era una costante uguale per tutti: chi ha
         l'esame fra tre settimane lo chiudeva in due minuti, chi passa da
         qui dieci minuti a settimana non lo raggiungeva mai. Un obiettivo
@@ -465,12 +661,43 @@ export default function ProfiloScreen() {
           />
         )}
       </Gruppo>
+      {!!modifica && (
+        <FoglioScelta
+          campo={modifica}
+          profilo={state.esame}
+          onScegli={aggiornaEsame}
+          onChiudi={() => setModifica(null)}
+        />
+      )}
     </ScrollView>
     </Sfondo>
   );
 }
 
 const styles = StyleSheet.create({
+  velo: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(10,14,26,0.4)' },
+  foglio: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    maxHeight: '80%',
+    backgroundColor: colors.card,
+    borderTopLeftRadius: radius.xxl,
+    borderTopRightRadius: radius.xxl,
+    padding: spacing.md,
+    gap: spacing.sm,
+  },
+  maniglia: {
+    alignSelf: 'center',
+    width: 40,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: alpha.veloForte,
+  },
+  foglioTitolo: { fontSize: 19, fontWeight: '800', color: colors.text, letterSpacing: -0.4 },
+  foglioLista: { gap: 2 },
+  foglioChiudi: { marginTop: spacing.xs },
   container: { flex: 1, },
   content: { padding: spacing.md, paddingBottom: SPAZIO_TAB },
   heroWrap: { },

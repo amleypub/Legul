@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MATERIE_A_SCELTA, materieObbligatorie } from '../data/quizzes';
 import { percorsoPerMateria } from '../data/percorso';
+import { materieScoperte, rosaOrdinata } from '../data/scelte';
 import { useGamification } from '../gamification/GamificationContext';
 import type { RootStackParamList } from '../navigation/types';
 import type { Materia } from '../types';
@@ -104,6 +105,9 @@ function MateriaBlock({
 
 export default function QuizHomeScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { state } = useGamification();
+  const { portata, altre } = rosaOrdinata(state.esame.materiaScelta, MATERIE_A_SCELTA);
+  const scoperte = materieScoperte();
 
   return (
     <Sfondo tinta={materiaColors['Diritto civile'].start}>
@@ -127,20 +131,51 @@ export default function QuizHomeScreen() {
       {MATERIE_A_SCELTA.length > 0 && (
         <>
           <View style={styles.gruppo}>
-            <Text style={styles.gruppoTitolo}>Materie a scelta</Text>
+            <Text style={styles.gruppoTitolo}>
+              {portata ? 'La tua materia a scelta' : 'Materie a scelta'}
+            </Text>
             <Text style={styles.gruppoNota}>
-              All’orale ne porti <Text style={styles.gruppoForte}>una sola</Text>, scelta fra
-              costituzionale, commerciale, del lavoro, internazionale, dell’Unione europea e
-              tributario.
+              {portata ? (
+                <>
+                  Hai scelto <Text style={styles.gruppoForte}>{portata}</Text>. Puoi cambiare dal
+                  Profilo.
+                </>
+              ) : (
+                <>
+                  All’orale ne porti <Text style={styles.gruppoForte}>una sola</Text>, scelta fra
+                  costituzionale, commerciale, del lavoro, internazionale, dell’Unione europea e
+                  tributario.
+                </>
+              )}
             </Text>
           </View>
-          {MATERIE_A_SCELTA.map((materia) => (
+          {/* La materia portata sta in cima, le altre sotto: si cambia
+              idea, quindi non spariscono, ma non hanno lo stesso peso. */}
+          {!!portata && (
+            <MateriaBlock
+              materia={portata}
+              onPress={() => navigation.navigate('Percorso', { materia: portata })}
+            />
+          )}
+          {altre.map((materia) => (
             <MateriaBlock
               key={materia}
               materia={materia}
               onPress={() => navigation.navigate('Percorso', { materia })}
             />
           ))}
+          {/*
+            Le tre materie della rosa che Legul non copre ancora. Tacerne
+            l'esistenza farebbe sembrare l'app completa a chi guarda
+            l'elenco, e incompleta a chi porta tributario e la cerca per
+            settimane. Il secondo è l'utente che paga.
+          */}
+          {scoperte.length > 0 && (
+            <Text style={styles.gruppoNota}>
+              Non ancora coperte da Legul: {scoperte.join(', ')}. Le altre prove e il blocco di
+              ordinamento, deontologia e previdenza valgono comunque per tutti.
+            </Text>
+          )}
         </>
       )}
     </ScrollView>

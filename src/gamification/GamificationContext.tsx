@@ -14,6 +14,7 @@ import { streakEffettiva } from './settimana';
 import { conRisposta, daElencoPiatto, oggiISO, type CartaRipasso } from './ripasso';
 import { coperturaProgramma } from '../data/percorso';
 import { OBIETTIVO_PREDEFINITO, puntiObiettivo, type Andatura } from './obiettivo';
+import { PROFILO_VUOTO, type ProfiloEsame } from '../data/scelte';
 import { materie } from '../data/quizzes';
 import {
   annullaPromemoria,
@@ -146,6 +147,26 @@ export interface GamificationState {
    * per tutti sbaglia in entrambe le direzioni: vedi `obiettivo.ts`.
    */
   andatura: Andatura;
+  /**
+   * Che cosa porta all'esame: materia degli scritti, procedura, materia
+   * della rosa, e quando sostiene la prova. Vedi `data/scelte.ts`.
+   */
+  esame: ProfiloEsame;
+  /**
+   * Le domande d'apertura sono già state fatte.
+   *
+   * Distinto dal profilo compilato: si può saltare tutto, e in quel caso
+   * l'app non deve richiedere le stesse cose a ogni avvio.
+   */
+  aperturaFatta: boolean;
+  /**
+   * La proposta di attivare il promemoria è già stata mostrata.
+   *
+   * Si chiede una volta sola, dopo la prima lezione: chiedere il permesso
+   * alle notifiche prima che l'app abbia dimostrato di valere qualcosa è
+   * il modo più affidabile di farselo negare per sempre.
+   */
+  promemoriaProposto: boolean;
   /** Promemoria giornaliero attivo, e a che ora. Preferenze del dispositivo. */
   promemoriaAttivo: boolean;
   oraPromemoria: number;
@@ -190,6 +211,9 @@ const initialState: GamificationState = {
   premium: false,
   audioAttivo: true,
   andatura: OBIETTIVO_PREDEFINITO,
+  esame: PROFILO_VUOTO,
+  aperturaFatta: false,
+  promemoriaProposto: false,
   promemoriaAttivo: false,
   oraPromemoria: ORA_PREDEFINITA,
   tracceLette: [],
@@ -265,6 +289,12 @@ interface GamificationContextValue {
   toggleAudio(): void;
   /** Cambia l'andatura dell'obiettivo giornaliero. */
   impostaAndatura(andatura: Andatura): void;
+  /** Salva (anche parzialmente) le scelte d'esame. */
+  aggiornaEsame(parziale: Partial<ProfiloEsame>): void;
+  /** Segna che le domande d'apertura sono state fatte o saltate. */
+  chiudiApertura(): void;
+  /** Segna che la proposta del promemoria è già stata mostrata. */
+  segnaPromemoriaProposto(): void;
   /** I punti da raggiungere oggi, secondo l'andatura scelta. */
   obiettivoOggi: number;
   /**
@@ -344,6 +374,11 @@ export function progressiAzzerati(s: GamificationState): GamificationState {
     // l'account e ricomincia non deve ritrovarsi un obiettivo che non ha
     // scelto.
     andatura: s.andatura,
+    // Le scelte d'esame e le domande già fatte non sono progressi: chi
+    // azzera non deve rifare l'apertura né ridire che cosa porta.
+    esame: s.esame,
+    aperturaFatta: s.aperturaFatta,
+    promemoriaProposto: s.promemoriaProposto,
     promemoriaAttivo: s.promemoriaAttivo,
     oraPromemoria: s.oraPromemoria,
   };
@@ -553,6 +588,18 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
     setState((prev) => (prev.andatura === andatura ? prev : { ...prev, andatura }));
   }, []);
 
+  const aggiornaEsame = useCallback((parziale: Partial<ProfiloEsame>) => {
+    setState((prev) => ({ ...prev, esame: { ...prev.esame, ...parziale } }));
+  }, []);
+
+  const chiudiApertura = useCallback(() => {
+    setState((prev) => (prev.aperturaFatta ? prev : { ...prev, aperturaFatta: true }));
+  }, []);
+
+  const segnaPromemoriaProposto = useCallback(() => {
+    setState((prev) => (prev.promemoriaProposto ? prev : { ...prev, promemoriaProposto: true }));
+  }, []);
+
   const azzeraProgressi = useCallback(() => {
     setState(progressiAzzerati);
   }, []);
@@ -663,6 +710,9 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
       attivaPremium,
       toggleAudio,
       impostaAndatura,
+      aggiornaEsame,
+      chiudiApertura,
+      segnaPromemoriaProposto,
       obiettivoOggi: puntiObiettivo(state.andatura),
       impostaPromemoria,
       azzeraProgressi,
@@ -678,6 +728,9 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
     attivaPremium,
     toggleAudio,
     impostaAndatura,
+    aggiornaEsame,
+    chiudiApertura,
+    segnaPromemoriaProposto,
     impostaPromemoria,
     azzeraProgressi,
   ]);

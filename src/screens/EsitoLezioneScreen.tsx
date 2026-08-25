@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Animated, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, Animated, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Rianimato, {
   runOnJS,
   useAnimatedReaction,
@@ -14,7 +14,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import * as Haptics from 'expo-haptics';
 import { Icona } from '../components/Icona';
-import { BADGES } from '../gamification/GamificationContext';
+import { BADGES, useGamification } from '../gamification/GamificationContext';
+import { ORE_PROPOSTE } from '../notifiche/promemoria';
 import { Bottone } from '../components/Bottone';
 import { Mascot } from '../components/Mascot';
 import { Confetti } from '../components/Confetti';
@@ -80,6 +81,25 @@ export default function EsitoLezioneScreen({
   const tinte = materiaColors[materia];
   const badgeSbloccati = BADGES.filter((b) => nuoviBadge.includes(b.id));
   const precisione = totale > 0 ? Math.round((corrette / totale) * 100) : 0;
+
+  const { state, impostaPromemoria, segnaPromemoriaProposto } = useGamification();
+  const proponiPromemoria =
+    !fallito &&
+    materia !== 'Ripasso' &&
+    !state.promemoriaProposto &&
+    !state.promemoriaAttivo &&
+    state.quizCompletati >= 1;
+
+  async function accettaPromemoria() {
+    segnaPromemoriaProposto();
+    const riuscito = await impostaPromemoria(true, state.oraPromemoria || ORE_PROPOSTE[0]);
+    if (!riuscito) {
+      Alert.alert(
+        'Notifiche disattivate',
+        'Per ricevere il promemoria devi consentire le notifiche a Legul dalle impostazioni del telefono.'
+      );
+    }
+  }
 
   const [puntiMostrati, setPuntiMostrati] = useState(0);
   /*
@@ -164,6 +184,44 @@ export default function EsitoLezioneScreen({
             <StatBlocco label="Risposte" valore={`${corrette}/${totale}`} icona="checkmark-done" />
           </View>
 
+          {/*
+            La proposta del promemoria arriva qui e non all'installazione.
+
+            Chiedere il permesso alle notifiche prima che l'app abbia
+            dimostrato di valere qualcosa è il modo più affidabile di
+            farselo negare, e su iOS quel «no» è quasi definitivo: per
+            tornare indietro bisogna passare dalle impostazioni di
+            sistema. Dopo la prima lezione completata la domanda ha un
+            senso che si può vedere, ed è il momento in cui costa meno
+            dire di sì. Si chiede una volta sola.
+          */}
+          {proponiPromemoria && (
+            <View style={styles.promemoria}>
+              <Icona nome="notifications" size={26} color={colors.accent} />
+              <View style={styles.promemoriaTesto}>
+                <Text style={styles.promemoriaTitolo}>Ti ricordo di studiare domani?</Text>
+                <Text style={styles.promemoriaSub}>
+                  Un promemoria al giorno, all’ora che preferisci. Si spegne dal Profilo quando
+                  vuoi.
+                </Text>
+              </View>
+              <View style={styles.promemoriaAzioni}>
+                <Bottone
+                  label="Sì"
+                  compatto
+                  onPress={accettaPromemoria}
+                  variante="accento"
+                />
+                <Bottone
+                  label="No"
+                  compatto
+                  onPress={segnaPromemoriaProposto}
+                  gradiente={['rgba(255,255,255,0.22)', 'rgba(255,255,255,0.12)']}
+                />
+              </View>
+            </View>
+          )}
+
           {badgeSbloccati.length > 0 && (
             <View style={styles.badgeWrap}>
               <Text style={styles.badgeTitolo}>Nuovi badge sbloccati</Text>
@@ -200,6 +258,19 @@ export default function EsitoLezioneScreen({
 }
 
 const styles = StyleSheet.create({
+  promemoria: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    backgroundColor: 'rgba(255,255,255,0.14)',
+    borderRadius: radius.xl,
+    padding: spacing.md,
+    marginTop: spacing.lg,
+  },
+  promemoriaTesto: { flex: 1, gap: 2 },
+  promemoriaTitolo: { fontSize: 15, fontWeight: '800', color: '#FFFFFF' },
+  promemoriaSub: { fontSize: 12.5, color: 'rgba(255,255,255,0.75)', lineHeight: 18 },
+  promemoriaAzioni: { gap: 6, width: 74 },
   gradient: { flex: 1 },
   safe: { flex: 1 },
   content: {

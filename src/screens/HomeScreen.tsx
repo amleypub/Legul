@@ -13,6 +13,7 @@ import { BADGES, PUNTI, useGamification } from '../gamification/GamificationCont
 import { messaggioObiettivo } from '../gamification/obiettivo';
 import { settimanaCorrente, type GiornoSettimana } from '../gamification/settimana';
 import { dovuteOggi } from '../gamification/ripasso';
+import { giorniAllEsame, ritmoNecessario, testoConto } from '../data/scelte';
 import { lezioneDoveRiprendere, totaleLezioni } from '../data/percorso';
 import { materie } from '../data/quizzes';
 import { useNavigation } from '@react-navigation/native';
@@ -175,6 +176,22 @@ export default function HomeScreen() {
     return Math.max(1, Math.ceil((prossimoLivello.sogliaCopertura - copertura) * totali));
   }, [prossimoLivello, copertura]);
 
+  /**
+   * Il conto alla rovescia e il ritmo che serve.
+   *
+   * Una data da sola è un'ansia; una data più «due lezioni al giorno» è
+   * un piano. Il secondo numero è quello che rende utile il primo, ed è
+   * anche l'unico che si può confrontare con l'andatura scelta.
+   */
+  const esame = useMemo(() => {
+    if (!state.esame.dataEsame) return null;
+    const oggi = oggiISO();
+    const giorni = giorniAllEsame(state.esame.dataEsame, oggi);
+    const totali = totaleLezioni(materie);
+    const rimaste = Math.max(0, Math.round(totali * (1 - copertura)));
+    return { giorni, ritmo: ritmoNecessario(rimaste, giorni), rimaste };
+  }, [state.esame.dataEsame, copertura]);
+
   const obiettivoRaggiunto = state.puntiOggi >= obiettivoOggi;
   const testoObiettivo = messaggioObiettivo(
     state.puntiOggi,
@@ -261,6 +278,48 @@ export default function HomeScreen() {
             </LinearGradient>
           </View>
         </Entrata>
+
+        {/*
+          Il conto alla rovescia, se la data è stata indicata.
+
+          Sta prima di tutto il resto perché è la cornice dentro cui ogni
+          altro numero acquista senso: il tre per cento di programma
+          svolto vuol dire una cosa a un anno dall'esame e un'altra a tre
+          settimane. Compare solo con una data: inventarne una sarebbe
+          peggio che non averla.
+        */}
+        {!!esame && esame.giorni >= 0 && (
+          <Entrata ritardo={scaglione(1)}>
+            <Superficie
+              tono="forte"
+              raggio={radius.xl}
+              rilievo="media"
+              glow={colors.accent}
+              onPress={() => navigation.navigate('Esame')}
+              contentStyle={styles.conto}
+            >
+              <LinearGradient
+                colors={['#F7BE3E', colors.accent]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.contoIcona}
+              >
+                <Icona nome="calendar" size={22} color={colors.primary} />
+              </LinearGradient>
+              <View style={styles.contoTesto}>
+                <Text style={styles.contoTitolo}>{testoConto(esame.giorni)}</Text>
+                <Text style={styles.contoSub}>
+                  {esame.ritmo === null
+                    ? 'Hai svolto tutto il programma: da qui in avanti è ripasso.'
+                    : `Per finire il programma in tempo servono ${esame.ritmo.toLocaleString(
+                        'it-IT'
+                      )} lezioni al giorno.`}
+                </Text>
+              </View>
+              <Icona nome="chevron-forward" size={20} color={colors.accentEdge} />
+            </Superficie>
+          </Entrata>
+        )}
 
         {/*
           L'esame è appena cambiato: chi apre l'app oggi ha bisogno di
@@ -508,6 +567,17 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
+  conto: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, padding: spacing.md },
+  contoIcona: {
+    width: 44,
+    height: 44,
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  contoTesto: { flex: 1, gap: 2 },
+  contoTitolo: { ...type.scheda, color: colors.text },
+  contoSub: { ...type.piccolo, color: colors.textMuted },
   ripresaNota: {
     ...type.minuto,
     color: 'rgba(255,255,255,0.62)',

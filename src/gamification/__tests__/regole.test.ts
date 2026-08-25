@@ -9,6 +9,7 @@ import {
   stellePerRisultato,
   type GamificationState,
 } from '../GamificationContext';
+import { PROFILO_VUOTO } from '../../data/scelte';
 
 const base: GamificationState = {
   punti: 0,
@@ -19,6 +20,9 @@ const base: GamificationState = {
   premium: false,
   audioAttivo: true,
   andatura: 'costante',
+  esame: PROFILO_VUOTO,
+  aperturaFatta: false,
+  promemoriaProposto: false,
   promemoriaAttivo: false,
   oraPromemoria: 20,
   tracceLette: [],

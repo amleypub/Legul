@@ -1,5 +1,6 @@
 import React from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { BlurView } from 'expo-blur';
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -9,12 +10,13 @@ import { useFonts } from 'expo-font';
 import { applyGlobalFont, fontMap } from './src/fonts';
 import { configuraNotifiche } from './src/notifiche/promemoria';
 import { AuthProvider } from './src/auth/AuthContext';
-import { GamificationProvider } from './src/gamification/GamificationContext';
+import { GamificationProvider, useGamification } from './src/gamification/GamificationContext';
 
 applyGlobalFont();
 configuraNotifiche();
 import type { RootStackParamList } from './src/navigation/types';
 import { linking } from './src/navigation/linking';
+import AperturaScreen from './src/screens/AperturaScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import QuizHomeScreen from './src/screens/QuizHomeScreen';
 import PercorsoScreen from './src/screens/PercorsoScreen';
@@ -163,15 +165,20 @@ function Tabs() {
   );
 }
 
-export default function App() {
-  const [fontsLoaded] = useFonts(fontMap);
-  if (!fontsLoaded) return null;
+/**
+ * Che cosa mostrare all'avvio.
+ *
+ * Le domande d'apertura vanno prima della navigazione, non dentro: sono
+ * l'unica schermata dell'app da cui non si può uscire lateralmente, e
+ * infilarle nello stack significherebbe poterle scavalcare con un deep
+ * link. Si attende `caricato` perché altrimenti chi le ha già fatte
+ * vedrebbe un lampo della prima domanda a ogni apertura.
+ */
+function Radice() {
+  const { state, caricato } = useGamification();
+  if (!caricato) return null;
+  if (!state.aperturaFatta) return <AperturaScreen />;
   return (
-    // Fuori da tutto: deve poter intercettare anche gli errori dei provider.
-    <ConfineErrori>
-    <AuthProvider>
-      <GamificationProvider>
-      <Sfondo>
       <NavigationContainer linking={linking} theme={TEMA_TRASPARENTE}>
         <StatusBar style="dark" />
         {/*
@@ -256,9 +263,31 @@ export default function App() {
           />
         </Stack.Navigator>
       </NavigationContainer>
+  );
+}
+
+export default function App() {
+  const [fontsLoaded] = useFonts(fontMap);
+  if (!fontsLoaded) return null;
+  return (
+    // Fuori da tutto: deve poter intercettare anche gli errori dei provider.
+    <ConfineErrori>
+    {/*
+      Il provider delle safe area sta qui e non dentro la navigazione.
+      `NavigationContainer` ne monta uno per conto suo, ma le domande
+      d'apertura vivono prima della navigazione: senza questo la loro
+      `SafeAreaView` non trova alcun contesto e la primissima schermata
+      che vede chi installa l'app è la scheda di errore.
+    */}
+    <SafeAreaProvider>
+    <AuthProvider>
+      <GamificationProvider>
+      <Sfondo>
+        <Radice />
       </Sfondo>
       </GamificationProvider>
     </AuthProvider>
+    </SafeAreaProvider>
     </ConfineErrori>
   );
 }

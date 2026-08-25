@@ -77,6 +77,18 @@ async function main() {
       streak: 4,
       ultimoGiornoAttivita: oggi,
       puntiOggi: 30,
+      // Le domande d'apertura sono già state fatte: senza questo, ogni
+      // scatto mostrerebbe la prima domanda invece della schermata.
+      aperturaFatta: true,
+      promemoriaProposto: true,
+      esame: {
+        dataEsame: new Date(Date.now() + 120 * 86400000).toISOString().slice(0, 10),
+        scritti: 'Diritto civile',
+        procedura: 'Procedura civile',
+        materiaScelta: 'Diritto costituzionale',
+      },
+      // Il vecchio elenco piatto: serve anche a verificare che la
+      // conversione in carte di ripasso avvenga all'avvio.
       erroriDaRipassare: [
         'civ-l1-004',
         'civ-l1-011',
@@ -140,6 +152,24 @@ async function main() {
 
   // Home è già mostrata
   await shot('1-home.png');
+
+  // Le domande d'apertura, con lo stato azzerato: è la prima cosa che
+  // vede chi installa l'app, e non compare in nessun altro scatto.
+  try {
+    const apertura = await browser.newPage({
+      viewport: { width: 402, height: 874 },
+      deviceScaleFactor: 2,
+    });
+    await apertura.goto('http://127.0.0.1:8099', { waitUntil: 'networkidle' });
+    await apertura.waitForTimeout(3000);
+    await apertura.screenshot({ path: path.join(outDir, '0e-apertura.png') });
+    await apertura.getByText('Avanti').last().click({ timeout: 6000 });
+    await apertura.waitForTimeout(900);
+    await apertura.screenshot({ path: path.join(outDir, '0f-apertura-scritti.png') });
+    await apertura.close();
+  } catch (e) {
+    console.log('apertura errore:', e.message);
+  }
 
   // Tab Quiz -> elenco materie
   await tap('Quiz');
