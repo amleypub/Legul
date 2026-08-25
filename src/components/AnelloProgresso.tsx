@@ -1,7 +1,21 @@
-import React, { useEffect, useRef } from 'react';
-import { Animated, Easing, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import Animated, {
+  Easing,
+  useAnimatedProps,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 import Svg, { Circle, Defs, LinearGradient as SvgGradient, Stop } from 'react-native-svg';
 
+/**
+ * `strokeDashoffset` non è una proprietà che il driver nativo di
+ * `Animated` sappia gestire: l'anello girava quindi sul thread
+ * JavaScript, cioè proprio quello occupato dal render della schermata su
+ * cui l'anello compare. Con Reanimated la proprietà viene animata
+ * dall'interpolatore nativo tramite `useAnimatedProps`, che sui
+ * componenti SVG funziona.
+ */
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 interface Props {
@@ -33,21 +47,14 @@ export function AnelloProgresso({
   const circonferenza = 2 * Math.PI * raggio;
   const quota = Math.min(Math.max(progresso, 0), 1);
 
-  const anim = useRef(new Animated.Value(0)).current;
+  const anim = useSharedValue(0);
   useEffect(() => {
-    Animated.timing(anim, {
-      toValue: quota,
-      duration: 900,
-      easing: Easing.out(Easing.cubic),
-      // strokeDashoffset non è una proprietà gestibile dal thread nativo.
-      useNativeDriver: false,
-    }).start();
+    anim.value = withTiming(quota, { duration: 900, easing: Easing.out(Easing.cubic) });
   }, [quota, anim]);
 
-  const offset = anim.interpolate({
-    inputRange: [0, 1],
-    outputRange: [circonferenza, 0],
-  });
+  const propsArco = useAnimatedProps(() => ({
+    strokeDashoffset: circonferenza * (1 - anim.value),
+  }));
 
   return (
     <View style={{ width: size, height: size }}>
@@ -75,7 +82,7 @@ export function AnelloProgresso({
           strokeLinecap="round"
           fill="none"
           strokeDasharray={circonferenza}
-          strokeDashoffset={offset}
+          animatedProps={propsArco}
           // Parte da mezzogiorno invece che da destra.
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
         />

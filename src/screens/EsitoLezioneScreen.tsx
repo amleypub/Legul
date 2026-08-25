@@ -1,5 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Animated, ScrollView, StyleSheet, Text, View } from 'react-native';
+import Rianimato, {
+  runOnJS,
+  useAnimatedReaction,
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
@@ -11,7 +20,7 @@ import { Mascot } from '../components/Mascot';
 import { Confetti } from '../components/Confetti';
 import { playSound } from '../audio/sounds';
 import type { RootStackScreenProps } from '../navigation/types';
-import { colors, materiaColors, radius, softShadow, spacing } from '../theme';
+import { colors, materiaColors, molla, radius, softShadow, spacing } from '../theme';
 
 function Stella({ accesa, ritardo }: { accesa: boolean; ritardo: number }) {
   const scale = useRef(new Animated.Value(0)).current;
@@ -73,9 +82,27 @@ export default function EsitoLezioneScreen({
   const precisione = totale > 0 ? Math.round((corrette / totale) * 100) : 0;
 
   const [puntiMostrati, setPuntiMostrati] = useState(0);
-  const contatore = useRef(new Animated.Value(0)).current;
+  /*
+    Il conteggio dei punti che sale.
+
+    Prima era un `Animated.Value` senza driver nativo con un listener che
+    chiamava `setState` a ogni fotogramma: un render di React ogni sedici
+    millesimi, sulla schermata dove nel frattempo cadono i coriandoli.
+    Ora l'interpolazione avviene sul thread dell'interfaccia e il valore
+    torna in JavaScript solo quando cambia di uno scalino, che è la sola
+    cosa che l'occhio distingue.
+  */
+  const contatore = useSharedValue(0);
+  const passo = Math.max(1, Math.ceil(punti / 30));
+  useAnimatedReaction(
+    () => Math.min(punti, Math.round(contatore.value / passo) * passo),
+    (attuale, precedente) => {
+      if (attuale !== precedente) runOnJS(setPuntiMostrati)(attuale);
+    }
+  );
+
   // Ingresso 3D della mascotte (pop + rotazione sull'asse Y).
-  const entrata = useRef(new Animated.Value(0)).current;
+  const entrata = useSharedValue(0);
 
   useEffect(() => {
     Haptics.notificationAsync(
@@ -83,27 +110,17 @@ export default function EsitoLezioneScreen({
     ).catch(() => {});
     if (!fallito) playSound(stelle === 3 ? 'perfect' : 'complete');
 
-    Animated.spring(entrata, { toValue: 1, speed: 6, bounciness: 12, delay: 150, useNativeDriver: true }).start();
-
-    const sub = contatore.addListener(({ value }) => setPuntiMostrati(Math.round(value)));
-    Animated.timing(contatore, {
-      toValue: punti,
-      duration: 1100,
-      delay: 500,
-      useNativeDriver: false,
-    }).start();
-    return () => contatore.removeListener(sub);
+    entrata.value = withDelay(150, withSpring(1, molla.ampia));
+    contatore.value = withDelay(500, withTiming(punti, { duration: 1100 }));
   }, [contatore, entrata, punti, fallito, stelle]);
 
-  const mascotStyle = {
+  const mascotStyle = useAnimatedStyle(() => ({
     transform: [
       { perspective: 800 },
-      { scale: entrata.interpolate({ inputRange: [0, 1], outputRange: [0.3, 1] }) },
-      {
-        rotateY: entrata.interpolate({ inputRange: [0, 1], outputRange: ['180deg', '0deg'] }),
-      },
+      { scale: 0.3 + entrata.value * 0.7 },
+      { rotateY: `${180 - entrata.value * 180}deg` },
     ],
-  };
+  }));
 
   const titolo = materia === 'Ripasso'
     ? 'Ripasso completato'
@@ -124,9 +141,9 @@ export default function EsitoLezioneScreen({
       {!fallito && <Confetti count={stelle === 3 ? 110 : 70} />}
       <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
         <ScrollView contentContainerStyle={styles.content}>
-          <Animated.View style={mascotStyle}>
+          <Rianimato.View style={mascotStyle}>
             <Mascot state={fallito ? 'studying' : 'celebrating'} size={128} animated={!fallito} />
-          </Animated.View>
+          </Rianimato.View>
 
           {materia !== 'Ripasso' && (
             <View style={styles.stelleRow}>

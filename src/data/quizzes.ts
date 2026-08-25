@@ -473,6 +473,3 @@ export const quizQuestions: QuizQuestion[] = [
   },
 ];
 
-export function questionsByMateria(materia: Materia): QuizQuestion[] {
-  return quizQuestions.filter((q) => q.materia === materia);
-}

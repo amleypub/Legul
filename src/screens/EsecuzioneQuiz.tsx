@@ -1,5 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Animated, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import Rianimato, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { Icona } from '../components/Icona';
@@ -155,7 +160,14 @@ export function EsecuzioneQuiz({
   const puntiTotali = useRef(0);
   const badgeRaccolti = useRef<string[]>([]);
 
-  const progress = useRef(new Animated.Value(0)).current;
+  /*
+    La barra di avanzamento anima una larghezza in percentuale, che il
+    driver nativo di `Animated` non sa gestire: girava quindi sul thread
+    JavaScript, lo stesso che sta rendendo la domanda successiva e il
+    foglio di feedback. Reanimated anima anche le proprietà di layout
+    sul thread dell'interfaccia, dove nulla la può far scattare.
+  */
+  const progress = useSharedValue(0);
   const sheet = useRef(new Animated.Value(400)).current;
   const heartShake = useRef(new Animated.Value(0)).current;
 
@@ -167,12 +179,13 @@ export function EsecuzioneQuiz({
   }, [iniziata, onIniziata]);
 
   useEffect(() => {
-    Animated.timing(progress, {
-      toValue: (indice + (confermata ? 1 : 0)) / Math.max(domande.length, 1),
-      duration: 350,
-      useNativeDriver: false,
-    }).start();
+    const quota = (indice + (confermata ? 1 : 0)) / Math.max(domande.length, 1);
+    progress.value = withTiming(quota, { duration: 350 });
   }, [indice, confermata, domande.length, progress]);
+
+  const stileAvanzamento = useAnimatedStyle(() => ({
+    width: `${progress.value * 100}%`,
+  }));
 
   useEffect(() => {
     if (confermata) {
@@ -255,17 +268,8 @@ export function EsecuzioneQuiz({
           <Icona nome="close" size={28} color={colors.textMuted} />
         </Pressable>
         <View style={styles.progressTrack}>
-          <Animated.View
-            style={[
-              styles.progressFill,
-              {
-                backgroundColor: tinte.start,
-                width: progress.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: ['0%', '100%'],
-                }),
-              },
-            ]}
+          <Rianimato.View
+            style={[styles.progressFill, { backgroundColor: tinte.start }, stileAvanzamento]}
           />
         </View>
         {cuoriIniziali === null ? (
