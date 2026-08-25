@@ -255,6 +255,4 @@ export const materiaColors: Record<
   Ripasso: { start: '#F8B048', end: '#E37B1E', edge: '#AF5C13', soft: '#FEF0E0' },
 };
 
-/** @deprecated Usa `ombra.media`. */
-export const softShadow = ombra.media;
 

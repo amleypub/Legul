@@ -21,7 +21,7 @@ import { Mascot } from '../components/Mascot';
 import { Confetti } from '../components/Confetti';
 import { playSound } from '../audio/sounds';
 import type { RootStackScreenProps } from '../navigation/types';
-import { colors, materiaColors, molla, radius, softShadow, spacing } from '../theme';
+import { colors, materiaColors, molla, radius, ombra, spacing } from '../theme';
 
 function Stella({ accesa, ritardo }: { accesa: boolean; ritardo: number }) {
   const scale = useRef(new Animated.Value(0)).current;
@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.md,
-    ...softShadow,
+    ...ombra.media,
   },
   badgeTextWrap: { flex: 1 },
   badgeNome: { fontSize: 15, fontWeight: '700', color: colors.text },

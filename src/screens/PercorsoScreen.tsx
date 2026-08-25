@@ -25,7 +25,7 @@ import { useGamification } from '../gamification/GamificationContext';
 import { Mascot } from '../components/Mascot';
 import { Bottone } from '../components/Bottone';
 import type { RootStackScreenProps } from '../navigation/types';
-import { alone, alpha, colors, materiaColors, radius, softShadow, spacing, SCALA_PRESSIONE } from '../theme';
+import { alone, alpha, colors, materiaColors, radius, ombra, spacing, SCALA_PRESSIONE } from '../theme';
 
 const NODE = 76;
 /** Offset orizzontali ciclici che disegnano la serpentina del percorso. */
@@ -314,7 +314,7 @@ export default function PercorsoScreen({ route, navigation }: RootStackScreenPro
             colors={[tinte.start, tinte.end]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
-            style={[styles.unitaBanner, softShadow]}
+            style={[styles.unitaBanner, ombra.media]}
           >
             <View style={styles.unitaTextWrap}>
               <Text style={styles.unitaKicker}>Unità {item.unita.difficolta}</Text>
@@ -384,7 +384,7 @@ const styles = StyleSheet.create({
     padding: spacing.sm,
     paddingRight: spacing.md,
     marginBottom: spacing.md,
-    ...softShadow,
+    ...ombra.media,
     shadowOpacity: 0.06,
     borderWidth: StyleSheet.hairlineWidth * 1.5,
     borderColor: alpha.bordo,
@@ -445,7 +445,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 6,
     marginBottom: 10,
-    ...softShadow,
+    ...ombra.media,
   },
   iniziaTesto: { fontSize: 13, fontWeight: '800', letterSpacing: 1.5 },
   iniziaFreccia: {

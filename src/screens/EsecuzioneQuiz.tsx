@@ -12,7 +12,7 @@ import { playSound } from '../audio/sounds';
 import { useGamification } from '../gamification/GamificationContext';
 import { Bottone } from '../components/Bottone';
 import type { QuizQuestion } from '../types';
-import { colors, radius, softShadow, spacing, SCALA_PRESSIONE } from '../theme';
+import { colors, radius, ombra, spacing, SCALA_PRESSIONE } from '../theme';
 
 export const CUORI_INIZIALI = 4;
 
@@ -428,7 +428,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: radius.xl,
     padding: spacing.md,
     paddingBottom: spacing.lg,
-    ...softShadow,
+    ...ombra.media,
   },
   sheetOk: { backgroundColor: '#EDF9F1' },
   sheetKo: { backgroundColor: '#FDF0F0' },
