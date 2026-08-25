@@ -36,6 +36,10 @@ import { lavoroL1 } from './lavoro-l1';
 import { lavoroL2 } from './lavoro-l2';
 import { lavoroL3 } from './lavoro-l3';
 import { lavoroL4 } from './lavoro-l4';
+import { previdenzaL1 } from './previdenza-l1';
+import { previdenzaL2 } from './previdenza-l2';
+import { previdenzaL3 } from './previdenza-l3';
+import { previdenzaL4 } from './previdenza-l4';
 
 /**
  * Aggregatore della banca domande: unisce tutti i moduli materia/livello.
@@ -80,4 +84,12 @@ export const tutteLeDomande: QuizQuestion[] = [
   ...lavoroL2,
   ...lavoroL3,
   ...lavoroL4,
+  // La previdenza forense è parte dell'ordinamento professionale e va con
+  // la deontologia: sta in coda perché così le sue domande formano un
+  // blocco di lezioni riconoscibile in fondo a ciascuna unità, invece di
+  // sparpagliarsi fra le regole sul conflitto di interessi.
+  ...previdenzaL1,
+  ...previdenzaL2,
+  ...previdenzaL3,
+  ...previdenzaL4,
 ];
