@@ -254,6 +254,9 @@ async function main() {
     // non il contenuto. È la prova che il confine non sta solo nell'elenco.
     ['14f-svolgimento-muro.png', '/svolgimento/2022-atto-penale'],
     ['0d-caso-muro.png', '/caso-pratico/privato-custodia-caduta'],
+    // Il percorso della materia entrata per ultima in banca dati: serve
+    // a controllare che colore, icona e conteggio delle lezioni ci siano.
+    ['2b-percorso-ue.png', `/percorso/${encodeURIComponent('Diritto dell’Unione europea')}`],
     ['0-esame.png', '/esame'],
     ['0g-diagnosi.png', '/dove-sei-debole'],
     ['0b-caso-elenco.png', '/caso-pratico'],

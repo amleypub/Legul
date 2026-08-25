@@ -10,6 +10,7 @@ export const materie: Materia[] = [
   'Diritto costituzionale',
   'Diritto commerciale',
   'Diritto del lavoro',
+  'Diritto dell’Unione europea',
 ];
 
 /**
@@ -27,6 +28,7 @@ export const MATERIE_A_SCELTA: Materia[] = [
   'Diritto costituzionale',
   'Diritto commerciale',
   'Diritto del lavoro',
+  'Diritto dell’Unione europea',
 ];
 
 export const materieObbligatorie: Materia[] = materie.filter(

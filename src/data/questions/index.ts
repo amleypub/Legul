@@ -37,6 +37,10 @@ import { lavoroL2 } from './lavoro-l2';
 import { lavoroL3 } from './lavoro-l3';
 import { lavoroL4 } from './lavoro-l4';
 import { deontologia2025 } from './deontologia-2025';
+import { ueL1 } from './ue-l1';
+import { ueL2 } from './ue-l2';
+import { ueL3 } from './ue-l3';
+import { ueL4 } from './ue-l4';
 import { previdenzaL1 } from './previdenza-l1';
 import { previdenzaL2 } from './previdenza-l2';
 import { previdenzaL3 } from './previdenza-l3';
@@ -92,6 +96,12 @@ export const tutteLeDomande: QuizQuestion[] = [
   // Le modifiche al codice deontologico in vigore dal 1° novembre 2025:
   // è la parte su cui un manuale dell'anno scorso fa sbagliare.
   ...deontologia2025,
+  // Diritto dell'Unione europea: una delle sei materie a scelta
+  // dell'orale, che l'app dichiarava di non coprire.
+  ...ueL1,
+  ...ueL2,
+  ...ueL3,
+  ...ueL4,
   ...previdenzaL1,
   ...previdenzaL2,
   ...previdenzaL3,

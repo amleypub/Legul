@@ -19,7 +19,8 @@ export type Materia =
   | 'Deontologia forense'
   | 'Diritto costituzionale'
   | 'Diritto commerciale'
-  | 'Diritto del lavoro';
+  | 'Diritto del lavoro'
+  | 'Diritto dell’Unione europea';
 
 /** Livello di difficoltà: 1 Fondamenti, 2 Consolidamento, 3 Avanzato, 4 Eccellenza. */
 export type Difficolta = 1 | 2 | 3 | 4;

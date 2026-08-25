@@ -25,6 +25,7 @@ export const ICONA_MATERIA: Record<Materia, string> = {
   'Diritto costituzionale': 'library-outline',
   'Diritto commerciale': 'briefcase',
   'Diritto del lavoro': 'hard-hat',
+  'Diritto dell’Unione europea': 'globe',
 };
 
 function MateriaBlock({

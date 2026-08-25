@@ -48,7 +48,7 @@ bassissima opacità e da un'ombra ampia e morbida. Niente bordi duri.
 
 ### Percorso quiz in stile Duolingo
 - 6 materie del nucleo comune: Diritto civile, Diritto penale, Procedura civile, Procedura penale, Diritto amministrativo, Deontologia forense
-- **Materie a scelta dell'orale**: Diritto costituzionale, Diritto commerciale, Diritto del lavoro. Il d.l. 100/2026 ne fa portare **una sola**, scelta fra costituzionale, commerciale, lavoro, internazionale, UE e tributario: la schermata Quiz le tiene in un blocco a parte per non far credere che vadano studiate tutte, mette in cima quella dichiarata dall'utente e **dichiara le tre che Legul non copre**. Tacerne l'esistenza farebbe sembrare l'app completa a chi guarda l'elenco e incompleta a chi porta tributario e la cerca per settimane
+- **Materie a scelta dell'orale**: Diritto costituzionale, Diritto commerciale, Diritto del lavoro, Diritto dell'Unione europea. Il d.l. 100/2026 ne fa portare **una sola**, scelta fra costituzionale, commerciale, lavoro, internazionale, UE e tributario: la schermata Quiz le tiene in un blocco a parte per non far credere che vadano studiate tutte, mette in cima quella dichiarata dall'utente e **dichiara le due che Legul non copre** (internazionale e tributario). Tacerne l'esistenza farebbe sembrare l'app completa a chi guarda l'elenco e incompleta a chi porta tributario e la cerca per settimane
 - **Percorso a nodi** con 4 unità per materia (Fondamenti, Consolidamento, Avanzato, Eccellenza) e lezioni da 10 domande a sblocco progressivo
 - **Cuori**: 4 tentativi per lezione; **stelle** (1-3) in base alla precisione, gradienti, animazioni a molla e feedback aptico
 - Dopo ogni risposta viene mostrata la **spiegazione del perché**, con i riferimenti normativi (articoli di codice, leggi speciali, riforma Cartabia, ecc.)
@@ -64,8 +64,9 @@ bassissima opacità e da un'ombra ampia e morbida. Niente bordi duri.
 > Perché il confine è stato ribaltato: prima si pagava per le unità 3 e 4 del percorso quiz — domande a risposta multipla, la merce più comune del settore — mentre restava gratuito tutto ciò che nessun altro ha. Si pagava per la commodity e si regalava il differenziale.
 
 ### Banca domande
-- **4.324 domande** in `src/data/questions/` (un file per materia-livello), aggregate in `index.ts`
+- **4.572 domande** in `src/data/questions/` (un file per materia-livello), aggregate in `index.ts`
 - **650 domande per ogni materia principale**, **330 per deontologia** e **248 per ciascuna materia a scelta**, distribuite sui 4 livelli (163/162/163/162 per le principali, 62 per livello per le materie a scelta)
+- **Diritto dell'Unione europea**, la prima delle tre materie della rosa che l'app dichiarava di non coprire, ora completa su tutti e quattro i livelli: dalle istituzioni e dalle fonti fino ai controlimiti e alla doppia pregiudizialità (Corte cost. 269/2017, 20/2019, 63/2019; Taricco e M.A.S.; Melloni; Achmea e Komstroy; parere 2/13; condizionalità e C-156/21). Restano scoperte internazionale e tributario, e l'app continua a dirlo apertamente in fase di scelta
 - Dentro deontologia, due blocchi che nessun manuale dell'anno scorso copre:
   - **64 domande di previdenza forense**, la parte dell'ordinamento professionale che all'orale viene chiesta e che quasi nessuno ripassa. Evitano di proposito gli importi in euro dei contributi minimi, che il Comitato dei delegati ridetermina ogni anno: una domanda costruita su una cifra diventa sbagliata da sola
   - **16 domande sulle modifiche al codice deontologico in vigore dal 1° novembre 2025** (delibera CNF n. 636/2025): artt. 48, 50, 51, 56, 61, 62 e il nuovo 62-bis sulla negoziazione assistita

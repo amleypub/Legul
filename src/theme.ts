@@ -250,6 +250,12 @@ export const materiaColors: Record<
   'Diritto costituzionale': { start: '#E56A86', end: '#BE325B', edge: '#911E40', soft: '#FCE9EE' },
   'Diritto commerciale': { start: '#44B0CF', end: '#1E85A6', edge: '#13627C', soft: '#E4F3F9' },
   'Diritto del lavoro': { start: '#82BC68', end: '#52913D', edge: '#376B29', soft: '#ECF5E6' },
+  'Diritto dell’Unione europea': {
+    start: '#4C6FE8',
+    end: '#1E3FA8',
+    edge: '#152C78',
+    soft: '#E8EDFD',
+  },
   // Il ripasso non è una materia: ha un colore proprio, così si distingue
   // a colpo d'occhio da una lezione del percorso.
   Ripasso: { start: '#F8B048', end: '#E37B1E', edge: '#AF5C13', soft: '#FEF0E0' },

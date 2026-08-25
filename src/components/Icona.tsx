@@ -39,6 +39,7 @@ import {
   Footprints,
   Gauge,
   Gavel,
+  Globe,
   GitCompareArrows,
   GraduationCap,
   Handshake,
@@ -201,6 +202,7 @@ const MAPPA: Record<string, Glifo> = {
   // non le aveva, e a schermo erano buchi.
   analytics: ChartColumn,
   compass: Compass,
+  globe: Globe,
   flash: Zap,
   'log-out': LogOut,
   'logo-apple': LogoApple,
