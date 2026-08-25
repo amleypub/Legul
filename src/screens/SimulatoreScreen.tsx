@@ -7,9 +7,8 @@ import { casoSuggerito } from '../simulatore/modello';
 import { casoAccessibile } from '../data/accesso';
 import { useGamification } from '../gamification/GamificationContext';
 import { Bottone } from '../components/Bottone';
-import { TitoloSchermata } from '../components/TitoloSchermata';
 import type { RootStackScreenProps } from '../navigation/types';
-import { alpha, colors, materiaColors, radius, spacing } from '../theme';
+import { alpha, colors, materiaColors, radius, spacing, type } from '../theme';
 
 /** Ogni materia della prova prende in prestito la tinta della materia affine. */
 const TINTA: Record<MateriaCaso, keyof typeof materiaColors> = {
@@ -31,10 +30,17 @@ export default function SimulatoreScreen({ navigation }: RootStackScreenProps<'S
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <TitoloSchermata
-        titolo="Caso pratico"
-        sottotitolo="La prima parte dell’orale, quella che prima non esisteva. Ti diamo il caso, il tempo per prepararlo e poi la scaletta con cui confrontare quello che hai detto."
-      />
+      {/*
+        Niente titolo grande qui: questa schermata sta nello stack e ha
+        già «Caso pratico» nell'intestazione. Ripeterlo subito sotto
+        significava mostrare due volte le stesse due parole a mezzo
+        centimetro di distanza. Le schermate a tab, che l'intestazione non
+        ce l'hanno, continuano a usare `TitoloSchermata`.
+      */}
+      <Text style={styles.occhiello}>
+        La prima parte dell’orale, quella che prima non esisteva. Ti diamo il caso, il tempo per
+        prepararlo e poi la scaletta con cui confrontare quello che hai detto.
+      </Text>
 
       {/* Il confine da tenere fermo: la prova è nuova, di prove passate
           non ne esistono, e i tempi non stanno nel decreto. */}
@@ -122,7 +128,12 @@ export default function SimulatoreScreen({ navigation }: RootStackScreenProps<'S
                       />
                     </View>
                     <View style={styles.cartaTesti}>
-                      <Text style={styles.cartaTitolo}>{caso.titolo}</Text>
+                      {/* Due righe al massimo: un titolo lungo scendeva a
+                          tre e stringeva la pastiglia PREMIUM in un angolo,
+                          facendo sembrare le carte disallineate fra loro. */}
+                      <Text style={styles.cartaTitolo} numberOfLines={2}>
+                        {caso.titolo}
+                      </Text>
                       <Text style={styles.cartaSotto} numberOfLines={2}>
                         {caso.fatto[0]}
                       </Text>
@@ -159,6 +170,7 @@ export default function SimulatoreScreen({ navigation }: RootStackScreenProps<'S
 }
 
 const styles = StyleSheet.create({
+  occhiello: { ...type.corpoLungo, color: colors.textMuted, marginBottom: spacing.md },
   container: { flex: 1, },
   content: { padding: spacing.md, paddingBottom: spacing.xl },
 

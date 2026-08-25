@@ -120,8 +120,32 @@ function Tabs() {
           backgroundColor: alpha.vetroChrome,
           position: 'absolute',
           elevation: 0,
+          /*
+            Un'altezza minima, non un'altezza.
+
+            La barra predefinita è alta quarantanove punti, misura tarata
+            sull'etichetta da dieci della navigazione; la nostra è da
+            undici e mezzo e insieme all'icona non ci sta, così il testo
+            viene compresso e i discendenti di «Quiz» e «Profilo»
+            finiscono tagliati. `minHeight` alza il pavimento senza
+            imporre un tetto: dove la safe area già aggiunge spazio —
+            iPhone con la barra gestuale — non cambia nulla, dove non lo
+            aggiunge dà le righe che servono.
+          */
+          minHeight: 62,
         },
-        tabBarLabelStyle: { fontWeight: '700', letterSpacing: -0.2, fontSize: 11.5 },
+        /*
+          `lineHeight` esplicito, non ornamentale: senza, il riquadro
+          dell'etichetta è alto dieci pixel per un carattere da undici e
+          mezzo, e sul web i discendenti di «Quiz» e «Profilo» finiscono
+          tagliati fuori dal riquadro.
+        */
+        tabBarLabelStyle: {
+          fontWeight: '700',
+          letterSpacing: -0.2,
+          fontSize: 11.5,
+          lineHeight: 15,
+        },
       }}
     >
       <Tab.Screen

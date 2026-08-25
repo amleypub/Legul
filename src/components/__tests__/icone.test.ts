@@ -42,6 +42,23 @@ describe('mappa delle icone', () => {
     // Mappe che tengono l'icona dentro un oggetto: `{ icona: 'x', … }`.
     for (const m of testo.matchAll(/icona:\s*["']([a-z0-9-]+)["']/g)) usati.add(m[1]);
     /*
+     * Nomi passati come proprietà a un componente che poi rende `Icona`:
+     * `<StatBlocco icona="flash" />`, `<Voce icona="volume-high" />`.
+     *
+     * Era il buco più grosso rimasto, e il più difficile da vedere: qui
+     * il nome non compare mai accanto a `<Icona`, quindi nessuno dei
+     * controlli precedenti lo raccoglieva. Undici icone erano assenti
+     * dalla mappa e a schermo non c'era nulla — i tre pulsanti di accesso
+     * senza marchio, l'interruttore dell'audio senza altoparlante, due
+     * riquadri su tre nella schermata di esito senza simbolo.
+     */
+    for (const m of testo.matchAll(/\bicona=["']([a-z][a-z0-9-]*)["']/g)) usati.add(m[1]);
+    for (const m of testo.matchAll(/\bicona=\{["']([a-z][a-z0-9-]*)["']\}/g)) usati.add(m[1]);
+    // E dentro un'espressione: `icona={x ? 'a' : 'b'}`.
+    for (const m of testo.matchAll(/\bicona=\{([^}]*)\}/g)) {
+      for (const v of m[1].matchAll(/(?<![=!]=\s)'([a-z][a-z0-9-]*)'/g)) usati.add(v[1]);
+    }
+    /*
      * Nomi scelti da un'espressione: `nome={aperta ? 'chevron-up' : …}`.
      * Erano il buco più grosso — le frecce dei voti nella discussione
      * sono passate così, e a schermo restavano due pulsanti vuoti.
