@@ -11,6 +11,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { setAudioEnabled } from '../audio/sounds';
 import { useAuth } from '../auth/AuthContext';
 import { streakEffettiva } from './settimana';
+import { conRisposta, daElencoPiatto, oggiISO, type CartaRipasso } from './ripasso';
+import { coperturaProgramma } from '../data/percorso';
+import { OBIETTIVO_PREDEFINITO, puntiObiettivo, type Andatura } from './obiettivo';
+import { materie } from '../data/quizzes';
 import {
   annullaPromemoria,
   chiediPermesso,
@@ -48,7 +52,8 @@ export const PUNTI = {
 
 export interface Livello {
   nome: string;
-  sogliaPunti: number;
+  /** Quota di programma svolto (0–1) da cui il livello vale. */
+  sogliaCopertura: number;
   icona: IconName;
 }
 
@@ -59,15 +64,24 @@ export interface Livello {
  * da «studente» lo retrocederebbe, e una che regala il titolo di
  * «avvocato» a mille punti svilirebbe proprio il traguardo che l'app
  * serve a raggiungere. Nessuno di questi nomi è una qualifica.
+ *
+ * **La scala è agganciata al programma svolto e non ai punti.** Con i
+ * punti l'ultimo livello — quello che dice «più che pronto» — si
+ * raggiungeva avendo visto poco più del cinque per cento delle domande:
+ * bastava tornare abbastanza a lungo, perché i punti si accumulano anche
+ * sbagliando e anche rifacendo la stessa lezione. Una barra che sale
+ * mentre la preparazione non sale è peggio di nessuna barra, perché
+ * l'unica persona a cui questa app non può mentire è chi la sta usando
+ * per decidere se è pronto a presentarsi.
  */
 export const LIVELLI: Livello[] = [
-  { nome: 'Al via', sogliaPunti: 0, icona: 'flag' },
-  { nome: 'In carreggiata', sogliaPunti: 100, icona: 'navigate' },
-  { nome: 'Ritmo costante', sogliaPunti: 300, icona: 'pulse' },
-  { nome: 'Passo sicuro', sogliaPunti: 600, icona: 'footsteps' },
-  { nome: 'Dirittura d’arrivo', sogliaPunti: 1000, icona: 'speedometer' },
-  { nome: 'Pronto all’esame', sogliaPunti: 2000, icona: 'shield-checkmark' },
-  { nome: 'Più che pronto', sogliaPunti: 4000, icona: 'trophy' },
+  { nome: 'Al via', sogliaCopertura: 0, icona: 'flag' },
+  { nome: 'In carreggiata', sogliaCopertura: 0.08, icona: 'navigate' },
+  { nome: 'Ritmo costante', sogliaCopertura: 0.2, icona: 'pulse' },
+  { nome: 'Passo sicuro', sogliaCopertura: 0.35, icona: 'footsteps' },
+  { nome: 'Dirittura d’arrivo', sogliaCopertura: 0.55, icona: 'speedometer' },
+  { nome: 'Pronto all’esame', sogliaCopertura: 0.75, icona: 'shield-checkmark' },
+  { nome: 'Più che pronto', sogliaCopertura: 0.95, icona: 'trophy' },
 ];
 
 export interface BadgeDef {
@@ -127,6 +141,11 @@ export interface GamificationState {
   premium: boolean;
   /** Effetti sonori attivi. */
   audioAttivo: boolean;
+  /**
+   * L'andatura scelta per l'obiettivo giornaliero. Una costante uguale
+   * per tutti sbaglia in entrambe le direzioni: vedi `obiettivo.ts`.
+   */
+  andatura: Andatura;
   /** Promemoria giornaliero attivo, e a che ora. Preferenze del dispositivo. */
   promemoriaAttivo: boolean;
   oraPromemoria: number;
@@ -137,10 +156,21 @@ export interface GamificationState {
   /** Punti guadagnati oggi: si azzera al cambio di giorno. */
   puntiOggi: number;
   /**
-   * Identificatori delle domande sbagliate e non ancora recuperate, dalla
-   * più recente. Una risposta corretta in ripasso la toglie dall'elenco.
+   * Il mazzo del ripasso a ripetizione dilazionata: ogni domanda
+   * sbagliata diventa una carta con una data di scadenza che si allontana
+   * a ogni risposta giusta. Vedi `ripasso.ts`.
    */
-  erroriDaRipassare: string[];
+  mazzoRipasso: CartaRipasso[];
+  /**
+   * Il vecchio elenco piatto degli errori.
+   *
+   * Resta nel tipo perché va letto dai dispositivi che aggiornano l'app:
+   * al primo avvio viene convertito in carte e svuotato. Nessuna
+   * schermata lo usa più.
+   *
+   * @deprecated Convertito in `mazzoRipasso` all'avvio.
+   */
+  erroriDaRipassare?: string[];
   /**
    * Miglior punteggio (0–100) ottenuto in ciascun caso pratico.
    *
@@ -159,6 +189,7 @@ const initialState: GamificationState = {
   lezioni: {},
   premium: false,
   audioAttivo: true,
+  andatura: OBIETTIVO_PREDEFINITO,
   promemoriaAttivo: false,
   oraPromemoria: ORA_PREDEFINITA,
   tracceLette: [],
@@ -166,7 +197,7 @@ const initialState: GamificationState = {
   streak: 0,
   ultimoGiornoAttivita: null,
   puntiOggi: 0,
-  erroriDaRipassare: [],
+  mazzoRipasso: [],
   casiSvolti: {},
 };
 
@@ -196,6 +227,11 @@ interface GamificationContextValue {
   prossimoLivello: Livello | null;
   /** Avanzamento (0–1) verso il prossimo livello. */
   progressoLivello: number;
+  /**
+   * Quota di programma svolto (0–1): lezioni superate con almeno una
+   * stella sul totale. È la misura da cui dipende il livello.
+   */
+  copertura: number;
   /**
    * `domandaId` serve a tenere traccia degli errori per il ripasso:
    * senza, una risposta sbagliata dava la spiegazione e spariva.
@@ -227,6 +263,10 @@ interface GamificationContextValue {
   attivaPremium(): void;
   /** Attiva/disattiva gli effetti sonori. */
   toggleAudio(): void;
+  /** Cambia l'andatura dell'obiettivo giornaliero. */
+  impostaAndatura(andatura: Andatura): void;
+  /** I punti da raggiungere oggi, secondo l'andatura scelta. */
+  obiettivoOggi: number;
   /**
    * Accende o spegne il promemoria giornaliero. Restituisce `false` se il
    * permesso alle notifiche è stato negato: l'interruttore non deve
@@ -241,30 +281,6 @@ interface GamificationContextValue {
   azzeraProgressi(): void;
 }
 
-/**
- * Quante domande sbagliate teniamo da parte. Oltre un certo numero il
- * ripasso smette di essere un recupero mirato e diventa un secondo
- * percorso parallelo, che nessuno finisce mai.
- */
-export const MAX_ERRORI_DA_RIPASSARE = 60;
-
-/**
- * Aggiorna l'elenco degli errori da ripassare dopo una risposta.
- * Sbagliando la domanda entra in testa; rispondendo bene esce.
- */
-export function conErrore(
-  errori: string[],
-  corretta: boolean,
-  domandaId?: string
-): string[] {
-  if (!domandaId) return errori;
-  if (corretta) {
-    return errori.includes(domandaId) ? errori.filter((id) => id !== domandaId) : errori;
-  }
-  const senzaDuplicato = errori.filter((id) => id !== domandaId);
-  return [domandaId, ...senzaDuplicato].slice(0, MAX_ERRORI_DA_RIPASSARE);
-}
-
 export function stellePerRisultato(corrette: number, totale: number): number {
   if (totale <= 0) return 0;
   const quota = corrette / totale;
@@ -275,10 +291,6 @@ export function stellePerRisultato(corrette: number, totale: number): number {
 }
 
 const GamificationContext = createContext<GamificationContextValue | null>(null);
-
-function oggiISO(): string {
-  return new Date().toISOString().slice(0, 10);
-}
 
 function ieriISO(): string {
   const d = new Date();
@@ -328,15 +340,19 @@ export function progressiAzzerati(s: GamificationState): GamificationState {
   return {
     ...initialState,
     audioAttivo: s.audioAttivo,
+    // L'andatura è una preferenza, non un progresso: chi elimina
+    // l'account e ricomincia non deve ritrovarsi un obiettivo che non ha
+    // scelto.
+    andatura: s.andatura,
     promemoriaAttivo: s.promemoriaAttivo,
     oraPromemoria: s.oraPromemoria,
   };
 }
 
-export function livelloPerPunti(punti: number): Livello {
+export function livelloPerCopertura(copertura: number): Livello {
   let corrente = LIVELLI[0];
   for (const l of LIVELLI) {
-    if (punti >= l.sogliaPunti) corrente = l;
+    if (copertura >= l.sogliaCopertura) corrente = l;
   }
   return corrente;
 }
@@ -357,6 +373,31 @@ function soloSincronizzabili(s: GamificationState): ProgressiRemoti {
   };
 }
 
+/**
+ * Porta avanti i dati salvati da versioni precedenti.
+ *
+ * Il vecchio ripasso era un elenco di identificatori senza date: chi
+ * aggiorna l'app deve ritrovarsi quegli errori come carte dovute oggi,
+ * non perderli. La conversione avviene una volta sola, perché subito dopo
+ * l'elenco viene svuotato.
+ */
+export function migrato(s: GamificationState): GamificationState {
+  const vecchi = s.erroriDaRipassare;
+  if (!vecchi || vecchi.length === 0) return { ...s, erroriDaRipassare: undefined };
+  const gia = new Set(s.mazzoRipasso.map((c) => c.id));
+  return {
+    ...s,
+    mazzoRipasso: [
+      ...s.mazzoRipasso,
+      ...daElencoPiatto(
+        vecchi.filter((id) => !gia.has(id)),
+        oggiISO()
+      ),
+    ],
+    erroriDaRipassare: undefined,
+  };
+}
+
 export function GamificationProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<GamificationState>(initialState);
   const [caricato, setCaricato] = useState(false);
@@ -365,7 +406,9 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
   useEffect(() => {
     AsyncStorage.getItem(STORAGE_KEY)
       .then((raw) => {
-        if (raw) setState({ ...initialState, ...(JSON.parse(raw) as GamificationState) });
+        if (raw) {
+          setState(migrato({ ...initialState, ...(JSON.parse(raw) as GamificationState) }));
+        }
       })
       .catch(() => {})
       .finally(() => {
@@ -452,7 +495,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
           punti: s.punti + punti,
           risposteCorrette: s.risposteCorrette + (corretta ? 1 : 0),
           risposteErrate: s.risposteErrate + (corretta ? 0 : 1),
-          erroriDaRipassare: conErrore(s.erroriDaRipassare, corretta, domandaId),
+          mazzoRipasso: conRisposta(s.mazzoRipasso, corretta, domandaId, oggiISO()),
         }),
         pick(pool, seed),
         punti
@@ -504,6 +547,10 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
 
   const toggleAudio = useCallback(() => {
     setState((prev) => ({ ...prev, audioAttivo: !prev.audioAttivo }));
+  }, []);
+
+  const impostaAndatura = useCallback((andatura: Andatura) => {
+    setState((prev) => (prev.andatura === andatura ? prev : { ...prev, andatura }));
   }, []);
 
   const azzeraProgressi = useCallback(() => {
@@ -587,13 +634,19 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
     [applica]
   );
 
+  /**
+   * Attraversa i percorsi di tutte le materie: si ricalcola solo quando
+   * cambiano le stelle, non a ogni risposta.
+   */
+  const copertura = useMemo(() => coperturaProgramma(materie, state.lezioni), [state.lezioni]);
+
   const value = useMemo<GamificationContextValue>(() => {
-    const livello = livelloPerPunti(state.punti);
+    const livello = livelloPerCopertura(copertura);
     const idx = LIVELLI.indexOf(livello);
     const prossimoLivello = idx < LIVELLI.length - 1 ? LIVELLI[idx + 1] : null;
     const progressoLivello = prossimoLivello
-      ? (state.punti - livello.sogliaPunti) /
-        (prossimoLivello.sogliaPunti - livello.sogliaPunti)
+      ? (copertura - livello.sogliaCopertura) /
+        (prossimoLivello.sogliaCopertura - livello.sogliaCopertura)
       : 1;
     return {
       state,
@@ -602,24 +655,29 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
       livello,
       prossimoLivello,
       progressoLivello: Math.min(Math.max(progressoLivello, 0), 1),
+      copertura,
       registraRisposta,
       registraLezioneCompletata,
       registraTracciaLetta,
       registraCasoPratico,
       attivaPremium,
       toggleAudio,
+      impostaAndatura,
+      obiettivoOggi: puntiObiettivo(state.andatura),
       impostaPromemoria,
       azzeraProgressi,
     };
   }, [
     state,
     caricato,
+    copertura,
     registraRisposta,
     registraLezioneCompletata,
     registraTracciaLetta,
     registraCasoPratico,
     attivaPremium,
     toggleAudio,
+    impostaAndatura,
     impostaPromemoria,
     azzeraProgressi,
   ]);

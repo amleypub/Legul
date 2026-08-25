@@ -1,5 +1,7 @@
 import {
+  coperturaProgramma,
   DOMANDE_PER_LEZIONE,
+  lezioneDoveRiprendere,
   lezioneSbloccata,
   lezioniInOrdine,
   percorsoPerMateria,
@@ -150,5 +152,65 @@ describe('lezioneSbloccata', () => {
 
   it('considera bloccata una lezione che non esiste', () => {
     expect(lezioneSbloccata(materia, 'inesistente', {})).toBe(false);
+  });
+});
+
+describe('coperturaProgramma', () => {
+  it('è zero senza alcuna lezione superata', () => {
+    expect(coperturaProgramma(materie, {})).toBe(0);
+  });
+
+  /**
+   * È il difetto che questa misura corregge: la scala dei livelli era
+   * agganciata ai punti, che si accumulano anche sbagliando e anche
+   * rifacendo la stessa lezione. La copertura conta invece il programma
+   * effettivamente svolto, e una sola lezione su centinaia deve pesare
+   * pochissimo.
+   */
+  it('cresce di poco per una singola lezione superata', () => {
+    const prima = lezioniInOrdine('Diritto civile')[0];
+    const copertura = coperturaProgramma(materie, { [prima.id]: 3 });
+    expect(copertura).toBeGreaterThan(0);
+    expect(copertura).toBeLessThan(0.02);
+  });
+
+  it('conta come svolta una lezione con una sola stella', () => {
+    const prima = lezioniInOrdine('Diritto civile')[0];
+    expect(coperturaProgramma(materie, { [prima.id]: 1 })).toBe(
+      coperturaProgramma(materie, { [prima.id]: 3 })
+    );
+  });
+
+  it('arriva a uno quando tutte le lezioni sono superate', () => {
+    const tutte: Record<string, number> = {};
+    for (const m of materie) for (const l of lezioniInOrdine(m)) tutte[l.id] = 1;
+    expect(coperturaProgramma(materie, tutte)).toBe(1);
+  });
+});
+
+describe('lezioneDoveRiprendere', () => {
+  it('senza progressi propone la prima lezione della prima materia', () => {
+    const ripresa = lezioneDoveRiprendere(materie, {});
+    expect(ripresa?.materia).toBe(materie[0]);
+    expect(ripresa?.lezione.id).toBe(lezioniInOrdine(materie[0])[0].id);
+  });
+
+  /**
+   * Il pulsante in Home deve riportare dove si stava lavorando, non
+   * all'inizio dell'elenco: è la materia con più lezioni alle spalle.
+   */
+  it('sceglie la materia su cui si è andati più avanti', () => {
+    const penale = lezioniInOrdine('Diritto penale');
+    const stelle: Record<string, number> = {};
+    for (const l of penale.slice(0, 5)) stelle[l.id] = 2;
+    const ripresa = lezioneDoveRiprendere(materie, stelle);
+    expect(ripresa?.materia).toBe('Diritto penale');
+    expect(ripresa?.lezione.id).toBe(penale[5].id);
+  });
+
+  it('è nulla quando non resta nulla da fare', () => {
+    const tutte: Record<string, number> = {};
+    for (const m of materie) for (const l of lezioniInOrdine(m)) tutte[l.id] = 1;
+    expect(lezioneDoveRiprendere(materie, tutte)).toBeNull();
   });
 });

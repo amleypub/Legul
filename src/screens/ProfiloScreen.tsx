@@ -14,13 +14,15 @@ import { Icona } from '../components/Icona';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useGamification } from '../gamification/GamificationContext';
+import { OBIETTIVI } from '../gamification/obiettivo';
 import { nomeVisualizzato, useAuth } from '../auth/AuthContext';
 import { ORE_PROPOSTE } from '../notifiche/promemoria';
 import { Mascot } from '../components/Mascot';
 import { SpazioStatusBar } from '../components/TitoloSchermata';
 import { Bottone } from '../components/Bottone';
 import type { RootStackParamList } from '../navigation/types';
-import { alpha, colors, radius, spacing, SPAZIO_TAB } from '../theme';
+import { Sfondo } from '../components/Sfondo';
+import { alpha, colors, materiaColors, radius, spacing, SPAZIO_TAB } from '../theme';
 
 const VANTAGGI = [
   'Ritrova i tuoi progressi su ogni dispositivo',
@@ -114,8 +116,16 @@ function Gruppo({ titolo, children }: { titolo: string; children: React.ReactNod
 
 export default function ProfiloScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const { state, streak, livello, toggleAudio, impostaPromemoria, azzeraProgressi } =
-    useGamification();
+  const {
+    state,
+    streak,
+    livello,
+    copertura,
+    toggleAudio,
+    impostaAndatura,
+    impostaPromemoria,
+    azzeraProgressi,
+  } = useGamification();
   const { utente, esci, eliminaAccount } = useAuth();
   const [eliminazioneInCorso, setEliminazioneInCorso] = useState(false);
 
@@ -218,6 +228,7 @@ export default function ProfiloScreen() {
   }
 
   return (
+    <Sfondo tinta={materiaColors['Procedura penale'].start}>
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <SpazioStatusBar extra={spacing.sm} />
       {/* Stessa impostazione dell'intestazione in Home: la mascotte
@@ -263,6 +274,16 @@ export default function ProfiloScreen() {
           <View style={styles.heroStat}>
             <Text style={styles.heroStatValore}>{state.quizCompletati}</Text>
             <Text style={styles.heroStatLabel}>lezioni</Text>
+          </View>
+          <View style={styles.heroDivider} />
+          {/*
+            La quota di programma svolto è il numero da cui dipende il
+            livello: senza, il nome del livello qui sopra sembra assegnato
+            da un criterio che nessuno può controllare.
+          */}
+          <View style={styles.heroStat}>
+            <Text style={styles.heroStatValore}>{Math.round(copertura * 100)}%</Text>
+            <Text style={styles.heroStatLabel}>programma</Text>
           </View>
         </View>
         </LinearGradient>
@@ -320,6 +341,39 @@ export default function ProfiloScreen() {
           }
           onPress={() => navigation.navigate('Paywall')}
         />
+      </Gruppo>
+
+      {/*
+        L'obiettivo giornaliero era una costante uguale per tutti: chi ha
+        l'esame fra tre settimane lo chiudeva in due minuti, chi passa da
+        qui dieci minuti a settimana non lo raggiungeva mai. Un obiettivo
+        mancato ogni giorno smette di essere un obiettivo.
+      */}
+      <Gruppo titolo="Ritmo di studio">
+        {OBIETTIVI.map((o) => {
+          const scelto = state.andatura === o.id;
+          return (
+            <Pressable
+              key={o.id}
+              onPress={() => impostaAndatura(o.id)}
+              accessibilityRole="radio"
+              accessibilityState={{ selected: scelto }}
+              accessibilityLabel={`${o.nome}, ${o.punti} punti al giorno`}
+              style={({ pressed }) => [styles.voce, pressed && styles.vocePremuta]}
+            >
+              <View
+                style={[styles.voceIcona, { backgroundColor: scelto ? colors.success : '#B6BECC' }]}
+              >
+                <Icona nome={scelto ? 'checkmark' : 'ellipse-outline'} size={17} color="#FFFFFF" />
+              </View>
+              <View style={styles.voceTesto}>
+                <Text style={styles.voceEtichetta}>{o.nome}</Text>
+                <Text style={styles.voceSottotitolo}>{o.descrizione}</Text>
+              </View>
+              <Text style={styles.voceValore}>{o.punti} pt</Text>
+            </Pressable>
+          );
+        })}
       </Gruppo>
 
       <Gruppo titolo="Preferenze">
@@ -412,6 +466,7 @@ export default function ProfiloScreen() {
         )}
       </Gruppo>
     </ScrollView>
+    </Sfondo>
   );
 }
 

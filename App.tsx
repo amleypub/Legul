@@ -88,7 +88,16 @@ function Tabs() {
   return (
     <Tab.Navigator
       screenOptions={{
-        sceneStyle: { backgroundColor: 'transparent' },
+        /*
+          Fondo pieno sotto le schermate a tab.
+          
+          Era trasparente, e siccome la navigazione tiene montata anche la
+          scheda precedente il risultato era che dal Profilo si leggeva la
+          Home in trasparenza, titolo sopra titolo. Ogni schermata dipinge
+          comunque il proprio fondale con `Sfondo`: questo colore è la
+          rete di sicurezza per quando se ne aggiungerà una che non lo fa.
+        */
+        sceneStyle: { backgroundColor: colors.background },
         // Le schermate a tab hanno già il proprio titolo nel contenuto:
         // una barra piena sopra ripeteva l'informazione e rubava spazio.
         headerShown: false,

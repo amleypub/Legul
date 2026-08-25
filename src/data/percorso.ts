@@ -150,3 +150,67 @@ export function lezioneSbloccata(
   const stato = statiLezioni(lezioniInOrdine(materia), stellePerLezione).get(lezioneId);
   return stato !== undefined && stato !== 'bloccata';
 }
+
+/**
+ * Dove riprendere: la lezione su cui l'utente si è fermato.
+ *
+ * Il pulsante in Home diceva «Continua a studiare» e portava all'elenco
+ * delle materie, cioè chiedeva di ricordarsi da soli dove si era rimasti.
+ * È l'attrito che si paga a ogni singola apertura dell'app, e si paga
+ * proprio nel momento in cui la sessione o comincia o finisce.
+ *
+ * La materia scelta è quella con più lezioni già completate fra quelle
+ * ancora aperte: è dove si sta effettivamente lavorando. A parità vince
+ * l'ordine dell'elenco, che è quello dell'esame. Se una materia è finita
+ * si passa alla successiva, e se sono finite tutte non c'è nulla da
+ * riprendere.
+ */
+export function lezioneDoveRiprendere(
+  materie: Materia[],
+  stellePerLezione: Record<string, number>
+): { materia: Materia; lezione: Lezione } | null {
+  let migliore: { materia: Materia; lezione: Lezione; fatte: number } | null = null;
+
+  for (const materia of materie) {
+    const ordine = lezioniInOrdine(materia);
+    if (ordine.length === 0) continue;
+    const stati = statiLezioni(ordine, stellePerLezione);
+    const corrente = ordine.find((l) => stati.get(l.id) === 'corrente');
+    if (!corrente) continue; // materia completata
+    const fatte = ordine.filter((l) => stati.get(l.id) === 'completata').length;
+    if (!migliore || fatte > migliore.fatte) migliore = { materia, lezione: corrente, fatte };
+  }
+
+  return migliore ? { materia: migliore.materia, lezione: migliore.lezione } : null;
+}
+
+/**
+ * Quanta parte del programma è stata effettivamente coperta.
+ *
+ * Restituisce la quota (0–1) di lezioni superate con almeno una stella
+ * sulle materie passate. È la misura che sostituisce i punti nel definire
+ * il livello: i punti si accumulano anche sbagliando e anche rifacendo la
+ * stessa lezione, quindi crescono con il tempo speso invece che con il
+ * programma svolto. Un'app che dichiara «pronto all'esame» a chi ha visto
+ * il cinque per cento delle domande sta mentendo all'unica persona a cui
+ * non può permettersi di mentire.
+ */
+export function coperturaProgramma(
+  materie: Materia[],
+  stellePerLezione: Record<string, number>
+): number {
+  let totali = 0;
+  let fatte = 0;
+  for (const materia of materie) {
+    for (const lezione of lezioniInOrdine(materia)) {
+      totali += 1;
+      if ((stellePerLezione[lezione.id] ?? 0) >= 1) fatte += 1;
+    }
+  }
+  return totali === 0 ? 0 : fatte / totali;
+}
+
+/** Quante lezioni contiene in tutto il percorso delle materie passate. */
+export function totaleLezioni(materie: Materia[]): number {
+  return materie.reduce((n, m) => n + lezioniInOrdine(m).length, 0);
+}

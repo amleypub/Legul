@@ -10,6 +10,7 @@ import { percorsoPerMateria } from '../data/percorso';
 import { useGamification } from '../gamification/GamificationContext';
 import type { RootStackParamList } from '../navigation/types';
 import type { Materia } from '../types';
+import { Sfondo } from '../components/Sfondo';
 import { TitoloSchermata } from '../components/TitoloSchermata';
 import { colors, materiaColors, radius, spacing, SCALA_PRESSIONE, SPAZIO_TAB } from '../theme';
 
@@ -105,6 +106,7 @@ export default function QuizHomeScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   return (
+    <Sfondo tinta={materiaColors['Diritto civile'].start}>
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <TitoloSchermata
         titolo="Percorso di studio"
@@ -142,6 +144,7 @@ export default function QuizHomeScreen() {
         </>
       )}
     </ScrollView>
+    </Sfondo>
   );
 }
 

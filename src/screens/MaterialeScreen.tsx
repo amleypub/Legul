@@ -7,7 +7,8 @@ import { Superficie } from '../components/Superficie';
 import { Mascot } from '../components/Mascot';
 import type { MaterialeEsame } from '../types';
 import { TitoloSchermata } from '../components/TitoloSchermata';
-import { alpha, colors, radius, spacing, SPAZIO_TAB } from '../theme';
+import { Sfondo } from '../components/Sfondo';
+import { alpha, colors, materiaColors, radius, spacing, SPAZIO_TAB } from '../theme';
 
 const CATEGORIE: MaterialeEsame['categoria'][] = ['Codici', 'Manuali', 'Cancelleria e utilità'];
 
@@ -39,6 +40,7 @@ export default function MaterialeScreen() {
   })).filter((s) => s.data.length > 0);
 
   return (
+    <Sfondo tinta={materiaColors['Diritto amministrativo'].start}>
     <SectionList
       style={styles.container}
       contentContainerStyle={styles.content}
@@ -92,6 +94,7 @@ export default function MaterialeScreen() {
         </Text>
       }
     />
+    </Sfondo>
   );
 }
 

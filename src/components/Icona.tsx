@@ -2,6 +2,7 @@ import React from 'react';
 import { View, type ViewStyle } from 'react-native';
 import {
   Archive,
+  Circle,
   ArrowDown,
   ArrowDownCircle,
   ArrowRightCircle,
@@ -132,6 +133,8 @@ const MAPPA: Record<string, LucideIcon> = {
   'chatbubbles-outline': MessagesSquare,
   checkmark: Check,
   'checkmark-circle': CheckCircle2,
+  // Pallino vuoto: la scelta non fatta in un gruppo di opzioni.
+  'ellipse-outline': Circle,
   'checkmark-done': CheckCheck,
   'checkmark-done-circle': BadgeCheck,
   'chevron-forward': ChevronRight,

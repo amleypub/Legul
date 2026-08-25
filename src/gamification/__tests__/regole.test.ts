@@ -1,11 +1,10 @@
 import {
   BADGES,
   conBadgeAggiornati,
-  conErrore,
   conStreakAggiornata,
   LIVELLI,
-  livelloPerPunti,
-  MAX_ERRORI_DA_RIPASSARE,
+  livelloPerCopertura,
+  migrato,
   progressiAzzerati,
   stellePerRisultato,
   type GamificationState,
@@ -19,6 +18,7 @@ const base: GamificationState = {
   lezioni: {},
   premium: false,
   audioAttivo: true,
+  andatura: 'costante',
   promemoriaAttivo: false,
   oraPromemoria: 20,
   tracceLette: [],
@@ -26,7 +26,7 @@ const base: GamificationState = {
   streak: 0,
   ultimoGiornoAttivita: null,
   puntiOggi: 0,
-  erroriDaRipassare: [],
+  mazzoRipasso: [],
   casiSvolti: {},
 };
 
@@ -151,40 +151,31 @@ describe('conBadgeAggiornati', () => {
   });
 });
 
-describe('conErrore', () => {
-  it('mette in testa la domanda sbagliata', () => {
-    expect(conErrore(['b'], false, 'a')).toEqual(['a', 'b']);
-  });
-
-  it('toglie dall’elenco una domanda poi indovinata', () => {
-    expect(conErrore(['a', 'b'], true, 'a')).toEqual(['b']);
-  });
-
-  it('non tocca l’elenco quando indovini qualcosa che non avevi sbagliato', () => {
-    const errori = ['a', 'b'];
-    expect(conErrore(errori, true, 'z')).toBe(errori);
-  });
-
-  it('non duplica una domanda sbagliata due volte', () => {
-    expect(conErrore(['a', 'b'], false, 'b')).toEqual(['b', 'a']);
-  });
-
-  it('non fa nulla senza identificatore della domanda', () => {
-    const errori = ['a'];
-    expect(conErrore(errori, false)).toBe(errori);
-    expect(conErrore(errori, true)).toBe(errori);
-  });
-
+describe('migrato', () => {
   /**
-   * Oltre il tetto il ripasso smetterebbe di essere un recupero mirato e
-   * diventerebbe un secondo percorso che nessuno finisce mai.
+   * Chi aggiorna l'app arriva con il vecchio elenco piatto di errori.
+   * Perderlo in silenzio significherebbe azzerare il ripasso di chi lo
+   * stava usando, che è esattamente l'utente che si vuole tenere.
    */
-  it('tiene solo gli errori più recenti fino al tetto', () => {
-    const molti = Array.from({ length: MAX_ERRORI_DA_RIPASSARE }, (_, i) => `d${i}`);
-    const dopo = conErrore(molti, false, 'nuova');
-    expect(dopo).toHaveLength(MAX_ERRORI_DA_RIPASSARE);
-    expect(dopo[0]).toBe('nuova');
-    expect(dopo).not.toContain(`d${MAX_ERRORI_DA_RIPASSARE - 1}`);
+  it('converte il vecchio elenco di errori in carte dovute oggi', () => {
+    const dopo = migrato(con({ erroriDaRipassare: ['a', 'b'] }));
+    expect(dopo.mazzoRipasso.map((c) => c.id)).toEqual(['a', 'b']);
+    expect(dopo.mazzoRipasso.every((c) => c.successi === 0)).toBe(true);
+    expect(dopo.erroriDaRipassare).toBeUndefined();
+  });
+
+  it('non duplica una domanda già presente nel mazzo', () => {
+    const dopo = migrato(
+      con({
+        erroriDaRipassare: ['a'],
+        mazzoRipasso: [{ id: 'a', successi: 2, dovutaIl: '2026-09-01' }],
+      })
+    );
+    expect(dopo.mazzoRipasso).toEqual([{ id: 'a', successi: 2, dovutaIl: '2026-09-01' }]);
+  });
+
+  it('svuota il campo vecchio anche quando non c’è nulla da convertire', () => {
+    expect(migrato(con({})).erroriDaRipassare).toBeUndefined();
   });
 });
 
@@ -201,7 +192,7 @@ describe('progressiAzzerati', () => {
     streak: 4,
     ultimoGiornoAttivita: '2026-08-22',
     puntiOggi: 30,
-    erroriDaRipassare: ['civile-1-3'],
+    mazzoRipasso: [{ id: 'civile-1-3', successi: 0, dovutaIl: '2026-08-22' }],
   });
 
   it('cancella ogni traccia dei progressi', () => {
@@ -216,7 +207,7 @@ describe('progressiAzzerati', () => {
     expect(vuoto.streak).toBe(0);
     expect(vuoto.ultimoGiornoAttivita).toBeNull();
     expect(vuoto.puntiOggi).toBe(0);
-    expect(vuoto.erroriDaRipassare).toEqual([]);
+    expect(vuoto.mazzoRipasso).toEqual([]);
   });
 
   it('revoca anche Premium', () => {
@@ -242,16 +233,28 @@ describe('progressiAzzerati', () => {
   });
 });
 
-describe('livelloPerPunti', () => {
+describe('livelloPerCopertura', () => {
   it('parte dal primo livello', () => {
-    expect(livelloPerPunti(0)).toBe(LIVELLI[0]);
-    expect(livelloPerPunti(99)).toBe(LIVELLI[0]);
+    expect(livelloPerCopertura(0)).toBe(LIVELLI[0]);
+    expect(livelloPerCopertura(LIVELLI[1].sogliaCopertura - 0.001)).toBe(LIVELLI[0]);
   });
 
   it('sale esattamente alla soglia', () => {
-    expect(livelloPerPunti(100)).toBe(LIVELLI[1]);
-    expect(livelloPerPunti(999)).toBe(LIVELLI[3]);
-    expect(livelloPerPunti(1000)).toBe(LIVELLI[4]);
+    expect(livelloPerCopertura(LIVELLI[1].sogliaCopertura)).toBe(LIVELLI[1]);
+    expect(livelloPerCopertura(LIVELLI[4].sogliaCopertura)).toBe(LIVELLI[4]);
+  });
+
+  /**
+   * È il difetto che questa scala corregge: con i punti l'ultimo livello
+   * arrivava dopo aver visto poco più del cinque per cento delle domande,
+   * perché i punti si accumulano anche sbagliando e anche rifacendo la
+   * stessa lezione. Dire «più che pronto» a chi non ha visto il programma
+   * è l'unica bugia che questa app non si può permettere.
+   */
+  it('riserva l’ultimo livello a chi ha svolto quasi tutto il programma', () => {
+    const ultimo = LIVELLI[LIVELLI.length - 1];
+    expect(ultimo.sogliaCopertura).toBeGreaterThanOrEqual(0.9);
+    expect(livelloPerCopertura(0.5).nome).not.toBe(ultimo.nome);
   });
 
   /**
@@ -269,11 +272,11 @@ describe('livelloPerPunti', () => {
 
   it('si ferma al livello massimo', () => {
     const ultimo = LIVELLI[LIVELLI.length - 1];
-    expect(livelloPerPunti(999_999).nome).toBe(ultimo.nome);
+    expect(livelloPerCopertura(1).nome).toBe(ultimo.nome);
   });
 
   it('ha soglie in ordine crescente', () => {
-    const soglie = LIVELLI.map((l) => l.sogliaPunti);
+    const soglie = LIVELLI.map((l) => l.sogliaCopertura);
     expect(soglie).toEqual([...soglie].sort((a, b) => a - b));
   });
 });

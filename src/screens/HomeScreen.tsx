@@ -9,8 +9,12 @@ import Animated, {
   withSequence,
   withTiming,
 } from 'react-native-reanimated';
-import { BADGES, useGamification } from '../gamification/GamificationContext';
+import { BADGES, PUNTI, useGamification } from '../gamification/GamificationContext';
+import { messaggioObiettivo } from '../gamification/obiettivo';
 import { settimanaCorrente, type GiornoSettimana } from '../gamification/settimana';
+import { dovuteOggi } from '../gamification/ripasso';
+import { lezioneDoveRiprendere, totaleLezioni } from '../data/percorso';
+import { materie } from '../data/quizzes';
 import { useNavigation } from '@react-navigation/native';
 import { ProgressBar } from '../components/ProgressBar';
 import { AnelloProgresso, EtichettaAnello } from '../components/AnelloProgresso';
@@ -22,9 +26,6 @@ import { Sfondo } from '../components/Sfondo';
 import { Superficie } from '../components/Superficie';
 import { TitoloSchermata } from '../components/TitoloSchermata';
 import { alone, alpha, colors, materiaColors, ombra, radius, spacing, type, SPAZIO_TAB } from '../theme';
-
-/** Obiettivo giornaliero in punti: la ragione per riaprire l'app domani. */
-export const OBIETTIVO_GIORNALIERO = 50;
 
 /** Data odierna in formato YYYY-MM-DD, come la salva la gamification. */
 function oggiISO(): string {
@@ -132,21 +133,54 @@ function Scorciatoia({
 }
 
 export default function HomeScreen() {
-  const { state, streak, livello, prossimoLivello, progressoLivello } = useGamification();
+  const { state, streak, livello, prossimoLivello, progressoLivello, copertura, obiettivoOggi } =
+    useGamification();
   // La Home sta dentro il tab navigator: la tab «Quiz» è una sorella.
-  const navigation = useNavigation<{ navigate: (schermata: string) => void }>();
+  const navigation = useNavigation<{
+    navigate: (schermata: string, parametri?: object) => void;
+  }>();
 
   const totaleRisposte = state.risposteCorrette + state.risposteErrate;
   const precisione =
     totaleRisposte > 0 ? Math.round((state.risposteCorrette / totaleRisposte) * 100) : null;
 
-  const obiettivoRaggiunto = state.puntiOggi >= OBIETTIVO_GIORNALIERO;
-  const mancanti = OBIETTIVO_GIORNALIERO - state.puntiOggi;
-  const messaggioObiettivo = obiettivoRaggiunto
-    ? 'Obiettivo di oggi raggiunto. Ogni punto in più è vantaggio guadagnato.'
-    : state.puntiOggi > 0
-      ? `Ti mancano ${mancanti} punti: circa ${Math.ceil(mancanti / 10)} risposte esatte.`
-      : `${OBIETTIVO_GIORNALIERO} punti al giorno: bastano cinque risposte esatte.`;
+  // Solo le carte in scadenza oggi: il mazzo intero contiene anche quelle
+  // già rimesse in coda, e mostrarle come «da recuperare» terrebbe la
+  // scheda accesa per sempre.
+  const daRipassareOggi = useMemo(
+    () => dovuteOggi(state.mazzoRipasso, oggiISO()).length,
+    [state.mazzoRipasso]
+  );
+
+  // Il calcolo attraversa i percorsi di tutte le materie: va fatto una
+  // volta e rifatto solo quando cambiano le stelle.
+  const ripresa = useMemo(() => lezioneDoveRiprendere(materie, state.lezioni), [state.lezioni]);
+  const etichettaRipresa = !ripresa
+    ? 'Rivedi il percorso'
+    : state.quizCompletati > 0
+      ? `Riprendi dalla lezione ${ripresa.lezione.indice + 1}`
+      : 'Inizia la prima lezione';
+
+  /**
+   * Quante lezioni mancano al livello successivo.
+   *
+   * Una percentuale non dice che cosa fare; un numero di lezioni sì. È la
+   * differenza fra «ti manca il 12%» e «ti mancano nove lezioni», e la
+   * seconda è l'unica delle due su cui qualcuno può decidere di aprire
+   * una lezione adesso.
+   */
+  const lezioniAlProssimo = useMemo(() => {
+    if (!prossimoLivello) return 0;
+    const totali = totaleLezioni(materie);
+    return Math.max(1, Math.ceil((prossimoLivello.sogliaCopertura - copertura) * totali));
+  }, [prossimoLivello, copertura]);
+
+  const obiettivoRaggiunto = state.puntiOggi >= obiettivoOggi;
+  const testoObiettivo = messaggioObiettivo(
+    state.puntiOggi,
+    state.andatura,
+    PUNTI.rispostaCorretta
+  );
 
   // Alla striscia serve la streak *salvata*, non quella corretta: i giorni
   // accesi sono la cronologia vera, e vanno mostrati anche quando la serie
@@ -207,15 +241,21 @@ export default function HomeScreen() {
                     {livello.nome}
                   </Text>
                 </View>
+                {/*
+                  Il numero grande è la quota di programma svolto, non i
+                  punti: è la sola cifra che risponde alla domanda per cui
+                  si apre questa schermata, cioè se si è pronti. I punti
+                  restano, ma sotto, come misura della costanza.
+                */}
                 <Text style={styles.heroPunti}>
-                  {state.punti}
-                  <Text style={styles.heroPuntiLabel}> punti</Text>
+                  {Math.round(copertura * 100)}%{' '}
+                  <Text style={styles.heroPuntiLabel}>di programma svolto</Text>
                 </Text>
                 <ProgressBar progress={progressoLivello} />
                 <Text style={styles.heroProssimo} numberOfLines={1}>
                   {prossimoLivello
-                    ? `${prossimoLivello.sogliaPunti - state.punti} punti a «${prossimoLivello.nome}»`
-                    : 'Hai raggiunto l’ultimo livello.'}
+                    ? `${lezioniAlProssimo} ${lezioniAlProssimo === 1 ? 'lezione' : 'lezioni'} a «${prossimoLivello.nome}» · ${state.punti} punti`
+                    : `Hai svolto tutto il programma · ${state.punti} punti`}
                 </Text>
               </View>
             </LinearGradient>
@@ -273,12 +313,12 @@ export default function HomeScreen() {
               style={styles.obiettivo}
             >
               <View style={styles.obiettivoTop}>
-                <AnelloProgresso progresso={state.puntiOggi / OBIETTIVO_GIORNALIERO} size={106}>
+                <AnelloProgresso progresso={state.puntiOggi / obiettivoOggi} size={106}>
                   <EtichettaAnello valore={`${state.puntiOggi}`} unita="punti" />
                 </AnelloProgresso>
                 <View style={styles.obiettivoTesto}>
                   <Text style={styles.obiettivoTitolo}>Obiettivo di oggi</Text>
-                  <Text style={styles.obiettivoSub}>{messaggioObiettivo}</Text>
+                  <Text style={styles.obiettivoSub}>{testoObiettivo}</Text>
                   {obiettivoRaggiunto && (
                     <View style={styles.obiettivoChip}>
                       <Icona nome="checkmark-circle" size={14} color={colors.primary} />
@@ -315,17 +355,39 @@ export default function HomeScreen() {
               </View>
 
               {/* Dalla Home mancava un modo per iniziare a studiare. */}
+              {/*
+                Il pulsante porta alla lezione esatta su cui ci si è
+                fermati, non all'elenco delle materie: chiedere di
+                ricordarsi da soli dove si era rimasti è l'attrito che si
+                paga a ogni apertura dell'app, proprio nel momento in cui
+                la sessione o comincia o finisce.
+              */}
               <Bottone
-                label={state.quizCompletati > 0 ? 'Continua a studiare' : 'Inizia la prima lezione'}
-                onPress={() => navigation.navigate('Quiz')}
+                label={etichettaRipresa}
+                onPress={() =>
+                  ripresa
+                    ? navigation.navigate('Lezione', {
+                        materia: ripresa.materia,
+                        lezioneId: ripresa.lezione.id,
+                      })
+                    : navigation.navigate('Quiz')
+                }
                 variante="accento"
               />
+              {!!ripresa && state.quizCompletati > 0 && (
+                <Text style={styles.ripresaNota}>{ripresa.materia}</Text>
+              )}
             </LinearGradient>
           </View>
         </Entrata>
 
-        {/* Ripasso: compare solo se c'è davvero qualcosa da recuperare */}
-        {state.erroriDaRipassare.length > 0 && (
+        {/*
+          Ripasso: compare solo se ci sono carte in scadenza oggi. Le
+          domande sbagliate ieri e già rimesse in coda per fra tre giorni
+          non devono comparire, altrimenti la scheda resta accesa per
+          sempre e smette di voler dire qualcosa.
+        */}
+        {daRipassareOggi > 0 && (
           <Entrata ritardo={scaglione(4)}>
             <Superficie
               tono="forte"
@@ -344,9 +406,8 @@ export default function HomeScreen() {
               <View style={styles.ripassoTesto}>
                 <Text style={styles.ripassoTitolo}>Ripassa i tuoi errori</Text>
                 <Text style={styles.ripassoSub}>
-                  {state.erroriDaRipassare.length}{' '}
-                  {state.erroriDaRipassare.length === 1 ? 'domanda sbagliata' : 'domande sbagliate'}{' '}
-                  da recuperare.
+                  {daRipassareOggi}{' '}
+                  {daRipassareOggi === 1 ? 'domanda ti aspetta' : 'domande ti aspettano'} oggi.
                 </Text>
               </View>
               <Icona nome="chevron-forward" size={20} color={materiaColors.Ripasso.edge} />
@@ -383,6 +444,18 @@ export default function HomeScreen() {
               label="Tracce"
               icona="document-text"
               tint={colors.accentEdge}
+            />
+            <View style={styles.statsDivider} />
+            {/*
+              I casi pratici mancavano da questa riga: l'esercizio più
+              vicino all'orale era l'unico che non lasciava traccia nei
+              numeri, e ciò che non viene contato non viene rifatto.
+            */}
+            <Statistica
+              valore={Object.keys(state.casiSvolti).length}
+              label="Casi"
+              icona="mic"
+              tint={materiaColors['Diritto costituzionale'].start}
             />
           </Superficie>
         </Entrata>
@@ -435,6 +508,12 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
+  ripresaNota: {
+    ...type.minuto,
+    color: 'rgba(255,255,255,0.62)',
+    textAlign: 'center',
+    marginTop: spacing.sm,
+  },
   container: { flex: 1 },
   content: { padding: spacing.md, paddingBottom: SPAZIO_TAB },
 

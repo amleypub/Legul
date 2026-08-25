@@ -9,6 +9,7 @@ import { useGamification } from '../gamification/GamificationContext';
 import { Superficie } from '../components/Superficie';
 import type { RootStackParamList } from '../navigation/types';
 import type { TipoTraccia } from '../types';
+import { Sfondo } from '../components/Sfondo';
 import { TitoloSchermata } from '../components/TitoloSchermata';
 import { alpha, colors, materiaColors, radius, spacing, SPAZIO_TAB } from '../theme';
 
@@ -34,6 +35,7 @@ export default function TracceScreen() {
   }));
 
   return (
+    <Sfondo tinta={materiaColors['Procedura civile'].start}>
     <SectionList
       style={styles.container}
       contentContainerStyle={styles.content}
@@ -124,6 +126,7 @@ export default function TracceScreen() {
         );
       }}
     />
+    </Sfondo>
   );
 }
 
