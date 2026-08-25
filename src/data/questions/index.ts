@@ -36,6 +36,7 @@ import { lavoroL1 } from './lavoro-l1';
 import { lavoroL2 } from './lavoro-l2';
 import { lavoroL3 } from './lavoro-l3';
 import { lavoroL4 } from './lavoro-l4';
+import { deontologia2025 } from './deontologia-2025';
 import { previdenzaL1 } from './previdenza-l1';
 import { previdenzaL2 } from './previdenza-l2';
 import { previdenzaL3 } from './previdenza-l3';
@@ -88,6 +89,9 @@ export const tutteLeDomande: QuizQuestion[] = [
   // la deontologia: sta in coda perché così le sue domande formano un
   // blocco di lezioni riconoscibile in fondo a ciascuna unità, invece di
   // sparpagliarsi fra le regole sul conflitto di interessi.
+  // Le modifiche al codice deontologico in vigore dal 1° novembre 2025:
+  // è la parte su cui un manuale dell'anno scorso fa sbagliare.
+  ...deontologia2025,
   ...previdenzaL1,
   ...previdenzaL2,
   ...previdenzaL3,
