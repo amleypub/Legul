@@ -20,7 +20,7 @@ export const tracce: Traccia[] = [
     id: '2023-atto-civile',
     anno: 2023,
     sessione: 'Sessione 2023 (prova scritta – dicembre 2023)',
-    tipo: 'Atto giudiziario',
+    tipo: 'Atto di diritto civile',
     titolo: 'Atto in materia di diritto civile',
     argomenti: ['Responsabilità contrattuale', 'Inadempimento', 'Risarcimento del danno'],
     testo:
@@ -32,7 +32,7 @@ export const tracce: Traccia[] = [
     id: '2023-atto-penale',
     anno: 2023,
     sessione: 'Sessione 2023 (prova scritta – dicembre 2023)',
-    tipo: 'Atto giudiziario',
+    tipo: 'Atto di diritto penale',
     titolo: 'Atto in materia di diritto penale',
     argomenti: ['Impugnazioni', 'Elemento soggettivo', 'Circostanze del reato'],
     testo:
@@ -44,7 +44,7 @@ export const tracce: Traccia[] = [
     id: '2022-atto-civile',
     anno: 2022,
     sessione: 'Sessione 2022 (prova scritta – dicembre 2022)',
-    tipo: 'Atto giudiziario',
+    tipo: 'Atto di diritto civile',
     titolo: 'Atto in materia di diritto civile',
     argomenti: ['Contratto preliminare', 'Esecuzione in forma specifica', 'Trascrizione'],
     testo:
@@ -56,7 +56,7 @@ export const tracce: Traccia[] = [
     id: '2022-atto-penale',
     anno: 2022,
     sessione: 'Sessione 2022 (prova scritta – dicembre 2022)',
-    tipo: 'Atto giudiziario',
+    tipo: 'Atto di diritto penale',
     titolo: 'Atto in materia di diritto penale',
     argomenti: ['Misure cautelari', 'Riesame', 'Esigenze cautelari'],
     testo:
@@ -128,13 +128,47 @@ export const tracce: Traccia[] = [
     id: '2017-atto',
     anno: 2017,
     sessione: 'Sessione 2017 (prove scritte – dicembre 2017)',
-    tipo: 'Atto giudiziario',
+    tipo: 'Atto di diritto civile',
     titolo: 'Atto giudiziario su quesito in materia di diritto civile',
     argomenti: ['Opposizione a decreto ingiuntivo', 'Prova scritta', 'Eccezioni'],
     testo:
       'Il candidato, assunte le vesti del difensore dell’ingiunto, rediga l’atto ritenuto più idoneo.\n\n' +
       'Una società ha ottenuto decreto ingiuntivo per il pagamento di fatture relative a merce che l’ingiunto assume mai consegnata e comunque affetta da vizi tempestivamente denunciati.\n\n' +
       'Il candidato rediga l’atto di citazione in opposizione a decreto ingiuntivo (artt. 645 ss. c.p.c.), illustrando il riparto dell’onere probatorio nel giudizio di opposizione, le eccezioni proponibili e l’eventuale istanza di sospensione della provvisoria esecutorietà ex art. 649 c.p.c.',
+  },
+  /*
+    Le due tracce di diritto amministrativo.
+
+    L'archivio non ne aveva nessuna, e il tipo `TipoTraccia` non sapeva
+    nemmeno esprimerne una. La materia però c'era già: la prova d'atto
+    degli anni passati si sceglieva fra civile, penale e amministrativo, e
+    dopo il d.l. 100/2026 vale per entrambi gli scritti. Chi porta
+    amministrativo trovava un archivio in cui la propria materia
+    semplicemente non compariva.
+  */
+  {
+    id: '2023-atto-amministrativo',
+    anno: 2023,
+    sessione: 'Sessione 2023 (prova scritta – dicembre 2023)',
+    tipo: 'Atto di diritto amministrativo',
+    titolo: 'Atto in materia di diritto amministrativo',
+    argomenti: ['Contratti pubblici', 'Illecito professionale grave', 'Tutela cautelare'],
+    testo:
+      'Il candidato, assunte le vesti del difensore, rediga l’atto giudiziario ritenuto più idoneo alla tutela dell’operatore economico assistito.\n\n' +
+      'La società Alfa partecipa a una procedura aperta per l’affidamento di un appalto di servizi. La stazione appaltante la esclude richiamando un decreto che ha disposto il rinvio a giudizio del suo amministratore per un reato commesso nell’esecuzione di un precedente contratto pubblico, e qualificando il fatto come illecito professionale grave. Il provvedimento di esclusione dà atto della pendenza del procedimento penale ma non spiega perché quel fatto incida sull’affidabilità e sull’integrità della società, né considera le misure organizzative che Alfa aveva dichiarato in gara. Alfa era prima in graduatoria e l’aggiudicazione è stata nel frattempo disposta in favore della seconda classificata.\n\n' +
+      'Il candidato individui il rimedio esperibile e il giudice competente, illustri le questioni sostanziali e processuali rilevanti — in particolare i presupposti dell’illecito professionale grave, l’onere motivazionale della stazione appaltante, il termine di impugnazione e la tutela cautelare — e rediga l’atto completo di conclusioni.',
+  },
+  {
+    id: '2022-atto-amministrativo',
+    anno: 2022,
+    sessione: 'Sessione 2022 (prova scritta – maggio 2022)',
+    tipo: 'Atto di diritto amministrativo',
+    titolo: 'Atto in materia di diritto amministrativo',
+    argomenti: ['Autotutela', 'Affidamento del privato', 'Edilizia'],
+    testo:
+      'Il candidato, assunte le vesti del difensore, rediga l’atto giudiziario ritenuto più idoneo alla tutela del proprio assistito.\n\n' +
+      'A Tizio è stato rilasciato un permesso di costruire per l’ampliamento di un immobile. Iniziati i lavori e sostenute spese rilevanti, a distanza di oltre due anni il Comune annulla d’ufficio il titolo, affermando che l’intervento eccedeva i limiti volumetrici consentiti. Il provvedimento non indica alcun interesse pubblico ulteriore rispetto al mero ripristino della legalità violata, non dà conto dell’affidamento maturato dal privato e non è stato preceduto da alcuna comunicazione. Tizio non ha reso dichiarazioni non veritiere in sede di istanza.\n\n' +
+      'Il candidato individui il rimedio esperibile e il giudice competente, illustri le questioni sostanziali e processuali rilevanti — in particolare i limiti temporali e motivazionali dell’annullamento d’ufficio, la partecipazione al procedimento e le conseguenze della loro violazione — e rediga l’atto completo di conclusioni.',
   },
 ];
 

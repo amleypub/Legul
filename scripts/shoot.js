@@ -224,6 +224,9 @@ async function main() {
     ['12-materiale.png', '/materiale'],
     ['13-tracce.png', '/tracce'],
     ['14-traccia.png', '/traccia/2023-atto-civile'],
+    // L'amministrativo, che prima non esisteva in archivio. Lo
+    // svolgimento è riservato, quindi si scatta la traccia.
+    ['14g-traccia-amministrativo.png', '/traccia/2023-atto-amministrativo'],
     ['14b-ripasso.png', '/ripasso'],
     // Lo svolgimento nasce tutto chiuso: senza aprire una sezione lo
     // scatto mostrerebbe solo l'indice.

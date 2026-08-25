@@ -19,10 +19,30 @@ const totaleTracce = tracce.length;
 const svolte = quanteConSvolgimento();
 const parzialmenteCoperto = svolte < totaleTracce;
 
+/*
+  Il colore segue la materia, l'icona la forma della prova: così a colpo
+  d'occhio si legge sia che cosa si scrive sia su che cosa. Con un tipo
+  solo per tutti gli atti l'amministrativo non era distinguibile.
+*/
 const TIPO_STYLE: Record<TipoTraccia, { icona: string; tinta: string }> = {
   'Parere di diritto civile': { icona: 'book', tinta: materiaColors['Diritto civile'].start },
-  'Parere di diritto penale': { icona: 'shield-half', tinta: materiaColors['Diritto penale'].start },
-  'Atto giudiziario': { icona: 'document-text', tinta: materiaColors['Procedura civile'].start },
+  'Parere di diritto penale': { icona: 'book', tinta: materiaColors['Diritto penale'].start },
+  'Parere di diritto amministrativo': {
+    icona: 'book',
+    tinta: materiaColors['Diritto amministrativo'].start,
+  },
+  'Atto di diritto civile': {
+    icona: 'document-text',
+    tinta: materiaColors['Diritto civile'].start,
+  },
+  'Atto di diritto penale': {
+    icona: 'document-text',
+    tinta: materiaColors['Diritto penale'].start,
+  },
+  'Atto di diritto amministrativo': {
+    icona: 'document-text',
+    tinta: materiaColors['Diritto amministrativo'].start,
+  },
 };
 
 export default function TracceScreen() {
@@ -60,7 +80,8 @@ export default function TracceScreen() {
           >
             <Icona nome="information-circle" size={20} color="#8A5B00" />
             <Text style={styles.riformaTesto}>
-              Dalla sessione 2026-2027 le prove scritte sono due, non più tre.{' '}
+              Dalla sessione 2026-2027 le prove scritte sono due — parere e atto — e ciascuna si
+              sostiene su una materia a scelta fra civile, penale e amministrativo.{' '}
               <Text style={styles.riformaLink}>Vedi come funziona l’esame</Text>
             </Text>
             <Icona nome="chevron-forward" size={18} color="#8A5B00" />

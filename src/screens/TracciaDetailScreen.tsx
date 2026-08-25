@@ -12,20 +12,21 @@ import { useConteggioDiscussione } from '../discussione/useConteggio';
 import { Bottone } from '../components/Bottone';
 import { Mascot } from '../components/Mascot';
 import type { RootStackScreenProps } from '../navigation/types';
-import type { TipoTraccia } from '../types';
+import { materiaDellaTraccia, type TipoTraccia } from '../types';
 import { alpha, colors, materiaColors, radius, spacing } from '../theme';
 
-/** Ogni tipo di prova ha il colore della materia a cui appartiene. */
-const TINTA_TIPO: Record<TipoTraccia, keyof typeof materiaColors> = {
-  'Parere di diritto civile': 'Diritto civile',
-  'Parere di diritto penale': 'Diritto penale',
-  'Atto giudiziario': 'Procedura civile',
-};
-
+/*
+  Il colore viene dalla materia della traccia, che ora il tipo dichiara:
+  la mappa scritta a mano andava riscritta a ogni materia aggiunta, e
+  infatti all'amministrativo non era mai arrivata.
+*/
 const ICONA_TIPO: Record<TipoTraccia, string> = {
   'Parere di diritto civile': 'chatbox-ellipses',
-  'Parere di diritto penale': 'shield-half',
-  'Atto giudiziario': 'document-text',
+  'Parere di diritto penale': 'chatbox-ellipses',
+  'Parere di diritto amministrativo': 'chatbox-ellipses',
+  'Atto di diritto civile': 'document-text',
+  'Atto di diritto penale': 'document-text',
+  'Atto di diritto amministrativo': 'document-text',
 };
 
 export default function TracciaDetailScreen({
@@ -77,7 +78,7 @@ export default function TracciaDetailScreen({
     );
   }
 
-  const tinte = materiaColors[TINTA_TIPO[traccia.tipo]];
+  const tinte = materiaColors[materiaDellaTraccia(traccia.tipo)];
   const svolgimentoLibero = svolgimentoAccessibile(traccia.id, state.premium);
 
   return (

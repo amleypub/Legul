@@ -23,14 +23,8 @@ import { argomentoTraccia } from '../discussione/modello';
 import { Bottone } from '../components/Bottone';
 import { Mascot } from '../components/Mascot';
 import type { RootStackScreenProps } from '../navigation/types';
-import type { TipoTraccia } from '../types';
+import { materiaDellaTraccia } from '../types';
 import { colors, materiaColors, radius, spacing } from '../theme';
-
-const TINTA_TIPO: Record<TipoTraccia, keyof typeof materiaColors> = {
-  'Parere di diritto civile': 'Diritto civile',
-  'Parere di diritto penale': 'Diritto penale',
-  'Atto giudiziario': 'Procedura civile',
-};
 
 // L'animazione di apertura su Android va abilitata esplicitamente.
 if (
@@ -156,7 +150,7 @@ export default function SvolgimentoScreen({
     );
   }
 
-  const tinte = materiaColors[TINTA_TIPO[traccia.tipo]];
+  const tinte = materiaColors[materiaDellaTraccia(traccia.tipo)];
 
   /*
    * Il controllo sta qui e non solo sulla scheda della traccia: a questa

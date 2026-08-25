@@ -11,8 +11,10 @@
 import { tracce } from '../tracce';
 import { attoCivile2023 } from './2023-atto-civile';
 import { attoPenale2023 } from './2023-atto-penale';
+import { attoAmministrativo2023 } from './2023-atto-amministrativo';
 import { attoCivile2022 } from './2022-atto-civile';
 import { attoPenale2022 } from './2022-atto-penale';
+import { attoAmministrativo2022 } from './2022-atto-amministrativo';
 import { parereCivile2019 } from './2019-parere-civile';
 import { parerePenale2019 } from './2019-parere-penale';
 import { parereCivile2018 } from './2018-parere-civile';
@@ -36,8 +38,10 @@ export { AGGIORNATO_AL } from './tipi';
 export const svolgimenti: Svolgimento[] = [
   attoCivile2023,
   attoPenale2023,
+  attoAmministrativo2023,
   attoCivile2022,
   attoPenale2022,
+  attoAmministrativo2022,
   parereCivile2019,
   parerePenale2019,
   parereCivile2018,

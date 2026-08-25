@@ -36,7 +36,34 @@ export interface QuizQuestion {
   spiegazione: string;
 }
 
-export type TipoTraccia = 'Parere di diritto civile' | 'Parere di diritto penale' | 'Atto giudiziario';
+/**
+ * Tipo di una traccia d'esame: forma della prova e materia insieme.
+ *
+ * Prima era `'Parere di diritto civile' | 'Parere di diritto penale' |
+ * 'Atto giudiziario'`, e l'atto non diceva su quale materia vertesse.
+ * Andava bene finché l'atto era uno solo: dopo il d.l. 100/2026 il
+ * candidato sceglie la terna — civile, penale o amministrativo — e per
+ * entrambe le prove, quindi una traccia che non dichiara la propria
+ * materia non si può nemmeno filtrare per chi la porta.
+ *
+ * L'amministrativo, in particolare, non era esprimibile affatto: la
+ * materia c'era già nella prova d'atto degli anni passati, ma qui non
+ * aveva un nome.
+ */
+export type TipoTraccia =
+  | 'Parere di diritto civile'
+  | 'Parere di diritto penale'
+  | 'Parere di diritto amministrativo'
+  | 'Atto di diritto civile'
+  | 'Atto di diritto penale'
+  | 'Atto di diritto amministrativo';
+
+/** La materia di una traccia, ricavata dal tipo. */
+export function materiaDellaTraccia(tipo: TipoTraccia): Materia {
+  if (tipo.endsWith('civile')) return 'Diritto civile';
+  if (tipo.endsWith('penale')) return 'Diritto penale';
+  return 'Diritto amministrativo';
+}
 
 export interface Traccia {
   id: string;
