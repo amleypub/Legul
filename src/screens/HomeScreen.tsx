@@ -665,7 +665,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'flex-start',
     gap: 5,
-    backgroundColor: colors.accent,
+    /* Velo d'accento con bordo, non riempimento pieno: il testo dentro
+       è champagne, e su un fondo champagne pieno spariva del tutto. */
+    backgroundColor: colors.accentSoft,
+    borderWidth: 1,
+    borderColor: 'rgba(201,162,39,0.35)',
     borderRadius: radius.sm,
     paddingHorizontal: 10,
     paddingVertical: 4,

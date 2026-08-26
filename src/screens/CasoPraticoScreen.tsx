@@ -107,13 +107,16 @@ export default function CasoPraticoScreen({
 
   const testata = (
     <View style={styles.testataWrap}>
+      {/* La materia non riempie più la testata: resta un velo e un bordo
+          nella sua tinta, così la scheda legge come vetro e non come un
+          blocco di colore piatto. */}
       <LinearGradient
-        colors={[tinte.start, tinte.end]}
+        colors={[tinte.soft, alpha.vetroInterno]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        style={styles.testata}
+        style={[styles.testata, { borderColor: `${tinte.edge}38` }]}
       >
-        <Text style={styles.occhiello}>{caso.materia}</Text>
+        <Text style={[styles.occhiello, { color: tinte.edge }]}>{caso.materia}</Text>
         <Text style={styles.titolo}>{caso.titolo}</Text>
       </LinearGradient>
     </View>
@@ -154,8 +157,8 @@ export default function CasoPraticoScreen({
               ['3', 'Confronta', 'Ti mostriamo la scaletta punto per punto e segni quello che hai davvero detto.'],
             ].map(([n, t, d]) => (
               <View key={n} style={styles.passo}>
-                <View style={[styles.passoNumero, { backgroundColor: tinte.end }]}>
-                  <Text style={styles.passoNumeroTesto}>{n}</Text>
+                <View style={[styles.passoNumero, { borderColor: `${tinte.edge}45` }]}>
+                  <Text style={[styles.passoNumeroTesto, { color: tinte.edge }]}>{n}</Text>
                 </View>
                 <View style={styles.passoTesti}>
                   <Text style={styles.passoTitolo}>{t}</Text>
@@ -180,7 +183,7 @@ export default function CasoPraticoScreen({
                 onPress={() => setMinutiPrep(m)}
                 accessibilityRole="radio"
                 accessibilityState={{ selected: minutiPrep === m }}
-                style={[styles.durata, minutiPrep === m && { backgroundColor: tinte.end }]}
+                style={[styles.durata, minutiPrep === m && styles.durataAttiva]}
               >
                 <Text style={[styles.durataTesto, minutiPrep === m && styles.durataTestoAttiva]}>
                   {m} min
@@ -197,7 +200,7 @@ export default function CasoPraticoScreen({
                 onPress={() => setMinutiEsp(m)}
                 accessibilityRole="radio"
                 accessibilityState={{ selected: minutiEsp === m }}
-                style={[styles.durata, minutiEsp === m && { backgroundColor: tinte.end }]}
+                style={[styles.durata, minutiEsp === m && styles.durataAttiva]}
               >
                 <Text style={[styles.durataTesto, minutiEsp === m && styles.durataTestoAttiva]}>
                   {m} min
@@ -487,7 +490,12 @@ const styles = StyleSheet.create({
   vuotoBtn: { alignSelf: 'stretch', marginTop: spacing.md },
 
   testataWrap: { },
-  testata: { borderRadius: radius.xxl, padding: spacing.md, gap: 3 },
+  testata: {
+    borderRadius: radius.xl,
+    borderWidth: 1,
+    padding: spacing.md,
+    gap: 3,
+  },
   occhiello: {
     fontSize: 11,
     fontWeight: '600',
@@ -510,11 +518,13 @@ const styles = StyleSheet.create({
   passoNumero: {
     width: 26,
     height: 26,
-    borderRadius: 9,
+    borderRadius: radius.sm,
+    borderWidth: 1,
+    backgroundColor: alpha.vetroForte,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  passoNumeroTesto: { fontSize: 13, fontWeight: '700', color: '#FFFFFF' },
+  passoNumeroTesto: { fontSize: 12.5, fontWeight: '700' },
   passoTesti: { flex: 1 },
   passoTitolo: { fontSize: 15, fontWeight: '600', color: colors.text },
   passoDettaglio: { fontSize: 13, color: colors.textMuted, lineHeight: 19, marginTop: 2 },
@@ -543,10 +553,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 10,
     borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: 'transparent',
     backgroundColor: alpha.velo,
   },
+  /* La scelta si segnala alzando il vetro e incidendo il bordo, non
+     riempiendo di colore: il pieno saturo faceva sembrare la durata
+     l'azione principale della schermata, che invece è «Comincia». */
+  durataAttiva: { backgroundColor: alpha.vetroForte, borderColor: alpha.bordoMarcato },
   durataTesto: { fontSize: 14, fontWeight: '600', color: colors.textMuted },
-  durataTestoAttiva: { color: '#FFFFFF' },
+  durataTestoAttiva: { color: colors.text },
   durataNota: { fontSize: 12, color: colors.textMuted, lineHeight: 18, marginTop: spacing.md },
 
   cronoWrap: {
@@ -618,11 +634,13 @@ const styles = StyleSheet.create({
   puntoTesta: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 },
   versante: {
     backgroundColor: alpha.velo,
-    borderRadius: radius.pill,
+    borderRadius: radius.sm,
     paddingHorizontal: 8,
     paddingVertical: 2,
   },
-  versanteProc: { backgroundColor: '#E1F7F4' },
+  // Era una pastiglia verde acqua chiarissima, pensata per il tema
+  // chiaro: sul fondo scuro diventava un francobollo luminoso.
+  versanteProc: { backgroundColor: 'rgba(62,158,146,0.16)' },
   versanteTesto: {
     fontSize: 10.5,
     fontWeight: '600',

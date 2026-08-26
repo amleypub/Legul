@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     width: 42,
     height: 5,
     borderRadius: radius.pill,
-    backgroundColor: '#D7DCE6',
+    backgroundColor: alpha.bordoMarcato,
     marginBottom: spacing.sm,
   },
   titolo: {

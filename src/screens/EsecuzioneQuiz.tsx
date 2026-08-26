@@ -56,7 +56,10 @@ function Opzione({
     }).start();
 
   const palette = {
-    idle: { bg: colors.card, bordo: '#E3E7EF', edge: '#D3D9E6', testo: colors.text },
+    /* Il bordo a riposo era un grigio chiarissimo ereditato dal tema
+       chiaro: sul fondo ossidiana diventava un contorno bianco che
+       gridava più della risposta stessa. Ora è un vetro appena inciso. */
+    idle: { bg: alpha.vetro, bordo: alpha.bordo, edge: alpha.bordo, testo: colors.text },
     selezionata: { bg: tinte.soft, bordo: tinte.start, edge: tinte.edge, testo: tinte.end },
     corretta: {
       bg: colors.successSoft,
@@ -418,7 +421,7 @@ const styles = StyleSheet.create({
   opzioneWrap: { marginBottom: spacing.sm },
   opzione: {
     borderRadius: radius.lg,
-    borderWidth: 2,
+    borderWidth: 1.5,
     paddingVertical: spacing.md - 2,
     paddingHorizontal: spacing.md,
     flexDirection: 'row',
@@ -460,9 +463,16 @@ const styles = StyleSheet.create({
     color: colors.text,
     marginTop: spacing.sm,
   },
-  sheetSpiegazioneScroll: { maxHeight: 190, marginVertical: spacing.sm },
+  /*
+    Il serif ha interlinea più larga dell'interfaccia, quindi nello stesso
+    riquadro entrano meno righe e la spiegazione si tronca a metà frase
+    contro il bottone: sembra un difetto anche se il testo scorre. Più
+    spazio, e interlinea un po' più stretta di quella da lettura lunga —
+    qui il testo è dentro un foglio, non su una pagina.
+  */
+  sheetSpiegazioneScroll: { maxHeight: 230, marginVertical: spacing.sm },
   // La spiegazione è il testo che si legge più a lungo: serif e interlinea larga.
-  sheetSpiegazione: { ...type.corpoLungo, fontSize: 14.5, color: colors.text },
+  sheetSpiegazione: { ...type.corpoLungo, fontSize: 14.5, lineHeight: 23, color: colors.text },
   sheetMessaggio: {
     fontSize: 13,
     color: colors.textMuted,

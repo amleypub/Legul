@@ -195,8 +195,8 @@ const styles = StyleSheet.create({
     marginLeft: spacing.md,
     paddingTop: spacing.sm,
     paddingLeft: spacing.sm + 2,
-    borderLeftWidth: 3,
-    borderLeftColor: '#D9E0EE',
+    borderLeftWidth: 1,
+    borderLeftColor: alpha.bordo,
   },
 
   intestazione: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },

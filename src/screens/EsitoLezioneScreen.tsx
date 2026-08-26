@@ -18,7 +18,7 @@ import { BADGES, useGamification } from '../gamification/GamificationContext';
 import { ORE_PROPOSTE } from '../notifiche/promemoria';
 import { Bottone } from '../components/Bottone';
 import { Monolite } from '../components/Monolite';
-import { Confetti } from '../components/Confetti';
+import { Polvere } from '../components/Polvere';
 import { playSound } from '../audio/sounds';
 import type { RootStackScreenProps } from '../navigation/types';
 import { alpha, colors, materiaColors, molla, ombra, radius, spacing } from '../theme';
@@ -165,7 +165,7 @@ export default function EsitoLezioneScreen({
       style={styles.gradient}
     >
       <StatusBar style="light" />
-      {!fallito && <Confetti count={stelle === 3 ? 110 : 70} />}
+      {!fallito && <Polvere count={stelle === 3 ? 42 : 28} />}
       <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
         <ScrollView contentContainerStyle={styles.content}>
           <Rianimato.View style={mascotStyle}>

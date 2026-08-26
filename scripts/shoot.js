@@ -64,7 +64,55 @@ function esitoUrl({ stelle, corrette, punti, fallito = false }) {
   return `/esito/${encodeURIComponent('Diritto civile')}/civile-l1-1?${q}`;
 }
 
+/*
+  Confronta l'età del bundle con quella dei sorgenti.
+
+  Un `expo export` avviato prima dell'ultima modifica produce un bundle
+  che non la contiene: gli scatti sembrano freschi — sono stati appena
+  riscritti — ma mostrano il codice vecchio. È già capitato di leggerli e
+  concludere che una correzione non aveva funzionato, quando in realtà
+  non era mai stata compilata. Meglio rifiutarsi di scattare.
+*/
+function verificaFreschezza() {
+  const bundleDir = path.join(ROOT, '_expo', 'static', 'js', 'web');
+  if (!fs.existsSync(bundleDir)) return;
+  const bundle = fs
+    .readdirSync(bundleDir)
+    .filter((f) => f.endsWith('.js'))
+    .map((f) => fs.statSync(path.join(bundleDir, f)).mtimeMs);
+  if (!bundle.length) return;
+  const compilato = Math.max(...bundle);
+
+  let piuRecente = 0;
+  let colpevole = '';
+  const visita = (dir) => {
+    for (const voce of fs.readdirSync(dir, { withFileTypes: true })) {
+      const f = path.join(dir, voce.name);
+      if (voce.isDirectory()) {
+        if (voce.name !== '__tests__') visita(f);
+      } else if (/\.(tsx?|json)$/.test(voce.name)) {
+        const m = fs.statSync(f).mtimeMs;
+        if (m > piuRecente) {
+          piuRecente = m;
+          colpevole = path.relative(path.join(__dirname, '..'), f);
+        }
+      }
+    }
+  };
+  visita(path.join(__dirname, '..', 'src'));
+
+  if (piuRecente > compilato) {
+    const ritardo = Math.round((piuRecente - compilato) / 1000);
+    console.log(
+      `BUNDLE VECCHIO — ${colpevole} è stato modificato ${ritardo}s dopo la compilazione.`
+    );
+    console.log('Rilancia `npx expo export --platform web --output-dir web-build --clear`.');
+    process.exit(2);
+  }
+}
+
 async function main() {
+  verificaFreschezza();
   await new Promise((r) => server.listen(8099, r));
   const browser = await chromium.launch({ executablePath: EXE, args: ['--no-sandbox'] });
   const page = await browser.newPage({

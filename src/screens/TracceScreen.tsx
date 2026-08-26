@@ -71,20 +71,22 @@ export default function TracceScreen() {
           {/* Le tracce in archivio sono tre per sessione, le prove ora
               sono due: chi legge deve poter capire subito perché, senza
               credere che l'archivio sia sbagliato. */}
+          {/* L'avviso è vetro neutro: l'oro resta solo sul richiamo che
+              porta altrove, perché un blocco intero nella tinta delle
+              azioni faceva sembrare questa nota la cosa da fare. */}
           <Superficie
-            tinta={colors.accentSoft}
             raggio={radius.lg}
             style={styles.riformaWrap}
             contentStyle={styles.riforma}
             onPress={() => navigation.navigate('Esame')}
           >
-            <Icona nome="information-circle" size={20} color="#8A5B00" />
+            <Icona nome="information-circle" size={18} color={colors.titanio} />
             <Text style={styles.riformaTesto}>
               Dalla sessione 2026-2027 le prove scritte sono due — parere e atto — e ciascuna si
               sostiene su una materia a scelta fra civile, penale e amministrativo.{' '}
               <Text style={styles.riformaLink}>Vedi come funziona l’esame</Text>
             </Text>
-            <Icona nome="chevron-forward" size={18} color="#8A5B00" />
+            <Icona nome="chevron-forward" size={16} color={colors.textFaint} />
           </Superficie>
 
           {/* La frase cambia da sola quando l'archivio è coperto: una
@@ -173,8 +175,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md - 4,
     paddingVertical: spacing.sm + 4,
   },
-  riformaTesto: { flex: 1, fontSize: 13, color: colors.accent, lineHeight: 19 },
-  riformaLink: { fontWeight: '600', textDecorationLine: 'underline' },
+  riformaTesto: { flex: 1, fontSize: 13, color: colors.textMuted, lineHeight: 19 },
+  riformaLink: { color: colors.accent, fontWeight: '600', textDecorationLine: 'underline' },
 
   /* Solo il bordo: il resto del layout viene da `chipSvolta`, che ha già
      la riga con icona e testo. */

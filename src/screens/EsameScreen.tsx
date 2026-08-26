@@ -14,8 +14,14 @@ import {
 import type { RootStackScreenProps } from '../navigation/types';
 import { alpha, colors, radius, spacing } from '../theme';
 
-const TINTA_SCRITTO = { chiaro: alpha.velo, scuro: '#2D4FC7', bordo: '#C7D5F7' };
-const TINTA_ORALE = { chiaro: '#FDF0DC', scuro: '#B0640F', bordo: '#F3DCB6' };
+/*
+  Le due prove restano distinguibili, ma per temperatura e non per
+  saturazione: il blu reale e l'ambra pieni erano un secondo accento che
+  litigava con lo champagne delle azioni. Qui il colore vive solo nei
+  tratti sottili e nei testi piccoli, mai come riempimento.
+*/
+const TINTA_SCRITTO = { chiaro: alpha.velo, scuro: '#9DB0D4', bordo: 'rgba(157,176,212,0.30)' };
+const TINTA_ORALE = { chiaro: alpha.velo, scuro: '#C9AC86', bordo: 'rgba(201,172,134,0.30)' };
 
 function BloccoProva({ prova, onEsercitati }: { prova: Prova; onEsercitati?: () => void }) {
   const tinta = prova.tipo === 'scritto' ? TINTA_SCRITTO : TINTA_ORALE;
@@ -24,8 +30,8 @@ function BloccoProva({ prova, onEsercitati }: { prova: Prova; onEsercitati?: () 
       {/* La colonna di sinistra fa da linea del tempo: il pallino numerato
           e la stanghetta che lo collega alla prova successiva. */}
       <View style={styles.provaColonna}>
-        <View style={[styles.provaPallino, { backgroundColor: tinta.scuro }]}>
-          <Text style={styles.provaNumero}>{prova.ordine}</Text>
+        <View style={[styles.provaPallino, { borderColor: tinta.bordo }]}>
+          <Text style={[styles.provaNumero, { color: tinta.scuro }]}>{prova.ordine}</Text>
         </View>
         <View style={[styles.provaLinea, { backgroundColor: tinta.bordo }]} />
       </View>
@@ -260,12 +266,16 @@ const styles = StyleSheet.create({
   provaPallino: {
     width: 28,
     height: 28,
-    borderRadius: 14,
+    // Quadrato smussato, non pastiglia: le forme tonde erano il residuo
+    // più riconoscibile del linguaggio precedente.
+    borderRadius: radius.sm,
+    borderWidth: 1,
+    backgroundColor: alpha.vetroForte,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  provaNumero: { color: '#FFFFFF', fontWeight: '700', fontSize: 14 },
-  provaLinea: { width: 3, flex: 1, borderRadius: 2, marginVertical: 4 },
+  provaNumero: { fontWeight: '700', fontSize: 13 },
+  provaLinea: { width: 1, flex: 1, marginVertical: 4 },
 
   provaCorpoWrap: { flex: 1, marginBottom: spacing.sm },
   provaCorpo: {
