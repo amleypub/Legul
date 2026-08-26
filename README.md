@@ -41,6 +41,22 @@ prendere, non a decorare.
   firma più riconoscibile del linguaggio precedente. Ora è una colonna
   allineata di moduli quadrati. La logica di sblocco, le stelle e i punti
   non sono stati toccati
+- **Niente coriandoli**: la vittoria faceva piovere centodieci dischi in
+  sette tinte primarie che ruotavano. La festa resta, con la stessa
+  logica che decide quando mostrarla, ma è diventata un pulviscolo rado
+  di scaglie champagne e titanio che sale e si spegne (`Polvere`)
+- **Il colore non fa insieme da fondo e da contenuto**: dove l'accento
+  riempie, il testo e l'icona sopra sono grafite; dove il testo è
+  champagne, il fondo è un velo. Confonderli produce oro su oro, che non
+  è brutto — è invisibile, e non si vede rileggendo il codice
+- **La materia è un velo, non una fascia**: nelle testate di traccia,
+  svolgimento e caso pratico la tinta vive nel bordo e in un velo al
+  quattordici per cento. Un blocco pieno in testa fa sembrare una scheda
+  promozionale una schermata che si legge come un documento
+- **Il pieno saturo non segnala la scelta**: durate, opzioni del quiz e
+  segmenti si distinguono alzando il vetro e incidendo il bordo. Un
+  riempimento acceso su un controllo secondario sembra l'azione
+  principale della schermata
 - Animazioni con **Reanimated** e **Moti**, sfocature con **expo-blur**
   (sul web `backdrop-filter`), icone **Lucide**
 
@@ -65,11 +81,11 @@ prendere, non a decorare.
 
 > Modello in `src/data/diagnosi.ts`, schermata in `src/screens/DiagnosiScreen.tsx`. Raggiungibile dalla Home, dal Profilo e via `legul://dove-sei-debole`.
 
-### Percorso quiz in stile Duolingo
+### Percorso quiz
 - 6 materie del nucleo comune: Diritto civile, Diritto penale, Procedura civile, Procedura penale, Diritto amministrativo, Deontologia forense
 - **Materie a scelta dell'orale**: tutte e sei quelle fra cui il d.l. 100/2026 fa scegliere — costituzionale, commerciale, lavoro, internazionale, Unione europea, tributario — di cui se ne porta **una sola**. La schermata Quiz le tiene in un blocco a parte per non far credere che vadano studiate tutte e mette in cima quella dichiarata dall'utente. Il codice che **dichiara le materie non coperte** resta al suo posto anche se oggi non ne stampa nessuna: l'elenco della rosa lo fissa la legge, e se una riforma ne aggiungesse una l'app deve tornare a dirlo invece di sembrare completa
 - **Percorso a nodi** con 4 unità per materia (Fondamenti, Consolidamento, Avanzato, Eccellenza) e lezioni da 10 domande a sblocco progressivo
-- **Cuori**: 4 tentativi per lezione; **stelle** (1-3) in base alla precisione, gradienti, animazioni a molla e feedback aptico
+- **Cuori**: 4 tentativi per lezione; **stelle** (1-3) in base alla precisione, animazioni a molla e feedback aptico
 - Dopo ogni risposta viene mostrata la **spiegazione del perché**, con i riferimenti normativi (articoli di codice, leggi speciali, riforma Cartabia, ecc.)
 - Anche le risposte errate valgono qualche punto: studiare conta sempre
 
@@ -236,14 +252,25 @@ esecuzione: va riportato in `app.json` (`splash.backgroundColor` e
 
 ### Verifica grafica senza dispositivo
 
-`scripts/shoot.js` esporta l'app per il web e ne cattura le schermate con
-Chromium, comprese quelle raggiungibili solo via deep link (esito lezione,
-paywall, accesso):
+`scripts/anteprima.sh` esporta l'app per il web e ne cattura le schermate
+con Chromium, comprese quelle raggiungibili solo via deep link (esito
+lezione, paywall, accesso):
 
 ```bash
-npx expo export --platform web --output-dir web-build --clear
-node scripts/shoot.js        # immagini in shots/
+sh scripts/anteprima.sh      # immagini in shots/
 ```
+
+I due comandi vanno lanciati insieme, non separatamente. Un
+`expo export` avviato prima dell'ultima modifica compila il codice
+vecchio, e le immagini che ne escono sembrano fresche perché sono state
+appena riscritte: è già capitato di leggerle e concludere che una
+correzione non avesse funzionato quando non era mai stata compilata. Lo
+script annota l'istante di avvio della compilazione e `shoot.js` si
+rifiuta di scattare se un sorgente è più recente, dicendo quale.
+
+A fine esecuzione la cattura dichiara **quanti scatti ha aggiornato e
+quanti ne ha saltati**: uno scatto saltato lascia sul disco quello del
+giro precedente, e senza quella riga non c'è modo di accorgersene.
 
 ## Struttura del progetto
 

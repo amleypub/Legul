@@ -86,8 +86,11 @@ function Sezione({ titolo, sintesi, icona, tinta, aperta, onToggle, children }: 
           accessibilityState={{ expanded: aperta }}
           style={({ pressed }) => [styles.sezioneTesta, pressed && styles.sezionePremuta]}
         >
-          <View style={[styles.sezioneIcona, { backgroundColor: tinta }]}>
-            <Icona nome={icona} size={17} color="#FFFFFF" />
+          {/* Riquadro di vetro con il tratto nella tinta, non un
+              quadrato pieno con l'icona bianca dentro: il pieno saturo
+              era l'ultima cosa che gridava su una schermata da leggere. */}
+          <View style={[styles.sezioneIcona, { borderColor: `${tinta}55` }]}>
+            <Icona nome={icona} size={16} color={tinta} />
           </View>
           <View style={styles.sezioneTesti}>
             <Text style={styles.sezioneTitolo}>{titolo}</Text>
@@ -231,7 +234,7 @@ export default function SvolgimentoScreen({
         titolo="Questioni da individuare"
         sintesi="Che cosa la traccia nasconde. Confrontale con quelle che hai visto tu."
         icona="search"
-        tinta={colors.primary}
+        tinta={colors.titanioChiaro}
         aperta={!!aperte.questioni}
         onToggle={() => toggle('questioni')}
       >
@@ -255,7 +258,7 @@ export default function SvolgimentoScreen({
           titolo={b.titolo}
           sintesi={b.sintesi}
           icona="document-text"
-          tinta={tinte.end}
+          tinta={tinte.edge}
           aperta={!!aperte[b.id]}
           onToggle={() => toggle(b.id)}
         >
@@ -341,7 +344,7 @@ export default function SvolgimentoScreen({
         titolo="Griglia di autovalutazione"
         sintesi="Rileggi il tuo elaborato e segna che cosa ci hai messo davvero."
         icona="checkbox"
-        tinta={colors.successEdge}
+        tinta={colors.success}
         aperta={!!aperte.griglia}
         onToggle={() => toggle('griglia')}
       >
@@ -480,7 +483,9 @@ const styles = StyleSheet.create({
   sezioneIcona: {
     width: 34,
     height: 34,
-    borderRadius: 11,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    backgroundColor: alpha.vetroForte,
     alignItems: 'center',
     justifyContent: 'center',
   },
