@@ -43,9 +43,9 @@ function Stella({ accesa, ritardo }: { accesa: boolean; ritardo: number }) {
     <Animated.View style={{ transform: [{ scale }] }}>
       <Icona
         nome="star"
-        size={54}
-        color={accesa ? colors.accent : 'rgba(255,255,255,0.25)'}
-        pieno={accesa}
+        size={38}
+        color={accesa ? colors.accent : colors.textFaint}
+        strokeWidth={accesa ? 1.6 : 1.3}
       />
     </Animated.View>
   );
@@ -154,7 +154,14 @@ export default function EsitoLezioneScreen({
 
   return (
     <LinearGradient
-      colors={fallito ? ['#3A4358', '#1C2231'] : [tinte.start, tinte.end]}
+      /*
+        Il fondo era una lastra piena della tinta della materia: era la
+        schermata più «premio di livello» dell'app. Ora è lo stesso
+        fondale obsidiana delle altre, con la tinta ridotta a un velo in
+        alto: la festa la fanno le stelle e il numero, non il colore
+        steso su tutto lo schermo.
+      */
+      colors={fallito ? ['#141821', colors.background] : [tinte.soft, colors.background]}
       style={styles.gradient}
     >
       <StatusBar style="light" />

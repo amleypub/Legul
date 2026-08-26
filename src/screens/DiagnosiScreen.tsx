@@ -69,14 +69,12 @@ function Riga({ voce }: { voce: DiagnosiMateria }) {
   return (
     <Superficie tono="vetro" raggio={radius.xl} contentStyle={styles.riga}>
       <View style={styles.intestazione}>
-        <LinearGradient
-          colors={[tinte.start, tinte.end]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.icona}
-        >
-          <Icona nome={ICONA_MATERIA[voce.materia]} size={17} color="#FFFFFF" />
-        </LinearGradient>
+        {/* La tinta della materia sta nel tratto, non nel riempimento:
+            dodici quadrati saturi in colonna trasformerebbero una
+            dashboard in una tavolozza. */}
+        <View style={styles.icona}>
+          <Icona nome={ICONA_MATERIA[voce.materia]} size={16} color={tinte.edge} />
+        </View>
         <View style={styles.titoli}>
           <Text style={styles.materia}>{voce.materia}</Text>
           <Text style={[styles.stato, { color: TINTA_STATO[voce.stato] }]}>
@@ -245,7 +243,10 @@ const styles = StyleSheet.create({
   icona: {
     width: 34,
     height: 34,
-    borderRadius: 12,
+    borderRadius: radius.sm,
+    borderWidth: 1,
+    borderColor: alpha.bordo,
+    backgroundColor: alpha.velo,
     alignItems: 'center',
     justifyContent: 'center',
   },

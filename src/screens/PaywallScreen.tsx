@@ -369,7 +369,7 @@ const styles = StyleSheet.create({
     height: 22,
     justifyContent: 'center',
     backgroundColor: colors.accent,
-    borderRadius: radius.pill,
+    borderRadius: radius.sm,
     paddingHorizontal: 9,
     marginBottom: spacing.sm,
   },

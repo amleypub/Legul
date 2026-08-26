@@ -513,7 +513,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    borderRadius: radius.pill,
+    borderRadius: radius.sm,
     paddingHorizontal: 9,
     paddingVertical: 4,
   },

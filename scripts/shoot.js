@@ -159,7 +159,22 @@ async function main() {
   const outDir = path.join(__dirname, '..', 'shots');
   fs.mkdirSync(outDir, { recursive: true });
 
-  const shot = (n) => page.screenshot({ path: path.join(outDir, n) });
+  /*
+    Registro degli scatti.
+
+    Serve a un problema che mi ha già ingannato: quando un passaggio
+    fallisce, il file PNG del giro precedente resta sul disco, e chi lo
+    riapre crede di guardare lo stato attuale. Uno scatto stantìo è
+    peggio di uno mancante, perché non si annuncia. Qui ogni scrittura
+    viene registrata e alla fine si stampa l'elenco di ciò che manca.
+  */
+  const scattati = new Set();
+  const attesi = new Set();
+  const shot = async (n) => {
+    attesi.add(n);
+    await page.screenshot({ path: path.join(outDir, n) });
+    scattati.add(n);
+  };
   const tap = async (testo, opts = {}) => {
     await page.getByText(testo, { exact: opts.exact !== false }).last().click({ timeout: 6000 });
     await page.waitForTimeout(opts.wait ?? 1200);
@@ -218,16 +233,33 @@ async function main() {
   await page.waitForTimeout(1400);
   await shot('4-lezione.png');
 
-  // Seleziona una risposta e conferma, per vedere il foglio di feedback.
+  /*
+    Seleziona una risposta e conferma, per vedere il foglio di feedback.
+
+    Le coordinate fisse non vanno bene: bastava spostare il percorso da
+    serpentina a colonna perché il tocco non aprisse più nulla, il
+    passaggio fallisse in silenzio e restasse sul disco lo scatto del
+    giro precedente. Qui si clicca il testo dell'opzione e si aspetta
+    che il foglio compaia davvero prima di scattare.
+  */
   try {
-    await page.mouse.click(201, 300);
+    await page.getByText('Conferma').first().waitFor({ timeout: 8000 });
+    const opzioni = page.locator('div[tabindex]', { hasText: /^(5 anni|10 anni|20 anni)$/ });
+    if (await opzioni.count()) await opzioni.first().click({ timeout: 4000 });
+    else await page.mouse.click(201, 300);
     await page.waitForTimeout(600);
     await shot('5-lezione-selezione.png');
     await tap('Conferma');
-    await page.waitForTimeout(900);
+    // Il foglio è arrivato solo quando si legge l'esito: senza questa
+    // attesa si fotografa la schermata di mezzo.
+    await page
+      .getByText(/Corretto!|Risposta errata/)
+      .first()
+      .waitFor({ timeout: 8000 });
+    await page.waitForTimeout(500);
     await shot('6-lezione-feedback.png');
   } catch (e) {
-    console.log('lezione errore:', e.message);
+    console.log('SALTATO lezione-feedback:', e.message.split('\n')[0]);
   }
 
   // Torna alle tab e apri il Profilo.
@@ -296,7 +328,12 @@ async function main() {
 
   await browser.close();
   server.close();
-  console.log('OK screenshots in shots/');
+  const mancanti = [...attesi].filter((n) => !scattati.has(n));
+  if (mancanti.length) {
+    console.log('ATTENZIONE — scatti non aggiornati (resta la versione precedente):');
+    for (const n of mancanti) console.log('  -', n);
+  }
+  console.log(`OK screenshots in shots/ (${scattati.size} aggiornati, ${mancanti.length} saltati)`);
 }
 main().catch((e) => {
   console.error(e);

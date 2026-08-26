@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
     gap: 5,
     alignSelf: 'flex-start',
     backgroundColor: 'rgba(255,255,255,0.16)',
-    borderRadius: radius.pill,
+    borderRadius: radius.sm,
     paddingHorizontal: 10,
     paddingVertical: 4,
   },

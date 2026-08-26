@@ -645,7 +645,7 @@ const styles = StyleSheet.create({
   puntoDettaglio: { fontSize: 13.5, color: colors.text, lineHeight: 21, marginTop: 4 },
 
   rifRiga: { flexDirection: 'row', flexWrap: 'wrap', gap: 5, marginTop: spacing.sm },
-  rif: { borderRadius: radius.pill, paddingHorizontal: 8, paddingVertical: 3 },
+  rif: { borderRadius: radius.sm, paddingHorizontal: 8, paddingVertical: 3 },
   rifNorma: { backgroundColor: alpha.velo },
   rifGiuri: { backgroundColor: colors.errorSoft },
   rifTesto: { fontSize: 11, fontWeight: '700' },

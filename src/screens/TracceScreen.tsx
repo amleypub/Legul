@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
   },
   annoPill: {
     backgroundColor: colors.primary,
-    borderRadius: radius.pill,
+    borderRadius: radius.sm,
     paddingHorizontal: 14,
     paddingVertical: 4,
   },
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     // Velo scuro invece del vecchio grigio pieno: la pastiglia sta sopra
     // una superficie chiara e deve prenderne la tinta, non coprirla.
     backgroundColor: alpha.velo,
-    borderRadius: radius.pill,
+    borderRadius: radius.sm,
     paddingHorizontal: 8,
     paddingVertical: 3,
   },

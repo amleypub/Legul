@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     gap: 5,
     marginTop: spacing.sm,
     backgroundColor: colors.accent,
-    borderRadius: radius.pill,
+    borderRadius: radius.sm,
     paddingHorizontal: 11,
     paddingVertical: 5,
   },

@@ -357,11 +357,20 @@ export function EsecuzioneQuiz({
             <Text style={styles.sheetSpiegazione}>{domanda.spiegazione}</Text>
             <Text style={styles.sheetMessaggio}>{messaggio}</Text>
           </ScrollView>
+          {/*
+            Il bottone porta l'accento, non il colore dell'esito.
+
+            Il verde per il giusto e il rosso per lo sbagliato erano il
+            rinforzo tipico del linguaggio da gioco. L'esito è già detto
+            due volte — dall'icona e dal titolo in cima al foglio, e dal
+            filo colorato sul bordo superiore — e ripeterlo sul comando
+            significa colorare di semaforo l'unica azione della
+            schermata. Qui l'azione primaria ha sempre lo stesso aspetto,
+            che è ciò che la rende immediata da trovare.
+          */}
           <Bottone
             label={ultima || (!giusta && senzaCuori) ? 'Vedi il risultato' : 'Continua'}
             onPress={continua}
-            gradiente={giusta ? [colors.success, colors.successEdge] : [colors.error, colors.errorEdge]}
-            glow={giusta ? colors.success : colors.error}
           />
         </Animated.View>
       )}
