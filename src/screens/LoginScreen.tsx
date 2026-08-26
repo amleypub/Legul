@@ -13,10 +13,10 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { Icona } from '../components/Icona';
-import { Mascot } from '../components/Mascot';
+import { Monolite } from '../components/Monolite';
 import { useAuth } from '../auth/AuthContext';
 import type { RootStackScreenProps } from '../navigation/types';
-import { alpha, colors, radius, spacing, SCALA_PRESSIONE } from '../theme';
+import { SCALA_PRESSIONE, alpha, colors, radius, spacing } from '../theme';
 
 const EMAIL_VALIDA = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -144,7 +144,7 @@ export default function LoginScreen({ navigation }: RootStackScreenProps<'Login'
       </Pressable>
 
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        <Mascot state="celebrating" size={120} animated />
+        <Monolite state="celebrating" size={120} animated />
         <Text style={styles.titolo}>Accedi a Legul</Text>
         <Text style={styles.sottotitolo}>
           Salva i tuoi progressi e ritrovali su ogni dispositivo, senza mai perdere una streak.
@@ -184,7 +184,7 @@ export default function LoginScreen({ navigation }: RootStackScreenProps<'Login'
                 bg="#FFFFFF"
                 fg="#1C1E26"
                 edge="#D3D8E2"
-                bordo="#E2E6EE"
+                bordo={alpha.bordo}
                 occupato={inCorso === 'google'}
                 disabilitato={inCorso !== null}
                 onPress={() => esegui('google', accediGoogle)}
@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, },
   chiudi: { paddingHorizontal: spacing.md, paddingTop: spacing.sm },
   content: { padding: spacing.lg, alignItems: 'center', paddingBottom: spacing.xl },
-  titolo: { fontSize: 26, fontWeight: '900', color: colors.text, marginTop: spacing.sm },
+  titolo: { fontSize: 26, fontWeight: '700', color: colors.text, marginTop: spacing.sm },
   sottotitolo: {
     fontSize: 15,
     color: colors.textMuted,
@@ -281,10 +281,10 @@ const styles = StyleSheet.create({
   socialSpento: { opacity: 0.45 },
   emailWrap: { gap: spacing.sm },
   emailInput: {
-    backgroundColor: colors.card,
+    backgroundColor: alpha.vetroForte,
     borderRadius: radius.pill,
     borderWidth: 1.5,
-    borderColor: '#E2E6EE',
+    borderColor: alpha.bordo,
     paddingVertical: 15,
     paddingHorizontal: spacing.lg,
     fontSize: 16,
@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
   inviatoWrap: {
     alignSelf: 'stretch',
     alignItems: 'center',
-    backgroundColor: colors.card,
+    backgroundColor: alpha.vetroForte,
     borderRadius: radius.xl,
     padding: spacing.lg,
     marginTop: spacing.xl,
@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  inviatoTitolo: { fontSize: 19, fontWeight: '800', color: colors.text },
+  inviatoTitolo: { fontSize: 19, fontWeight: '600', color: colors.text },
   inviatoTesto: {
     fontSize: 14,
     color: colors.textMuted,
@@ -318,8 +318,8 @@ const styles = StyleSheet.create({
   },
   linkSecondario: {
     fontSize: 14,
-    fontWeight: '800',
-    color: colors.primary,
+    fontWeight: '600',
+    color: colors.accent,
     marginTop: spacing.xs,
   },
   social: {
@@ -331,12 +331,12 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
   },
   socialIcon: { position: 'absolute', left: spacing.lg },
-  socialLabel: { fontSize: 16, fontWeight: '800' },
+  socialLabel: { fontSize: 16, fontWeight: '600' },
   avvisoWrap: {
     flexDirection: 'row',
     gap: spacing.sm,
     alignItems: 'flex-start',
-    backgroundColor: colors.card,
+    backgroundColor: alpha.vetroForte,
     borderRadius: radius.md,
     padding: spacing.md,
     marginTop: spacing.lg,
@@ -352,5 +352,5 @@ const styles = StyleSheet.create({
     marginTop: spacing.lg,
     paddingHorizontal: spacing.sm,
   },
-  privacyLink: { color: colors.primary, fontWeight: '800', textDecorationLine: 'underline' },
+  privacyLink: { color: colors.accent, fontWeight: '600', textDecorationLine: 'underline' },
 });

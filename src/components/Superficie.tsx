@@ -1,12 +1,18 @@
 import React from 'react';
-import { Platform, Pressable, StyleSheet, View, type ViewStyle } from 'react-native';
+import { Pressable, StyleSheet, View, type ViewStyle } from 'react-native';
 import { BlurView } from 'expo-blur';
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from 'react-native-reanimated';
-import { alone, alpha, molla, ombra, radius, SCALA_PRESSIONE, SFOCATURA } from '../theme';
+import { LinearGradient } from 'expo-linear-gradient';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import {
+  alone,
+  alpha,
+  BORDO_VETRO,
+  molla,
+  ombra,
+  radius,
+  SCALA_PRESSIONE,
+  SFOCATURA,
+} from '../theme';
 
 type Tono = 'vetro' | 'forte' | 'interno' | 'piena';
 type Rilievo = 'nessuno' | 'tenue' | 'media' | 'alta';
@@ -40,7 +46,7 @@ const RIEMPIMENTO: Record<Tono, string> = {
   vetro: alpha.vetro,
   forte: alpha.vetroForte,
   interno: alpha.vetroInterno,
-  piena: '#FFFFFF',
+  piena: '#141922',
 };
 
 /**
@@ -59,21 +65,27 @@ const SFOCA: Record<Tono, boolean> = {
 /**
  * Superficie in vetro: il mattone dell'interfaccia.
  *
- * Sostituisce i vecchi blocchi con bordo inferiore spesso. Il distacco
- * dal fondo non viene più da uno scalino disegnato ma da tre cose che
- * agiscono insieme: un riempimento bianco non del tutto opaco, un filo
- * di bordo scuro a bassissima opacità e un'ombra ampia e morbida.
+ * Su fondo obsidiana il distacco viene da quattro cose che agiscono
+ * insieme, e nessuna delle quattro da sola basterebbe:
  *
- * Alla pressione l'elemento rimpicciolisce appena invece di scendere.
- * La differenza non è estetica: la traslazione verticale funzionava
- * perché c'era uno spessore sotto da schiacciare, e senza quello
- * sembrerebbe solo che l'elemento scivola.
+ * 1. una sfocatura vera dietro la lastra, che deforma ciò che passa sotto;
+ * 2. un riempimento bianco al quattro-sette per cento, non di più: oltre
+ *    il dieci il vetro diventa lattiginoso e il testo perde contrasto;
+ * 3. un bordo **in gradiente**, chiaro in alto e quasi nullo in basso —
+ *    è la differenza fra lo spigolo di una lastra e la cornice di un
+ *    rettangolo, ed è il dettaglio che fa sembrare l'oggetto tagliato;
+ * 4. un'ombra profonda sotto, che è l'unica cosa che su fondo scuro
+ *    dice «questo sta davanti».
+ *
+ * Alla pressione l'elemento rimpicciolisce di pochissimo. Il rimbalzo
+ * generoso apparteneva al linguaggio precedente: qui il tocco deve
+ * sembrare la risposta di un oggetto rigido, non di uno morbido.
  */
 export function Superficie({
   children,
   tono = 'vetro',
   rilievo = 'media',
-  raggio = radius.xl,
+  raggio = radius.lg,
   onPress,
   disabled = false,
   style,
@@ -89,23 +101,28 @@ export function Superficie({
   const rilievoStile = rilievo === 'nessuno' ? null : ombra[rilievo];
   const aloneStile = attiva && glow ? alone(glow, 'tenue') : null;
 
+  const raggioInterno = Math.max(0, raggio - 1);
+
   const corpo = (
-    <View style={[styles.clip, { borderRadius: raggio }, contentStyle]}>
+    <View style={[styles.clip, { borderRadius: raggioInterno }, contentStyle]}>
       {/*
         La sfocatura sta sotto al riempimento, non al posto suo: da sola
-        renderebbe il fondo lattiginoso e illeggibile sotto al testo.
+        renderebbe il fondo illeggibile sotto al testo. Sul web `expo-blur`
+        si traduce in `backdrop-filter`, che è esattamente ciò che serve.
       */}
-      {!tinta && SFOCA[tono] && Platform.OS !== 'web' && (
-        <BlurView intensity={SFOCATURA} tint="light" style={StyleSheet.absoluteFill} />
+      {!tinta && SFOCA[tono] && (
+        <BlurView intensity={SFOCATURA} tint="dark" style={StyleSheet.absoluteFill} />
       )}
       <View
         style={[
           StyleSheet.absoluteFill,
-          { backgroundColor: tinta ?? RIEMPIMENTO[tono], borderRadius: raggio },
+          { backgroundColor: tinta ?? RIEMPIMENTO[tono], borderRadius: raggioInterno },
         ]}
       />
-      {/* Filo di luce in alto: è ciò che dà lo spessore al vetro. */}
-      <View style={[styles.lume, { borderRadius: raggio }]} pointerEvents="none" />
+      {/* Filo di luce in alto e filo d'ombra in basso: insieme danno alla
+          lastra uno spessore che il solo bordo non produce. */}
+      <View style={[styles.lume, { borderRadius: raggioInterno }]} pointerEvents="none" />
+      <View style={styles.fondo} pointerEvents="none" />
       {children}
     </View>
   );
@@ -114,7 +131,7 @@ export function Superficie({
     <Animated.View
       style={[
         styles.base,
-        { borderRadius: raggio, borderColor: attiva && glow ? glow + '40' : alpha.bordo },
+        { borderRadius: raggio },
         rilievoStile,
         aloneStile,
         disabled && styles.spento,
@@ -122,7 +139,25 @@ export function Superficie({
         stileAnimato,
       ]}
     >
-      {corpo}
+      {/*
+        Il bordo è un gradiente e non un `borderColor`, perché un bordo di
+        colore uniforme fa una cornice: qui serve una linea quasi bianca
+        dove la luce batte, che sparisce dal lato opposto.
+
+        Si ottiene con un anello vero: il gradiente riempie tutta la
+        superficie e il contenuto ci sta sopra rientrato di un pixel, così
+        resta scoperta solo la cornice. Il trucco alternativo — gradiente
+        con `borderWidth` e riempimento trasparente — non funziona, perché
+        il gradiente colora comunque anche l'area interna.
+      */}
+      <LinearGradient
+        colors={attiva && glow ? [glow + 'AA', glow + '11'] : [...BORDO_VETRO]}
+        start={{ x: 0.2, y: 0 }}
+        end={{ x: 0.8, y: 1 }}
+        style={[StyleSheet.absoluteFill, { borderRadius: raggio }]}
+        pointerEvents="none"
+      />
+      <View style={[styles.anello, { borderRadius: Math.max(0, raggio - 1) }]}>{corpo}</View>
     </Animated.View>
   );
 
@@ -147,11 +182,11 @@ export function Superficie({
 }
 
 const styles = StyleSheet.create({
-  base: {
-    alignSelf: 'stretch',
-    borderWidth: StyleSheet.hairlineWidth * 1.5,
-  },
+  base: { alignSelf: 'stretch' },
   clip: { overflow: 'hidden' },
+  /* Un pixel di margine su ogni lato: è ciò che lascia scoperto
+     l'anello di gradiente sottostante e lo trasforma in un bordo. */
+  anello: { margin: 1, overflow: 'hidden' },
   lume: {
     position: 'absolute',
     left: 0,
@@ -160,5 +195,13 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: alpha.lume,
   },
-  spento: { opacity: 0.45 },
+  fondo: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 1,
+    backgroundColor: alpha.fondo,
+  },
+  spento: { opacity: 0.4 },
 });

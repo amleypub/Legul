@@ -30,12 +30,12 @@ import {
 } from '../data/scelte';
 import { nomeVisualizzato, useAuth } from '../auth/AuthContext';
 import { ORE_PROPOSTE } from '../notifiche/promemoria';
-import { Mascot } from '../components/Mascot';
+import { Monolite } from '../components/Monolite';
 import { SpazioStatusBar } from '../components/TitoloSchermata';
 import { Bottone } from '../components/Bottone';
 import type { RootStackParamList } from '../navigation/types';
 import { Sfondo } from '../components/Sfondo';
-import { alpha, colors, materiaColors, radius, spacing, SPAZIO_TAB } from '../theme';
+import { SPAZIO_TAB, alpha, colors, materiaColors, radius, spacing } from '../theme';
 
 const VANTAGGI = [
   'Ritrova i tuoi progressi su ogni dispositivo',
@@ -74,11 +74,15 @@ function Voce({
 }) {
   const contenuto = (
     <>
-      <View style={[styles.voceIcona, { backgroundColor: tinta }]}>
+      {/* La tinta è passata dal riempimento al tratto. Un quadratino
+          pieno di colore per ogni riga trasformava l'elenco in una
+          tavolozza; qui il colore identifica la voce restando un
+          dettaglio, e la forma è la stessa per tutte. */}
+      <View style={styles.voceIcona}>
         {occupata ? (
-          <ActivityIndicator size="small" color="#FFFFFF" />
+          <ActivityIndicator size="small" color={tinta} />
         ) : (
-          <Icona nome={icona} size={17} color="#FFFFFF" />
+          <Icona nome={icona} size={16} color={tinta} />
         )}
       </View>
       <View style={styles.voceTesto}>
@@ -221,13 +225,13 @@ function FoglioScelta({
               <View
                 style={[
                   styles.voceIcona,
-                  { backgroundColor: v.scelta ? colors.success : '#B6BECC' },
+                  { borderColor: v.scelta ? colors.success : alpha.bordo },
                 ]}
               >
                 <Icona
                   nome={v.scelta ? 'checkmark' : 'ellipse-outline'}
                   size={17}
-                  color="#FFFFFF"
+                  color={v.scelta ? colors.success : colors.textMuted}
                 />
               </View>
               <View style={styles.voceTesto}>
@@ -243,8 +247,8 @@ function FoglioScelta({
             }}
             style={({ pressed }) => [styles.voce, pressed && styles.vocePremuta]}
           >
-            <View style={[styles.voceIcona, { backgroundColor: '#B6BECC' }]}>
-              <Icona nome="close" size={17} color="#FFFFFF" />
+            <View style={styles.voceIcona}>
+              <Icona nome="close" size={16} color={colors.textMuted} />
             </View>
             <View style={styles.voceTesto}>
               <Text style={styles.voceEtichetta}>Non lo so ancora</Text>
@@ -392,13 +396,13 @@ export default function ProfiloScreen() {
           sovrapposto che sfonda il riquadro. */}
       <View style={styles.heroWrap}>
         <LinearGradient
-          colors={['#2E4370', '#1B2A4A']}
+          colors={['rgba(255,255,255,0.08)', 'rgba(255,255,255,0.02)']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.hero}
         >
         <View style={styles.heroTop}>
-          <Mascot state="neutral" size={72} />
+          <Monolite state="neutral" size={72} />
           <View style={styles.heroTesto}>
             <Text style={styles.heroNome} numberOfLines={1}>
               {nomeVisualizzato(utente)}
@@ -573,9 +577,9 @@ export default function ProfiloScreen() {
               style={({ pressed }) => [styles.voce, pressed && styles.vocePremuta]}
             >
               <View
-                style={[styles.voceIcona, { backgroundColor: scelto ? colors.success : '#B6BECC' }]}
+                style={[styles.voceIcona, scelto && { borderColor: colors.success }]}
               >
-                <Icona nome={scelto ? 'checkmark' : 'ellipse-outline'} size={17} color="#FFFFFF" />
+                <Icona nome={scelto ? 'checkmark' : 'ellipse-outline'} size={16} color={scelto ? colors.success : colors.textMuted} />
               </View>
               <View style={styles.voceTesto}>
                 <Text style={styles.voceEtichetta}>{o.nome}</Text>
@@ -697,7 +701,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     maxHeight: '80%',
-    backgroundColor: colors.card,
+    backgroundColor: alpha.vetroForte,
     borderTopLeftRadius: radius.xxl,
     borderTopRightRadius: radius.xxl,
     padding: spacing.md,
@@ -710,7 +714,7 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     backgroundColor: alpha.veloForte,
   },
-  foglioTitolo: { fontSize: 19, fontWeight: '800', color: colors.text, letterSpacing: -0.4 },
+  foglioTitolo: { fontSize: 19, fontWeight: '600', color: colors.text, letterSpacing: -0.4 },
   foglioLista: { gap: 2 },
   foglioChiudi: { marginTop: spacing.xs },
   container: { flex: 1, },
@@ -723,7 +727,7 @@ const styles = StyleSheet.create({
   },
   heroTop: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm + 2 },
   heroTesto: { flex: 1, gap: 2 },
-  heroNome: { color: '#FFFFFF', fontSize: 21, fontWeight: '900' },
+  heroNome: { color: '#FFFFFF', fontSize: 21, fontWeight: '700' },
   heroEmail: { color: 'rgba(255,255,255,0.6)', fontSize: 13 },
   sincro: {
     flexDirection: 'row',
@@ -736,7 +740,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.md,
   },
   sincroTesto: { flex: 1, fontSize: 13.5, color: colors.text, lineHeight: 19 },
-  sincroForte: { fontWeight: '800', color: colors.successEdge },
+  sincroForte: { fontWeight: '600', color: colors.successEdge },
   heroLivelloRow: { flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 3 },
   heroLivello: { color: 'rgba(255,255,255,0.85)', fontSize: 13, fontWeight: '700' },
   heroStats: {
@@ -749,7 +753,7 @@ const styles = StyleSheet.create({
     paddingTop: spacing.md,
   },
   heroStat: { alignItems: 'center', flex: 1 },
-  heroStatValore: { color: '#FFFFFF', fontSize: 22, fontWeight: '900' },
+  heroStatValore: { color: '#FFFFFF', fontSize: 22, fontWeight: '700' },
   heroStatLabel: {
     color: 'rgba(255,255,255,0.65)',
     fontSize: 11,
@@ -760,14 +764,14 @@ const styles = StyleSheet.create({
   },
   heroDivider: { width: 1, height: 30, backgroundColor: 'rgba(255,255,255,0.18)' },
   card: {
-    backgroundColor: colors.card,
+    backgroundColor: alpha.vetroForte,
     borderRadius: radius.xxl,
     padding: spacing.lg,
     marginTop: spacing.lg,
     borderWidth: StyleSheet.hairlineWidth * 1.5,
     borderColor: alpha.bordo,
   },
-  cardTitolo: { fontSize: 20, fontWeight: '800', color: colors.text },
+  cardTitolo: { fontSize: 20, fontWeight: '600', color: colors.text },
   cardSub: { fontSize: 14, color: colors.textMuted, lineHeight: 21, marginTop: spacing.xs },
   // Spunte al posto delle tessere beige: sono tre benefici in elenco,
   // non tre voci di menu, e le tessere davano loro un peso che non hanno.
@@ -779,7 +783,7 @@ const styles = StyleSheet.create({
   gruppo: { marginTop: spacing.lg },
   gruppoTitolo: {
     fontSize: 11,
-    fontWeight: '800',
+    fontWeight: '600',
     letterSpacing: 1,
     textTransform: 'uppercase',
     color: colors.textMuted,
@@ -789,7 +793,7 @@ const styles = StyleSheet.create({
   // Niente filetti fra le righe: lo spazio e le tessere colorate bastano
   // a separarle, e il risultato respira invece di sembrare un elenco.
   gruppoCard: {
-    backgroundColor: colors.card,
+    backgroundColor: alpha.vetroForte,
     borderRadius: radius.xl,
     overflow: 'hidden',
     paddingVertical: 4,
@@ -803,16 +807,19 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm + 3,
     paddingHorizontal: spacing.md - 2,
   },
-  vocePremuta: { backgroundColor: '#F3F6FC' },
+  vocePremuta: { backgroundColor: alpha.veloForte },
   voceIcona: {
     width: 32,
     height: 32,
-    borderRadius: 10,
+    borderRadius: radius.sm,
+    borderWidth: 1,
+    borderColor: alpha.bordo,
+    backgroundColor: alpha.velo,
     alignItems: 'center',
     justifyContent: 'center',
   },
   voceTesto: { flex: 1 },
-  voceEtichetta: { fontSize: 15, fontWeight: '700', color: colors.text },
+  voceEtichetta: { fontSize: 15, fontWeight: '600', color: colors.text },
   voceDistruttiva: { color: colors.error },
   voceSottotitolo: { fontSize: 12.5, color: colors.textMuted, lineHeight: 17, marginTop: 1 },
   voceValore: { fontSize: 15, fontWeight: '700', color: colors.textMuted },

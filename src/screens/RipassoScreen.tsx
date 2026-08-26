@@ -10,7 +10,7 @@ import {
   prossimaScadenza,
 } from '../gamification/ripasso';
 import { Bottone } from '../components/Bottone';
-import { Mascot } from '../components/Mascot';
+import { Monolite } from '../components/Monolite';
 import { EsecuzioneQuiz, type EsitoQuiz } from './EsecuzioneQuiz';
 import type { RootStackScreenProps } from '../navigation/types';
 import type { QuizQuestion } from '../types';
@@ -112,7 +112,7 @@ export default function RipassoScreen({ navigation }: RootStackScreenProps<'Ripa
   if (domande.length === 0) {
     return (
       <SafeAreaView style={styles.vuoto}>
-        <Mascot state="celebrating" size={104} />
+        <Monolite state="celebrating" size={104} />
         <Text style={styles.vuotoTitolo}>
           {prossima ? 'Ripasso in pari' : 'Nessun errore da ripassare'}
         </Text>
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
     gap: spacing.sm,
   },
-  vuotoTitolo: { fontSize: 21, fontWeight: '900', color: colors.text, marginTop: spacing.sm },
+  vuotoTitolo: { fontSize: 21, fontWeight: '700', color: colors.text, marginTop: spacing.sm },
   vuotoTesto: {
     fontSize: 15,
     color: colors.textMuted,

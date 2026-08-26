@@ -13,7 +13,7 @@ import type { RootStackParamList } from '../navigation/types';
 import type { Materia } from '../types';
 import { Sfondo } from '../components/Sfondo';
 import { TitoloSchermata } from '../components/TitoloSchermata';
-import { colors, materiaColors, radius, spacing, SCALA_PRESSIONE, SPAZIO_TAB } from '../theme';
+import { SCALA_PRESSIONE, SPAZIO_TAB, alpha, colors, materiaColors, radius, spacing, type } from '../theme';
 
 export const ICONA_MATERIA: Record<Materia, string> = {
   'Diritto civile': 'handshake',
@@ -75,31 +75,52 @@ function MateriaBlock({
                   }),
                 },
               ] }}>
-          <LinearGradient
-            colors={[tinte.start, tinte.end]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.block}
-          >
+          {/*
+            La scheda è vetro, non una lastra colorata.
+
+            Sei riquadri saturi in fila erano il residuo più vistoso del
+            linguaggio precedente: leggibili, allegri e completamente fuori
+            registro per un prodotto che si vende come strumento
+            professionale. Qui la tinta della materia sopravvive in tre
+            punti soli — il filo verticale a sinistra, il tratto
+            dell'icona e il riempimento della barra — e basta a
+            distinguere una materia dall'altra senza gridare.
+          */}
+          <View style={styles.block}>
+            <LinearGradient
+              colors={[tinte.soft, 'rgba(255,255,255,0.02)']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={StyleSheet.absoluteFill}
+              pointerEvents="none"
+            />
+            {/* Il filo di tinta: identifica la materia a colpo d'occhio
+                anche scorrendo veloce, e costa due pixel. */}
+            <View style={[styles.filo, { backgroundColor: tinte.edge }]} pointerEvents="none" />
             <View style={styles.blockHeader}>
               <View style={styles.iconBubble}>
-                <Icona nome={ICONA_MATERIA[materia]} size={26} color={tinte.end} />
+                <Icona nome={ICONA_MATERIA[materia]} size={22} color={tinte.edge} />
               </View>
               <View style={styles.blockText}>
                 <Text style={styles.materia}>{materia}</Text>
                 <View style={styles.metaRow}>
-                  <Icona nome="star" size={13} color="#FFE08A" pieno />
+                  <Icona nome="star" size={12} color={colors.accent} />
                   <Text style={styles.blockMeta}>
                     {stelleTotali} · {completate}/{lezioni.length} lezioni
                   </Text>
                 </View>
               </View>
-              <Icona nome="chevron-forward" size={22} color="rgba(255,255,255,0.9)" />
+              <Icona nome="chevron-forward" size={18} color={colors.textFaint} />
             </View>
             <View style={styles.progressTrack}>
-              <View style={[styles.progressFill, { width: `${quota * 100}%` }]} />
+              <View
+                style={[
+                  styles.progressFill,
+                  { width: `${quota * 100}%`, backgroundColor: tinte.edge },
+                ]}
+              />
             </View>
-          </LinearGradient>
+          </View>
         </Animated.View>
       </View>
     </Pressable>
@@ -193,40 +214,52 @@ export default function QuizHomeScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, },
   content: { padding: spacing.md, paddingBottom: SPAZIO_TAB, gap: spacing.md },
-  titolo: { fontSize: 28, fontWeight: '900', color: colors.text },
+  titolo: { fontSize: 28, fontWeight: '700', color: colors.text },
   sottotitolo: { fontSize: 14, color: colors.textMuted, lineHeight: 20, marginBottom: spacing.xs },
 
   blockWrap: { },
-  block: { borderRadius: radius.xxl, paddingVertical: spacing.sm + 2, paddingHorizontal: spacing.md, gap: spacing.sm },
-  blockHeader: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
+  block: {
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: alpha.bordo,
+    overflow: 'hidden',
+    paddingVertical: spacing.md - 2,
+    paddingHorizontal: spacing.md,
+    paddingLeft: spacing.md + 4,
+    gap: spacing.sm + 2,
+  },
+  filo: { position: 'absolute', left: 0, top: 0, bottom: 0, width: 2 },
+  blockHeader: { flexDirection: 'row', alignItems: 'center', gap: spacing.md - 2 },
   iconBubble: {
-    width: 46,
-    height: 46,
-    borderRadius: 15,
-    backgroundColor: '#FFFFFF',
+    width: 40,
+    height: 40,
+    borderRadius: radius.sm,
+    borderWidth: 1,
+    borderColor: alpha.bordo,
+    backgroundColor: alpha.velo,
     alignItems: 'center',
     justifyContent: 'center',
   },
   blockText: { flex: 1 },
-  materia: { fontSize: 18, fontWeight: '800', color: '#FFFFFF' },
-  metaRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 },
-  blockMeta: { fontSize: 13, color: 'rgba(255,255,255,0.9)', fontWeight: '600' },
+  materia: { ...type.scheda, fontSize: 16, color: colors.text },
+  metaRow: { flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 3 },
+  blockMeta: { ...type.piccolo, fontSize: 12.5, color: colors.textMuted },
   progressTrack: {
-    height: 7,
-    borderRadius: 4,
-    backgroundColor: 'rgba(0,0,0,0.18)',
+    height: 3,
+    borderRadius: 2,
+    backgroundColor: 'rgba(255,255,255,0.07)',
     overflow: 'hidden',
   },
-  progressFill: { height: '100%', borderRadius: 4, backgroundColor: '#FFFFFF' },
+  progressFill: { height: '100%', borderRadius: 2 },
 
   gruppo: { marginTop: spacing.sm, gap: 4 },
   gruppoTitolo: {
     fontSize: 12,
-    fontWeight: '800',
+    fontWeight: '600',
     letterSpacing: 1,
     textTransform: 'uppercase',
     color: colors.textMuted,
   },
   gruppoNota: { fontSize: 13, color: colors.textMuted, lineHeight: 19 },
-  gruppoForte: { fontWeight: '800', color: colors.text },
+  gruppoForte: { fontWeight: '600', color: colors.text },
 });

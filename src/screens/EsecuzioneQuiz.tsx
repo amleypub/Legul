@@ -12,7 +12,7 @@ import { playSound } from '../audio/sounds';
 import { useGamification } from '../gamification/GamificationContext';
 import { Bottone } from '../components/Bottone';
 import type { QuizQuestion } from '../types';
-import { colors, radius, ombra, spacing, SCALA_PRESSIONE } from '../theme';
+import { SCALA_PRESSIONE, alpha, colors, ombra, radius, spacing, type } from '../theme';
 
 export const CUORI_INIZIALI = 4;
 
@@ -382,18 +382,18 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 14,
     borderRadius: 7,
-    backgroundColor: '#E4E7EC',
+    backgroundColor: alpha.veloForte,
     overflow: 'hidden',
   },
   progressFill: { height: '100%', borderRadius: 7 },
   cuoriWrap: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  cuoriTesto: { fontSize: 16, fontWeight: '800', color: '#E4405F' },
-  contatore: { fontSize: 15, fontWeight: '800', color: colors.textMuted },
+  cuoriTesto: { fontSize: 16, fontWeight: '600', color: '#E4405F' },
+  contatore: { fontSize: 15, fontWeight: '600', color: colors.textMuted },
   body: { flex: 1 },
   bodyContent: { padding: spacing.md, paddingBottom: spacing.xl },
   kicker: {
     fontSize: 12,
-    fontWeight: '800',
+    fontWeight: '600',
     letterSpacing: 1.2,
     textTransform: 'uppercase',
     color: colors.textMuted,
@@ -401,7 +401,7 @@ const styles = StyleSheet.create({
   },
   domandaTesto: {
     fontSize: 20,
-    fontWeight: '800',
+    fontWeight: '600',
     color: colors.text,
     lineHeight: 28,
     marginBottom: spacing.lg,
@@ -417,7 +417,7 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   opzioneTesto: { flex: 1, fontSize: 15, lineHeight: 21, fontWeight: '600' },
-  opzioneTestoAttivo: { fontWeight: '800' },
+  opzioneTestoAttivo: { fontWeight: '600' },
   footer: { padding: spacing.md },
   sheet: {
     position: 'absolute',
@@ -426,15 +426,25 @@ const styles = StyleSheet.create({
     bottom: 0,
     borderTopLeftRadius: radius.xl,
     borderTopRightRadius: radius.xl,
+    borderTopWidth: 1,
     padding: spacing.md,
     paddingBottom: spacing.lg,
-    ...ombra.media,
+    /*
+      Base opaca, non solo il velo semantico.
+
+      I veli `successSoft` e `errorSoft` sono trasparenti: da soli
+      lascerebbero trasparire le opzioni del quiz sotto la spiegazione,
+      che è il testo che si legge più a lungo di tutta l'app. Il colore
+      dell'esito resta, ma sopra un fondo che regge il contrasto.
+    */
+    backgroundColor: '#0D1119',
+    ...ombra.alta,
   },
-  sheetOk: { backgroundColor: '#EDF9F1' },
-  sheetKo: { backgroundColor: '#FDF0F0' },
+  sheetOk: { borderTopColor: 'rgba(79,191,139,0.45)' },
+  sheetKo: { borderTopColor: 'rgba(226,86,107,0.45)' },
   sheetHeader: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
-  sheetTitolo: { flex: 1, fontSize: 19, fontWeight: '800' },
-  sheetPunti: { fontSize: 14, fontWeight: '800', color: colors.primary },
+  sheetTitolo: { flex: 1, fontSize: 19, fontWeight: '600' },
+  sheetPunti: { fontSize: 14, fontWeight: '600', color: colors.accent },
   sheetSoluzione: {
     fontSize: 14,
     fontWeight: '700',
@@ -442,7 +452,8 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
   },
   sheetSpiegazioneScroll: { maxHeight: 190, marginVertical: spacing.sm },
-  sheetSpiegazione: { fontSize: 14, color: colors.text, lineHeight: 21 },
+  // La spiegazione è il testo che si legge più a lungo: serif e interlinea larga.
+  sheetSpiegazione: { ...type.corpoLungo, fontSize: 14.5, color: colors.text },
   sheetMessaggio: {
     fontSize: 13,
     color: colors.textMuted,

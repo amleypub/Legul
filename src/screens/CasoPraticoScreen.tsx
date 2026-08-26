@@ -23,7 +23,7 @@ import { useGamification } from '../gamification/GamificationContext';
 import { casiRiservati, casoAccessibile } from '../data/accesso';
 import { MuroPremium } from '../components/MuroPremium';
 import { Bottone } from '../components/Bottone';
-import { Mascot } from '../components/Mascot';
+import { Monolite } from '../components/Monolite';
 import { ProgressBar } from '../components/ProgressBar';
 import type { RootStackScreenProps } from '../navigation/types';
 import { alpha, colors, materiaColors, radius, spacing } from '../theme';
@@ -64,7 +64,7 @@ export default function CasoPraticoScreen({
   if (!caso) {
     return (
       <View style={styles.vuoto}>
-        <Mascot state="studying" size={96} />
+        <Monolite state="studying" size={96} />
         <Text style={styles.vuotoTitolo}>Caso non trovato</Text>
         <Bottone
           label="Torna ai casi"
@@ -250,7 +250,7 @@ export default function CasoPraticoScreen({
           <ProgressBar
             progress={crono.quota}
             color={crono.scaduto ? colors.error : tinte.end}
-            trackColor="#E4E8F0"
+            trackColor={alpha.bordo}
           />
           <Text style={styles.cronoNota}>
             {crono.scaduto
@@ -393,7 +393,7 @@ export default function CasoPraticoScreen({
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.esitoTesta}>
-        <Mascot state={esito.tono === 'insufficiente' ? 'studying' : 'celebrating'} size={80} />
+        <Monolite state={esito.tono === 'insufficiente' ? 'studying' : 'celebrating'} size={80} />
         <Text style={[styles.esitoPunteggio, { color: tinteEsito.testo }]}>
           {esito.punteggio}
           <Text style={styles.esitoSu}>/100</Text>
@@ -410,7 +410,7 @@ export default function CasoPraticoScreen({
                 <ProgressBar
                   progress={versanti[v].quota}
                   color={versanti[v].quota < SOGLIA_VERSANTE ? colors.error : colors.success}
-                  trackColor="#E4E8F0"
+                  trackColor={alpha.bordo}
                   height={8}
                 />
               </View>
@@ -442,7 +442,7 @@ export default function CasoPraticoScreen({
       <View style={styles.listaCard}>
         {caso.domandeCommissione.map((d) => (
           <View key={d} style={styles.voce}>
-            <Icona nome="chatbubble-ellipses-outline" size={16} color={colors.primary} />
+            <Icona nome="chatbubble-ellipses-outline" size={16} color={colors.accent} />
             <Text style={styles.voceTesto}>{d}</Text>
           </View>
         ))}
@@ -483,23 +483,23 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
     gap: spacing.sm,
   },
-  vuotoTitolo: { fontSize: 20, fontWeight: '800', color: colors.text },
+  vuotoTitolo: { fontSize: 20, fontWeight: '600', color: colors.text },
   vuotoBtn: { alignSelf: 'stretch', marginTop: spacing.md },
 
   testataWrap: { },
   testata: { borderRadius: radius.xxl, padding: spacing.md, gap: 3 },
   occhiello: {
     fontSize: 11,
-    fontWeight: '800',
+    fontWeight: '600',
     letterSpacing: 1,
     textTransform: 'uppercase',
     color: 'rgba(255,255,255,0.85)',
   },
-  titolo: { fontSize: 20, fontWeight: '900', color: '#FFFFFF', lineHeight: 26 },
+  titolo: { fontSize: 20, fontWeight: '700', color: '#FFFFFF', lineHeight: 26 },
 
   passiWrap: { marginTop: spacing.md },
   passi: {
-    backgroundColor: colors.card,
+    backgroundColor: alpha.vetroForte,
     borderRadius: radius.xl,
     padding: spacing.md - 2,
     gap: spacing.md - 2,
@@ -514,9 +514,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  passoNumeroTesto: { fontSize: 13, fontWeight: '900', color: '#FFFFFF' },
+  passoNumeroTesto: { fontSize: 13, fontWeight: '700', color: '#FFFFFF' },
   passoTesti: { flex: 1 },
-  passoTitolo: { fontSize: 15, fontWeight: '800', color: colors.text },
+  passoTitolo: { fontSize: 15, fontWeight: '600', color: colors.text },
   passoDettaglio: { fontSize: 13, color: colors.textMuted, lineHeight: 19, marginTop: 2 },
 
   sezione: {
@@ -528,13 +528,13 @@ const styles = StyleSheet.create({
   },
   sezioneTitolo: {
     fontSize: 12,
-    fontWeight: '800',
+    fontWeight: '600',
     letterSpacing: 1,
     textTransform: 'uppercase',
     color: colors.textMuted,
   },
 
-  durateCard: { backgroundColor: colors.card, borderRadius: radius.xl, padding: spacing.md - 2 },
+  durateCard: { backgroundColor: alpha.vetroForte, borderRadius: radius.xl, padding: spacing.md - 2 },
   durataEtichetta: { fontSize: 13.5, fontWeight: '700', color: colors.text },
   durataEtichettaDopo: { marginTop: spacing.md },
   durataRiga: { flexDirection: 'row', gap: 8, marginTop: spacing.sm },
@@ -543,14 +543,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 10,
     borderRadius: radius.md,
-    backgroundColor: '#EEF1F7',
+    backgroundColor: alpha.velo,
   },
-  durataTesto: { fontSize: 14, fontWeight: '800', color: colors.textMuted },
+  durataTesto: { fontSize: 14, fontWeight: '600', color: colors.textMuted },
   durataTestoAttiva: { color: '#FFFFFF' },
   durataNota: { fontSize: 12, color: colors.textMuted, lineHeight: 18, marginTop: spacing.md },
 
   cronoWrap: {
-    backgroundColor: colors.card,
+    backgroundColor: alpha.vetroForte,
     borderRadius: radius.xl,
     padding: spacing.md,
     gap: spacing.sm,
@@ -561,14 +561,14 @@ const styles = StyleSheet.create({
   cronoTesta: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   cronoEtichetta: {
     fontSize: 12,
-    fontWeight: '800',
+    fontWeight: '600',
     letterSpacing: 1,
     textTransform: 'uppercase',
     color: colors.textMuted,
   },
   cronoTempo: {
     fontSize: 46,
-    fontWeight: '900',
+    fontWeight: '700',
     color: colors.text,
     letterSpacing: -1,
     fontVariant: ['tabular-nums'],
@@ -577,10 +577,10 @@ const styles = StyleSheet.create({
   cronoNota: { fontSize: 13, color: colors.textMuted, lineHeight: 19 },
 
   fattoWrap: { },
-  fatto: { backgroundColor: colors.card, borderRadius: radius.xl, padding: spacing.md },
+  fatto: { backgroundColor: alpha.vetroForte, borderRadius: radius.xl, padding: spacing.md },
   fattoTesto: { fontSize: 15.5, color: colors.text, lineHeight: 26, marginBottom: spacing.sm },
   consegna: {
-    backgroundColor: '#F2F5FB',
+    backgroundColor: alpha.veloForte,
     borderRadius: radius.lg,
     padding: spacing.md - 4,
     marginTop: spacing.sm,
@@ -596,7 +596,7 @@ const styles = StyleSheet.create({
     padding: spacing.md - 4,
     marginTop: spacing.md,
   },
-  suggerimentoTesto: { flex: 1, fontSize: 13, color: '#5A3D00', lineHeight: 19 },
+  suggerimentoTesto: { flex: 1, fontSize: 13, color: colors.accent, lineHeight: 19 },
 
   istruzione: { fontSize: 13.5, color: colors.textMuted, lineHeight: 20, marginBottom: spacing.sm },
 
@@ -604,20 +604,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     gap: spacing.sm + 2,
-    backgroundColor: colors.card,
+    backgroundColor: alpha.vetroForte,
     borderRadius: radius.xl,
     padding: spacing.md - 4,
     marginBottom: spacing.sm,
     borderWidth: StyleSheet.hairlineWidth * 1.5,
     borderColor: alpha.bordo,
   },
-  puntoPremuto: { backgroundColor: '#F2F5FB' },
-  puntoPreso: { backgroundColor: '#F4FBF7' },
+  puntoPremuto: { backgroundColor: alpha.veloForte },
+  puntoPreso: { backgroundColor: colors.successSoft },
   puntoSpunta: { marginTop: 2 },
   puntoTesti: { flex: 1 },
   puntoTesta: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 },
   versante: {
-    backgroundColor: '#E8EEFD',
+    backgroundColor: alpha.velo,
     borderRadius: radius.pill,
     paddingHorizontal: 8,
     paddingVertical: 2,
@@ -625,32 +625,32 @@ const styles = StyleSheet.create({
   versanteProc: { backgroundColor: '#E1F7F4' },
   versanteTesto: {
     fontSize: 10.5,
-    fontWeight: '800',
+    fontWeight: '600',
     letterSpacing: 0.5,
     textTransform: 'uppercase',
-    color: '#20399B',
+    color: '#8FA6E8',
   },
-  versanteTestoProc: { color: '#0C6C60' },
+  versanteTestoProc: { color: '#5FC4B4' },
   puntoPeso: {
     fontSize: 11,
-    fontWeight: '800',
+    fontWeight: '600',
     color: colors.textMuted,
-    backgroundColor: '#EEF1F7',
+    backgroundColor: alpha.velo,
     borderRadius: radius.pill,
     paddingHorizontal: 7,
     paddingVertical: 2,
     overflow: 'hidden',
   },
-  puntoTitolo: { fontSize: 15, fontWeight: '800', color: colors.text, lineHeight: 20 },
+  puntoTitolo: { fontSize: 15, fontWeight: '600', color: colors.text, lineHeight: 20 },
   puntoDettaglio: { fontSize: 13.5, color: colors.text, lineHeight: 21, marginTop: 4 },
 
   rifRiga: { flexDirection: 'row', flexWrap: 'wrap', gap: 5, marginTop: spacing.sm },
   rif: { borderRadius: radius.pill, paddingHorizontal: 8, paddingVertical: 3 },
-  rifNorma: { backgroundColor: '#E8EEFD' },
-  rifGiuri: { backgroundColor: '#FBE7EC' },
+  rifNorma: { backgroundColor: alpha.velo },
+  rifGiuri: { backgroundColor: colors.errorSoft },
   rifTesto: { fontSize: 11, fontWeight: '700' },
   rifTestoNorma: { color: '#20399B' },
-  rifTestoGiuri: { color: '#8C1B3C' },
+  rifTestoGiuri: { color: colors.error },
 
   correnteCard: {
     flexDirection: 'row',
@@ -663,15 +663,15 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
   },
   correnteEtichetta: { fontSize: 13.5, fontWeight: '700', color: colors.text },
-  correnteValore: { fontSize: 17, fontWeight: '900', color: colors.successEdge },
+  correnteValore: { fontSize: 17, fontWeight: '700', color: colors.successEdge },
 
   esitoTesta: { alignItems: 'center', gap: 2, paddingTop: spacing.md },
-  esitoPunteggio: { fontSize: 52, fontWeight: '900', letterSpacing: -2 },
-  esitoSu: { fontSize: 22, fontWeight: '800', color: colors.textMuted },
-  esitoEtichetta: { fontSize: 16, fontWeight: '800', color: colors.text },
+  esitoPunteggio: { fontSize: 52, fontWeight: '700', letterSpacing: -2 },
+  esitoSu: { fontSize: 22, fontWeight: '600', color: colors.textMuted },
+  esitoEtichetta: { fontSize: 16, fontWeight: '600', color: colors.text },
 
   versantiCard: {
-    backgroundColor: colors.card,
+    backgroundColor: alpha.vetroForte,
     borderRadius: radius.xl,
     padding: spacing.md - 2,
     gap: spacing.sm + 2,
@@ -684,7 +684,7 @@ const styles = StyleSheet.create({
   versanteBarra: { flex: 1 },
   versanteValore: {
     fontSize: 12.5,
-    fontWeight: '800',
+    fontWeight: '600',
     color: colors.textMuted,
     width: 46,
     textAlign: 'right',
@@ -703,10 +703,10 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
   },
   premioTesto: { flex: 1, fontSize: 13.5, color: colors.text, lineHeight: 20 },
-  premioPunti: { fontWeight: '800', color: colors.successEdge },
+  premioPunti: { fontWeight: '600', color: colors.successEdge },
 
   listaCard: {
-    backgroundColor: colors.card,
+    backgroundColor: alpha.vetroForte,
     borderRadius: radius.xl,
     padding: spacing.md - 2,
     gap: spacing.sm + 2,

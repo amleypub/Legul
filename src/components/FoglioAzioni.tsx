@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Icona } from './Icona';
-import { colors, radius, spacing } from '../theme';
+import { alpha, colors, radius, spacing } from '../theme';
 
 export interface AzioneFoglio {
   chiave: string;
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   foglio: {
-    backgroundColor: colors.card,
+    backgroundColor: alpha.vetroForte,
     borderTopLeftRadius: radius.xxl,
     borderTopRightRadius: radius.xxl,
     padding: spacing.md,
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   },
   titolo: {
     fontSize: 12,
-    fontWeight: '800',
+    fontWeight: '600',
     letterSpacing: 1,
     textTransform: 'uppercase',
     color: colors.textMuted,
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     paddingVertical: 11,
     borderRadius: radius.md,
   },
-  rigaPremuta: { backgroundColor: '#F2F5FB' },
+  rigaPremuta: { backgroundColor: alpha.veloForte },
   icona: {
     width: 34,
     height: 34,
@@ -136,8 +136,8 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
     paddingVertical: 13,
     borderRadius: radius.md,
-    backgroundColor: '#F2F5FB',
+    backgroundColor: alpha.veloForte,
     alignItems: 'center',
   },
-  annullaTesto: { fontSize: 15.5, fontWeight: '800', color: colors.textMuted },
+  annullaTesto: { fontSize: 15.5, fontWeight: '600', color: colors.textMuted },
 });

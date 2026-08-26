@@ -4,26 +4,45 @@ App mobile per **Android e iOS** (React Native + Expo) per prepararsi all'esame 
 
 ## Linguaggio visivo
 
-Superfici bianche non del tutto opache posate su un fondale con velature
-appena percepibili, separate dallo sfondo da un filo di bordo scuro a
-bassissima opacità e da un'ombra ampia e morbida. Niente bordi duri.
+Obsidiana, vetro satinato, un solo accento. Fondo scuro e freddo,
+superfici che sono lastre di vetro appena schiarite sopra una sfocatura
+vera, e il colore quasi assente: compare dove c'è una decisione da
+prendere, non a decorare.
 
-- **Perché il bordo è scuro-trasparente e non grigio pieno**: il fondale
-  cambia tinta da una zona all'altra, e un grigio fisso stacca mentre un
-  nero al sette per cento prende il colore di ciò che ha sotto
-- **Il fondale non è un colore piatto**: due velature più una macchia
-  colorata, tutte a opacità bassissima. Una superficie traslucida sopra
-  un fondo uniforme è indistinguibile da una superficie opaca
-- **Il glow è un'ombra colorata**, non un bagliore: su fondo chiaro un
-  alone luminoso non si vedrebbe. L'elemento tinge l'aria intorno a sé
-- **Alla pressione gli elementi rimpiccioliscono**, non scendono: la
-  traslazione verticale aveva senso quando sotto c'era uno spessore da
-  schiacciare
-- **Tipografia con crenatura stretta in scala**: il valore negativo
-  cresce col corpo del testo, le etichette in maiuscoletto vanno invece
-  nella direzione opposta
-- Animazioni con **Reanimated** e **Moti** (l'equivalente React Native di
-  Framer Motion), sfocature con **expo-blur**, icone **Lucide**
+- **Il vetro ha bisogno di qualcosa da rifrangere**: le superfici sono
+  bianco al quattro-sette per cento: se il fondale fosse un colore
+  piatto sarebbero rettangoli grigi, quindi `Sfondo` costruisce velature
+  e aloni. Oltre il dieci per cento la lastra diventa lattiginosa e il
+  testo perde contrasto
+- **Il bordo è luce, non contorno**: un anello in gradiente, quasi bianco
+  dove la luce batte e quasi nullo dal lato opposto. È la differenza fra
+  lo spigolo di una lastra e la cornice di un rettangolo, e si ottiene
+  con un vero anello — il gradiente riempie la superficie e il contenuto
+  ci sta sopra rientrato di un pixel
+- **L'accento è una risorsa scarsa**: lo champagne sta sulle azioni
+  primarie e sulla lezione da fare adesso. Nel percorso al primo
+  tentativo marcava le lezioni *completate*: una colonna di moduli dorati
+  con l'unica cosa da toccare persa in mezzo
+- **`primary` è una superficie, `accent` è un accento**: tenerli distinti
+  non è pedanteria. Quando i due ruoli coincidono, ogni scheda che usava
+  il primario come fondo diventa una lastra dorata
+- **Icone a tratto 1,5**, sensibilmente più sottili del 2 di Lucide:
+  l'icona accompagna l'etichetta, non grida più forte di lei
+- **Due caratteri**: *Inter* per l'interfaccia, *Source Serif 4* per i
+  testi di legge — tracce, paragrafi degli svolgimenti. È la convenzione
+  editoriale che separa la macchina dal documento che serve
+- **Niente mascotte**: il gufo-giurista è stato rimosso. Un personaggio
+  cartoon costruisce simpatia, e la simpatia è ciò che si vende a chi
+  sceglie fra le app gratuite. Al suo posto un prisma rifratto in
+  assonometria (`Monolite`): non raffigura nulla — niente bilance, niente
+  martelletti — perché la figura letterale è il modo più rapido di
+  sembrare uno studio legale di provincia
+- **Niente serpentina**: il percorso era a zigzag con dischi colorati, la
+  firma più riconoscibile del linguaggio precedente. Ora è una colonna
+  allineata di moduli quadrati. La logica di sblocco, le stelle e i punti
+  non sono stati toccati
+- Animazioni con **Reanimated** e **Moti**, sfocature con **expo-blur**
+  (sul web `backdrop-filter`), icone **Lucide**
 
 ## Funzionalità
 
@@ -245,14 +264,14 @@ src/
   simulatore/                    # Fasi, cronometro e punteggio del caso pratico
   discussione/                   # Commenti, soluzioni proposte, voti, moderazione
   data/materiali.ts              # Materiale per l'esame (codici, manuali…)
-  fonts.ts                       # Nunito applicato a tutta l'app
+  fonts.ts                       # Inter (interfaccia) e Source Serif 4 (testi di legge)
   gamification/                  # Punti, livelli, streak, badge, incoraggiamenti
   gamification/sync.ts           # Fusione dei progressi fra dispositivo e cloud
   gamification/ripasso.ts        # Ripetizione dilazionata: le carte e i loro intervalli
   gamification/obiettivo.ts      # Le tre andature dell'obiettivo giornaliero
   navigation/linking.ts          # Deep link (schema legul://)
   screens/                       # Home, Quiz, Percorso, Lezione, Tracce, Materiale, Profilo
-  components/                    # Superfici in vetro, bottoni, icone, mascotte, coriandoli
+  components/                    # Superfici in vetro, bottoni, icone, Monolite, coriandoli
   components/Icona.tsx           # Mappa dei nomi di icona sui glifi Lucide
   theme.ts                       # Colori, trasparenze, tipografia, ombre, movimento
 supabase/sql/discussione.sql     # Schema e regole della discussione (RLS + funzioni)

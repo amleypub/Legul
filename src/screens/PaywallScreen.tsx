@@ -14,7 +14,7 @@ import {
   svolgimentiRiservati,
 } from '../data/accesso';
 import type { RootStackScreenProps } from '../navigation/types';
-import { alone, colors, molla, radius, spacing, SCALA_PRESSIONE, type } from '../theme';
+import { alone, alpha, colors, molla, radius, spacing, SCALA_PRESSIONE, type } from '../theme';
 
 /**
  * Che cosa si compra.
@@ -125,7 +125,7 @@ function CartaPiano({
         <Text style={styles.pianoDettaglio}>{dettaglio}</Text>
         {attivo && (
           <View style={styles.pianoSpunta}>
-            <Icona nome="checkmark" size={15} color={colors.primary} />
+            <Icona nome="checkmark" size={15} color={colors.accent} />
           </View>
         )}
       </Animated.View>
@@ -146,7 +146,7 @@ export default function PaywallScreen({ navigation }: RootStackScreenProps<'Payw
   const conProva = piano === 'annuale';
 
   return (
-    <LinearGradient colors={['#22314F', '#101728']} style={styles.gradient}>
+    <LinearGradient colors={['#0C1017', '#07090D']} style={styles.gradient}>
       <StatusBar style="light" />
       <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
         <ScrollView contentContainerStyle={styles.content}>
@@ -155,12 +155,12 @@ export default function PaywallScreen({ navigation }: RootStackScreenProps<'Payw
           </Pressable>
 
           <LinearGradient
-            colors={['#F7BE3E', colors.accent]}
+            colors={['rgba(201,162,39,0.16)', 'rgba(201,162,39,0.04)']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={[styles.coronaBubble, alone(colors.accent)]}
           >
-            <Icona nome="crown" size={40} color={colors.primary} />
+            <Icona nome="crown" size={40} color={colors.accent} />
           </LinearGradient>
           <Text style={styles.titolo}>Legul Premium</Text>
           <Text style={styles.sottotitolo}>
@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
   coronaBubble: {
     width: 84,
     height: 84,
-    borderRadius: 30,
+    borderRadius: radius.xl,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: spacing.sm,
@@ -355,7 +355,7 @@ const styles = StyleSheet.create({
   // il colore delle due carte in modo diverso a seconda dell'altezza.
   piano: {
     flex: 1,
-    backgroundColor: '#26314C',
+    backgroundColor: alpha.vetro,
     borderRadius: radius.xl,
     borderWidth: 2,
     borderColor: 'rgba(255,255,255,0.16)',
@@ -363,7 +363,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.sm,
     alignItems: 'center',
   },
-  pianoAttivo: { borderColor: colors.accent, backgroundColor: '#2E3B5C' },
+  pianoAttivo: { borderColor: colors.accent, backgroundColor: 'rgba(201,162,39,0.10)' },
   // Altezza fissa condivisa col segnaposto, così i due piani restano allineati.
   pianoBadge: {
     height: 22,
@@ -380,7 +380,7 @@ const styles = StyleSheet.create({
   pianoNome: { ...type.scheda, color: '#FFFFFF' },
   pianoPrezzo: {
     fontSize: 24,
-    fontWeight: '900',
+    fontWeight: '700',
     letterSpacing: -0.9,
     color: '#FFFFFF',
     marginTop: 4,

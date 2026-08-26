@@ -22,14 +22,27 @@ import {
   type Unita,
 } from '../data/percorso';
 import { useGamification } from '../gamification/GamificationContext';
-import { Mascot } from '../components/Mascot';
+import { Monolite } from '../components/Monolite';
 import { Bottone } from '../components/Bottone';
 import type { RootStackScreenProps } from '../navigation/types';
-import { alone, alpha, colors, materiaColors, radius, ombra, spacing, SCALA_PRESSIONE } from '../theme';
+import { SCALA_PRESSIONE, alone, alpha, colors, materiaColors, ombra, radius, spacing } from '../theme';
 
-const NODE = 76;
-/** Offset orizzontali ciclici che disegnano la serpentina del percorso. */
-const OFFSETS = [0, 55, 88, 55, 0, -55, -88, -55];
+const NODE = 60;
+/*
+  La serpentina non c'è più.
+
+  Gli offset orizzontali ciclici disegnavano il sentiero a zigzag: era la
+  firma visiva del linguaggio precedente e la cosa più riconoscibile da
+  eliminare. Il percorso resta identico nella logica — stesse lezioni,
+  stesso sblocco progressivo, stesse stelle — ma si legge come una
+  colonna allineata, che è il modo in cui un professionista si aspetta di
+  vedere una sequenza di lavoro.
+
+  L'array resta a zero per non toccare la struttura dati che lo
+  attraversa: cambiare qui è una riga, e rimuovere il campo sarebbe una
+  modifica che passa per il modello senza motivo.
+*/
+const OFFSETS = [0];
 
 type StatoNodo = 'bloccata' | 'corrente' | 'completata' | 'premium';
 
@@ -87,26 +100,33 @@ function Nodo({
 
   const bloccata = stato === 'bloccata';
   const premium = stato === 'premium';
+  /*
+    L'economia dell'accento.
+
+    Il champagne marca **la lezione da fare adesso**, non quelle già
+    fatte. Al primo tentativo era il contrario e il risultato era una
+    colonna di undici moduli dorati con l'unica cosa da toccare persa in
+    mezzo: l'accento addosso a tutto smette di indicare qualcosa.
+
+    Il completato è quindi vetro neutro con la spunta in titanio — c'è,
+    si legge, non chiama — e le stelle sotto restano l'unico premio
+    colorato, che è già abbastanza.
+  */
+  const corrente = !bloccata && !premium && stato !== 'completata';
   const faccia = premium
-    ? '#3A4358'
+    ? alpha.velo
     : bloccata
-      ? '#D6DAE2'
-      : stato === 'completata'
-        ? colors.accent
-        : tinte.start;
-  const bordo = premium
-    ? '#242B3B'
-    : bloccata
-      ? '#B4BAC6'
-      : stato === 'completata'
-        ? '#A8861B'
-        : tinte.edge;
+      ? 'rgba(255,255,255,0.025)'
+      : corrente
+        ? 'rgba(201,162,39,0.12)'
+        : alpha.velo;
+  const bordo = corrente ? colors.accent : alpha.bordo;
 
   return (
     <View style={[styles.nodoRiga, { transform: [{ translateX: offset }] }]}>
       {mostraInizia && (
         <Animated.View style={[styles.iniziaBubble, { transform: [{ translateY: bounce }] }]}>
-          <Text style={[styles.iniziaTesto, { color: tinte.end }]}>INIZIA</Text>
+          <Text style={[styles.iniziaTesto, { color: colors.accent }]}>INIZIA</Text>
           <View style={styles.iniziaFreccia} />
         </Animated.View>
       )}
@@ -139,7 +159,7 @@ function Nodo({
             style={[
               styles.halo,
               {
-                borderColor: tinte.start,
+                borderColor: colors.accent,
                 opacity: halo.interpolate({ inputRange: [0, 1], outputRange: [0.5, 0] }),
                 transform: [{ scale: halo.interpolate({ inputRange: [0, 1], outputRange: [1, 1.5] }) }],
               },
@@ -149,9 +169,10 @@ function Nodo({
         <Animated.View
           style={[
             styles.nodoFace,
-            !bloccata && alone(tinte.end, 'tenue'),
+            corrente && alone(colors.accent, 'tenue'),
             {
               backgroundColor: faccia,
+              borderColor: bordo,
               transform: [
                 {
                   scale: premuto.interpolate({
@@ -164,12 +185,14 @@ function Nodo({
           ]}
         >
           {premium ? (
-            <MaterialCommunityIcons name="crown" size={30} color={colors.accent} />
+            <MaterialCommunityIcons name="crown" size={24} color={colors.accent} />
           ) : (
             <Icona
               nome={bloccata ? 'lock-closed' : stato === 'completata' ? 'checkmark' : 'play'}
-              size={30}
-              color={bloccata ? '#8B93A3' : '#FFFFFF'}
+              size={24}
+              color={
+                bloccata ? colors.textFaint : corrente ? colors.accent : colors.titanio
+              }
             />
           )}
         </Animated.View>
@@ -181,7 +204,7 @@ function Nodo({
             nome="star"
             pieno={stelle >= n}
             size={15}
-            color={stelle >= n ? colors.accent : '#D6DAE2'}
+            color={stelle >= n ? colors.accent : colors.textFaint}
           />
         ))}
       </View>
@@ -291,7 +314,7 @@ export default function PercorsoScreen({ route, navigation }: RootStackScreenPro
       case 'testata':
         return (
           <View style={styles.pathHeader}>
-            <Mascot state="studying" size={68} />
+            <Monolite state="studying" size={68} />
             <View style={styles.pathHeaderText}>
               <Text style={styles.pathHeaderTitle}>
                 {item.stelleFatte > 0 ? 'Continua da dove eri!' : 'Si comincia da qui'}
@@ -311,11 +334,13 @@ export default function PercorsoScreen({ route, navigation }: RootStackScreenPro
       case 'unita':
         return (
           <LinearGradient
-            colors={[tinte.start, tinte.end]}
+            colors={[tinte.soft, 'rgba(255,255,255,0.02)']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
-            style={[styles.unitaBanner, ombra.media]}
+            style={[styles.unitaBanner, ombra.tenue]}
           >
+            {/* Il filo di tinta identifica l'unità; il fondo resta vetro. */}
+            <View style={[styles.unitaFilo, { backgroundColor: tinte.edge }]} pointerEvents="none" />
             <View style={styles.unitaTextWrap}>
               <Text style={styles.unitaKicker}>Unità {item.unita.difficolta}</Text>
               <Text style={styles.unitaNome}>{item.unita.nome}</Text>
@@ -379,7 +404,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm,
-    backgroundColor: colors.card,
+    backgroundColor: alpha.vetroForte,
     borderRadius: radius.lg,
     padding: spacing.sm,
     paddingRight: spacing.md,
@@ -390,7 +415,7 @@ const styles = StyleSheet.create({
     borderColor: alpha.bordo,
   },
   pathHeaderText: { flex: 1 },
-  pathHeaderTitle: { fontSize: 16, fontWeight: '800', color: colors.text },
+  pathHeaderTitle: { fontSize: 16, fontWeight: '600', color: colors.text },
   // flex-start: con il testo su due righe la stella deve restare sulla prima.
   pathHeaderStars: { flexDirection: 'row', alignItems: 'flex-start', gap: 4, marginTop: 2 },
   pathHeaderStarsText: {
@@ -401,23 +426,27 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   unitaBanner: {
-    borderRadius: radius.lg,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.lg,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: alpha.bordo,
+    overflow: 'hidden',
+    paddingVertical: spacing.md - 2,
+    paddingHorizontal: spacing.md + 4,
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: spacing.lg,
   },
+  unitaFilo: { position: 'absolute', left: 0, top: 0, bottom: 0, width: 2 },
   unitaTextWrap: { flex: 1 },
   unitaKicker: {
-    color: 'rgba(255,255,255,0.8)',
+    color: colors.textMuted,
     fontSize: 12,
-    fontWeight: '800',
+    fontWeight: '600',
     letterSpacing: 1.5,
     textTransform: 'uppercase',
   },
-  unitaNome: { color: '#FFFFFF', fontSize: 20, fontWeight: '800', marginTop: 2 },
-  unitaMeta: { color: 'rgba(255,255,255,0.85)', fontSize: 13, fontWeight: '600' },
+  unitaNome: { color: colors.text, fontSize: 19, fontWeight: '600', letterSpacing: -0.4, marginTop: 2 },
+  unitaMeta: { color: colors.textMuted, fontSize: 12.5, fontWeight: '500' },
 
   nodoRigaWrap: { alignItems: 'center', marginBottom: spacing.md },
   nodoRiga: { alignItems: 'center' },
@@ -427,27 +456,30 @@ const styles = StyleSheet.create({
     left: 0,
     width: NODE,
     height: NODE,
-    borderRadius: NODE / 2,
-    borderWidth: 4,
+    borderRadius: radius.md,
+    borderWidth: 1.5,
   },
+  /* Quadrato a spigolo stretto invece del cerchio pieno: il disco
+     colorato era l'altra metà della firma precedente. */
   nodoFace: {
     width: NODE,
     height: NODE,
-    borderRadius: NODE / 2,
+    borderRadius: radius.md,
+    borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
   stelleRow: { flexDirection: 'row', gap: 2, marginTop: 6 },
   nodoLabel: { fontSize: 12, color: colors.textMuted, fontWeight: '600', marginTop: 2 },
   iniziaBubble: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: alpha.veloForte,
     borderRadius: radius.md,
     paddingHorizontal: 14,
     paddingVertical: 6,
     marginBottom: 10,
     ...ombra.media,
   },
-  iniziaTesto: { fontSize: 13, fontWeight: '800', letterSpacing: 1.5 },
+  iniziaTesto: { fontSize: 13, fontWeight: '600', letterSpacing: 1.5 },
   iniziaFreccia: {
     position: 'absolute',
     bottom: -6,

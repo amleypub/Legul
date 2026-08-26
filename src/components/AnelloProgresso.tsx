@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { colors } from '../theme';
 import Animated, {
   Easing,
   useAnimatedProps,
@@ -38,8 +39,8 @@ export function AnelloProgresso({
   progresso,
   size = 104,
   spessore = 11,
-  da = '#FFC53D',
-  a = '#F5842B',
+  da = '#E0C05A',
+  a = '#C9A227',
   coloreTraccia = 'rgba(255,255,255,0.16)',
   children,
 }: Props) {
@@ -111,11 +112,11 @@ export function EtichettaAnello({ valore, unita }: { valore: string; unita: stri
 }
 
 const etichetta = StyleSheet.create({
-  valore: { color: '#FFFFFF', fontSize: 26, fontWeight: '900' },
+  valore: { color: colors.text, fontSize: 26, fontWeight: '600', letterSpacing: -0.8 },
   unita: {
     color: 'rgba(255,255,255,0.65)',
     fontSize: 10,
-    fontWeight: '800',
+    fontWeight: '600',
     letterSpacing: 1,
     textTransform: 'uppercase',
     marginTop: -2,

@@ -61,7 +61,7 @@ export default function SimulatoreScreen({ navigation }: RootStackScreenProps<'S
         accessibilityRole="button"
         style={({ pressed }) => [styles.rimando, pressed && styles.rimandoPremuto]}
       >
-        <Icona nome="school-outline" size={17} color={colors.primary} />
+        <Icona nome="school-outline" size={17} color={colors.accent} />
         <Text style={styles.rimandoTesto}>Come funziona l’esame dopo la riforma</Text>
         <Icona nome="chevron-forward" size={16} color="#9AA3B2" />
       </Pressable>
@@ -183,14 +183,14 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     padding: spacing.md - 2,
   },
-  avvisoTesto: { flex: 1, fontSize: 13, color: '#5A3D00', lineHeight: 19 },
-  avvisoForte: { fontWeight: '800' },
+  avvisoTesto: { flex: 1, fontSize: 13, color: colors.accent, lineHeight: 19 },
+  avvisoForte: { fontWeight: '600' },
 
   rimando: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    backgroundColor: colors.card,
+    backgroundColor: alpha.vetroForte,
     borderRadius: radius.lg,
     paddingHorizontal: spacing.md - 4,
     paddingVertical: 12,
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth * 1.5,
     borderColor: alpha.bordo,
   },
-  rimandoPremuto: { backgroundColor: '#F2F5FB' },
+  rimandoPremuto: { backgroundColor: alpha.veloForte },
   rimandoTesto: { flex: 1, fontSize: 14, fontWeight: '700', color: colors.text },
 
   sezione: {
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
   },
   sezioneTitolo: {
     fontSize: 12,
-    fontWeight: '800',
+    fontWeight: '600',
     letterSpacing: 1,
     textTransform: 'uppercase',
     color: colors.textMuted,
@@ -220,12 +220,12 @@ const styles = StyleSheet.create({
   suggerito: { borderRadius: radius.xxl, padding: spacing.md, gap: 3 },
   suggeritoMateria: {
     fontSize: 11,
-    fontWeight: '800',
+    fontWeight: '600',
     letterSpacing: 1,
     textTransform: 'uppercase',
     color: 'rgba(255,255,255,0.85)',
   },
-  suggeritoTitolo: { fontSize: 20, fontWeight: '900', color: '#FFFFFF', lineHeight: 26 },
+  suggeritoTitolo: { fontSize: 20, fontWeight: '700', color: '#FFFFFF', lineHeight: 26 },
   suggeritoNota: { fontSize: 13, color: 'rgba(255,255,255,0.9)', marginTop: 2 },
   suggeritoBtn: { alignSelf: 'stretch', marginTop: spacing.sm + 2 },
 
@@ -234,28 +234,30 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm + 2,
-    backgroundColor: colors.card,
+    backgroundColor: alpha.vetroForte,
     borderRadius: radius.lg,
     padding: spacing.md - 4,
     borderWidth: StyleSheet.hairlineWidth * 1.5,
     borderColor: alpha.bordo,
   },
-  cartaPremuta: { backgroundColor: '#F7F9FE' },
+  cartaPremuta: { backgroundColor: alpha.velo },
   cartaIcona: {
     width: 42,
     height: 42,
-    borderRadius: 14,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: alpha.bordo,
     alignItems: 'center',
     justifyContent: 'center',
   },
   cartaTesti: { flex: 1 },
-  cartaTitolo: { fontSize: 15, fontWeight: '800', color: colors.text, lineHeight: 20 },
+  cartaTitolo: { fontSize: 15, fontWeight: '600', color: colors.text, lineHeight: 20 },
   cartaSotto: { fontSize: 12.5, color: colors.textMuted, marginTop: 2, lineHeight: 17 },
   cartaPunteggio: {
     fontSize: 13,
-    fontWeight: '800',
+    fontWeight: '600',
     color: colors.textMuted,
-    backgroundColor: '#EEF1F7',
+    backgroundColor: alpha.velo,
     borderRadius: radius.pill,
     paddingHorizontal: 10,
     paddingVertical: 3,
@@ -264,7 +266,7 @@ const styles = StyleSheet.create({
   cartaPunteggioAlto: { color: colors.successEdge, backgroundColor: colors.successSoft },
   cartaRiservato: {
     fontSize: 9.5,
-    fontWeight: '800',
+    fontWeight: '600',
     letterSpacing: 0.8,
     color: colors.accentEdge,
     backgroundColor: colors.accentSoft,
@@ -281,6 +283,6 @@ const styles = StyleSheet.create({
     marginTop: spacing.xl,
     paddingTop: spacing.lg,
     borderTopWidth: 1,
-    borderTopColor: '#E4E8F0',
+    borderTopColor: alpha.bordo,
   },
 });

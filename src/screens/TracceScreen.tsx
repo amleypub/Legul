@@ -11,7 +11,7 @@ import type { RootStackParamList } from '../navigation/types';
 import type { TipoTraccia } from '../types';
 import { Sfondo } from '../components/Sfondo';
 import { TitoloSchermata } from '../components/TitoloSchermata';
-import { alpha, colors, materiaColors, radius, spacing, SPAZIO_TAB } from '../theme';
+import { SPAZIO_TAB, alpha, colors, materiaColors, radius, spacing } from '../theme';
 
 /** Tracce che hanno uno svolgimento pubblicato: l'elenco non cambia a runtime. */
 const svolto = new Set(tracceConSvolgimento());
@@ -173,8 +173,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md - 4,
     paddingVertical: spacing.sm + 4,
   },
-  riformaTesto: { flex: 1, fontSize: 13, color: '#6B4600', lineHeight: 19 },
-  riformaLink: { fontWeight: '800', textDecorationLine: 'underline' },
+  riformaTesto: { flex: 1, fontSize: 13, color: colors.accent, lineHeight: 19 },
+  riformaLink: { fontWeight: '600', textDecorationLine: 'underline' },
 
   /* Solo il bordo: il resto del layout viene da `chipSvolta`, che ha già
      la riga con icona e testo. */
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 4,
   },
-  annoPillText: { color: '#FFFFFF', fontSize: 14, fontWeight: '800' },
+  annoPillText: { color: '#FFFFFF', fontSize: 14, fontWeight: '600' },
   annoLine: { flex: 1, height: 2, borderRadius: 1, backgroundColor: colors.border },
   cardOuter: { marginBottom: spacing.sm },
   card: {
@@ -204,12 +204,14 @@ const styles = StyleSheet.create({
   iconTile: {
     width: 46,
     height: 46,
-    borderRadius: 14,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: alpha.bordo,
     alignItems: 'center',
     justifyContent: 'center',
   },
   cardText: { flex: 1 },
-  tipo: { fontSize: 12, fontWeight: '800', textTransform: 'uppercase', letterSpacing: 0.3 },
+  tipo: { fontSize: 12, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.3 },
   titolo: { fontSize: 15, fontWeight: '700', color: colors.text, marginTop: 2 },
   chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 4, marginTop: 6 },
   chip: {
@@ -227,7 +229,7 @@ const styles = StyleSheet.create({
     gap: 3,
     backgroundColor: colors.accentSoft,
   },
-  chipSvoltaText: { color: colors.accentEdge, fontWeight: '800' },
+  chipSvoltaText: { color: colors.accentEdge, fontWeight: '600' },
   copertura: {
     fontSize: 12.5,
     color: colors.textMuted,

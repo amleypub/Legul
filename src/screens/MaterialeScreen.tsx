@@ -4,11 +4,11 @@ import { Icona } from '../components/Icona';
 import { buildAffiliateUrl } from '../config/affiliate';
 import { materiali } from '../data/materiali';
 import { Superficie } from '../components/Superficie';
-import { Mascot } from '../components/Mascot';
+import { Monolite } from '../components/Monolite';
 import type { MaterialeEsame } from '../types';
 import { TitoloSchermata } from '../components/TitoloSchermata';
 import { Sfondo } from '../components/Sfondo';
-import { alpha, colors, materiaColors, radius, spacing, SPAZIO_TAB } from '../theme';
+import { SPAZIO_TAB, alpha, colors, materiaColors, radius, spacing } from '../theme';
 
 const CATEGORIE: MaterialeEsame['categoria'][] = ['Codici', 'Manuali', 'Cancelleria e utilità'];
 
@@ -51,7 +51,7 @@ export default function MaterialeScreen() {
         <>
         <TitoloSchermata titolo="Materiale per l’esame" />
         <View style={styles.headerCard}>
-          <Mascot state="studying" size={72} />
+          <Monolite state="studying" size={72} />
           <Text style={styles.headerText}>
             Tutto ciò che ti serve per la prova: i codici ammessi in sede d’esame, i manuali per
             esercitarti e qualche accessorio salva-tempo.
@@ -61,7 +61,7 @@ export default function MaterialeScreen() {
       }
       renderSectionHeader={({ section }) => (
         <View style={styles.categoriaRow}>
-          <Icona nome={ICONA_CATEGORIA[section.title]} size={20} color={colors.primary} />
+          <Icona nome={ICONA_CATEGORIA[section.title]} size={20} color={colors.accent} />
           <Text style={styles.categoria}>{section.title}</Text>
         </View>
       )}
@@ -81,7 +81,7 @@ export default function MaterialeScreen() {
               {item.descrizione}
             </Text>
             <View style={styles.chip}>
-              <Icona nome="cart" size={13} color={colors.primary} />
+              <Icona nome="cart" size={13} color={colors.accent} />
               <Text style={styles.chipTesto}>Vedi su Amazon</Text>
             </View>
           </View>
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm,
-    backgroundColor: colors.card,
+    backgroundColor: alpha.vetroForte,
     borderRadius: radius.lg,
     padding: spacing.md,
     marginBottom: spacing.sm,
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.lg,
     marginBottom: spacing.sm,
   },
-  categoria: { fontSize: 18, fontWeight: '800', color: colors.primary },
+  categoria: { fontSize: 18, fontWeight: '600', color: colors.primary },
   cardOuter: { marginBottom: spacing.sm },
   card: {
     flexDirection: 'row',
@@ -132,12 +132,14 @@ const styles = StyleSheet.create({
   iconTile: {
     width: 44,
     height: 44,
-    borderRadius: 14,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: alpha.bordo,
     backgroundColor: colors.accentSoft,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  titolo: { fontSize: 16, fontWeight: '800', color: colors.text, lineHeight: 21 },
+  titolo: { fontSize: 16, fontWeight: '600', color: colors.text, lineHeight: 21 },
   descrizione: { fontSize: 13, color: colors.textMuted, lineHeight: 18, marginTop: 3 },
   chip: {
     flexDirection: 'row',
@@ -150,7 +152,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 11,
     paddingVertical: 5,
   },
-  chipTesto: { fontSize: 12, fontWeight: '800', color: colors.primary },
+  chipTesto: { fontSize: 12, fontWeight: '600', color: colors.primary },
   disclosure: {
     fontSize: 11,
     color: colors.textMuted,

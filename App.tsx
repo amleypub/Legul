@@ -79,9 +79,7 @@ function tabIcon(nome: string) {
 function FondoTab() {
   return (
     <View style={StyleSheet.absoluteFill}>
-      {Platform.OS !== 'web' && (
-        <BlurView intensity={SFOCATURA} tint="light" style={StyleSheet.absoluteFill} />
-      )}
+      <BlurView intensity={SFOCATURA} tint="dark" style={StyleSheet.absoluteFill} />
       <View style={[StyleSheet.absoluteFill, { backgroundColor: alpha.vetroChrome }]} />
     </View>
   );
@@ -104,8 +102,8 @@ function Tabs() {
         // Le schermate a tab hanno già il proprio titolo nel contenuto:
         // una barra piena sopra ripeteva l'informazione e rubava spazio.
         headerShown: false,
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: '#9AA3B4',
+        tabBarActiveTintColor: colors.accent,
+        tabBarInactiveTintColor: colors.titanio,
         // Solo colori e bordo: altezze e spaziature restano quelle
         // calcolate dalla navigazione, che tiene conto della safe area.
         // Ogni valore imposto a mano qui finisce per tagliare le
@@ -205,7 +203,7 @@ function Radice() {
   if (!state.aperturaFatta) return <AperturaScreen />;
   return (
       <NavigationContainer linking={linking} theme={TEMA_TRASPARENTE}>
-        <StatusBar style="dark" />
+        <StatusBar style="light" />
         {/*
           Intestazioni chiare, non più la fascia blu piena: su un
           linguaggio fatto di superfici traslucide su fondo chiaro una
@@ -218,7 +216,7 @@ function Radice() {
             headerStyle: { backgroundColor: 'transparent' },
             headerTintColor: colors.text,
             headerShadowVisible: false,
-            headerTitleStyle: { fontWeight: '800', fontSize: 17 },
+            headerTitleStyle: { fontWeight: '600', fontSize: 16 },
           }}
         >
           <Stack.Screen name="Tabs" component={Tabs} options={{ headerShown: false }} />

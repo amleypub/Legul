@@ -174,7 +174,7 @@ export function CartaMessaggio({
 const styles = StyleSheet.create({
   involucro: { },
   carta: {
-    backgroundColor: colors.card,
+    backgroundColor: alpha.vetroForte,
     borderRadius: radius.xl,
     padding: spacing.md - 2,
     gap: spacing.sm,
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     borderColor: alpha.bordo,
   },
   cartaRisposta: {
-    backgroundColor: '#F7F9FD',
+    backgroundColor: alpha.velo,
     borderRadius: radius.lg,
     padding: spacing.sm + 4,
     gap: 6,
@@ -203,15 +203,15 @@ const styles = StyleSheet.create({
   intestazioneTesti: { flex: 1 },
   rigaNome: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   avatar: { width: 32, height: 32, borderRadius: 11, alignItems: 'center', justifyContent: 'center' },
-  avatarTesto: { color: '#FFFFFF', fontWeight: '900', fontSize: 15 },
-  nome: { fontSize: 14.5, fontWeight: '800', color: colors.text, flexShrink: 1 },
+  avatarTesto: { color: '#FFFFFF', fontWeight: '700', fontSize: 15 },
+  nome: { fontSize: 14.5, fontWeight: '600', color: colors.text, flexShrink: 1 },
   tuo: {
-    backgroundColor: '#E8EEFD',
+    backgroundColor: alpha.velo,
     borderRadius: radius.pill,
     paddingHorizontal: 7,
     paddingVertical: 1,
   },
-  tuoTesto: { fontSize: 10.5, fontWeight: '800', color: '#2D4FC7', letterSpacing: 0.3 },
+  tuoTesto: { fontSize: 10.5, fontWeight: '600', color: '#2D4FC7', letterSpacing: 0.3 },
   tempo: { fontSize: 12, color: colors.textMuted, marginTop: 1 },
 
   distintivo: {
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 9,
     paddingVertical: 4,
   },
-  distintivoTesto: { fontSize: 11, fontWeight: '800', color: '#8A5B00' },
+  distintivoTesto: { fontSize: 11, fontWeight: '600', color: colors.accent },
 
   testo: { fontSize: 15, color: colors.text, lineHeight: 23 },
 
@@ -233,14 +233,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 5,
-    backgroundColor: '#F2F5FB',
+    backgroundColor: alpha.veloForte,
     borderRadius: radius.pill,
     paddingHorizontal: 8,
     paddingVertical: 4,
   },
   freccia: { padding: 1 },
   frecciaPremuta: { opacity: 0.5 },
-  punteggio: { fontSize: 13.5, fontWeight: '800', minWidth: 16, textAlign: 'center' },
+  punteggio: { fontSize: 13.5, fontWeight: '600', minWidth: 16, textAlign: 'center' },
 
   azione: {
     flexDirection: 'row',
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     borderRadius: radius.pill,
   },
-  azionePremuta: { backgroundColor: '#F2F5FB' },
+  azionePremuta: { backgroundColor: alpha.veloForte },
   azioneTesto: { fontSize: 13, fontWeight: '700', color: colors.textMuted },
 
   lapide: {

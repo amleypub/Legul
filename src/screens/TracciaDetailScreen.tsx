@@ -10,10 +10,10 @@ import { useGamification } from '../gamification/GamificationContext';
 import { argomentoTraccia } from '../discussione/modello';
 import { useConteggioDiscussione } from '../discussione/useConteggio';
 import { Bottone } from '../components/Bottone';
-import { Mascot } from '../components/Mascot';
+import { Monolite } from '../components/Monolite';
 import type { RootStackScreenProps } from '../navigation/types';
 import { materiaDellaTraccia, type TipoTraccia } from '../types';
-import { alpha, colors, materiaColors, radius, spacing } from '../theme';
+import { alpha, colors, materiaColors, radius, spacing, type } from '../theme';
 
 /*
   Il colore viene dalla materia della traccia, che ora il tipo dichiara:
@@ -63,7 +63,7 @@ export default function TracciaDetailScreen({
   if (!traccia) {
     return (
       <View style={styles.vuoto}>
-        <Mascot state="studying" size={96} />
+        <Monolite state="studying" size={96} />
         <Text style={styles.vuotoTitolo}>Traccia non trovata</Text>
         <Text style={styles.vuotoTesto}>
           Potrebbe essere stata rimossa. Torna all’archivio per sceglierne un’altra.
@@ -276,7 +276,7 @@ export default function TracciaDetailScreen({
 
       {/* Alla fine della lettura serve una via d'uscita che non sia tornare indietro */}
       <View style={styles.chiusura}>
-        <Mascot state="celebrating" size={64} />
+        <Monolite state="celebrating" size={64} />
         <Text style={styles.chiusuraTesto}>
           {prossima
             ? 'Un’altra traccia ti aspetta: più ne leggi, meno sorprese all’esame.'
@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
     gap: spacing.sm,
   },
-  vuotoTitolo: { fontSize: 20, fontWeight: '800', color: colors.text },
+  vuotoTitolo: { fontSize: 20, fontWeight: '600', color: colors.text },
   vuotoTesto: {
     fontSize: 14,
     color: colors.textMuted,
@@ -331,21 +331,23 @@ const styles = StyleSheet.create({
   testataIcona: {
     width: 40,
     height: 40,
-    borderRadius: 13,
-    backgroundColor: '#FFFFFF',
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: alpha.bordo,
+    backgroundColor: alpha.veloForte,
     alignItems: 'center',
     justifyContent: 'center',
   },
   testataTesto: { flex: 1 },
   tipo: {
     fontSize: 11,
-    fontWeight: '800',
+    fontWeight: '600',
     letterSpacing: 1,
     textTransform: 'uppercase',
     color: 'rgba(255,255,255,0.85)',
   },
   sessione: { fontSize: 13, color: '#FFFFFF', fontWeight: '600', marginTop: 1 },
-  titolo: { fontSize: 21, fontWeight: '900', color: '#FFFFFF', lineHeight: 27 },
+  titolo: { fontSize: 21, fontWeight: '700', color: '#FFFFFF', lineHeight: 27 },
   chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
   chip: {
     backgroundColor: 'rgba(255,255,255,0.18)',
@@ -366,7 +368,7 @@ const styles = StyleSheet.create({
   },
   premioIcona: { alignItems: 'center', justifyContent: 'center' },
   premioTesto: { flex: 1, fontSize: 14, color: colors.text, lineHeight: 20 },
-  premioPunti: { fontWeight: '800', color: colors.successEdge },
+  premioPunti: { fontWeight: '600', color: colors.successEdge },
 
   sezioneTestata: {
     flexDirection: 'row',
@@ -377,7 +379,7 @@ const styles = StyleSheet.create({
   },
   sezioneTitolo: {
     fontSize: 12,
-    fontWeight: '800',
+    fontWeight: '600',
     letterSpacing: 1,
     textTransform: 'uppercase',
     color: colors.textMuted,
@@ -385,7 +387,7 @@ const styles = StyleSheet.create({
 
   testoWrap: { },
   testoCard: {
-    backgroundColor: colors.card,
+    backgroundColor: alpha.vetroForte,
     borderRadius: radius.xl,
     padding: spacing.md,
     borderWidth: StyleSheet.hairlineWidth * 1.5,
@@ -393,7 +395,8 @@ const styles = StyleSheet.create({
   },
   // Il testo di una traccia si legge come un documento: righe larghe e
   // ariose, non compresse come una didascalia.
-  testo: { fontSize: 15.5, color: colors.text, lineHeight: 26 },
+  // Il testo della traccia è un documento, non interfaccia: serif.
+  testo: { ...type.corpoLungo, color: colors.text },
 
   // Lo svolgimento è la ragione per cui si apre una traccia: si prende
   // il colore pieno della materia, mentre il confronto resta bianco.
@@ -410,12 +413,12 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 13,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: alpha.veloForte,
     alignItems: 'center',
     justifyContent: 'center',
   },
   svolgimentoTesti: { flex: 1 },
-  svolgimentoEtichetta: { fontSize: 15.5, fontWeight: '800', color: '#FFFFFF' },
+  svolgimentoEtichetta: { fontSize: 15.5, fontWeight: '600', color: '#FFFFFF' },
   svolgimentoSottotitolo: {
     fontSize: 12.5,
     color: 'rgba(255,255,255,0.85)',
@@ -433,7 +436,7 @@ const styles = StyleSheet.create({
   // Stesso linguaggio delle impostazioni: tessera a tinta piena per voce,
   // una card sola senza righe divisorie.
   confronto: {
-    backgroundColor: colors.card,
+    backgroundColor: alpha.vetroForte,
     borderRadius: radius.xl,
     paddingHorizontal: spacing.md - 4,
     paddingVertical: spacing.xs,
@@ -448,7 +451,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
     borderRadius: radius.md,
   },
-  confrontoPremuto: { backgroundColor: '#F2F5FB' },
+  confrontoPremuto: { backgroundColor: alpha.veloForte },
   confrontoIcona: {
     width: 36,
     height: 36,
@@ -461,7 +464,7 @@ const styles = StyleSheet.create({
   confrontoSottotitolo: { fontSize: 12.5, color: colors.textMuted, marginTop: 1, lineHeight: 17 },
   confrontoConteggio: {
     fontSize: 12.5,
-    fontWeight: '800',
+    fontWeight: '600',
     color: '#FFFFFF',
     backgroundColor: '#4F7CF3',
     borderRadius: radius.pill,
@@ -485,7 +488,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.xl,
     paddingTop: spacing.lg,
     borderTopWidth: 1,
-    borderTopColor: '#E4E8F0',
+    borderTopColor: alpha.bordo,
     alignSelf: 'stretch',
   },
   chiusuraTesto: {

@@ -33,27 +33,37 @@ interface Props {
   compatto?: boolean;
 }
 
+/**
+ * Le quattro varianti, in ordine di autorità.
+ *
+ * `accento` è champagne su testo obsidiana ed è l'unica cosa dell'app
+ * che porta quel colore: se comparisse anche altrove smetterebbe di
+ * significare «qui si agisce». Le altre tre sono vetro a densità
+ * decrescente, e la loro gerarchia si legge dal bordo, non dal
+ * riempimento — su fondo scuro un riempimento più chiaro urla, un bordo
+ * più chiaro no.
+ */
 const VARIANTI: Record<
   VarianteBottone,
   { gradiente: [string, string]; testo: string; glow: string | null; bordo: string | null }
 > = {
   accento: {
-    gradiente: ['#F7BE3E', colors.accent],
-    testo: colors.primary,
+    gradiente: [colors.primaryLight, colors.accent],
+    testo: '#0A0C10',
     glow: colors.accent,
     bordo: null,
   },
   scuro: {
-    gradiente: [colors.primaryLight, colors.primary],
-    testo: '#FFFFFF',
-    glow: colors.primary,
-    bordo: null,
-  },
-  chiaro: {
-    gradiente: ['#FFFFFF', '#F5F7FC'],
+    gradiente: ['rgba(255,255,255,0.13)', 'rgba(255,255,255,0.05)'],
     testo: colors.text,
     glow: null,
     bordo: alpha.bordoMarcato,
+  },
+  chiaro: {
+    gradiente: ['rgba(255,255,255,0.09)', 'rgba(255,255,255,0.03)'],
+    testo: colors.text,
+    glow: null,
+    bordo: alpha.bordo,
   },
   fantasma: {
     gradiente: ['rgba(255,255,255,0)', 'rgba(255,255,255,0)'],
@@ -92,7 +102,7 @@ export function Bottone({
   const premuto = useSharedValue(0);
   const stileAnimato = useAnimatedStyle(() => ({
     transform: [{ scale: 1 - premuto.value * (1 - SCALA_PRESSIONE) }],
-    shadowOpacity: tintaAlone ? 0.42 * (1 - premuto.value) : 0,
+    shadowOpacity: tintaAlone ? 0.5 * (1 - premuto.value) : 0,
   }));
 
   return (
@@ -162,9 +172,9 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     height: '45%',
-    backgroundColor: 'rgba(255,255,255,0.16)',
+    backgroundColor: 'rgba(255,255,255,0.10)',
   },
-  testo: { ...tipo.scheda, fontSize: 16, fontWeight: '800', letterSpacing: -0.2 },
+  testo: { ...tipo.scheda, fontSize: 15, fontWeight: '600', letterSpacing: -0.1 },
   testoCompatto: { fontSize: 14 },
   spento: { opacity: 0.45 },
 });

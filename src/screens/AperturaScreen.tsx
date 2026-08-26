@@ -6,7 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Bottone } from '../components/Bottone';
 import { Entrata } from '../components/Entrata';
 import { Icona } from '../components/Icona';
-import { Mascot } from '../components/Mascot';
+import { Monolite } from '../components/Monolite';
 import { Sfondo } from '../components/Sfondo';
 import { Superficie } from '../components/Superficie';
 import { useGamification } from '../gamification/GamificationContext';
@@ -140,7 +140,7 @@ export default function AperturaScreen() {
           {passo === 'benvenuto' && (
             <Entrata>
               <View style={styles.centro}>
-                <Mascot state="celebrating" size={120} />
+                <Monolite state="celebrating" size={120} />
                 <Text style={styles.titolo}>Quattro domande, poi si comincia</Text>
                 <Text style={styles.testo}>
                   Dalla sessione 2026-2027 l’esame è quasi tutto a scelta: la materia dei due
@@ -238,12 +238,12 @@ export default function AperturaScreen() {
               })}
               {giorni !== null && (
                 <LinearGradient
-                  colors={['#F7BE3E', colors.accent]}
+                  colors={['rgba(201,162,39,0.16)', 'rgba(201,162,39,0.04)']}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={[styles.conto, alone(colors.accent, 'tenue')]}
                 >
-                  <Icona nome="calendar" size={18} color={colors.primary} />
+                  <Icona nome="calendar" size={18} color={colors.accent} />
                   <Text style={styles.contoTesto}>{testoConto(giorni)}</Text>
                 </LinearGradient>
               )}

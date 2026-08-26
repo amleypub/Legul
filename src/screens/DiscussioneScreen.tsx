@@ -20,7 +20,7 @@ import { discussioneDisponibile } from '../discussione/api';
 import { LIMITE_TESTO, validaTesto, type GenereMessaggio, type Messaggio, type Nodo } from '../discussione/modello';
 import { useDiscussione } from '../discussione/useDiscussione';
 import { FoglioAzioni, type AzioneFoglio } from '../components/FoglioAzioni';
-import { Mascot } from '../components/Mascot';
+import { Monolite } from '../components/Monolite';
 import type { RootStackScreenProps } from '../navigation/types';
 import { alpha, colors, radius, spacing } from '../theme';
 
@@ -192,7 +192,7 @@ export default function DiscussioneScreen({
 
         {caricamento ? (
           <View style={styles.attesa}>
-            <ActivityIndicator color={colors.primary} />
+            <ActivityIndicator color={colors.accent} />
           </View>
         ) : null}
 
@@ -205,7 +205,7 @@ export default function DiscussioneScreen({
 
         {filo.soluzioni.length === 0 && !caricamento ? (
           <View style={styles.vuoto}>
-            <Mascot state="studying" size={56} />
+            <Monolite state="studying" size={56} />
             <Text style={styles.vuotoTesto}>
               Nessuna soluzione proposta. Se hai svolto la traccia, il tuo ragionamento è
               probabilmente utile a qualcun altro.
@@ -371,17 +371,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     gap: spacing.sm,
-    backgroundColor: '#E8EEFD',
+    backgroundColor: alpha.velo,
     borderRadius: radius.lg,
     padding: spacing.md - 2,
   },
-  avvisoTesto: { flex: 1, fontSize: 13, color: '#22336B', lineHeight: 19 },
+  avvisoTesto: { flex: 1, fontSize: 13, color: colors.textMuted, lineHeight: 19 },
 
   cartaInfo: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm,
-    backgroundColor: colors.card,
+    backgroundColor: alpha.vetroForte,
     borderRadius: radius.lg,
     padding: spacing.md - 2,
     marginBottom: spacing.md,
@@ -400,7 +400,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   erroreTesto: { flex: 1, fontSize: 13, color: colors.errorEdge, lineHeight: 18 },
-  erroreAzione: { fontSize: 13, fontWeight: '800', color: colors.errorEdge },
+  erroreAzione: { fontSize: 13, fontWeight: '600', color: colors.errorEdge },
 
   attesa: { paddingVertical: spacing.lg },
 
@@ -413,14 +413,14 @@ const styles = StyleSheet.create({
   sezioneStacco: { marginTop: spacing.lg },
   sezioneTitolo: {
     fontSize: 12,
-    fontWeight: '800',
+    fontWeight: '600',
     letterSpacing: 1,
     textTransform: 'uppercase',
     color: colors.textMuted,
   },
   sezioneConteggio: {
     fontSize: 11.5,
-    fontWeight: '800',
+    fontWeight: '600',
     color: colors.textMuted,
     backgroundColor: '#E4E9F3',
     borderRadius: radius.pill,
@@ -434,7 +434,7 @@ const styles = StyleSheet.create({
   vuoto: {
     alignItems: 'center',
     gap: spacing.sm,
-    backgroundColor: colors.card,
+    backgroundColor: alpha.vetroForte,
     borderRadius: radius.xl,
     padding: spacing.md,
     marginBottom: spacing.md,
@@ -458,7 +458,7 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
   },
   proponiPremuto: { opacity: 0.75 },
-  proponiTesto: { fontSize: 14.5, fontWeight: '800', color: '#8A5B00' },
+  proponiTesto: { fontSize: 14.5, fontWeight: '600', color: colors.accent },
   spento: { opacity: 0.45 },
 
   regole: {
@@ -479,12 +479,12 @@ const styles = StyleSheet.create({
     paddingTop: spacing.md,
     paddingHorizontal: spacing.md,
   },
-  barraAccessoTesto: { fontSize: 15, fontWeight: '800', color: '#FFFFFF' },
+  barraAccessoTesto: { fontSize: 15, fontWeight: '600', color: '#FFFFFF' },
 
   compositore: {
-    backgroundColor: colors.card,
+    backgroundColor: alpha.vetroForte,
     borderTopWidth: 1,
-    borderTopColor: '#E4E8F0',
+    borderTopColor: alpha.bordo,
     paddingHorizontal: spacing.md,
     paddingTop: spacing.sm,
     gap: spacing.sm,
@@ -493,21 +493,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: '#F2F5FB',
+    backgroundColor: alpha.veloForte,
     borderRadius: radius.pill,
     paddingHorizontal: spacing.sm + 2,
     paddingVertical: 6,
   },
   strisciaOro: { backgroundColor: colors.accentSoft },
   strisciaTesto: { flex: 1, fontSize: 12.5, fontWeight: '700', color: colors.textMuted },
-  strisciaTestoOro: { color: '#8A5B00' },
+  strisciaTestoOro: { color: colors.accent },
 
   rigaCasella: { flexDirection: 'row', alignItems: 'flex-end', gap: spacing.sm },
   casella: {
     flex: 1,
     minHeight: 44,
     maxHeight: 140,
-    backgroundColor: '#F2F5FB',
+    backgroundColor: alpha.veloForte,
     borderRadius: radius.lg,
     paddingHorizontal: spacing.md - 4,
     paddingTop: 12,

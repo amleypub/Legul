@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, type ViewStyle } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
+import { colors } from '../theme';
 import {
   Archive,
   ArrowDown,
@@ -295,9 +296,14 @@ interface Props {
   /** Riempie il tratto: serve dove la variante piena aveva un significato. */
   pieno?: boolean;
   /**
-   * Spessore del tratto. Il valore predefinito è più sottile del solito
-   * di Lucide: accanto a una tipografia stretta un tratto a due punti
-   * sembra grossolano.
+   * Spessore del tratto.
+   *
+   * Il predefinito è **1,5**, sensibilmente più sottile del 2 di Lucide.
+   * Accanto a una tipografia stretta su fondo scuro un tratto a due punti
+   * sembra grossolano, e soprattutto compete con il testo: l'icona deve
+   * accompagnare l'etichetta, non gridare più forte di lei. Sotto i
+   * sedici punti si risale un poco, perché a quelle dimensioni un tratto
+   * troppo fine sparisce.
    */
   strokeWidth?: number;
   /** Micro-allineamenti rispetto al testo accanto. */
@@ -312,7 +318,7 @@ export function glifoDi(nome: string): Glifo | null {
   return MAPPA[nome] ?? null;
 }
 
-export function Icona({ nome, size = 20, color = '#101422', pieno, strokeWidth, style }: Props) {
+export function Icona({ nome, size = 20, color = colors.text, pieno, strokeWidth, style }: Props) {
   const Glifo = MAPPA[nome];
   // Un nome non mappato non deve far esplodere una schermata: sparisce e
   // basta, e il test sulla copertura lo intercetta prima del rilascio.
@@ -321,7 +327,7 @@ export function Icona({ nome, size = 20, color = '#101422', pieno, strokeWidth, 
     <Glifo
       size={size}
       color={color}
-      strokeWidth={strokeWidth ?? 1.9}
+      strokeWidth={strokeWidth ?? (size <= 15 ? 1.75 : 1.5)}
       fill={pieno ? color : 'transparent'}
     />
   );

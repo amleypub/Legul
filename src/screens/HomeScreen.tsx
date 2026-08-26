@@ -24,11 +24,11 @@ import { AnelloProgresso, EtichettaAnello } from '../components/AnelloProgresso'
 import { Bottone } from '../components/Bottone';
 import { Entrata, scaglione } from '../components/Entrata';
 import { Icona } from '../components/Icona';
-import { Mascot } from '../components/Mascot';
+import { Monolite } from '../components/Monolite';
 import { Sfondo } from '../components/Sfondo';
 import { Superficie } from '../components/Superficie';
 import { TitoloSchermata } from '../components/TitoloSchermata';
-import { alone, alpha, colors, materiaColors, ombra, radius, spacing, type, SPAZIO_TAB } from '../theme';
+import { SPAZIO_TAB, alone, alpha, colors, materiaColors, ombra, radius, spacing, type } from '../theme';
 
 /** Data odierna in formato YYYY-MM-DD, come la salva la gamification. */
 function oggiISO(): string {
@@ -267,15 +267,15 @@ export default function HomeScreen() {
         <Entrata>
           <View style={[styles.heroWrap, alone(colors.primary, 'tenue')]}>
             <LinearGradient
-              colors={['#33436E', colors.primary]}
+              colors={['rgba(255,255,255,0.09)', 'rgba(255,255,255,0.025)']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.hero}
             >
-              <Mascot state="neutral" size={78} animated />
+              <Monolite state="neutral" size={78} animated />
               <View style={styles.heroTesto}>
                 <View style={styles.heroBadgeLivello}>
-                  <Icona nome={livello.icona} size={13} color={colors.primary} />
+                  <Icona nome={livello.icona} size={13} color={colors.accent} />
                   <Text style={styles.heroLivello} numberOfLines={1}>
                     {livello.nome}
                   </Text>
@@ -321,12 +321,12 @@ export default function HomeScreen() {
               contentStyle={styles.conto}
             >
               <LinearGradient
-                colors={['#F7BE3E', colors.accent]}
+                colors={['rgba(201,162,39,0.16)', 'rgba(201,162,39,0.04)']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.contoIcona}
               >
-                <Icona nome="calendar" size={22} color={colors.primary} />
+                <Icona nome="calendar" size={22} color={colors.accent} />
               </LinearGradient>
               <View style={styles.contoTesto}>
                 <Text style={styles.contoTitolo}>{testoConto(esame.giorni)}</Text>
@@ -363,12 +363,12 @@ export default function HomeScreen() {
               contentStyle={styles.conto}
             >
               <LinearGradient
-                colors={['#F4787A', colors.error]}
+                colors={['rgba(226,86,107,0.16)', 'rgba(226,86,107,0.04)']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.contoIcona}
               >
-                <Icona nome="alert-circle" size={22} color="#FFFFFF" />
+                <Icona nome="alert-circle" size={22} color={colors.error} />
               </LinearGradient>
               <View style={styles.contoTesto}>
                 <Text style={styles.contoTitolo}>Comincia da {debole.materia}</Text>
@@ -389,7 +389,7 @@ export default function HomeScreen() {
         */}
         <Entrata ritardo={scaglione(1)}>
           <Scorciatoia
-            gradiente={['#2E3B5C', colors.primary]}
+            gradiente={['rgba(255,255,255,0.13)', 'rgba(255,255,255,0.05)']}
             glow={colors.primary}
             icona="school"
             etichetta="Nuove regole"
@@ -407,7 +407,7 @@ export default function HomeScreen() {
         */}
         <Entrata ritardo={scaglione(2)}>
           <Scorciatoia
-            gradiente={[materiaColors['Diritto costituzionale'].start, '#B32D53']}
+            gradiente={['rgba(192,94,126,0.20)', 'rgba(192,94,126,0.05)']}
             glow="#B32D53"
             icona="mic"
             etichetta="Prova nuova"
@@ -427,7 +427,7 @@ export default function HomeScreen() {
 
           <View style={[styles.obiettivoWrap, ombra.alta]}>
             <LinearGradient
-              colors={['#37456F', '#1A2340']}
+              colors={['rgba(255,255,255,0.07)', 'rgba(255,255,255,0.02)']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.obiettivo}
@@ -441,7 +441,7 @@ export default function HomeScreen() {
                   <Text style={styles.obiettivoSub}>{testoObiettivo}</Text>
                   {obiettivoRaggiunto && (
                     <View style={styles.obiettivoChip}>
-                      <Icona nome="checkmark-circle" size={14} color={colors.primary} />
+                      <Icona nome="checkmark-circle" size={14} color={colors.accent} />
                       <Text style={styles.obiettivoChipTesto}>COMPLETATO</Text>
                     </View>
                   )}
@@ -464,7 +464,7 @@ export default function HomeScreen() {
                       {streak === 1 ? ' giorno di fila' : ' giorni di fila'}
                     </Text>
                   </Text>
-                  {streak > 0 && <Mascot state="celebrating" size={40} />}
+                  {streak > 0 && <Monolite state="celebrating" size={40} />}
                 </View>
 
                 <View style={styles.giorni}>
@@ -521,7 +521,7 @@ export default function HomeScreen() {
                 colors={[materiaColors.Ripasso.start, materiaColors.Ripasso.end]}
                 style={styles.ripassoIcona}
               >
-                <Icona nome="refresh-circle" size={24} color="#FFFFFF" />
+                <Icona nome="refresh-circle" size={24} color={colors.accent} />
               </LinearGradient>
               <View style={styles.ripassoTesto}>
                 <Text style={styles.ripassoTitolo}>Ripassa i tuoi errori</Text>
@@ -632,7 +632,9 @@ const styles = StyleSheet.create({
   contoIcona: {
     width: 44,
     height: 44,
-    borderRadius: 15,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: alpha.bordo,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -668,8 +670,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 4,
   },
-  heroLivello: { color: colors.primary, fontSize: 12, fontWeight: '800', letterSpacing: -0.2 },
-  heroPunti: { color: '#FFFFFF', fontSize: 30, fontWeight: '800', letterSpacing: -1 },
+  heroLivello: { color: colors.accent, fontSize: 12, fontWeight: '600', letterSpacing: -0.2 },
+  heroPunti: { color: '#FFFFFF', fontSize: 30, fontWeight: '600', letterSpacing: -1 },
   heroPuntiLabel: {
     color: 'rgba(255,255,255,0.6)',
     fontSize: 14,
@@ -688,8 +690,10 @@ const styles = StyleSheet.create({
   scorciatoiaIcona: {
     width: 44,
     height: 44,
-    borderRadius: 15,
-    backgroundColor: '#FFFFFF',
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: alpha.bordo,
+    backgroundColor: alpha.veloForte,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -698,7 +702,7 @@ const styles = StyleSheet.create({
   scorciatoiaTitolo: {
     ...type.scheda,
     fontSize: 17,
-    fontWeight: '800',
+    fontWeight: '600',
     color: '#FFFFFF',
     marginTop: 2,
   },
@@ -748,7 +752,7 @@ const styles = StyleSheet.create({
     paddingTop: spacing.md,
   },
   streakRiga: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
-  streakNumero: { flex: 1, color: '#FFFFFF', fontSize: 21, fontWeight: '800', letterSpacing: -0.6 },
+  streakNumero: { flex: 1, color: '#FFFFFF', fontSize: 21, fontWeight: '600', letterSpacing: -0.6 },
   streakNumeroLabel: {
     color: 'rgba(255,255,255,0.62)',
     fontSize: 13,
@@ -793,7 +797,9 @@ const styles = StyleSheet.create({
   ripassoIcona: {
     width: 44,
     height: 44,
-    borderRadius: 15,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: alpha.bordo,
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -107,5 +107,5 @@ export default function LezioneScreen({ route, navigation }: RootStackScreenProp
 
 const styles = StyleSheet.create({
   vuoto: { flex: 1, padding: spacing.md },
-  vuotoTesto: { fontSize: 18, fontWeight: '800', color: colors.text },
+  vuotoTesto: { fontSize: 18, fontWeight: '600', color: colors.text },
 });

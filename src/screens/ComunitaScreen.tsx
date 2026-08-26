@@ -144,7 +144,7 @@ export default function ComunitaScreen({ navigation }: RootStackScreenProps<'Com
       <Text style={[styles.gruppoTitolo, styles.stacco]}>Persone bloccate</Text>
       <View style={styles.carta}>
         {caricamento ? (
-          <ActivityIndicator color={colors.primary} />
+          <ActivityIndicator color={colors.accent} />
         ) : bloccati.length === 0 ? (
           <Text style={styles.spiega}>
             Non hai bloccato nessuno. Puoi farlo dal menu di un messaggio: i suoi contenuti
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
 
   gruppoTitolo: {
     fontSize: 12,
-    fontWeight: '800',
+    fontWeight: '600',
     letterSpacing: 1,
     textTransform: 'uppercase',
     color: colors.textMuted,
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
   },
   stacco: { marginTop: spacing.lg },
   carta: {
-    backgroundColor: colors.card,
+    backgroundColor: alpha.vetroForte,
     borderRadius: radius.xl,
     padding: spacing.md,
     gap: spacing.sm + 2,
@@ -204,9 +204,9 @@ const styles = StyleSheet.create({
     borderColor: alpha.bordo,
   },
   spiega: { fontSize: 13.5, color: colors.textMuted, lineHeight: 20 },
-  forte: { fontWeight: '800', color: colors.text },
+  forte: { fontWeight: '600', color: colors.text },
   casella: {
-    backgroundColor: '#F2F5FB',
+    backgroundColor: alpha.veloForte,
     borderRadius: radius.lg,
     paddingHorizontal: spacing.md - 4,
     paddingVertical: 12,
@@ -225,16 +225,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  avatarTesto: { color: '#FFFFFF', fontWeight: '900', fontSize: 15 },
+  avatarTesto: { color: '#FFFFFF', fontWeight: '700', fontSize: 15 },
   rigaNome: { flex: 1, fontSize: 15, fontWeight: '700', color: colors.text },
   sblocca: {
-    backgroundColor: '#F2F5FB',
+    backgroundColor: alpha.veloForte,
     borderRadius: radius.pill,
     paddingHorizontal: spacing.md - 4,
     paddingVertical: 7,
   },
   premuto: { opacity: 0.7 },
-  sbloccaTesto: { fontSize: 13, fontWeight: '800', color: colors.primary },
+  sbloccaTesto: { fontSize: 13, fontWeight: '600', color: colors.primary },
 
   errore: {
     flexDirection: 'row',
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
     gap: spacing.sm,
   },
-  centroTitolo: { fontSize: 20, fontWeight: '800', color: colors.text },
+  centroTitolo: { fontSize: 20, fontWeight: '600', color: colors.text },
   centroTesto: {
     fontSize: 14,
     color: colors.textMuted,

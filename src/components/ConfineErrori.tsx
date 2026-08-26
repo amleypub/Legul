@@ -2,7 +2,7 @@ import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Icona } from './Icona';
 import { Bottone } from './Bottone';
-import { Mascot } from './Mascot';
+import { Monolite } from './Monolite';
 import { alpha, colors, radius, spacing } from '../theme';
 
 interface Stato {
@@ -41,7 +41,7 @@ export class ConfineErrori extends React.Component<{ children: React.ReactNode }
     return (
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.content}>
-          <Mascot state="studying" size={104} />
+          <Monolite state="studying" size={104} />
           <Text style={styles.titolo}>Qualcosa si è inceppato</Text>
           <Text style={styles.testo}>
             L’app ha incontrato un problema imprevisto. I tuoi progressi sono salvati: riprova, e
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
     gap: spacing.sm,
   },
-  titolo: { fontSize: 22, fontWeight: '900', color: colors.text, marginTop: spacing.sm },
+  titolo: { fontSize: 22, fontWeight: '700', color: colors.text, marginTop: spacing.sm },
   testo: {
     fontSize: 15,
     color: colors.textMuted,
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   bottone: { alignSelf: 'stretch', marginTop: spacing.md },
   dettaglio: {
     alignSelf: 'stretch',
-    backgroundColor: colors.card,
+    backgroundColor: alpha.vetroForte,
     borderRadius: radius.lg,
     padding: spacing.md,
     marginTop: spacing.lg,
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
   dettaglioTestata: { flexDirection: 'row', alignItems: 'center', gap: 5 },
   dettaglioTitolo: {
     fontSize: 11,
-    fontWeight: '800',
+    fontWeight: '600',
     letterSpacing: 0.8,
     textTransform: 'uppercase',
     color: colors.textMuted,

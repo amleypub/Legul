@@ -14,7 +14,7 @@ import {
 import type { RootStackScreenProps } from '../navigation/types';
 import { alpha, colors, radius, spacing } from '../theme';
 
-const TINTA_SCRITTO = { chiaro: '#E8EEFD', scuro: '#2D4FC7', bordo: '#C7D5F7' };
+const TINTA_SCRITTO = { chiaro: alpha.velo, scuro: '#2D4FC7', bordo: '#C7D5F7' };
 const TINTA_ORALE = { chiaro: '#FDF0DC', scuro: '#B0640F', bordo: '#F3DCB6' };
 
 function BloccoProva({ prova, onEsercitati }: { prova: Prova; onEsercitati?: () => void }) {
@@ -85,7 +85,7 @@ export default function EsameScreen({ navigation }: RootStackScreenProps<'Esame'
       {/* Testata: che cosa è cambiato e da quando, prima di ogni dettaglio */}
       <View style={styles.testataWrap}>
         <LinearGradient
-          colors={['#2E4370', '#1B2A4A']}
+          colors={['rgba(255,255,255,0.08)', 'rgba(255,255,255,0.02)']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.testata}
@@ -161,7 +161,7 @@ export default function EsameScreen({ navigation }: RootStackScreenProps<'Esame'
               <Icona
                 nome={sezione.icona as string}
                 size={19}
-                color={colors.primary}
+                color={colors.accent}
               />
               <Text style={styles.schedaTitolo}>{sezione.titolo}</Text>
             </View>
@@ -223,8 +223,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 4,
   },
-  testataChipTesto: { fontSize: 10.5, fontWeight: '900', letterSpacing: 1, color: '#FFE08A' },
-  testataTitolo: { fontSize: 21, fontWeight: '900', color: '#FFFFFF', lineHeight: 27 },
+  testataChipTesto: { fontSize: 10.5, fontWeight: '700', letterSpacing: 1, color: '#FFE08A' },
+  testataTitolo: { fontSize: 21, fontWeight: '700', color: '#FFFFFF', lineHeight: 27 },
   testataTesto: { fontSize: 13.5, color: 'rgba(255,255,255,0.88)', lineHeight: 20 },
 
   avvisoWrap: { marginTop: spacing.md },
@@ -236,11 +236,11 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     padding: spacing.md - 2,
   },
-  avvisoTesto: { flex: 1, fontSize: 13, color: '#6B4600', lineHeight: 19 },
+  avvisoTesto: { flex: 1, fontSize: 13, color: colors.accent, lineHeight: 19 },
 
   sezioneTitolo: {
     fontSize: 12,
-    fontWeight: '800',
+    fontWeight: '600',
     letterSpacing: 1,
     textTransform: 'uppercase',
     color: colors.textMuted,
@@ -264,19 +264,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  provaNumero: { color: '#FFFFFF', fontWeight: '900', fontSize: 14 },
+  provaNumero: { color: '#FFFFFF', fontWeight: '700', fontSize: 14 },
   provaLinea: { width: 3, flex: 1, borderRadius: 2, marginVertical: 4 },
 
   provaCorpoWrap: { flex: 1, marginBottom: spacing.sm },
   provaCorpo: {
-    backgroundColor: colors.card,
+    backgroundColor: alpha.vetroForte,
     borderRadius: radius.xl,
     padding: spacing.md - 2,
     gap: 7,
     borderWidth: StyleSheet.hairlineWidth * 1.5,
     borderColor: alpha.bordo,
   },
-  provaTitolo: { fontSize: 16.5, fontWeight: '800', color: colors.text },
+  provaTitolo: { fontSize: 16.5, fontWeight: '600', color: colors.text },
   provaSintesi: { fontSize: 14, color: colors.text, lineHeight: 20 },
   provaScelta: {
     flexDirection: 'row',
@@ -300,12 +300,12 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm + 2,
   },
   esercitatiPremuto: { opacity: 0.75 },
-  esercitatiTesto: { flex: 1, fontSize: 13.5, fontWeight: '800' },
+  esercitatiTesto: { flex: 1, fontSize: 13.5, fontWeight: '600' },
 
   puntoTesto: { flex: 1, fontSize: 13, color: colors.textMuted, lineHeight: 19 },
 
   tabella: {
-    backgroundColor: colors.card,
+    backgroundColor: alpha.vetroForte,
     borderRadius: radius.xl,
     overflow: 'hidden',
     marginTop: spacing.md,
@@ -314,26 +314,26 @@ const styles = StyleSheet.create({
   },
   tabellaIntestazione: {
     flexDirection: 'row',
-    backgroundColor: '#EDF1F9',
+    backgroundColor: alpha.velo,
     paddingVertical: 8,
   },
   tabellaIntestazioneTesto: {
     fontSize: 10.5,
-    fontWeight: '900',
+    fontWeight: '700',
     letterSpacing: 0.8,
     textTransform: 'uppercase',
     color: colors.textMuted,
   },
   tabellaRiga: { flexDirection: 'row', paddingVertical: 10 },
-  tabellaRigaAlt: { backgroundColor: '#F7F9FD' },
+  tabellaRigaAlt: { backgroundColor: alpha.velo },
   tabellaCella: { flex: 1, paddingHorizontal: 9, fontSize: 12.5, lineHeight: 17 },
-  tabellaAspetto: { flex: 0.85, fontWeight: '800', color: colors.text },
+  tabellaAspetto: { flex: 0.85, fontWeight: '600', color: colors.text },
   tabellaPrima: { color: colors.textMuted },
-  tabellaAdesso: { color: '#1F7A4D', fontWeight: '700' },
+  tabellaAdesso: { color: colors.success, fontWeight: '700' },
 
   schedaWrap: { marginTop: spacing.md },
   scheda: {
-    backgroundColor: colors.card,
+    backgroundColor: alpha.vetroForte,
     borderRadius: radius.xl,
     padding: spacing.md - 2,
     gap: spacing.sm,
@@ -341,11 +341,11 @@ const styles = StyleSheet.create({
     borderColor: alpha.bordo,
   },
   schedaTestata: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  schedaTitolo: { fontSize: 16, fontWeight: '800', color: colors.text },
+  schedaTitolo: { fontSize: 16, fontWeight: '600', color: colors.text },
   schedaTesto: { fontSize: 13.5, color: colors.textMuted, lineHeight: 20 },
 
   consigli: {
-    backgroundColor: colors.card,
+    backgroundColor: alpha.vetroForte,
     borderRadius: radius.xl,
     padding: spacing.md - 4,
     marginTop: spacing.md,
@@ -368,7 +368,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   consiglioTesti: { flex: 1 },
-  consiglioTitolo: { fontSize: 14.5, fontWeight: '800', color: colors.text },
+  consiglioTitolo: { fontSize: 14.5, fontWeight: '600', color: colors.text },
   consiglioTesto: { fontSize: 12.5, color: colors.textMuted, lineHeight: 18, marginTop: 2 },
 
   fonte: {
@@ -378,7 +378,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.xl,
     paddingTop: spacing.md,
     borderTopWidth: 1,
-    borderTopColor: '#E4E8F0',
+    borderTopColor: alpha.bordo,
   },
   fonteTesto: { flex: 1, fontSize: 11.5, color: colors.textMuted, lineHeight: 17 },
 });

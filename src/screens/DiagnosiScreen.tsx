@@ -168,7 +168,7 @@ export default function DiagnosiScreen({ navigation }: RootStackScreenProps<'Dia
               contentStyle={styles.verdetto}
             >
               <LinearGradient
-                colors={['#F4787A', colors.error]}
+                colors={['rgba(226,86,107,0.16)', 'rgba(226,86,107,0.04)']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={[styles.corona, alone(colors.error, 'tenue')]}
@@ -261,7 +261,7 @@ const styles = StyleSheet.create({
   },
   erroriNumero: {
     fontSize: 15,
-    fontWeight: '800',
+    fontWeight: '600',
     color: materiaColors.Ripasso.edge,
     fontVariant: ['tabular-nums'],
   },

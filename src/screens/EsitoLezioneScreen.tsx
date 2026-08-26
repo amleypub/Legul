@@ -17,11 +17,11 @@ import { Icona } from '../components/Icona';
 import { BADGES, useGamification } from '../gamification/GamificationContext';
 import { ORE_PROPOSTE } from '../notifiche/promemoria';
 import { Bottone } from '../components/Bottone';
-import { Mascot } from '../components/Mascot';
+import { Monolite } from '../components/Monolite';
 import { Confetti } from '../components/Confetti';
 import { playSound } from '../audio/sounds';
 import type { RootStackScreenProps } from '../navigation/types';
-import { colors, materiaColors, molla, radius, ombra, spacing } from '../theme';
+import { alpha, colors, materiaColors, molla, ombra, radius, spacing } from '../theme';
 
 function Stella({ accesa, ritardo }: { accesa: boolean; ritardo: number }) {
   const scale = useRef(new Animated.Value(0)).current;
@@ -162,7 +162,7 @@ export default function EsitoLezioneScreen({
       <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
         <ScrollView contentContainerStyle={styles.content}>
           <Rianimato.View style={mascotStyle}>
-            <Mascot state={fallito ? 'studying' : 'celebrating'} size={128} animated={!fallito} />
+            <Monolite state={fallito ? 'studying' : 'celebrating'} size={128} animated={!fallito} />
           </Rianimato.View>
 
           {materia !== 'Ripasso' && (
@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.lg,
   },
   promemoriaTesto: { flex: 1, gap: 2 },
-  promemoriaTitolo: { fontSize: 15, fontWeight: '800', color: '#FFFFFF' },
+  promemoriaTitolo: { fontSize: 15, fontWeight: '600', color: '#FFFFFF' },
   promemoriaSub: { fontSize: 12.5, color: 'rgba(255,255,255,0.75)', lineHeight: 18 },
   promemoriaAzioni: { gap: 6, width: 74 },
   gradient: { flex: 1 },
@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.xl,
   },
   stellaCentro: { marginBottom: 14 },
-  titolo: { fontSize: 30, fontWeight: '800', color: '#FFFFFF', marginTop: spacing.lg },
+  titolo: { fontSize: 30, fontWeight: '600', color: '#FFFFFF', marginTop: spacing.lg },
   messaggio: {
     fontSize: 15,
     color: 'rgba(255,255,255,0.85)',
@@ -313,23 +313,23 @@ const styles = StyleSheet.create({
   },
   statLabel: {
     fontSize: 10,
-    fontWeight: '800',
+    fontWeight: '600',
     letterSpacing: 0.8,
     textTransform: 'uppercase',
     color: 'rgba(255,255,255,0.75)',
     marginTop: 2,
   },
-  statValore: { fontSize: 22, fontWeight: '900', color: '#FFFFFF', marginTop: 2 },
+  statValore: { fontSize: 22, fontWeight: '700', color: '#FFFFFF', marginTop: 2 },
   badgeWrap: { alignSelf: 'stretch', marginTop: spacing.lg, gap: spacing.sm },
   badgeTitolo: {
     fontSize: 15,
-    fontWeight: '800',
+    fontWeight: '600',
     color: '#FFFFFF',
     textAlign: 'center',
     marginBottom: spacing.xs,
   },
   badgeCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: alpha.veloForte,
     borderRadius: radius.md,
     padding: spacing.md,
     flexDirection: 'row',

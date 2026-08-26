@@ -21,10 +21,10 @@ import type { Riferimento } from '../data/svolgimenti';
 import { DA_COMPLETARE, TITOLARE } from '../data/legale';
 import { argomentoTraccia } from '../discussione/modello';
 import { Bottone } from '../components/Bottone';
-import { Mascot } from '../components/Mascot';
+import { Monolite } from '../components/Monolite';
 import type { RootStackScreenProps } from '../navigation/types';
 import { materiaDellaTraccia } from '../types';
-import { colors, materiaColors, radius, spacing } from '../theme';
+import { alpha, colors, materiaColors, radius, spacing, type } from '../theme';
 
 // L'animazione di apertura su Android va abilitata esplicitamente.
 if (
@@ -134,7 +134,7 @@ export default function SvolgimentoScreen({
   if (!traccia || !svolgimento) {
     return (
       <View style={styles.vuoto}>
-        <Mascot state="studying" size={96} />
+        <Monolite state="studying" size={96} />
         <Text style={styles.vuotoTitolo}>Svolgimento non disponibile</Text>
         <Text style={styles.vuotoTesto}>
           Per questa traccia non è ancora pubblicato uno svolgimento proposto. Nel frattempo puoi
@@ -424,7 +424,7 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
     gap: spacing.sm,
   },
-  vuotoTitolo: { fontSize: 20, fontWeight: '800', color: colors.text },
+  vuotoTitolo: { fontSize: 20, fontWeight: '600', color: colors.text },
   vuotoTesto: { fontSize: 14, color: colors.textMuted, textAlign: 'center', lineHeight: 20 },
   vuotoBtn: { alignSelf: 'stretch', marginTop: spacing.md },
 
@@ -432,12 +432,12 @@ const styles = StyleSheet.create({
   testata: { borderRadius: radius.xxl, padding: spacing.md, gap: 3 },
   occhiello: {
     fontSize: 11,
-    fontWeight: '800',
+    fontWeight: '600',
     letterSpacing: 1,
     textTransform: 'uppercase',
     color: 'rgba(255,255,255,0.85)',
   },
-  titolo: { fontSize: 20, fontWeight: '900', color: '#FFFFFF', lineHeight: 26 },
+  titolo: { fontSize: 20, fontWeight: '700', color: '#FFFFFF', lineHeight: 26 },
   sottotitolo: { fontSize: 12.5, color: 'rgba(255,255,255,0.9)', fontWeight: '600' },
 
   provaCard: {
@@ -450,19 +450,19 @@ const styles = StyleSheet.create({
     marginTop: spacing.md,
   },
   provaTesto: { flex: 1, fontSize: 13.5, color: colors.text, lineHeight: 20 },
-  provaForte: { fontWeight: '800' },
+  provaForte: { fontWeight: '600' },
 
   divisorio: { marginTop: spacing.lg, marginBottom: spacing.sm, paddingHorizontal: 2 },
   divisorioTesto: {
     fontSize: 12,
-    fontWeight: '800',
+    fontWeight: '600',
     letterSpacing: 1,
     textTransform: 'uppercase',
     color: colors.textMuted,
   },
 
   sezioneWrap: { marginTop: spacing.sm },
-  sezione: { backgroundColor: colors.card, borderRadius: radius.xl, overflow: 'hidden' },
+  sezione: { backgroundColor: alpha.vetroForte, borderRadius: radius.xl, overflow: 'hidden' },
   // Le domande dei contrasti occupano anche cinque righe: icona e freccia
   // si allineano alla prima riga, non al centro di un blocco alto.
   sezioneTesta: {
@@ -471,7 +471,7 @@ const styles = StyleSheet.create({
     gap: spacing.sm + 2,
     padding: spacing.md - 3,
   },
-  sezionePremuta: { backgroundColor: '#F2F5FB' },
+  sezionePremuta: { backgroundColor: alpha.veloForte },
   sezioneIcona: {
     width: 34,
     height: 34,
@@ -481,18 +481,19 @@ const styles = StyleSheet.create({
   },
   sezioneFreccia: { marginTop: 8 },
   sezioneTesti: { flex: 1 },
-  sezioneTitolo: { fontSize: 15, fontWeight: '800', color: colors.text, lineHeight: 20 },
+  sezioneTitolo: { fontSize: 15, fontWeight: '600', color: colors.text, lineHeight: 20 },
   sezioneSintesi: { fontSize: 12.5, color: colors.textMuted, marginTop: 2, lineHeight: 17 },
   sezioneCorpo: {
     paddingHorizontal: spacing.md - 3,
     paddingBottom: spacing.md - 3,
     paddingTop: 2,
     borderTopWidth: 1,
-    borderTopColor: '#EEF1F7',
+    borderTopColor: alpha.velo,
     marginTop: 2,
   },
 
-  paragrafo: { fontSize: 14.5, color: colors.text, lineHeight: 24, marginTop: spacing.sm + 2 },
+  // I paragrafi dello svolgimento si leggono come una pagina stampata.
+  paragrafo: { ...type.corpoLungo, fontSize: 15.5, color: colors.text, marginTop: spacing.sm + 2 },
 
   voce: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.sm, marginTop: spacing.sm + 2 },
   voceIcona: { marginTop: 2 },
@@ -500,11 +501,11 @@ const styles = StyleSheet.create({
     width: 22,
     height: 22,
     borderRadius: 8,
-    backgroundColor: '#EDF1FB',
+    backgroundColor: alpha.velo,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  voceNumeroTesto: { fontSize: 12, fontWeight: '800', color: colors.primary },
+  voceNumeroTesto: { fontSize: 12, fontWeight: '600', color: colors.primary },
   voceTesto: { flex: 1, fontSize: 14, color: colors.text, lineHeight: 21 },
 
   rifRiga: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: spacing.md - 2 },
@@ -516,14 +517,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 9,
     paddingVertical: 4,
   },
-  rifNorma: { backgroundColor: '#E8EEFD' },
-  rifGiuri: { backgroundColor: '#FBE7EC' },
+  rifNorma: { backgroundColor: alpha.velo },
+  rifGiuri: { backgroundColor: colors.errorSoft },
   rifTesto: { fontSize: 11.5, fontWeight: '700' },
   rifTestoNorma: { color: '#20399B' },
-  rifTestoGiuri: { color: '#8C1B3C' },
+  rifTestoGiuri: { color: colors.error },
 
   orientamento: {
-    backgroundColor: '#F7F9FE',
+    backgroundColor: alpha.velo,
     borderRadius: radius.lg,
     padding: spacing.md - 4,
     marginTop: spacing.sm + 2,
@@ -531,7 +532,7 @@ const styles = StyleSheet.create({
   orientamentoTesta: { flexDirection: 'row' },
   orientamentoEtichetta: {
     fontSize: 10.5,
-    fontWeight: '800',
+    fontWeight: '600',
     letterSpacing: 0.8,
     textTransform: 'uppercase',
     color: colors.textMuted,
@@ -555,7 +556,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm + 2,
   },
   ricadutaTesto: { flex: 1, fontSize: 13.5, color: colors.text, lineHeight: 21 },
-  ricadutaEtichetta: { fontWeight: '800' },
+  ricadutaEtichetta: { fontWeight: '600' },
 
   griglia: {
     flexDirection: 'row',
@@ -565,16 +566,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
     borderRadius: radius.md,
   },
-  grigliaPremuta: { backgroundColor: '#F2F5FB' },
+  grigliaPremuta: { backgroundColor: alpha.veloForte },
   grigliaTesti: { flex: 1 },
   grigliaVoce: { fontSize: 14.5, fontWeight: '700', color: colors.text },
   grigliaVocePresa: { color: colors.successEdge },
   grigliaCriterio: { fontSize: 12.5, color: colors.textMuted, marginTop: 2, lineHeight: 18 },
   grigliaPeso: {
     fontSize: 12.5,
-    fontWeight: '800',
+    fontWeight: '600',
     color: colors.textMuted,
-    backgroundColor: '#EEF1F7',
+    backgroundColor: alpha.velo,
     borderRadius: radius.pill,
     paddingHorizontal: 8,
     paddingVertical: 2,
@@ -591,14 +592,14 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
   },
   totaleEtichetta: { fontSize: 13.5, fontWeight: '700', color: colors.text },
-  totaleValore: { fontSize: 17, fontWeight: '900', color: colors.successEdge },
+  totaleValore: { fontSize: 17, fontWeight: '700', color: colors.successEdge },
   totaleNota: { fontSize: 12, color: colors.textMuted, lineHeight: 18, marginTop: spacing.sm },
 
   chiusura: {
     marginTop: spacing.xl,
     paddingTop: spacing.lg,
     borderTopWidth: 1,
-    borderTopColor: '#E4E8F0',
+    borderTopColor: alpha.bordo,
     gap: spacing.sm,
   },
   disclaimer: { fontSize: 12.5, color: colors.textMuted, lineHeight: 19 },
@@ -612,7 +613,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: radius.pill,
-    backgroundColor: '#E9EDF5',
+    backgroundColor: alpha.velo,
   },
   segnalaPremuto: { backgroundColor: '#DCE2ED' },
   segnalaTesto: { fontSize: 13, fontWeight: '700', color: colors.textMuted },

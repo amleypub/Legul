@@ -59,8 +59,8 @@ const styles = StyleSheet.create({
   sezione: { marginTop: spacing.lg },
   sezioneTitolo: {
     fontSize: 16,
-    fontWeight: '800',
-    color: colors.primary,
+    fontWeight: '600',
+    color: colors.accent,
     marginBottom: spacing.sm,
   },
   paragrafo: {
