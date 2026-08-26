@@ -154,7 +154,16 @@ export default function DiagnosiScreen({ navigation }: RootStackScreenProps<'Dia
         <Entrata>
           {nessunDato ? (
             <Superficie tono="forte" raggio={radius.xxl} rilievo="media" contentStyle={styles.verdetto}>
-              <Icona nome="compass" size={26} color={colors.titanioChiaro} />
+              {/*
+                L'icona sta dentro un riquadro di misura fissa come nel
+                ramo con i dati: da sola, prima figlia di una colonna
+                centrata, non disegnava niente e al suo posto restava il
+                riflesso della lastra — che sembra un'icona sfocata, non
+                un'icona mancante, ed è il modo peggiore di sparire.
+              */}
+              <View style={styles.corona}>
+                <Icona nome="compass" size={26} color={colors.titanioChiaro} />
+              </View>
               <Text style={styles.verdettoTitolo}>Non c’è ancora niente da misurare</Text>
               <Text style={styles.verdettoTesto}>
                 Questa schermata dice su quale materia conviene lavorare, e per dirlo ha bisogno di
