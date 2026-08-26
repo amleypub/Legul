@@ -243,8 +243,21 @@ script ritaglia il logo, isola il marchio dal fondo e produce i quattro
 formati con i requisiti di ciascuno store — iOS vuole un quadrato pieno
 senza canale alfa, Android il marchio dentro il 66% centrale su uno
 strato trasparente. Il colore di fondo rilevato viene stampato a fine
-esecuzione: va riportato in `app.json` (`splash.backgroundColor` e
-`android.adaptiveIcon.backgroundColor`).
+esecuzione: va riportato in `app.json`, ma **soltanto** in
+`android.adaptiveIcon.backgroundColor`.
+
+`splash.backgroundColor` resta obsidiana. L'app si apriva su una
+schermata arancione piena e poi cadeva nel nero: il salto era il momento
+più stridente rimasto dopo il cambio di linguaggio. Ora l'avviso mostra
+il marchio sulla sua targa, contenuto al centro di un fondo che è già
+quello dell'app.
+
+> Il fondo di marca non si può togliere anche da lì. Il marchio ha una
+> faccia in indaco scuro (`#1B0A38`): sul fondo arancione il contrasto è
+> 5,27, su qualunque candidato scuro del tema scende fra 1,01 e 1,43,
+> cioè la faccia sparisce e la L isometrica sembra rotta. Per portare
+> l'obsidiana anche nell'icona adattiva Android bisognerebbe ritoccare
+> quella faccia, che è una decisione sul marchio e non sull'interfaccia.
 
 > Dopo aver creato o modificato il file `.env`, avvia con `npx expo start --clear`:
 > i valori vengono incollati nel codice in fase di trasformazione e Metro

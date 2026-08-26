@@ -250,8 +250,13 @@ await (await suTela(quotaOriginale, pieno))
 // sicura, perché il sistema lo ritaglia con forme diverse.
 await (await suTela(QUOTA_SICURA)).toFile(join(USCITA, 'adaptive-icon.png'));
 
-// Schermata di avvio: solo il contenuto, il fondo lo mette app.json.
-await (await suTela(QUOTA_AVVIO)).toFile(join(USCITA, 'splash-icon.png'));
+// La schermata di avvio non ha più un'immagine propria: usa `icon.png`,
+// cioè il marchio sulla sua targa piena, centrato su fondo obsidiana.
+//
+// Il marchio ha una faccia in indaco scuro (#1B0A38). Su un fondo scuro
+// il contrasto misurato scende a 1.07: la faccia sparisce e la L
+// isometrica sembra rotta. Serve quindi la targa nel colore di marca,
+// contenuta, invece del marchio trasparente su tutto lo schermo.
 
 // Favicon per la versione web.
 await sharp(join(USCITA, 'icon.png')).resize(48, 48).removeAlpha().toFile(join(USCITA, 'favicon.png'));
@@ -263,5 +268,8 @@ writeFileSync(
 
 console.log(`Logo trovato: ${lato}x${lato} px, fondo ${SFONDO}`);
 console.log(`Contenuto ritagliato: ${cw}x${ch} px`);
-console.log('Generati: icon.png, adaptive-icon.png, splash-icon.png, favicon.png');
+console.log('Generati: icon.png, adaptive-icon.png, favicon.png');
 console.log(`\nColore di fondo da usare in app.json: ${SFONDO}`);
+console.log('  → soltanto in android.adaptiveIcon.backgroundColor.');
+console.log('  splash.backgroundColor resta obsidiana: l\'avvio deve');
+console.log('  proseguire nell\'app, non lampeggiare nel colore di marca.');

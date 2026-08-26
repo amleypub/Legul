@@ -9,9 +9,9 @@
     "newArchEnabled": true,
     "icon": "./assets/icon.png",
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#FB4501"
+      "backgroundColor": "#07090D"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
