@@ -203,9 +203,17 @@ dispositivo — ma questi passaggi vanno chiusi prima di metterla sugli store.
 - [ ] **Dati del titolare** in `src/data/legale.ts`: partita IVA, sede ed
       email restano a `[[ da completare ]]`. Il GDPR impone di indicare il
       titolare con esattezza: pubblicare l'informativa con quei campi vuoti
-      equivale a non averla, e `legale.test.ts` fallisce apposta finché lo
-      sono. L'email finisce nelle pagine pubbliche, quindi va scelta come
-      indirizzo di contatto del servizio. Vedi [`docs/legale.md`](docs/legale.md)
+      equivale a non averla. L'email finisce nelle pagine pubbliche, quindi
+      va scelta come indirizzo di contatto del servizio. Vedi
+      [`docs/legale.md`](docs/legale.md)
+
+      > Attenzione: **niente lo impedisce automaticamente.** `npm run legale`
+      > avvisa ed esce con codice 1, ma le pagine le ha già scritte, e le
+      > copie in `docs/` contengono oggi il segnaposto. `legale.test.ts`
+      > controlla soltanto che l'elenco dei campi mancanti sia esatto e che
+      > nome e forma giuridica ci siano: non fallisce finché gli altri
+      > campi sono vuoti. Prima di attivare GitHub Pages va verificato a
+      > mano che in `docs/*.html` non compaia più «da completare».
 - [ ] **Progetto Supabase**: creare la tabella dei progressi con le policy
       RLS, eseguire `supabase/sql/discussione.sql`, attivare i provider di
       accesso e pubblicare la funzione `elimina-account`. Vedi
