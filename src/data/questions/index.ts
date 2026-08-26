@@ -41,6 +41,10 @@ import { ueL1 } from './ue-l1';
 import { ueL2 } from './ue-l2';
 import { ueL3 } from './ue-l3';
 import { ueL4 } from './ue-l4';
+import { internazionaleL1 } from './internazionale-l1';
+import { internazionaleL2 } from './internazionale-l2';
+import { internazionaleL3 } from './internazionale-l3';
+import { internazionaleL4 } from './internazionale-l4';
 import { previdenzaL1 } from './previdenza-l1';
 import { previdenzaL2 } from './previdenza-l2';
 import { previdenzaL3 } from './previdenza-l3';
@@ -102,6 +106,13 @@ export const tutteLeDomande: QuizQuestion[] = [
   ...ueL2,
   ...ueL3,
   ...ueL4,
+  // Diritto internazionale: la seconda delle tre materie della rosa che
+  // mancavano. Il livello avanzato è tutto internazionale privato, che
+  // è la parte che un avvocato usa in studio.
+  ...internazionaleL1,
+  ...internazionaleL2,
+  ...internazionaleL3,
+  ...internazionaleL4,
   ...previdenzaL1,
   ...previdenzaL2,
   ...previdenzaL3,

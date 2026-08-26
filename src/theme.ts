@@ -256,6 +256,11 @@ export const materiaColors: Record<
     edge: '#152C78',
     soft: '#E8EDFD',
   },
+  // Terracotta: è l'unico buco rimasto nella ruota: il verde è del lavoro,
+  // il ciano del commerciale, il teal della procedura civile, l'ambra
+  // dell'amministrativo. Una seconda tinta vicina a una di queste
+  // renderebbe indistinguibili due schede affiancate nell'elenco.
+  'Diritto internazionale': { start: '#C87A54', end: '#9C4D2A', edge: '#78381C', soft: '#F9ECE4' },
   // Il ripasso non è una materia: ha un colore proprio, così si distingue
   // a colpo d'occhio da una lezione del percorso.
   Ripasso: { start: '#F8B048', end: '#E37B1E', edge: '#AF5C13', soft: '#FEF0E0' },

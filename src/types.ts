@@ -20,7 +20,8 @@ export type Materia =
   | 'Diritto costituzionale'
   | 'Diritto commerciale'
   | 'Diritto del lavoro'
-  | 'Diritto dell’Unione europea';
+  | 'Diritto dell’Unione europea'
+  | 'Diritto internazionale';
 
 /** Livello di difficoltà: 1 Fondamenti, 2 Consolidamento, 3 Avanzato, 4 Eccellenza. */
 export type Difficolta = 1 | 2 | 3 | 4;

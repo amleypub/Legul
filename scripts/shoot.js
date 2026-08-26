@@ -257,6 +257,7 @@ async function main() {
     // Il percorso della materia entrata per ultima in banca dati: serve
     // a controllare che colore, icona e conteggio delle lezioni ci siano.
     ['2b-percorso-ue.png', `/percorso/${encodeURIComponent('Diritto dell’Unione europea')}`],
+    ['2c-percorso-internazionale.png', `/percorso/${encodeURIComponent('Diritto internazionale')}`],
     ['0-esame.png', '/esame'],
     ['0g-diagnosi.png', '/dove-sei-debole'],
     ['0b-caso-elenco.png', '/caso-pratico'],
