@@ -6,7 +6,7 @@ import { Icona } from '../components/Icona';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MATERIE_A_SCELTA, materieObbligatorie } from '../data/quizzes';
-import { percorsoPerMateria } from '../data/percorso';
+import { ICONA_MATERIA, percorsoPerMateria } from '../data/percorso';
 import { materieScoperte, rosaOrdinata } from '../data/scelte';
 import { useGamification } from '../gamification/GamificationContext';
 import type { RootStackParamList } from '../navigation/types';
@@ -14,21 +14,6 @@ import type { Materia } from '../types';
 import { Sfondo } from '../components/Sfondo';
 import { TitoloSchermata } from '../components/TitoloSchermata';
 import { SCALA_PRESSIONE, SPAZIO_TAB, alpha, colors, materiaColors, radius, spacing, type } from '../theme';
-
-export const ICONA_MATERIA: Record<Materia, string> = {
-  'Diritto civile': 'handshake',
-  'Diritto penale': 'shield-half',
-  'Procedura civile': 'gavel',
-  'Procedura penale': 'scales',
-  'Diritto amministrativo': 'landmark',
-  'Deontologia forense': 'people',
-  'Diritto costituzionale': 'library-outline',
-  'Diritto commerciale': 'briefcase',
-  'Diritto del lavoro': 'hard-hat',
-  'Diritto dell’Unione europea': 'globe',
-  'Diritto internazionale': 'compass',
-  'Diritto tributario': 'calculator',
-};
 
 function MateriaBlock({
   materia,

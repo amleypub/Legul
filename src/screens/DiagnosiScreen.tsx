@@ -16,7 +16,7 @@ import {
   type DiagnosiMateria,
   type StatoMateria,
 } from '../data/diagnosi';
-import { ICONA_MATERIA } from './QuizHomeScreen';
+import { ICONA_MATERIA } from '../data/percorso';
 import type { RootStackScreenProps } from '../navigation/types';
 import { alone, alpha, colors, materiaColors, radius, spacing, type } from '../theme';
 
@@ -104,9 +104,15 @@ function Riga({ voce }: { voce: DiagnosiMateria }) {
         <View style={styles.misuraTesto}>
           <Text style={styles.misuraNome}>Precisione</Text>
           <Text style={styles.misuraValore}>
+            {/*
+              «ancora 20 risposte» si legge come «venti risposte finora»,
+              che al primo avvio è falso: di risposte non ce n'è
+              nessuna. Il numero è quanto ne manca, e il verbo deve
+              dirlo.
+            */}
             {voce.precisione === null
               ? mancanti > 0
-                ? `ancora ${mancanti} ${mancanti === 1 ? 'risposta' : 'risposte'}`
+                ? `servono ${mancanti} ${mancanti === 1 ? 'risposta' : 'risposte'}`
                 : '—'
               : `${Math.round(voce.precisione * 100)}% su ${voce.risposte} risposte`}
           </Text>
@@ -148,7 +154,7 @@ export default function DiagnosiScreen({ navigation }: RootStackScreenProps<'Dia
         <Entrata>
           {nessunDato ? (
             <Superficie tono="forte" raggio={radius.xxl} rilievo="media" contentStyle={styles.verdetto}>
-              <Icona nome="compass" size={26} color={colors.textMuted} />
+              <Icona nome="compass" size={26} color={colors.titanioChiaro} />
               <Text style={styles.verdettoTitolo}>Non c’è ancora niente da misurare</Text>
               <Text style={styles.verdettoTesto}>
                 Questa schermata dice su quale materia conviene lavorare, e per dirlo ha bisogno di

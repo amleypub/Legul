@@ -200,6 +200,28 @@ async function main() {
       ([chiave, valore]) => window.localStorage.setItem(chiave, valore),
       ['@legul/gamification/v1', JSON.stringify(stato)]
     );
+  } else {
+    /*
+      `--nuovo` non vuol dire «nessuno stato»: vuol dire stato a zero.
+
+      Lasciando il deposito davvero vuoto l'app si apre sulle domande
+      d'apertura — giustamente, è la prima cosa che vede chi installa —
+      e il resto della cattura andava a sbattere cercando la barra delle
+      schede, che lì non c'è ancora. Il giro non è mai arrivato in fondo
+      e le schermate vuote, che erano il motivo per cui la variante
+      esiste, non sono mai state guardate.
+
+      L'apertura ha già i suoi due scatti, presi da una pagina con il
+      deposito ripulito. Qui serve il momento subito dopo: contatori a
+      zero, nessuna lezione fatta, nessun badge.
+    */
+    await page.addInitScript(
+      ([chiave, valore]) => window.localStorage.setItem(chiave, valore),
+      [
+        '@legul/gamification/v1',
+        JSON.stringify({ aperturaFatta: true, promemoriaProposto: true }),
+      ]
+    );
   }
 
   // `--utente` finge una sessione già attiva, per vedere le schermate
@@ -235,7 +257,20 @@ async function main() {
   await page.goto('http://127.0.0.1:8099', { waitUntil: 'networkidle' });
   await page.waitForTimeout(3500);
 
-  const outDir = path.join(__dirname, '..', 'shots');
+  /*
+    Le varianti non scrivono nella cartella canonica.
+
+    `--nuovo` e `--streak-rotta` producono le stesse schermate con uno
+    stato diverso: scrivendole in `shots/` sovrascriverebbero in
+    silenzio il giro seminato, e chi riaprisse quelle immagini
+    crederebbe che l'app mostri zeri dappertutto.
+  */
+  const variante = process.argv.includes('--nuovo')
+    ? '-nuovo'
+    : process.argv.includes('--streak-rotta')
+      ? '-streak-rotta'
+      : '';
+  const outDir = path.join(__dirname, '..', `shots${variante}`);
   fs.mkdirSync(outDir, { recursive: true });
 
   /*
@@ -426,7 +461,9 @@ async function main() {
     console.log('ATTENZIONE — scatti non aggiornati (resta la versione precedente):');
     for (const n of mancanti) console.log('  -', n);
   }
-  console.log(`OK screenshots in shots/ (${scattati.size} aggiornati, ${mancanti.length} saltati)`);
+  console.log(
+    `OK screenshots in shots${variante}/ (${scattati.size} aggiornati, ${mancanti.length} saltati)`
+  );
 }
 main().catch((e) => {
   console.error(e);

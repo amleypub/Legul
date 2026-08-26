@@ -39,3 +39,7 @@ yarn-error.*
 
 # Codespaces expo tunnel log
 expo-log.txt
+
+# Scatti delle varianti: la cartella canonica è shots/
+shots-nuovo/
+shots-streak-rotta/

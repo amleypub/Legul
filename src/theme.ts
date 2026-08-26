@@ -353,11 +353,17 @@ export const materiaColors: Record<
     edge: '#AC98DC',
     soft: 'rgba(139,114,196,0.14)',
   },
+  /* Era un ambra a 33° di tinta, cioè quasi lo champagne dell'accento.
+     Nell'elenco delle materie sta a tre schede da «Ripasso», che l'oro
+     lo porta apposta per dire «questo è ciò che l'app ti chiede di
+     fare»: due ori vicini tolgono forza proprio a quel segnale. Qui è
+     un'oliva istituzionale, lontana sia dall'oro sia dal verde del
+     lavoro, che comunque vive nell'altro blocco. */
   'Diritto amministrativo': {
-    start: '#C08A44',
-    end: '#8A5D22',
-    edge: '#DCAA6B',
-    soft: 'rgba(192,138,68,0.14)',
+    start: '#8A9350',
+    end: '#555C28',
+    edge: '#B0B87C',
+    soft: 'rgba(138,147,80,0.14)',
   },
   'Deontologia forense': {
     start: '#77808F',

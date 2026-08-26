@@ -3,6 +3,33 @@ import { tutteLeDomande } from './questions';
 
 export const DOMANDE_PER_LEZIONE = 10;
 
+/*
+  L'icona di ciascuna materia.
+
+  Sta qui e non nella schermata che per prima l'ha usata perché è un
+  dato, non una vista: la usano l'elenco dei percorsi e la diagnosi, e
+  soprattutto è ciò che identifica una materia quando il colore non
+  basta. Le tinte smorzate di questo tema non riescono a tenere dodici
+  materie tutte distinguibili fra loro — è misurato in `tema.test.ts` —
+  quindi il nome per esteso e questa icona sono il segno vero, e il
+  colore aiuta soltanto a ritrovarsi.
+*/
+export const ICONA_MATERIA: Record<Materia, string> = {
+  'Diritto civile': 'handshake',
+  'Diritto penale': 'shield-half',
+  'Procedura civile': 'gavel',
+  'Procedura penale': 'scales',
+  'Diritto amministrativo': 'landmark',
+  'Deontologia forense': 'people',
+  'Diritto costituzionale': 'library-outline',
+  'Diritto commerciale': 'briefcase',
+  'Diritto del lavoro': 'hard-hat',
+  'Diritto dell’Unione europea': 'globe',
+  'Diritto internazionale': 'compass',
+  'Diritto tributario': 'calculator',
+};
+
+
 export interface Lezione {
   /** Identificatore stabile: `materia|difficolta|indice`. */
   id: string;

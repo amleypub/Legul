@@ -152,6 +152,25 @@ export default function EsitoLezioneScreen({
         ? 'Ottimo lavoro!'
         : 'Lezione completata';
 
+  /*
+    Le due azioni con l'indicazione di quale sia la principale. Sono
+    ordinate mettendo la principale per ultima, cioè in fondo allo
+    schermo: è la posizione che il pollice raggiunge senza spostare la
+    mano, e a cuori esauriti la principale diventa riprovare.
+  */
+  const azioni = [
+    ...(materia !== 'Ripasso' && (fallito || stelle < 3)
+      ? [
+          {
+            label: 'Riprova la lezione',
+            onPress: () => navigation.replace('Lezione', { materia, lezioneId }),
+            primaria: fallito,
+          },
+        ]
+      : []),
+    { label: 'Continua', onPress: () => navigation.goBack(), primaria: !fallito },
+  ].sort((a, b) => Number(a.primaria) - Number(b.primaria));
+
   return (
     <LinearGradient
       /*
@@ -245,19 +264,24 @@ export default function EsitoLezioneScreen({
           )}
         </ScrollView>
 
+        {/*
+          A cuori esauriti l'oro stava su «Continua», cioè su «vattene»,
+          mentre il sottotitolo diceva di ripassare e riprovare: il
+          bottone contraddiceva il testo sopra di sé. Quando invece la
+          lezione è passata e mancano stelle, riprovare è facoltativo e
+          l'azione principale torna a essere andare avanti.
+
+          La primaria sta in fondo, dove arriva il pollice.
+        */}
         <View style={styles.footer}>
-          {materia !== 'Ripasso' && (fallito || stelle < 3) && (
+          {azioni.map((a) => (
             <Bottone
-              label="Riprova la lezione"
-              onPress={() => navigation.replace('Lezione', { materia, lezioneId })}
-              gradiente={['rgba(255,255,255,0.22)', 'rgba(255,255,255,0.12)']}
+              key={a.label}
+              label={a.label}
+              onPress={a.onPress}
+              variante={a.primaria ? 'accento' : 'scuro'}
             />
-          )}
-          <Bottone
-            label="Continua"
-            onPress={() => navigation.goBack()}
-          variante="accento"
-          />
+          ))}
         </View>
       </SafeAreaView>
     </LinearGradient>
