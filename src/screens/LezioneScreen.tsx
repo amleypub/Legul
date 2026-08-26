@@ -5,13 +5,13 @@ import { trovaLezione } from '../data/percorso';
 import { useGamification } from '../gamification/GamificationContext';
 import { EsecuzioneQuiz, type EsitoQuiz } from './EsecuzioneQuiz';
 import type { RootStackScreenProps } from '../navigation/types';
-import { colors, materiaColors, spacing } from '../theme';
+import { colors, spacing, tintaMateria } from '../theme';
 
 export { CUORI_INIZIALI } from './EsecuzioneQuiz';
 
 export default function LezioneScreen({ route, navigation }: RootStackScreenProps<'Lezione'>) {
   const { materia, lezioneId } = route.params;
-  const tinte = materiaColors[materia];
+  const tinte = tintaMateria(materia);
   const { registraLezioneCompletata } = useGamification();
 
   const lezione = useMemo(() => trovaLezione(materia, lezioneId), [materia, lezioneId]);

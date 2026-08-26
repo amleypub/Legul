@@ -7,6 +7,20 @@ import type { RootStackParamList } from './types';
  * condiviso, e permette di raggiungere ogni schermata direttamente in fase
  * di verifica grafica.
  */
+/**
+ * Un intero non negativo, comunque sia fatta la stringa in arrivo.
+ *
+ * `Number` da solo risponde `NaN` a qualunque cosa non sia un numero, e
+ * un indirizzo come `legul://esito/…?punti=abc` lo può scrivere
+ * chiunque. Quel `NaN` finiva nel contatore che fa salire i punti, che
+ * lo passa a un'animazione: sullo schermo restava «+NaN» e il conto non
+ * partiva. Un deep link malformato deve poter fallire in modo noioso.
+ */
+function intero(v: string): number {
+  const n = Number(v);
+  return Number.isFinite(n) ? Math.max(0, Math.trunc(n)) : 0;
+}
+
 export const linking: LinkingOptions<RootStackParamList> = {
   prefixes: ['legul://', 'https://legul.app'],
   config: {
@@ -28,10 +42,10 @@ export const linking: LinkingOptions<RootStackParamList> = {
         // I parametri arrivano dall'URL come stringhe: qui tornano ai tipi giusti.
         parse: {
           fallito: (v: string) => v === 'true',
-          corrette: Number,
-          totale: Number,
-          stelle: Number,
-          punti: Number,
+          corrette: intero,
+          totale: intero,
+          stelle: intero,
+          punti: intero,
           nuoviBadge: (v: string) => (v ? v.split(',') : []),
         },
         stringify: {

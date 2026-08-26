@@ -12,7 +12,7 @@ import Animated, {
 import { BADGES, PUNTI, useGamification } from '../gamification/GamificationContext';
 import { messaggioObiettivo } from '../gamification/obiettivo';
 import { settimanaCorrente, type GiornoSettimana } from '../gamification/settimana';
-import { dovuteOggi } from '../gamification/ripasso';
+import { dovuteOggi, oggiISO } from '../gamification/ripasso';
 import { giorniAllEsame, ritmoNecessario, testoConto } from '../data/scelte';
 import { diagnosi, materiaPiuDebole } from '../data/diagnosi';
 import { materiaDiDomanda } from '../data/questions';
@@ -29,11 +29,6 @@ import { Sfondo } from '../components/Sfondo';
 import { Superficie } from '../components/Superficie';
 import { TitoloSchermata } from '../components/TitoloSchermata';
 import { SPAZIO_TAB, alone, alpha, colors, materiaColors, ombra, radius, spacing, type } from '../theme';
-
-/** Data odierna in formato YYYY-MM-DD, come la salva la gamification. */
-function oggiISO(): string {
-  return new Date().toISOString().slice(0, 10);
-}
 
 /** Una colonna della riga statistiche: numero grande, etichetta piccola. */
 function Statistica({

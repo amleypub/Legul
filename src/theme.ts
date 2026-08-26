@@ -418,3 +418,17 @@ export const materiaColors: Record<
     soft: 'rgba(201,162,39,0.14)',
   },
 };
+
+/**
+ * La tinta di una materia, con un ripiego se il nome non è in mappa.
+ *
+ * Serve perché il nome arriva anche dall'URL: `legul://esito/Pippo/x` è
+ * un indirizzo che chiunque può digitare, e la ricerca diretta
+ * restituiva `undefined`. Le schermate lo dereferenziavano subito —
+ * `tinte.soft` — e l'app si apriva su una pagina bianca. Un titanio
+ * neutro è la risposta giusta: l'indirizzo è sbagliato, ma non è una
+ * ragione per non disegnare niente.
+ */
+export function tintaMateria(nome: string): (typeof materiaColors)[string] {
+  return materiaColors[nome] ?? materiaColors['Deontologia forense'];
+}

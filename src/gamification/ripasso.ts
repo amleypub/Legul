@@ -140,9 +140,27 @@ export function distanzaGiorni(a: string, b: string): number {
   return Math.round((Date.parse(`${a}T00:00:00Z`) - Date.parse(`${b}T00:00:00Z`)) / 86_400_000);
 }
 
-/** Il giorno corrente in formato YYYY-MM-DD. */
-export function oggiISO(): string {
-  return new Date().toISOString().slice(0, 10);
+/**
+ * Il giorno corrente in formato YYYY-MM-DD, secondo il calendario di chi
+ * usa l'app.
+ *
+ * `toISOString()` dà la data UTC, che non è la stessa cosa: in Italia,
+ * d'estate, fra mezzanotte e le due l'UTC è ancora il giorno prima. Chi
+ * finisce una lezione all'una di notte — cioè, per chi prepara un esame,
+ * un'ora del tutto ordinaria — se la vedeva contare nella giornata
+ * precedente: i punti finivano nel giorno sbagliato, il pallino della
+ * settimana in Home accendeva il giorno sbagliato, e la streak si
+ * spezzava o si allungava a un'ora arbitraria.
+ *
+ * Qui la data si compone dai campi locali, senza passare per UTC. Le
+ * altre funzioni continuano a fare aritmetica in UTC sulle stringhe già
+ * formate, ed è giusto così: lì si contano giorni di calendario, dove
+ * l'ora legale non deve entrare.
+ */
+export function oggiISO(data: Date = new Date()): string {
+  const mese = String(data.getMonth() + 1).padStart(2, '0');
+  const giorno = String(data.getDate()).padStart(2, '0');
+  return `${data.getFullYear()}-${mese}-${giorno}`;
 }
 
 const MESI = [

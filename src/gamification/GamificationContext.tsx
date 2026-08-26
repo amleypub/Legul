@@ -339,10 +339,15 @@ export function stellePerRisultato(corrette: number, totale: number): number {
 
 const GamificationContext = createContext<GamificationContextValue | null>(null);
 
+/*
+  Ieri, sempre nel calendario locale. La versione precedente arretrava di
+  un giorno con i campi locali e poi formattava in UTC, mescolando i due
+  calendari in una funzione sola.
+*/
 function ieriISO(): string {
   const d = new Date();
   d.setDate(d.getDate() - 1);
-  return d.toISOString().slice(0, 10);
+  return oggiISO(d);
 }
 
 /** Aggiorna la streak giornaliera in base all'ultima attività registrata. */
@@ -483,9 +488,29 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
   useEffect(() => {
     AsyncStorage.getItem(STORAGE_KEY)
       .then((raw) => {
-        if (raw) {
-          setState(migrato({ ...initialState, ...(JSON.parse(raw) as GamificationState) }));
+        if (!raw) return;
+        let letto: unknown;
+        try {
+          letto = JSON.parse(raw);
+        } catch {
+          /*
+            Il deposito è illeggibile. Prima l'errore veniva ingoiato e
+            basta: l'app ripartiva dallo stato iniziale e il primo
+            salvataggio successivo — cioè la prima risposta data —
+            riscriveva sopra il blocco corrotto, cancellando per sempre
+            quello che ci fosse rimasto dentro. Qui il testo originale
+            viene messo da parte prima di perdere quel diritto. Non lo
+            recupera da solo, ma smette di essere una perdita
+            irreversibile e resta qualcosa da guardare.
+          */
+          AsyncStorage.setItem(`${STORAGE_KEY}/corrotto`, raw).catch(() => {});
+          return;
         }
+        // Un JSON valido può comunque non essere un oggetto: `"[]"`,
+        // `"null"` e `'"testo"'` si spargono in modi diversi e nessuno
+        // buono.
+        if (!letto || typeof letto !== 'object' || Array.isArray(letto)) return;
+        setState(migrato({ ...initialState, ...(letto as GamificationState) }));
       })
       .catch(() => {})
       .finally(() => {
@@ -502,12 +527,24 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
   // ——— Sincronizzazione con il cloud ———
   const { utente } = useAuth();
   const utenteId = utente?.id ?? null;
-  // Finché non abbiamo fuso i dati remoti non ha senso ricaricarli su:
-  // spedirebbe lo stato locale ancora incompleto sovrascrivendo il cloud.
-  const fusioneFatta = useRef(false);
+  /*
+    Finché non abbiamo fuso i dati remoti non ha senso ricaricarli su:
+    spedirebbe lo stato locale ancora incompleto sovrascrivendo il cloud.
+
+    È uno stato e non un `ref` per una ragione precisa. Da `ref`, il
+    passaggio a «fusione fatta» non provocava alcun render, quindi
+    l'effetto che carica sul cloud non veniva rieseguito: partiva solo al
+    successivo cambiamento di `state`. Quando il cloud è vuoto — cioè al
+    primo accesso, che è esattamente quando qualcuno accede per mettere
+    al sicuro quello che ha già fatto — la fusione non cambia nulla, e
+    così non partiva niente: i progressi restavano a terra fino alla
+    domanda successiva. La schermata Profilo intanto prometteva «backup
+    automatico».
+  */
+  const [fusioneFatta, setFusioneFatta] = useState(false);
 
   useEffect(() => {
-    fusioneFatta.current = false;
+    setFusioneFatta(false);
     if (!utenteId) return;
     let vivo = true;
 
@@ -521,7 +558,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
       } catch {
         // Rete assente o tabella non ancora creata: si continua in locale.
       } finally {
-        if (vivo) fusioneFatta.current = true;
+        if (vivo) setFusioneFatta(true);
       }
     })();
 
@@ -533,12 +570,12 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
   // Salva sul cloud a ogni cambiamento, ma non più di una volta al secondo:
   // durante una lezione lo stato cambia a ogni risposta.
   useEffect(() => {
-    if (!utenteId || !fusioneFatta.current) return;
+    if (!utenteId || !fusioneFatta) return;
     const t = setTimeout(() => {
       caricaProgressi(utenteId, soloSincronizzabili(state)).catch(() => {});
     }, 1000);
     return () => clearTimeout(t);
-  }, [state, utenteId]);
+  }, [state, utenteId, fusioneFatta]);
 
   const applica = useCallback(
     (

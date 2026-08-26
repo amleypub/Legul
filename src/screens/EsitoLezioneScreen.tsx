@@ -21,7 +21,7 @@ import { Monolite } from '../components/Monolite';
 import { Polvere } from '../components/Polvere';
 import { playSound } from '../audio/sounds';
 import type { RootStackScreenProps } from '../navigation/types';
-import { alpha, colors, materiaColors, molla, ombra, radius, spacing } from '../theme';
+import { alpha, colors, molla, ombra, radius, spacing, tintaMateria } from '../theme';
 
 function Stella({ accesa, ritardo }: { accesa: boolean; ritardo: number }) {
   const scale = useRef(new Animated.Value(0)).current;
@@ -78,7 +78,7 @@ export default function EsitoLezioneScreen({
 }: RootStackScreenProps<'EsitoLezione'>) {
   const { materia, lezioneId, fallito, corrette, totale, stelle, punti, messaggio, nuoviBadge } =
     route.params;
-  const tinte = materiaColors[materia];
+  const tinte = tintaMateria(materia);
   const badgeSbloccati = BADGES.filter((b) => nuoviBadge.includes(b.id));
   const precisione = totale > 0 ? Math.round((corrette / totale) * 100) : 0;
 

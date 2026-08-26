@@ -57,7 +57,7 @@ prendere, non a decorare.
   segmenti si distinguono alzando il vetro e incidendo il bordo. Un
   riempimento acceso su un controllo secondario sembra l'azione
   principale della schermata
-- Animazioni con **Reanimated** e **Moti**, sfocature con **expo-blur**
+- Animazioni con **Reanimated**, sfocature con **expo-blur**
   (sul web `backdrop-filter`), icone **Lucide**
 
 ## Funzionalità

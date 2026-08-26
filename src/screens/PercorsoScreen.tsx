@@ -25,7 +25,7 @@ import { useGamification } from '../gamification/GamificationContext';
 import { Monolite } from '../components/Monolite';
 import { Bottone } from '../components/Bottone';
 import type { RootStackScreenProps } from '../navigation/types';
-import { SCALA_PRESSIONE, alone, alpha, colors, materiaColors, ombra, radius, spacing } from '../theme';
+import { SCALA_PRESSIONE, alone, alpha, colors, ombra, radius, spacing, tintaMateria } from '../theme';
 
 const NODE = 60;
 /*
@@ -249,7 +249,7 @@ type Riga =
 export default function PercorsoScreen({ route, navigation }: RootStackScreenProps<'Percorso'>) {
   const { materia } = route.params;
   const { state } = useGamification();
-  const tinte = materiaColors[materia];
+  const tinte = tintaMateria(materia);
   const lista = useRef<FlatList<Riga>>(null);
 
   const unita = percorsoPerMateria(materia);

@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, type TextStyle } from 'react-native';
+import { FONT_UI } from './theme';
 import {
   Inter_400Regular,
   Inter_500Medium,
@@ -38,20 +39,28 @@ export const fontMap = {
   SourceSerif4_600SemiBold,
 };
 
-/** Mappa il fontWeight richiesto al taglio di Inter corrispondente. */
+/**
+ * Mappa il fontWeight richiesto al taglio corrispondente.
+ *
+ * I nomi vengono da `FONT_UI` e non riscritti a mano: erano gli stessi
+ * quattro letterali in due file, e un nome di famiglia sbagliato in
+ * React Native non dà errore — ripiega sul font di sistema in silenzio,
+ * che è il modo peggiore per accorgersi di un cambio di carattere fatto
+ * a metà.
+ */
 function famForWeight(weight: TextStyle['fontWeight']): string {
   switch (String(weight)) {
     case '900':
     case '800':
     case '700':
     case 'bold':
-      return 'Inter_700Bold';
+      return FONT_UI.bold;
     case '600':
-      return 'Inter_600SemiBold';
+      return FONT_UI.semibold;
     case '500':
-      return 'Inter_500Medium';
+      return FONT_UI.medium;
     default:
-      return 'Inter_400Regular';
+      return FONT_UI.regular;
   }
 }
 

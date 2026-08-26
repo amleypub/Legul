@@ -53,8 +53,15 @@ export async function programmaPromemoria(ora: number): Promise<void> {
   if (Platform.OS === 'web') return;
   await annullaPromemoria();
 
-  // Il messaggio cambia di giorno in giorno: un testo sempre identico
-  // diventa invisibile dopo la terza volta.
+  /*
+    Il messaggio cambia a ogni riprogrammazione, non a ogni giorno: il
+    trigger `DAILY` ripete sempre lo stesso contenuto. Poiché l'app
+    riprogramma il promemoria a ogni avvio, chi la apre con una certa
+    regolarità vede testi diversi; chi sparisce per una settimana riceve
+    sette volte lo stesso. Rotearlo davvero vorrebbe dire programmare
+    più notifiche distinte, e non vale la complicazione per un
+    promemoria che serve proprio a farsi riaprire.
+  */
   const messaggio = MESSAGGI[new Date().getDate() % MESSAGGI.length];
 
   await Notifications.scheduleNotificationAsync({
