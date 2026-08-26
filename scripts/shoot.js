@@ -74,14 +74,29 @@ function esitoUrl({ stelle, corrette, punti, fallito = false }) {
   non era mai stata compilata. Meglio rifiutarsi di scattare.
 */
 function verificaFreschezza() {
-  const bundleDir = path.join(ROOT, '_expo', 'static', 'js', 'web');
-  if (!fs.existsSync(bundleDir)) return;
-  const bundle = fs
-    .readdirSync(bundleDir)
-    .filter((f) => f.endsWith('.js'))
-    .map((f) => fs.statSync(path.join(bundleDir, f)).mtimeMs);
-  if (!bundle.length) return;
-  const compilato = Math.max(...bundle);
+  /*
+    Conta l'istante in cui la compilazione è *cominciata*, non quello in
+    cui ha finito di scrivere il bundle: Metro legge i sorgenti mentre
+    lavora, quindi una modifica fatta a metà strada può non finirci
+    dentro pur essendo più vecchia del file prodotto. Lo stampo lo
+    scrive `scripts/anteprima.sh`; senza, si ripiega sulla data del
+    bundle, che è meglio di niente.
+  */
+  const stampo = path.join(ROOT, '.avviato');
+  let compilato;
+  if (fs.existsSync(stampo)) {
+    compilato = Number(fs.readFileSync(stampo, 'utf8')) * 1000;
+  } else {
+    const bundleDir = path.join(ROOT, '_expo', 'static', 'js', 'web');
+    if (!fs.existsSync(bundleDir)) return;
+    const bundle = fs
+      .readdirSync(bundleDir)
+      .filter((f) => f.endsWith('.js'))
+      .map((f) => fs.statSync(path.join(bundleDir, f)).mtimeMs);
+    if (!bundle.length) return;
+    compilato = Math.max(...bundle);
+  }
+  if (!compilato) return;
 
   let piuRecente = 0;
   let colpevole = '';
@@ -106,7 +121,7 @@ function verificaFreschezza() {
     console.log(
       `BUNDLE VECCHIO — ${colpevole} è stato modificato ${ritardo}s dopo la compilazione.`
     );
-    console.log('Rilancia `npx expo export --platform web --output-dir web-build --clear`.');
+    console.log('Rilancia `sh scripts/anteprima.sh`.');
     process.exit(2);
   }
 }

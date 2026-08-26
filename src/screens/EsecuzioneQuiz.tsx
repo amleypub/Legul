@@ -60,7 +60,10 @@ function Opzione({
        chiaro: sul fondo ossidiana diventava un contorno bianco che
        gridava più della risposta stessa. Ora è un vetro appena inciso. */
     idle: { bg: alpha.vetro, bordo: alpha.bordo, edge: alpha.bordo, testo: colors.text },
-    selezionata: { bg: tinte.soft, bordo: tinte.start, edge: tinte.edge, testo: tinte.end },
+    /* Il testo della scelta era nella tinta scura della materia: su
+       fondo ossidiana si leggeva a fatica. Ora resta chiaro e a
+       segnalare la selezione è il bordo. */
+    selezionata: { bg: tinte.soft, bordo: tinte.edge, edge: tinte.edge, testo: colors.text },
     corretta: {
       bg: colors.successSoft,
       bordo: colors.success,
@@ -322,11 +325,13 @@ export function EsecuzioneQuiz({
 
       {!confermata && (
         <View style={styles.footer}>
+          {/* L'azione principale è champagne come ovunque: tingerla con
+              la materia dava a ogni schermata un bottone di un colore
+              diverso, e nessuno di quei colori era l'accento. */}
           <Bottone
             label="Conferma"
+            variante="accento"
             onPress={conferma}
-            gradiente={[tinte.start, tinte.end]}
-            glow={tinte.end}
             disabled={selezionata === null}
           />
         </View>

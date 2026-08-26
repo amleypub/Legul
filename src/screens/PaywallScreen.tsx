@@ -125,7 +125,9 @@ function CartaPiano({
         <Text style={styles.pianoDettaglio}>{dettaglio}</Text>
         {attivo && (
           <View style={styles.pianoSpunta}>
-            <Icona nome="checkmark" size={15} color={colors.accent} />
+            {/* Grafite sull'oro, non oro sull'oro: la spunta era
+                invisibile e il disco leggeva come una macchia. */}
+            <Icona nome="checkmark" size={14} color="#0A0C10" />
           </View>
         )}
       </Animated.View>
@@ -397,9 +399,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -1,
     right: -1,
-    width: 26,
-    height: 26,
-    borderRadius: 13,
+    width: 24,
+    height: 24,
+    borderTopRightRadius: radius.lg,
+    borderBottomLeftRadius: radius.lg,
     backgroundColor: colors.accent,
     alignItems: 'center',
     justifyContent: 'center',

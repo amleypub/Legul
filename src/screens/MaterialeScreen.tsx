@@ -81,7 +81,7 @@ export default function MaterialeScreen() {
               {item.descrizione}
             </Text>
             <View style={styles.chip}>
-              <Icona nome="cart" size={13} color={colors.accent} />
+              <Icona nome="cart" size={13} color={colors.primary} />
               <Text style={styles.chipTesto}>Vedi su Amazon</Text>
             </View>
           </View>

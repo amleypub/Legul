@@ -390,7 +390,7 @@ export default function CasoPraticoScreen({
     esito.tono === 'insufficiente'
       ? { sfondo: colors.errorSoft, testo: colors.errorEdge }
       : esito.tono === 'sufficiente'
-        ? { sfondo: colors.accentSoft, testo: '#8A5B00' }
+        ? { sfondo: colors.accentSoft, testo: colors.accentChiaro }
         : { sfondo: colors.successSoft, testo: colors.successEdge };
 
   return (

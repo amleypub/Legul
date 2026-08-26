@@ -121,7 +121,7 @@ export function CartaMessaggio({
         </View>
         {messaggio.genere === 'soluzione' && !risposta ? (
           <View style={styles.distintivo}>
-            <Icona nome="bulb" size={12} color="#8A5B00" />
+            <Icona nome="bulb" size={12} color={colors.accent} />
             <Text style={styles.distintivoTesto}>Soluzione</Text>
           </View>
         ) : null}

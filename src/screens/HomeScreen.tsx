@@ -441,7 +441,7 @@ export default function HomeScreen() {
                   <Text style={styles.obiettivoSub}>{testoObiettivo}</Text>
                   {obiettivoRaggiunto && (
                     <View style={styles.obiettivoChip}>
-                      <Icona nome="checkmark-circle" size={14} color={colors.accent} />
+                      <Icona nome="checkmark-circle" size={13} color={colors.primary} />
                       <Text style={styles.obiettivoChipTesto}>COMPLETATO</Text>
                     </View>
                   )}

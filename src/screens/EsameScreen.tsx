@@ -111,7 +111,7 @@ export default function EsameScreen({ navigation }: RootStackScreenProps<'Esame'
       {/* Il dato più importante da sapere subito: manca ancora il bando */}
       <View style={styles.avvisoWrap}>
         <View style={styles.avviso}>
-          <Icona nome="time-outline" size={18} color="#8A5B00" />
+          <Icona nome="time-outline" size={17} color={colors.accent} />
           <Text style={styles.avvisoTesto}>
             Il decreto ministeriale di indizione non è ancora uscito: date, sedi e modalità
             operative della sessione non sono ancora note.
@@ -234,15 +234,20 @@ const styles = StyleSheet.create({
   testataTesto: { fontSize: 13.5, color: 'rgba(255,255,255,0.88)', lineHeight: 20 },
 
   avvisoWrap: { marginTop: spacing.md },
+  /* La cautela si segnala con un filo d'ambra sul fianco, non stendendo
+     la tinta delle azioni su tutto il riquadro: un blocco intero color
+     champagne faceva sembrare l'avviso la cosa da fare. */
   avviso: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     gap: spacing.sm,
-    backgroundColor: colors.accentSoft,
+    backgroundColor: alpha.vetro,
     borderRadius: radius.lg,
+    borderLeftWidth: 2,
+    borderLeftColor: colors.accentEdge,
     padding: spacing.md - 2,
   },
-  avvisoTesto: { flex: 1, fontSize: 13, color: colors.accent, lineHeight: 19 },
+  avvisoTesto: { flex: 1, fontSize: 13, color: colors.textMuted, lineHeight: 19 },
 
   sezioneTitolo: {
     fontSize: 12,

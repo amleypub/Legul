@@ -225,7 +225,7 @@ export default function DiscussioneScreen({
             !puoInteragire && styles.spento,
           ]}
         >
-          <Icona nome="create-outline" size={18} color="#8A5B00" />
+          <Icona nome="create-outline" size={18} color={colors.accent} />
           <Text style={styles.proponiTesto}>Suggerisci un’altra soluzione</Text>
         </Pressable>
 
@@ -288,12 +288,12 @@ export default function DiscussioneScreen({
             </View>
           ) : genere === 'soluzione' ? (
             <View style={[styles.striscia, styles.strisciaOro]}>
-              <Icona nome="bulb" size={14} color="#8A5B00" />
+              <Icona nome="bulb" size={14} color={colors.accent} />
               <Text style={[styles.strisciaTesto, styles.strisciaTestoOro]} numberOfLines={1}>
                 Stai proponendo una soluzione
               </Text>
               <Pressable onPress={() => setGenere('commento')} hitSlop={8} accessibilityLabel="Torna a commento">
-                <Icona nome="close" size={16} color="#8A5B00" />
+                <Icona nome="close" size={16} color={colors.accent} />
               </Pressable>
             </View>
           ) : null}

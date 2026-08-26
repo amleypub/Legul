@@ -46,7 +46,7 @@ export default function SimulatoreScreen({ navigation }: RootStackScreenProps<'S
           non ne esistono, e i tempi non stanno nel decreto. */}
       <View style={styles.avvisoWrap}>
         <View style={styles.avviso}>
-          <Icona nome="information-circle" size={20} color="#8A5B00" />
+          <Icona nome="information-circle" size={20} color={colors.accent} />
           <Text style={styles.avvisoTesto}>
             Il caso pratico è stato introdotto dalla riforma del 2026: prove passate non ne esistono
             e questi casi sono scritti da noi. Anche i tempi che proponiamo{' '}
