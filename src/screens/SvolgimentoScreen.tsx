@@ -199,15 +199,18 @@ export default function SvolgimentoScreen({
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.testataWrap}>
+        {/* La materia resta un velo e un bordo, non un blocco pieno: su
+            una schermata che si legge come un testo, una fascia satura
+            in testa la faceva sembrare una scheda promozionale. */}
         <LinearGradient
-          colors={[tinte.start, tinte.end]}
+          colors={[tinte.soft, alpha.vetroInterno]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
-          style={styles.testata}
+          style={[styles.testata, { borderColor: `${tinte.edge}38` }]}
         >
           {/* L'occhiello non ripete l'intestazione della schermata: dice
               di che prova si tratta, che è l'informazione mancante. */}
-          <Text style={styles.occhiello}>{traccia.tipo}</Text>
+          <Text style={[styles.occhiello, { color: tinte.edge }]}>{traccia.tipo}</Text>
           <Text style={styles.titolo}>{traccia.titolo}</Text>
           <Text style={styles.sottotitolo}>{traccia.sessione}</Text>
         </LinearGradient>
@@ -429,7 +432,7 @@ const styles = StyleSheet.create({
   vuotoBtn: { alignSelf: 'stretch', marginTop: spacing.md },
 
   testataWrap: { },
-  testata: { borderRadius: radius.xxl, padding: spacing.md, gap: 3 },
+  testata: { borderRadius: radius.xl, borderWidth: 1, padding: spacing.md, gap: 3 },
   occhiello: {
     fontSize: 11,
     fontWeight: '600',
@@ -438,14 +441,16 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.85)',
   },
   titolo: { fontSize: 20, fontWeight: '700', color: '#FFFFFF', lineHeight: 26 },
-  sottotitolo: { fontSize: 12.5, color: 'rgba(255,255,255,0.9)', fontWeight: '600' },
+  sottotitolo: { fontSize: 12.5, color: colors.textMuted, fontWeight: '600' },
 
   provaCard: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     gap: spacing.sm,
-    backgroundColor: colors.accentSoft,
+    backgroundColor: alpha.vetro,
     borderRadius: radius.lg,
+    borderLeftWidth: 2,
+    borderLeftColor: colors.accentEdge,
     padding: spacing.md - 2,
     marginTop: spacing.md,
   },
@@ -550,8 +555,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     gap: 6,
-    backgroundColor: colors.accentSoft,
+    backgroundColor: alpha.vetro,
     borderRadius: radius.lg,
+    borderLeftWidth: 2,
+    borderLeftColor: colors.accentEdge,
     padding: spacing.md - 4,
     marginTop: spacing.sm + 2,
   },

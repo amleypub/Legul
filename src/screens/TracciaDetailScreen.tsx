@@ -83,17 +83,18 @@ export default function TracciaDetailScreen({
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      {/* Testata colorata per tipo di prova, come i blocchi del quiz */}
+      {/* Testata in vetro: il tipo di prova si riconosce dal velo e dal
+          bordo nella sua tinta, non da una fascia di colore pieno. */}
       <View style={styles.testataWrap}>
         <LinearGradient
-          colors={[tinte.start, tinte.end]}
+          colors={[tinte.soft, alpha.vetroInterno]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
-          style={styles.testata}
+          style={[styles.testata, { borderColor: `${tinte.edge}38` }]}
         >
           <View style={styles.testataRiga}>
             <View style={styles.testataIcona}>
-              <Icona nome={ICONA_TIPO[traccia.tipo]} size={22} color={tinte.end} />
+              <Icona nome={ICONA_TIPO[traccia.tipo]} size={22} color={tinte.edge} />
             </View>
             <View style={styles.testataTesto}>
               <Text style={styles.tipo}>{traccia.tipo}</Text>
@@ -323,7 +324,8 @@ const styles = StyleSheet.create({
 
   testataWrap: { },
   testata: {
-    borderRadius: radius.xxl,
+    borderRadius: radius.xl,
+    borderWidth: 1,
     padding: spacing.md,
     gap: spacing.sm,
   },
@@ -344,18 +346,20 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     letterSpacing: 1,
     textTransform: 'uppercase',
-    color: 'rgba(255,255,255,0.85)',
+    color: colors.titanio,
   },
-  sessione: { fontSize: 13, color: '#FFFFFF', fontWeight: '600', marginTop: 1 },
+  sessione: { fontSize: 13, color: colors.text, fontWeight: '600', marginTop: 1 },
   titolo: { fontSize: 21, fontWeight: '700', color: '#FFFFFF', lineHeight: 27 },
   chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
   chip: {
-    backgroundColor: 'rgba(255,255,255,0.18)',
+    backgroundColor: alpha.velo,
+    borderWidth: 1,
+    borderColor: alpha.bordo,
     borderRadius: radius.sm,
     paddingHorizontal: 10,
     paddingVertical: 4,
   },
-  chipText: { fontSize: 12, color: '#FFFFFF', fontWeight: '600' },
+  chipText: { fontSize: 12, color: colors.textMuted, fontWeight: '600' },
 
   premioCard: {
     flexDirection: 'row',
