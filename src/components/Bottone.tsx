@@ -48,7 +48,10 @@ const VARIANTI: Record<
   { gradiente: [string, string]; testo: string; glow: string | null; bordo: string | null }
 > = {
   accento: {
-    gradiente: [colors.primaryLight, colors.accent],
+    /* Champagne chiaro → champagne. Qui c'era `primaryLight`, che dopo
+       la separazione fra superficie e accento è diventato ardesia
+       grigia: il bottone primario partiva grigio e finiva oro. */
+    gradiente: [colors.accentChiaro, colors.accent],
     testo: '#0A0C10',
     glow: colors.accent,
     bordo: null,

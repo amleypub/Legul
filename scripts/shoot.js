@@ -29,7 +29,23 @@ const server = http.createServer((req, res) => {
   }
   const ext = path.extname(file).toLowerCase();
   res.setHeader('Content-Type', MIME[ext] || 'application/octet-stream');
-  fs.createReadStream(file).pipe(res);
+  /*
+    Un errore di lettura non deve abbattere il processo.
+
+    Senza questo `on('error')` lo stream emette un evento non gestito e
+    Node termina l'intero script: è successo lanciando un nuovo
+    `expo export --clear` mentre una cattura era ancora in corso, perché
+    la cartella `web-build` veniva svuotata sotto al server. Il risultato
+    era una cattura interrotta a metà che lasciava sul disco gli scatti
+    del giro precedente, senza dire niente a nessuno.
+  */
+  const stream = fs.createReadStream(file);
+  stream.on('error', (err) => {
+    console.log('SERVER — non riesco a leggere', p, ':', err.code);
+    res.statusCode = 500;
+    res.end();
+  });
+  stream.pipe(res);
 });
 
 /** Costruisce l'URL della schermata di esito con i parametri richiesti. */
@@ -228,9 +244,23 @@ async function main() {
   for (let n = 0; n < 40; n++) await page.mouse.wheel(0, -900);
   await page.waitForTimeout(1000);
 
-  // Primo nodo del percorso: il cerchio "play" sotto il fumetto INIZIA.
-  await page.mouse.click(201, 350);
-  await page.waitForTimeout(1400);
+  /*
+    Apre la lezione da fare.
+
+    Anche qui niente coordinate: il nodo si trova dalla sua etichetta di
+    accessibilità, che è la stessa che leggono VoiceOver e TalkBack e che
+    non si sposta quando cambia il disegno. È il selettore che è
+    sopravvissuto al passaggio da serpentina a colonna, mentre il click
+    a (201, 350) puntava al vuoto.
+  */
+  try {
+    const daFare = page.getByLabel(/Lezione \d+, da fare/).first();
+    await daFare.waitFor({ timeout: 8000 });
+    await daFare.click({ timeout: 4000 });
+  } catch {
+    await page.mouse.click(201, 350);
+  }
+  await page.waitForTimeout(1600);
   await shot('4-lezione.png');
 
   /*
