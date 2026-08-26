@@ -48,7 +48,7 @@ bassissima opacità e da un'ombra ampia e morbida. Niente bordi duri.
 
 ### Percorso quiz in stile Duolingo
 - 6 materie del nucleo comune: Diritto civile, Diritto penale, Procedura civile, Procedura penale, Diritto amministrativo, Deontologia forense
-- **Materie a scelta dell'orale**: Diritto costituzionale, Diritto commerciale, Diritto del lavoro, Diritto dell'Unione europea, Diritto internazionale. Il d.l. 100/2026 ne fa portare **una sola**, scelta fra costituzionale, commerciale, lavoro, internazionale, UE e tributario: la schermata Quiz le tiene in un blocco a parte per non far credere che vadano studiate tutte, mette in cima quella dichiarata dall'utente e **dichiara quella che Legul non copre** (tributario). Tacerne l'esistenza farebbe sembrare l'app completa a chi guarda l'elenco e incompleta a chi porta tributario e la cerca per settimane
+- **Materie a scelta dell'orale**: tutte e sei quelle fra cui il d.l. 100/2026 fa scegliere — costituzionale, commerciale, lavoro, internazionale, Unione europea, tributario — di cui se ne porta **una sola**. La schermata Quiz le tiene in un blocco a parte per non far credere che vadano studiate tutte e mette in cima quella dichiarata dall'utente. Il codice che **dichiara le materie non coperte** resta al suo posto anche se oggi non ne stampa nessuna: l'elenco della rosa lo fissa la legge, e se una riforma ne aggiungesse una l'app deve tornare a dirlo invece di sembrare completa
 - **Percorso a nodi** con 4 unità per materia (Fondamenti, Consolidamento, Avanzato, Eccellenza) e lezioni da 10 domande a sblocco progressivo
 - **Cuori**: 4 tentativi per lezione; **stelle** (1-3) in base alla precisione, gradienti, animazioni a molla e feedback aptico
 - Dopo ogni risposta viene mostrata la **spiegazione del perché**, con i riferimenti normativi (articoli di codice, leggi speciali, riforma Cartabia, ecc.)
@@ -64,12 +64,12 @@ bassissima opacità e da un'ombra ampia e morbida. Niente bordi duri.
 > Perché il confine è stato ribaltato: prima si pagava per le unità 3 e 4 del percorso quiz — domande a risposta multipla, la merce più comune del settore — mentre restava gratuito tutto ciò che nessun altro ha. Si pagava per la commodity e si regalava il differenziale.
 
 ### Banca domande
-- **4.820 domande** in `src/data/questions/` (un file per materia-livello), aggregate in `index.ts`
+- **5.068 domande** in `src/data/questions/` (un file per materia-livello), aggregate in `index.ts`
 - **650 domande per ogni materia principale**, **330 per deontologia** e **248 per ciascuna materia a scelta**, distribuite sui 4 livelli (163/162/163/162 per le principali, 62 per livello per le materie a scelta)
-- **Diritto dell'Unione europea** e **Diritto internazionale**, due delle tre materie della rosa che l'app dichiarava di non coprire, ora complete su tutti e quattro i livelli:
+- **Tutte e sei le materie della rosa dell'orale sono ora coperte.** Era l'unico buco che l'app dichiarava di avere, ed è chiuso: le tre che mancavano — Unione europea, internazionale, tributario — sono complete su tutti e quattro i livelli
   - UE: dalle istituzioni e dalle fonti fino ai controlimiti e alla doppia pregiudizialità (Corte cost. 269/2017, 20/2019, 63/2019; Taricco e M.A.S.; Melloni; Achmea e Komstroy; parere 2/13; condizionalità e C-156/21)
   - Internazionale: parte generale, responsabilità dello Stato e diritto del mare, poi un **livello avanzato interamente di diritto internazionale privato** — l. 218/1995 e i regolamenti che l'hanno svuotata dall'interno (Bruxelles I-bis, Roma I e II, Bruxelles II-ter, successioni), riconoscimento delle sentenze straniere dopo la riforma Cartabia. In Eccellenza il caso di controlimiti più studiato al mondo, che è italiano: CIG 3 febbraio 2012, Corte cost. 238/2014, il fondo dell'art. 43 d.l. 36/2022 e Corte cost. 159/2023
-  - Resta scoperto il solo **tributario**, e l'app continua a dirlo apertamente in fase di scelta
+  - Tributario: principi costituzionali e Statuto riscritto dal d.lgs. 219/2023 (contraddittorio generalizzato, autotutela doverosa, regime dell'invalidità degli atti), metodi di accertamento, **un livello avanzato tutto di processo tributario** — Corti di giustizia tributaria, onere della prova dell'art. 7 co. 5-bis, prova testimoniale scritta, abrogazione del reclamo-mediazione — e in Eccellenza penale tributario, fiscalità internazionale e la transizione ai testi unici
 - Dentro deontologia, due blocchi che nessun manuale dell'anno scorso copre:
   - **64 domande di previdenza forense**, la parte dell'ordinamento professionale che all'orale viene chiesta e che quasi nessuno ripassa. Evitano di proposito gli importi in euro dei contributi minimi, che il Comitato dei delegati ridetermina ogni anno: una domanda costruita su una cifra diventa sbagliata da sola
   - **16 domande sulle modifiche al codice deontologico in vigore dal 1° novembre 2025** (delibera CNF n. 636/2025): artt. 48, 50, 51, 56, 61, 62 e il nuovo 62-bis sulla negoziazione assistita
@@ -311,6 +311,12 @@ scripts/shoot.js                 # Cattura delle schermate per la verifica grafi
   nessuna domanda sia costruita su un importo in euro: contributi minimi,
   tetto e trattamento minimo cambiano ogni anno, e una domanda tarata su una
   cifra diventa sbagliata da sola
+- **`tributario.test.ts`** — la stessa disciplina applicata alla materia più
+  mobile della rosa: nessuna domanda costruita su un importo in euro, ogni
+  spiegazione ancorata a una fonte, il confine fra abuso del diritto ed
+  evasione tenuto fermo, e i **testi unici sempre collocati nel tempo** invece
+  che dati per vigenti. Sono in Gazzetta Ufficiale ma si applicano dal 1°
+  gennaio 2027: citarli come diritto attuale è sbagliato quanto ignorarli
 
 ## Come aggiungere contenuti
 

@@ -190,6 +190,17 @@ async function main() {
   await tap('Quiz');
   await shot('2-quiz.png');
 
+  // Il fondo dell'elenco: è dove sta il blocco della rosa dell'orale, con
+  // la materia dichiarata in cima e le altre sotto. Serve a controllare
+  // che le sei materie a scelta ci siano tutte e che non compaia più la
+  // riga «non ancora coperte da Legul», ora che non ne manca nessuna.
+  await page.mouse.move(201, 500);
+  for (let n = 0; n < 12; n++) await page.mouse.wheel(0, 700);
+  await page.waitForTimeout(1000);
+  await shot('2a-quiz-rosa.png');
+  for (let n = 0; n < 12; n++) await page.mouse.wheel(0, -700);
+  await page.waitForTimeout(800);
+
   // Percorso di una materia
   await tap('Diritto civile');
   await shot('3-percorso.png');
@@ -258,6 +269,7 @@ async function main() {
     // a controllare che colore, icona e conteggio delle lezioni ci siano.
     ['2b-percorso-ue.png', `/percorso/${encodeURIComponent('Diritto dell’Unione europea')}`],
     ['2c-percorso-internazionale.png', `/percorso/${encodeURIComponent('Diritto internazionale')}`],
+    ['2d-percorso-tributario.png', `/percorso/${encodeURIComponent('Diritto tributario')}`],
     ['0-esame.png', '/esame'],
     ['0g-diagnosi.png', '/dove-sei-debole'],
     ['0b-caso-elenco.png', '/caso-pratico'],

@@ -27,6 +27,7 @@ export const ICONA_MATERIA: Record<Materia, string> = {
   'Diritto del lavoro': 'hard-hat',
   'Diritto dell’Unione europea': 'globe',
   'Diritto internazionale': 'compass',
+  'Diritto tributario': 'calculator',
 };
 
 function MateriaBlock({
@@ -167,9 +168,13 @@ export default function QuizHomeScreen() {
             />
           ))}
           {/*
-            Le tre materie della rosa che Legul non copre ancora. Tacerne
-            l'esistenza farebbe sembrare l'app completa a chi guarda
-            l'elenco, e incompleta a chi porta tributario e la cerca per
+            Le materie della rosa che Legul non copre ancora. Oggi non ce
+            ne sono — tutte e sei sono in banca dati — e il blocco non
+            compare: la riga resta perché l'elenco della rosa è fissato
+            dalla legge e non da noi, e se una riforma ne aggiungesse una
+            l'app deve tornare a dirlo invece di sembrare completa.
+            Tacerne l'esistenza farebbe sembrare l'app completa a chi
+            guarda l'elenco, e incompleta a chi cerca quella materia per
             settimane. Il secondo è l'utente che paga.
           */}
           {scoperte.length > 0 && (

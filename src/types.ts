@@ -21,7 +21,8 @@ export type Materia =
   | 'Diritto commerciale'
   | 'Diritto del lavoro'
   | 'Diritto dell’Unione europea'
-  | 'Diritto internazionale';
+  | 'Diritto internazionale'
+  | 'Diritto tributario';
 
 /** Livello di difficoltà: 1 Fondamenti, 2 Consolidamento, 3 Avanzato, 4 Eccellenza. */
 export type Difficolta = 1 | 2 | 3 | 4;

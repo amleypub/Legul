@@ -261,6 +261,9 @@ export const materiaColors: Record<
   // dell'amministrativo. Una seconda tinta vicina a una di queste
   // renderebbe indistinguibili due schede affiancate nell'elenco.
   'Diritto internazionale': { start: '#C87A54', end: '#9C4D2A', edge: '#78381C', soft: '#F9ECE4' },
+  // Indaco: resta distinto dal blu del civile e dal blu profondo dell'UE
+  // perché vira al viola, ma non arriva al malva della procedura penale.
+  'Diritto tributario': { start: '#7B72D8', end: '#4A3FA8', edge: '#332B7E', soft: '#ECEAFB' },
   // Il ripasso non è una materia: ha un colore proprio, così si distingue
   // a colpo d'occhio da una lezione del percorso.
   Ripasso: { start: '#F8B048', end: '#E37B1E', edge: '#AF5C13', soft: '#FEF0E0' },

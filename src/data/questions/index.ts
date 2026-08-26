@@ -45,6 +45,10 @@ import { internazionaleL1 } from './internazionale-l1';
 import { internazionaleL2 } from './internazionale-l2';
 import { internazionaleL3 } from './internazionale-l3';
 import { internazionaleL4 } from './internazionale-l4';
+import { tributarioL1 } from './tributario-l1';
+import { tributarioL2 } from './tributario-l2';
+import { tributarioL3 } from './tributario-l3';
+import { tributarioL4 } from './tributario-l4';
 import { previdenzaL1 } from './previdenza-l1';
 import { previdenzaL2 } from './previdenza-l2';
 import { previdenzaL3 } from './previdenza-l3';
@@ -113,6 +117,14 @@ export const tutteLeDomande: QuizQuestion[] = [
   ...internazionaleL2,
   ...internazionaleL3,
   ...internazionaleL4,
+  // Diritto tributario: l'ultima delle sei materie della rosa. È la più
+  // mobile, e per questo le domande stanno lontane dalle cifre —
+  // aliquote, scaglioni e soglie si spostano a ogni legge di bilancio,
+  // la struttura no.
+  ...tributarioL1,
+  ...tributarioL2,
+  ...tributarioL3,
+  ...tributarioL4,
   ...previdenzaL1,
   ...previdenzaL2,
   ...previdenzaL3,
