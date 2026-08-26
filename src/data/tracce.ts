@@ -17,6 +17,21 @@ import type { Traccia } from '../types';
  */
 export const tracce: Traccia[] = [
   {
+    id: '2026-parere-amministrativo',
+    anno: 2026,
+    sessione: 'Esercizio sulla prova riformata (d.l. 100/2026)',
+    tipo: 'Parere di diritto amministrativo',
+    titolo: 'Parere motivato in materia di diritto amministrativo',
+    esercizio: true,
+    argomenti: ['SCIA', 'Poteri inibitori', 'Tutela del terzo', 'Autotutela'],
+    testo:
+      'Il candidato rediga motivato parere sulla questione sottopostagli.\n\n' +
+      'Tizio è proprietario di un’abitazione confinante con il fondo di Caio. Il 10 marzo Caio presenta al Comune una segnalazione certificata di inizio attività per la sopraelevazione di un fabbricato accessorio posto lungo il confine, e avvia i lavori il giorno successivo.\n\n' +
+      'Tizio si avvede dell’intervento a lavori iniziati e ritiene che l’opera violi le distanze legali e superi i limiti di altezza previsti dal regolamento edilizio. Il 5 maggio presenta al Comune un esposto documentato, chiedendo che venga inibita la prosecuzione dei lavori e ordinata la rimessione in pristino.\n\n' +
+      'Il Comune non adotta alcun provvedimento e non risponde. I lavori proseguono e risultano ormai in fase avanzata.\n\n' +
+      'Il candidato, assunte le vesti del legale di Tizio, rediga parere motivato illustrando la natura giuridica della segnalazione, i poteri esercitabili dall’amministrazione e i termini entro cui possono esserlo, nonché i rimedi esperibili dal terzo, indicando quale sia la via più conveniente e con quali prospettive.',
+  },
+  {
     id: '2023-atto-civile',
     anno: 2023,
     sessione: 'Sessione 2023 (prova scritta – dicembre 2023)',

@@ -56,7 +56,7 @@ bassissima opacità e da un'ombra ampia e morbida. Niente bordi duri.
 
 ### Modello freemium
 - **Il percorso quiz è interamente gratuito**, tutte e quattro le unità di tutte le materie
-- **Premium apre gli svolgimenti delle tracce e i casi pratici del simulatore**, con un assaggio gratuito: due svolgimenti (un atto e un parere) e un caso
+- **Premium apre gli svolgimenti delle tracce e i casi pratici del simulatore**, con un assaggio gratuito: due svolgimenti (un atto e un parere) e **tre casi, uno per ciascuna materia**. La prova si porta in una materia sola: con un assaggio concentrato su una, due candidati su tre valuterebbero il simulatore guardando qualcosa che non sosterranno
 - Il confine sta in un solo file — `src/data/accesso.ts` — ed è fissato per identificativo, non per posizione: aggiungere una traccia in cima non cambia in silenzio che cosa è gratis per chi ha già l'app installata
 - Il muro è un *early return* dentro `SvolgimentoScreen` e `CasoPraticoScreen`, non solo un lucchetto nell'elenco: i deep link arrivano dritti alla schermata e devono trovarlo comunque
 - L'acquisto in-app non è ancora integrato: il pulsante del paywall attiva Premium in **modalità demo** (`attivaPremium()` in `src/gamification/GamificationContext.tsx`)
@@ -85,7 +85,8 @@ bassissima opacità e da un'ombra ampia e morbida. Niente bordi duri.
 > Contenuti in `src/data/esame.ts`, sorgente unica della schermata. Raggiungibile dalla Home, dalla schermata Tracce e via `legul://esame`.
 
 ### Tracce degli esami degli anni passati
-- Archivio consultabile per anno, **dodici tracce** che coprono tutte e tre le materie fra cui si sceglie: pareri e atti di civile, penale e amministrativo
+- Archivio consultabile per anno, **tredici tracce** che coprono tutte e tre le materie fra cui si sceglie: pareri e atti di civile, penale e amministrativo
+- Fra queste un **esercizio dichiarato come tale**, non una prova assegnata: il d.l. 100/2026 rende sceglibile il *parere* anche in diritto amministrativo, ma una prova del genere non è mai esistita e in archivio non ce n'è nessuna. Chi porta quella combinazione non avrebbe nulla su cui allenarsi. L'esercizio è contrassegnato in elenco e dichiarato in apertura di scheda, e un test impedisce che si presenti come testo ufficiale o si collochi in una sessione mai svolta
 - Il tipo di una traccia dichiara insieme la forma della prova e la materia. Prima esisteva un generico «Atto giudiziario» che non diceva su che cosa vertesse, e l'amministrativo non era esprimibile affatto: la materia c'era già nella prova d'atto degli anni passati, ma qui non aveva un nome
 - Ogni traccia riporta sessione, tipologia, argomenti trattati e testo
 - Leggere una traccia assegna punti e sblocca badge dedicati
@@ -93,7 +94,7 @@ bassissima opacità e da un'ombra ampia e morbida. Niente bordi duri.
 > I testi presenti in `src/data/tracce.ts` sono sintesi a scopo di studio; i testi ufficiali integrali (pubblicati dal Ministero della Giustizia) possono essere incollati nel campo `testo` di ciascuna traccia.
 
 ### Svolgimenti proposti
-- **Tutte e dodici** le tracce in archivio hanno uno svolgimento, a sezioni che si aprono una alla volta e partono tutte chiuse: aprirle senza aver almeno impostato la traccia toglie alla lettura quasi tutto il suo valore
+- **Tutte e tredici** le tracce in archivio hanno uno svolgimento, a sezioni che si aprono una alla volta e partono tutte chiuse: aprirle senza aver almeno impostato la traccia toglie alla lettura quasi tutto il suo valore
 - Si chiama **«svolgimento proposto» e mai «soluzione corretta»**: all'esame non esiste una risposta esatta depositata da qualche parte, esiste un elaborato che regge o non regge
 - **Ogni blocco porta i riferimenti puntuali**, norma o pronuncia: un blocco senza aggancio è un'opinione, e il test lo rifiuta
 - **Dove la giurisprudenza è divisa si mostra il contrasto** invece di scegliere il vincitore al posto del candidato: due tesi, i rispettivi argomenti e — la parte che serve davvero — che cosa cambia in concreto per il cliente
@@ -106,7 +107,7 @@ bassissima opacità e da un'ombra ampia e morbida. Niente bordi duri.
 - La prova introdotta dalla riforma è l'unica per cui **non esistono prove passate**: questi casi sono scritti da zero sull'unica indicazione che la norma dà, un caso che richieda insieme diritto sostanziale e processuale
 - Il ciclo è quello vero: leggi e prepari con un cronometro, **esponi ad alta voce con la scaletta nascosta**, poi confronti punto per punto quello che hai davvero detto
 - La misura che conta non è il totale ma la **copertura per versante**: con un totale unico lo squilibrio fra sostanziale e processuale sparisce dentro una media, separandoli resta visibile e il consiglio finale nomina il versante scoperto
-- **Sei casi**, due per ciascuna delle tre materie fra cui la prova si sceglie, con le domande di approfondimento della commissione e le insidie proprie di ciascun caso
+- **Dodici casi**, quattro per ciascuna delle tre materie fra cui la prova si sceglie, con le domande di approfondimento della commissione e le insidie proprie di ciascun caso
 - **I tempi non sono fissati dal decreto**: le durate sono una nostra impostazione di lavoro, modificabili, e la nota che lo dice sta accanto ai pulsanti che le scelgono
 - Il cronometro ricalcola sempre da un istante di scadenza assoluto: un timer basato su tick mente appena l'app va in background
 
@@ -323,4 +324,5 @@ scripts/shoot.js                 # Cattura delle schermate per la verifica grafi
 - **Nuove domande di quiz**: aggiungi un oggetto a `quizQuestions` in `src/data/quizzes.ts` (domanda, 4 opzioni, indice della risposta corretta e spiegazione).
 - **Nuove tracce**: aggiungi un oggetto a `tracce` in `src/data/tracce.ts`; gli anni e i raggruppamenti si aggiornano automaticamente. Il test pretende che ogni traccia abbia il proprio svolgimento: aggiungine uno in `src/data/svolgimenti/` e registralo in `index.ts`.
 - **Nuovi casi pratici**: aggiungi un oggetto al file della materia in `src/data/casi/`. I pesi della scaletta devono sommare a cento e ogni caso deve toccare sia il sostanziale sia il processuale.
+- **Esercizi invece di tracce d'esame**: se la traccia non è una prova realmente assegnata, va marcata `esercizio: true`. Il test rifiuta un esercizio che si dichiari testo ufficiale o che si collochi in una sessione mai svolta, e la schermata lo contrassegna in elenco e in apertura di scheda.
 - **Nuovo materiale**: aggiungi un oggetto a `materiali` in `src/data/materiali.ts` con categoria, descrizione e (quando disponibile) ASIN.

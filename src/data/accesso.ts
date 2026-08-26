@@ -24,7 +24,7 @@ import { tracceConSvolgimento } from './svolgimenti';
  *   anche l'abitudine, che è l'unica cosa che porta qualcuno a pagare.
  * - **Svolgimenti e casi pratici hanno un assaggio gratuito** e poi
  *   chiedono Premium. Chi ha svolto un caso pratico e ne vuole altri
- *   cinque è molto più vicino a pagare di chi ha finito le domande
+ *   nove è molto più vicino a pagare di chi ha finito le domande
  *   facili di civile.
  *
  * L'assaggio è fissato per identificativo e non per posizione: se fosse
@@ -42,13 +42,24 @@ import { tracceConSvolgimento } from './svolgimenti';
 export const SVOLGIMENTI_IN_PROVA = ['2023-atto-civile', '2019-parere-civile'];
 
 /**
- * Il caso pratico eseguibile senza Premium.
+ * I casi pratici eseguibili senza Premium: uno per materia.
  *
- * È anche quello che il simulatore propone per primo a chi non ha mai
- * cominciato: l'assaggio e il primo passo suggerito coincidono, così
- * nessuno sbatte contro il muro alla prima apertura.
+ * Vale la stessa ragione degli svolgimenti, e qui pesa di più. La prova
+ * si sceglie fra diritto privato, penale e amministrativo, e se ne porta
+ * **una sola**: con un assaggio in una materia soltanto, due candidati
+ * su tre valuterebbero il simulatore su una materia che non porteranno,
+ * e deciderebbero se pagare guardando la cosa sbagliata.
+ *
+ * Il primo dell'elenco è anche quello che il simulatore propone per
+ * primo a chi non ha mai cominciato: l'assaggio e il primo passo
+ * suggerito coincidono, così nessuno sbatte contro il muro alla prima
+ * apertura.
  */
-export const CASI_IN_PROVA = ['privato-locazione-morosita'];
+export const CASI_IN_PROVA = [
+  'privato-locazione-morosita',
+  'penale-furto-abitazione',
+  'ammin-esclusione-gara',
+];
 
 /** Le unità del percorso quiz sono tutte gratuite. */
 export function unitaAccessibile(): boolean {

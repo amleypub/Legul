@@ -66,7 +66,7 @@ export default function TracceScreen() {
         <>
           <TitoloSchermata
             titolo="Tracce d’esame"
-            sottotitolo="Le prove scritte degli anni passati: capire cosa è già stato chiesto è il modo migliore per prevedere cosa arriverà. Ogni traccia letta vale punti."
+            sottotitolo="Le prove scritte degli anni passati: capire cosa è già stato chiesto è il modo migliore per prevedere cosa arriverà. Dove la riforma ha aperto una combinazione mai assegnata, trovi un esercizio contrassegnato come tale. Ogni traccia letta vale punti."
           />
           {/* Le tracce in archivio sono tre per sessione, le prove ora
               sono due: chi legge deve poter capire subito perché, senza
@@ -131,6 +131,16 @@ export default function TracceScreen() {
                     <Text style={[styles.chipText, styles.chipSvoltaText]}>Con svolgimento</Text>
                   </View>
                 )}
+                {/* Un esercizio va riconosciuto già qui. L'elenco è
+                    raggruppato per anno, e una pastiglia «2026» da sola
+                    lo farebbe leggere come una sessione realmente
+                    svolta: chi scorre non apre ogni scheda. */}
+                {item.esercizio && (
+                  <View style={[styles.chip, styles.chipSvolta, styles.chipEsercizio]}>
+                    <Icona nome="flash" size={11} color={colors.accentEdge} />
+                    <Text style={[styles.chipText, styles.chipSvoltaText]}>Esercizio</Text>
+                  </View>
+                )}
                 {item.argomenti.map((a) => (
                   <View key={a} style={styles.chip}>
                     <Text style={styles.chipText}>{a}</Text>
@@ -166,6 +176,9 @@ const styles = StyleSheet.create({
   riformaTesto: { flex: 1, fontSize: 13, color: '#6B4600', lineHeight: 19 },
   riformaLink: { fontWeight: '800', textDecorationLine: 'underline' },
 
+  /* Solo il bordo: il resto del layout viene da `chipSvolta`, che ha già
+     la riga con icona e testo. */
+  chipEsercizio: { borderColor: colors.accentEdge + '55', borderWidth: 1 },
   annoRow: {
     flexDirection: 'row',
     alignItems: 'center',

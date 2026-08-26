@@ -205,4 +205,210 @@ export const casiPrivato: CasoPratico[] = [
       'Dimenticare le telecamere. È l’unica prova decisiva e sparisce da sola se non ci si muove subito: un candidato che non lo dice mostra di non aver pensato al caso come a un caso vero.',
     ],
   },
+  {
+    id: 'privato-preliminare-2932',
+    materia: 'Diritto privato',
+    titolo: 'Rifiuto di stipulare il definitivo dopo il preliminare',
+    fatto: [
+      'La tua assistita ha sottoscritto nel marzo dello scorso anno un preliminare di compravendita per un appartamento, versando a titolo di caparra confirmatoria una somma pari a circa un decimo del prezzo. Il preliminare fissava la stipula del definitivo entro dodici mesi ed è stato trascritto.',
+      'Alla data convenuta il promittente venditore non si è presentato davanti al notaio. Interpellato, ha risposto per iscritto che nel frattempo il valore dell’immobile è cresciuto e che intende restituire il doppio della caparra.',
+      'Dalle visure risulta che sull’immobile è stata iscritta, in data successiva alla trascrizione del preliminare, un’ipoteca volontaria a garanzia di un finanziamento contratto dal promittente venditore.',
+    ],
+    consegna:
+      'Il candidato individui i rimedi esperibili dalla promissaria acquirente, illustri le questioni di diritto sostanziale e processuale rilevanti e indichi la via giudiziale più conveniente.',
+    scaletta: [
+      {
+        id: 'qualificazione',
+        titolo: 'Il preliminare e l’obbligo di prestare il consenso',
+        dettaglio:
+          'Il preliminare produce effetti solo obbligatori: obbliga a prestare il consenso al definitivo, non trasferisce la proprietà. Va sottolineato che il vincolo è pienamente coercibile e che il promittente non ha una facoltà di scelta fra adempiere e pagare.',
+        peso: 15,
+        versante: 'sostanziale',
+        riferimenti: [
+          { testo: 'art. 1351 c.c.', tipo: 'norma' },
+          { testo: 'art. 1376 c.c.', tipo: 'norma' },
+          { testo: 'art. 2932 c.c.', tipo: 'norma' },
+        ],
+      },
+      {
+        id: 'caparra',
+        titolo: 'La caparra confirmatoria e il carattere alternativo dei rimedi',
+        dettaglio:
+          'Il recesso con restituzione del doppio della caparra è rimedio della parte non inadempiente, non una via d’uscita per chi è inadempiente. Il promittente venditore non può dunque liberarsi offrendo il doppio: è la promissaria a scegliere fra recesso e domanda di adempimento o risoluzione con risarcimento integrale.',
+        peso: 20,
+        versante: 'sostanziale',
+        riferimenti: [
+          { testo: 'art. 1385 c.c.', tipo: 'norma' },
+          { testo: 'art. 1453 c.c.', tipo: 'norma' },
+          { testo: 'Cass. civ., sez. un., n. 553/2009', tipo: 'giurisprudenza' },
+        ],
+      },
+      {
+        id: 'esecuzione',
+        titolo: 'L’esecuzione in forma specifica e i suoi presupposti',
+        dettaglio:
+          'La sentenza costitutiva ex art. 2932 c.c. presuppone che l’esecuzione sia possibile e non esclusa dal titolo, e che la parte che agisce esegua o offra la propria prestazione. L’offerta del prezzo va formulata in citazione: la sua omissione è causa frequente di rigetto.',
+        peso: 20,
+        versante: 'sostanziale',
+        riferimenti: [
+          { testo: 'art. 2932 c.c.', tipo: 'norma' },
+          { testo: 'art. 2932, comma 2, c.c.', tipo: 'norma' },
+          { testo: 'art. 1477 c.c.', tipo: 'norma' },
+        ],
+      },
+      {
+        id: 'trascrizione',
+        titolo: 'Trascrizione della domanda ed effetto prenotativo del preliminare',
+        dettaglio:
+          'La trascrizione della domanda ex art. 2932 c.c. rende la sentenza opponibile a chi ha acquistato diritti dopo. Se la domanda è trascritta entro i termini dell’art. 2645-bis c.c., l’effetto prenotativo del preliminare retroagisce e l’ipoteca iscritta nel frattempo è travolta: è il punto decisivo del caso.',
+        peso: 20,
+        versante: 'processuale',
+        riferimenti: [
+          { testo: 'art. 2652, n. 2, c.c.', tipo: 'norma' },
+          { testo: 'art. 2645-bis c.c.', tipo: 'norma' },
+          { testo: 'art. 2915 c.c.', tipo: 'norma' },
+        ],
+      },
+      {
+        id: 'procedibilita',
+        titolo: 'Rito, competenza e condizione di procedibilità',
+        dettaglio:
+          'La domanda si propone davanti al tribunale del luogo in cui si trova l’immobile e va introdotta con citazione nelle forme ordinarie. Va verificata la mediazione obbligatoria in materia di diritti reali e di contratti immobiliari, che è condizione di procedibilità da esperire prima della domanda.',
+        peso: 15,
+        versante: 'processuale',
+        riferimenti: [
+          { testo: 'art. 21 c.p.c.', tipo: 'norma' },
+          { testo: 'art. 5, comma 1, d.lgs. 28/2010', tipo: 'norma' },
+          { testo: 'art. 163 c.p.c.', tipo: 'norma' },
+        ],
+      },
+      {
+        id: 'cautele',
+        titolo: 'Le cautele da prendere subito',
+        dettaglio:
+          'Prima ancora della citazione vanno acquisite le visure aggiornate e verificato se il termine dell’effetto prenotativo sia ancora aperto: se è scaduto, la trascrizione della domanda opera solo dalla propria data e i gravami successivi restano opponibili. Va valutata anche la trascrizione tempestiva rispetto a un’eventuale rivendita a terzi.',
+        peso: 10,
+        versante: 'processuale',
+        riferimenti: [
+          { testo: 'art. 2645-bis, comma 3, c.c.', tipo: 'norma' },
+          { testo: 'art. 2643 c.c.', tipo: 'norma' },
+        ],
+      },
+    ],
+    domandeCommissione: [
+      'Il promittente venditore sostiene di potersi liberare restituendo il doppio della caparra. Ha ragione?',
+      'Che cosa succede all’ipoteca iscritta dopo la trascrizione del preliminare, se la domanda è trascritta nei termini?',
+      'Se la promissaria acquirente non offre il prezzo in citazione, il giudice può ugualmente emettere la sentenza?',
+      'Se l’immobile fosse stato nel frattempo venduto a un terzo che ha trascritto per primo, quali rimedi restano?',
+    ],
+    insidie: [
+      'Trattare recesso e domanda di adempimento come rimedi cumulabili. Sono alternativi, e la scelta va motivata in base a ciò che conviene alla cliente.',
+      'Dimenticare l’offerta della propria prestazione. È il presupposto dell’art. 2932 c.c. su cui si perdono più cause di quante se ne perdano nel merito.',
+      'Fermarsi al diritto sostanziale senza arrivare alla trascrizione della domanda. Qui è la trascrizione a decidere l’esito pratico, non la sentenza in sé.',
+      'Confondere l’effetto prenotativo dell’art. 2645-bis c.c. con la trascrizione della domanda giudiziale: sono due meccanismi distinti che devono incastrarsi nei termini.',
+    ],
+  },
+  {
+    id: 'privato-responsabilita-sanitaria',
+    materia: 'Diritto privato',
+    titolo: 'Danno dopo un intervento chirurgico in struttura pubblica',
+    fatto: [
+      'Il tuo assistito è stato sottoposto a un intervento programmato presso un’azienda ospedaliera. Nel decorso post-operatorio è insorta una complicanza che ha comportato un secondo intervento e postumi permanenti.',
+      'Dalla cartella clinica risultano una compilazione lacunosa del diario e l’assenza del modulo di consenso informato relativo alla specifica tecnica chirurgica utilizzata, diversa da quella prospettata in sede di visita.',
+      'Il chirurgo operava in regime di dipendenza dall’azienda. L’assistito chiede se convenga agire contro la struttura, contro il medico o contro entrambi, e in che tempi.',
+    ],
+    consegna:
+      'Il candidato individui i titoli di responsabilità configurabili, illustri le questioni di diritto sostanziale e processuale rilevanti e indichi la strategia giudiziale più conveniente.',
+    scaletta: [
+      {
+        id: 'doppio-binario',
+        titolo: 'Il doppio binario introdotto dalla legge Gelli-Bianco',
+        dettaglio:
+          'La struttura risponde a titolo contrattuale per inadempimento dell’obbligazione assunta con il contratto atipico di spedalità; l’esercente la professione sanitaria risponde a titolo extracontrattuale, salvo che abbia agito nell’adempimento di un’obbligazione contrattuale assunta direttamente con il paziente.',
+        peso: 20,
+        versante: 'sostanziale',
+        riferimenti: [
+          { testo: 'art. 7, commi 1 e 3, l. 24/2017', tipo: 'norma' },
+          { testo: 'art. 1218 c.c.', tipo: 'norma' },
+          { testo: 'art. 2043 c.c.', tipo: 'norma' },
+        ],
+      },
+      {
+        id: 'onere-prova',
+        titolo: 'Riparto dell’onere della prova e nesso causale',
+        dettaglio:
+          'Contro la struttura il paziente allega l’inadempimento e prova il nesso fra condotta ed evento; spetta alla struttura provare la causa non imputabile. Va valorizzata la cartella clinica lacunosa, la cui incompletezza non può ridondare a danno del paziente e consente il ricorso alla presunzione.',
+        peso: 20,
+        versante: 'sostanziale',
+        riferimenti: [
+          { testo: 'art. 1218 c.c.', tipo: 'norma' },
+          { testo: 'art. 2697 c.c.', tipo: 'norma' },
+          { testo: 'Cass. civ., sez. III, n. 28991/2019', tipo: 'giurisprudenza' },
+        ],
+      },
+      {
+        id: 'consenso',
+        titolo: 'Il consenso informato come bene autonomo',
+        dettaglio:
+          'La violazione del consenso informato lede il diritto all’autodeterminazione ed è fonte di danno risarcibile autonomo, distinto da quello alla salute: può sussistere anche quando l’intervento sia stato eseguito correttamente. Qui la tecnica utilizzata era diversa da quella prospettata, e il punto va tenuto separato dalla colpa medica.',
+        peso: 15,
+        versante: 'sostanziale',
+        riferimenti: [
+          { testo: 'art. 32 Cost.', tipo: 'norma' },
+          { testo: 'art. 1 l. 219/2017', tipo: 'norma' },
+          { testo: 'Cass. civ., sez. III, n. 28985/2019', tipo: 'giurisprudenza' },
+        ],
+      },
+      {
+        id: 'procedibilita',
+        titolo: 'La condizione di procedibilità e la scelta fra i due percorsi',
+        dettaglio:
+          'Chi agisce deve preventivamente esperire il ricorso per consulenza tecnica preventiva ai fini della composizione della lite, oppure in alternativa la mediazione. Il primo percorso è di regola preferibile, perché porta in causa la consulenza medico-legale già in fase preventiva e consente il successivo giudizio nelle forme semplificate.',
+        peso: 20,
+        versante: 'processuale',
+        riferimenti: [
+          { testo: 'art. 8 l. 24/2017', tipo: 'norma' },
+          { testo: 'art. 696-bis c.p.c.', tipo: 'norma' },
+          { testo: 'art. 5, comma 1, d.lgs. 28/2010', tipo: 'norma' },
+        ],
+      },
+      {
+        id: 'azione-diretta',
+        titolo: 'Azione diretta verso l’assicuratore e litisconsorzio',
+        dettaglio:
+          'La legge prevede l’azione diretta del danneggiato nei confronti dell’impresa di assicurazione della struttura e dell’esercente, nei limiti dei massimali, con litisconsorzio necessario dell’assicurato. Va verificata l’operatività della disciplina alla luce dei decreti attuativi.',
+        peso: 15,
+        versante: 'processuale',
+        riferimenti: [
+          { testo: 'art. 12 l. 24/2017', tipo: 'norma' },
+          { testo: 'art. 10 l. 24/2017', tipo: 'norma' },
+        ],
+      },
+      {
+        id: 'rivalsa',
+        titolo: 'La rivalsa sulla struttura e la posizione del medico',
+        dettaglio:
+          'Conviene di regola convenire la struttura, contro cui il titolo è contrattuale e la prescrizione decennale. La struttura potrà poi rivalersi sul medico solo in caso di dolo o colpa grave, entro i limiti e nei termini di legge: è la ragione per cui citare anche il sanitario espone il cliente al più breve termine quinquennale senza reali vantaggi.',
+        peso: 10,
+        versante: 'processuale',
+        riferimenti: [
+          { testo: 'art. 9 l. 24/2017', tipo: 'norma' },
+          { testo: 'art. 2947 c.c.', tipo: 'norma' },
+          { testo: 'art. 2946 c.c.', tipo: 'norma' },
+        ],
+      },
+    ],
+    domandeCommissione: [
+      'Perché conviene convenire la struttura e non il medico? Che cosa cambia in punto di onere della prova e di prescrizione?',
+      'La cartella clinica incompleta che effetti produce sulla posizione della struttura?',
+      'Se l’intervento fosse stato eseguito a regola d’arte, resterebbe qualcosa da risarcire?',
+      'Il tentativo di conciliazione tramite consulenza preventiva e la mediazione sono cumulabili o alternativi?',
+    ],
+    insidie: [
+      'Trattare struttura e medico come se rispondessero allo stesso titolo. Dal 2017 non è più così, e la differenza si riflette su prova e prescrizione.',
+      'Assorbire il consenso informato nella colpa medica. Sono due danni distinti, e il secondo può esistere anche senza il primo.',
+      'Dimenticare la condizione di procedibilità. Il ricorso proposto senza averla soddisfatta espone a improcedibilità, ed è un errore che si paga in aula.',
+      'Presentare la rivalsa come se fosse una normale azione di regresso. Opera solo per dolo o colpa grave ed è contenuta entro limiti che la legge fissa espressamente.',
+    ],
+  },
 ];

@@ -1,4 +1,5 @@
 import { casi } from '../casi';
+import { MATERIE_CASO } from '../casi/tipi';
 import { tracceConSvolgimento } from '../svolgimenti';
 import {
   CASI_IN_PROVA,
@@ -35,6 +36,20 @@ describe('confine di Premium', () => {
   it('offre in prova sia un atto sia un parere', () => {
     expect(SVOLGIMENTI_IN_PROVA.some((id) => id.includes('atto'))).toBe(true);
     expect(SVOLGIMENTI_IN_PROVA.some((id) => id.includes('parere'))).toBe(true);
+  });
+
+  /**
+   * All'orale il caso pratico si porta in **una sola** delle tre
+   * materie. Un assaggio concentrato su una materia sola farebbe
+   * valutare il simulatore a due candidati su tre guardando qualcosa
+   * che non sosterranno: la prova gratuita deve toccarle tutte, come
+   * per gli svolgimenti deve mostrare entrambi i formati.
+   */
+  it('offre in prova un caso per ciascuna materia della prova', () => {
+    const inProva = casi.filter((c) => CASI_IN_PROVA.includes(c.id));
+    expect(inProva.length).toBe(CASI_IN_PROVA.length);
+    const materie = new Set(inProva.map((c) => c.materia));
+    for (const m of MATERIE_CASO) expect(materie.has(m)).toBe(true);
   });
 
   it('apre l’assaggio a chi non paga e tutto il resto a chi paga', () => {

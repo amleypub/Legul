@@ -253,6 +253,10 @@ async function main() {
     // L'amministrativo, che prima non esisteva in archivio. Lo
     // svolgimento è riservato, quindi si scatta la traccia.
     ['14g-traccia-amministrativo.png', '/traccia/2023-atto-amministrativo'],
+    // L'esercizio sul parere di amministrativo: serve a controllare che
+    // sia riconoscibile come tale sia in elenco sia in dettaglio.
+    ['13b-tracce-esercizio.png', '/tracce'],
+    ['14h-parere-amministrativo.png', '/traccia/2026-parere-amministrativo'],
     ['14b-ripasso.png', '/ripasso'],
     // Lo svolgimento nasce tutto chiuso: senza aprire una sezione lo
     // scatto mostrerebbe solo l'indice.

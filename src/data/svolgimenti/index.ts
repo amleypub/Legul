@@ -21,6 +21,7 @@ import { parereCivile2018 } from './2018-parere-civile';
 import { parerePenale2018 } from './2018-parere-penale';
 import { parereCivile2017 } from './2017-parere-civile';
 import { atto2017 } from './2017-atto';
+import { parereAmministrativo2026 } from './2026-parere-amministrativo';
 import type { Svolgimento } from './tipi';
 
 export type {
@@ -36,6 +37,7 @@ export type {
 export { AGGIORNATO_AL } from './tipi';
 
 export const svolgimenti: Svolgimento[] = [
+  parereAmministrativo2026,
   attoCivile2023,
   attoPenale2023,
   attoAmministrativo2023,

@@ -125,7 +125,13 @@ export default function TracciaDetailScreen({
 
       <View style={styles.sezioneTestata}>
         <Icona nome="reader-outline" size={16} color={colors.textMuted} />
-        <Text style={styles.sezioneTitolo}>Traccia assegnata</Text>
+        {/* «Assegnata» è la parola giusta solo per una prova che è stata
+            davvero assegnata. Su un esercizio scritto da noi sarebbe una
+            piccola bugia stampata sopra il testo, e la nota che segue non
+            basterebbe a disfarla. */}
+        <Text style={styles.sezioneTitolo}>
+          {traccia.esercizio ? 'Traccia proposta' : 'Traccia assegnata'}
+        </Text>
       </View>
 
       <View style={styles.testoWrap}>
@@ -136,14 +142,31 @@ export default function TracciaDetailScreen({
 
       <View style={styles.nota}>
         <Icona
-          nome={traccia.testoUfficiale ? 'checkmark-circle' : 'information-circle'}
+          nome={
+            traccia.esercizio
+              ? 'warning'
+              : traccia.testoUfficiale
+                ? 'checkmark-circle'
+                : 'information-circle'
+          }
           size={16}
-          color={traccia.testoUfficiale ? colors.success : colors.textMuted}
+          color={
+            traccia.esercizio
+              ? colors.accentEdge
+              : traccia.testoUfficiale
+                ? colors.success
+                : colors.textMuted
+          }
         />
+        {/* Un esercizio costruito da noi non deve poter essere scambiato
+            per una prova assegnata: la nota lo dice prima di ogni altra
+            cosa, perché è l'informazione che cambia come lo si usa. */}
         <Text style={styles.notaTesto}>
-          {traccia.testoUfficiale
-            ? `Testo ufficiale integrale.${traccia.fonte ? ` Fonte: ${traccia.fonte}` : ''}`
-            : 'Testo riassunto a scopo di studio: le tracce ufficiali integrali sono pubblicate dal Ministero della Giustizia.'}
+          {traccia.esercizio
+            ? 'Esercizio costruito sulla prova riformata, non una traccia assegnata in passato: il parere in diritto amministrativo diventa possibile con il d.l. 100/2026 e non esiste ancora in archivio.'
+            : traccia.testoUfficiale
+              ? `Testo ufficiale integrale.${traccia.fonte ? ` Fonte: ${traccia.fonte}` : ''}`
+              : 'Testo riassunto a scopo di studio: le tracce ufficiali integrali sono pubblicate dal Ministero della Giustizia.'}
         </Text>
       </View>
 

@@ -182,4 +182,209 @@ export const casiPenale: CasoPratico[] = [
       'Dimenticare l’incidente probatorio quando i luoghi cambiano. La prova tecnica formata unilateralmente resta e pesa per tutto il processo.',
     ],
   },
+  {
+    id: 'penale-maltrattamenti',
+    materia: 'Diritto penale',
+    titolo: 'Maltrattamenti in famiglia e tutela della persona offesa',
+    fatto: [
+      'Una donna si presenta in commissariato e riferisce che da circa due anni il convivente la umilia quotidianamente, le impedisce di lavorare, controlla le sue uscite e in tre occasioni l’ha afferrata per le braccia procurandole ecchimosi, refertate al pronto soccorso come guaribili in pochi giorni.',
+      'La coppia ha una figlia di sei anni, che secondo il racconto ha assistito ad almeno due degli episodi. La donna riferisce di aver lasciato la casa la settimana precedente e di essersi trasferita da una sorella, e dichiara di temere per la propria incolumità.',
+      'Ti viene chiesta assistenza dalla persona offesa, che ti domanda che cosa possa accadere nell’immediato e che ruolo avrà nel procedimento.',
+    ],
+    consegna:
+      'Il candidato qualifichi i fatti, illustri le questioni di diritto sostanziale e processuale rilevanti e indichi gli strumenti di tutela attivabili nell’immediato.',
+    scaletta: [
+      {
+        id: 'fattispecie',
+        titolo: 'La fattispecie di maltrattamenti e il requisito dell’abitualità',
+        dettaglio:
+          'Il delitto è reato abituale proprio: non rileva il singolo episodio ma la condotta protratta che genera un regime di vita vessatorio. La norma copre anche la persona convivente, indipendentemente dal vincolo coniugale, e la cessazione della convivenza non esclude il reato per il periodo pregresso.',
+        peso: 20,
+        versante: 'sostanziale',
+        riferimenti: [
+          { testo: 'art. 572 c.p.', tipo: 'norma' },
+          { testo: 'art. 572, comma 1, c.p.', tipo: 'norma' },
+        ],
+      },
+      {
+        id: 'concorso',
+        titolo: 'Rapporto con lesioni e con gli atti persecutori',
+        dettaglio:
+          'Le lesioni concorrono con i maltrattamenti quando integrano un autonomo evento lesivo. Il confine con gli atti persecutori si traccia sulla convivenza e sul rapporto attuale: cessata la convivenza e venuto meno il rapporto, le condotte successive possono integrare il diverso delitto di cui all’art. 612-bis c.p.',
+        peso: 15,
+        versante: 'sostanziale',
+        riferimenti: [
+          { testo: 'art. 582 c.p.', tipo: 'norma' },
+          { testo: 'art. 612-bis c.p.', tipo: 'norma' },
+          { testo: 'art. 81 c.p.', tipo: 'norma' },
+        ],
+      },
+      {
+        id: 'aggravante',
+        titolo: 'La violenza assistita come aggravante',
+        dettaglio:
+          'Il fatto commesso in presenza di un minore, o in suo danno, è espressamente aggravato. Va sottolineato che il minore che assiste è a sua volta persona offesa, con le conseguenze che ne derivano sulla notifica degli atti e sull’eventuale segnalazione al tribunale per i minorenni.',
+        peso: 10,
+        versante: 'sostanziale',
+        riferimenti: [
+          { testo: 'art. 572, comma 2, c.p.', tipo: 'norma' },
+          { testo: 'art. 61, n. 11-quinquies, c.p.', tipo: 'norma' },
+        ],
+      },
+      {
+        id: 'codice-rosso',
+        titolo: 'Le corsie accelerate introdotte dal codice rosso',
+        dettaglio:
+          'Acquisita la notizia di reato, il pubblico ministero deve assumere informazioni dalla persona offesa entro un termine breve fissato dalla legge, e la polizia giudiziaria riferisce senza ritardo. È la disciplina pensata proprio per evitare che il tempo fra denuncia e primo atto diventi il tempo in cui il rischio si concretizza.',
+        peso: 20,
+        versante: 'processuale',
+        riferimenti: [
+          { testo: 'art. 362, comma 1-ter, c.p.p.', tipo: 'norma' },
+          { testo: 'art. 347, comma 3, c.p.p.', tipo: 'norma' },
+          { testo: 'l. 69/2019', tipo: 'norma' },
+        ],
+      },
+      {
+        id: 'cautelari',
+        titolo: 'Le misure cautelari a tutela della persona offesa',
+        dettaglio:
+          'Vanno illustrati l’allontanamento dalla casa familiare e il divieto di avvicinamento ai luoghi frequentati dalla persona offesa, con la possibilità di prescrivere modalità di controllo elettronico, e l’allontanamento d’urgenza disposto dalla polizia giudiziaria nei casi di flagranza con autorizzazione del pubblico ministero.',
+        peso: 20,
+        versante: 'processuale',
+        riferimenti: [
+          { testo: 'art. 282-bis c.p.p.', tipo: 'norma' },
+          { testo: 'art. 282-ter c.p.p.', tipo: 'norma' },
+          { testo: 'art. 384-bis c.p.p.', tipo: 'norma' },
+        ],
+      },
+      {
+        id: 'incidente',
+        titolo: 'Incidente probatorio e audizione protetta',
+        dettaglio:
+          'La prova dichiarativa della persona offesa e del minore può essere cristallizzata con incidente probatorio anche fuori dai casi ordinari, con modalità protette. È lo strumento che mette al riparo dal rischio di ritrattazione e dalla vittimizzazione secondaria dell’esame dibattimentale.',
+        peso: 15,
+        versante: 'processuale',
+        riferimenti: [
+          { testo: 'art. 392, comma 1-bis, c.p.p.', tipo: 'norma' },
+          { testo: 'art. 398, comma 5-bis, c.p.p.', tipo: 'norma' },
+          { testo: 'art. 90-quater c.p.p.', tipo: 'norma' },
+        ],
+      },
+    ],
+    domandeCommissione: [
+      'La donna ha lasciato la casa. Il reato di maltrattamenti resta configurabile o le condotte successive vanno qualificate diversamente?',
+      'Le lesioni refertate sono assorbite nei maltrattamenti o concorrono?',
+      'Che ruolo ha la figlia di sei anni nel procedimento, oltre a quello di testimone?',
+      'Se la persona offesa in dibattimento ritratta, che uso si può fare delle dichiarazioni rese in indagini?',
+    ],
+    insidie: [
+      'Ragionare sui singoli episodi invece che sulla condotta abituale. Il reato non è la somma delle percosse: è il regime di vita che ne risulta.',
+      'Confondere maltrattamenti e atti persecutori. Il discrimine è il rapporto attuale e la convivenza, e va detto con precisione perché la commissione lo chiede quasi sempre.',
+      'Trattare la violenza assistita come una circostanza di contorno. Il minore che assiste è persona offesa, e questo cambia gli adempimenti.',
+      'Fermarsi alla qualificazione senza dire che cosa si fa oggi per la cliente. Qui la parte utile della risposta sono le misure cautelari e l’incidente probatorio.',
+    ],
+  },
+  {
+    id: 'penale-legittima-difesa',
+    materia: 'Diritto penale',
+    titolo: 'Reazione a un’intrusione notturna nell’abitazione',
+    fatto: [
+      'Il tuo assistito, sessantenne, si sveglia nella notte per un rumore proveniente dal piano terra della propria villetta isolata. Scende con una pistola legalmente detenuta e trova due persone che stanno rovistando nel soggiorno dopo aver forzato una finestra.',
+      'Alla vista dell’uomo i due si dirigono verso l’uscita. L’assistito esplode due colpi: il primo verso l’alto, il secondo attinge alla schiena uno degli intrusi, che riporta lesioni gravi. Il ferito viene rintracciato in ospedale poche ore dopo.',
+      'L’assistito riferisce di aver agito nel panico, di aver temuto che i due fossero armati e di non ricordare con precisione la sequenza dei propri gesti.',
+    ],
+    consegna:
+      'Il candidato qualifichi la condotta dell’assistito, illustri le questioni di diritto sostanziale e processuale rilevanti e indichi la linea difensiva.',
+    scaletta: [
+      {
+        id: 'scriminante',
+        titolo: 'I requisiti generali della legittima difesa',
+        dettaglio:
+          'Occorrono un’aggressione ingiusta e attuale a un diritto proprio o altrui, la necessità della reazione e la proporzione fra difesa e offesa. L’attualità è il requisito critico del caso: gli intrusi si stavano dirigendo verso l’uscita, e va affrontato di petto se il pericolo fosse ancora in corso.',
+        peso: 15,
+        versante: 'sostanziale',
+        riferimenti: [
+          { testo: 'art. 52, comma 1, c.p.', tipo: 'norma' },
+          { testo: 'art. 59, comma 4, c.p.', tipo: 'norma' },
+        ],
+      },
+      {
+        id: 'domiciliare',
+        titolo: 'La difesa domiciliare e la presunzione di proporzionalità',
+        dettaglio:
+          'Nel domicilio e nei luoghi a esso equiparati la proporzione si presume quando si usa un’arma legittimamente detenuta per difendere l’incolumità propria o altrui, o i beni quando non vi sia desistenza e vi sia pericolo di aggressione. La riforma del 2019 ha aggiunto che agisce sempre in stato di difesa legittima chi respinge l’intrusione con violenza o minaccia di uso di armi.',
+        peso: 25,
+        versante: 'sostanziale',
+        riferimenti: [
+          { testo: 'art. 52, commi 2 e 3, c.p.', tipo: 'norma' },
+          { testo: 'art. 52, comma 4, c.p.', tipo: 'norma' },
+          { testo: 'l. 36/2019', tipo: 'norma' },
+        ],
+      },
+      {
+        id: 'eccesso',
+        titolo: 'L’eccesso colposo e la nuova causa di non punibilità',
+        dettaglio:
+          'Se i limiti della scriminante sono superati per colpa si risponde a titolo colposo. La riforma del 2019 ha però escluso la punibilità di chi ecceda trovandosi in stato di grave turbamento derivante dalla situazione di pericolo in atto: è la disposizione su cui si gioca il caso, e va distinta dalla scriminante putativa.',
+        peso: 20,
+        versante: 'sostanziale',
+        riferimenti: [
+          { testo: 'art. 55, comma 1, c.p.', tipo: 'norma' },
+          { testo: 'art. 55, comma 2, c.p.', tipo: 'norma' },
+          { testo: 'art. 590 c.p.', tipo: 'norma' },
+        ],
+      },
+      {
+        id: 'indagini',
+        titolo: 'La fase delle indagini e la qualificazione provvisoria',
+        dettaglio:
+          'L’iscrizione avverrà di regola per lesioni gravi o per tentato omicidio, e la qualificazione provvisoria condiziona termini e misure. Vanno curati subito il sopralluogo, il rilievo della posizione dei bossoli e delle tracce di effrazione, e la richiesta di accertamenti tecnici sulla traiettoria.',
+        peso: 15,
+        versante: 'processuale',
+        riferimenti: [
+          { testo: 'art. 335 c.p.p.', tipo: 'norma' },
+          { testo: 'art. 391-bis c.p.p.', tipo: 'norma' },
+          { testo: 'art. 360 c.p.p.', tipo: 'norma' },
+        ],
+      },
+      {
+        id: 'archiviazione',
+        titolo: 'La richiesta di archiviazione e l’opposizione della persona offesa',
+        dettaglio:
+          'Se la scriminante emerge già in indagini il pubblico ministero chiede l’archiviazione. La persona offesa che abbia dichiarato di volerne essere informata può opporsi, e il giudice fissa udienza in camera di consiglio: la difesa deve prepararsi a questo passaggio e non darlo per scontato.',
+        peso: 15,
+        versante: 'processuale',
+        riferimenti: [
+          { testo: 'art. 408 c.p.p.', tipo: 'norma' },
+          { testo: 'art. 410 c.p.p.', tipo: 'norma' },
+          { testo: 'art. 409 c.p.p.', tipo: 'norma' },
+        ],
+      },
+      {
+        id: 'civile',
+        titolo: 'Il versante civile: costituzione di parte civile e indennità',
+        dettaglio:
+          'Va considerata l’eventuale costituzione di parte civile del ferito e la possibilità che, esclusa la punibilità per eccesso in stato di grave turbamento, resti un obbligo indennitario. Nel caso di legittima difesa piena non è invece dovuto alcun indennizzo.',
+        peso: 10,
+        versante: 'processuale',
+        riferimenti: [
+          { testo: 'art. 76 c.p.p.', tipo: 'norma' },
+          { testo: 'art. 2044 c.c.', tipo: 'norma' },
+          { testo: 'art. 185 c.p.', tipo: 'norma' },
+        ],
+      },
+    ],
+    domandeCommissione: [
+      'Gli intrusi si stavano dirigendo verso l’uscita. Il pericolo era ancora attuale?',
+      'Che differenza c’è fra la causa di non punibilità per grave turbamento e la legittima difesa putativa?',
+      'Il colpo alla schiena che peso ha nella ricostruzione? È un dato neutro o decisivo?',
+      'Se il giudice esclude la punibilità per eccesso, il ferito resta senza alcuna tutela civile?',
+    ],
+    insidie: [
+      'Dire che nel domicilio si può sempre sparare. La presunzione riguarda la proporzione, non l’attualità del pericolo né la necessità della reazione, che vanno comunque accertate.',
+      'Confondere l’eccesso colposo scusato dal grave turbamento con la legittima difesa putativa. Sono istituti diversi con presupposti diversi, e scambiarli è l’errore più frequente sul tema.',
+      'Sorvolare sulla direzione del colpo. La commissione ci arriva sempre, e una risposta che la ignora sembra costruita a tavolino.',
+      'Trattare il caso come una questione solo sostanziale. La partita difensiva si gioca in indagini, sulla richiesta di archiviazione e sugli accertamenti tecnici.',
+    ],
+  },
 ];

@@ -207,3 +207,42 @@ describe('svolgimenti proposti', () => {
     expect(quanteConSvolgimento()).toBeLessThanOrEqual(tracce.length);
   });
 });
+
+/**
+ * Un esercizio scritto da noi non deve poter passare per una prova
+ * assegnata dal Ministero.
+ *
+ * La riforma ha reso possibile il parere in diritto amministrativo, che
+ * come prova non è mai esistita: colmare il buco è utile, ma la
+ * distinzione fra «questo è stato chiesto» e «questo potrebbe essere
+ * chiesto» è esattamente ciò che chi studia non è in grado di verificare
+ * da solo, e quindi è ciò che va presidiato qui.
+ */
+describe('provenienza delle tracce', () => {
+  /** Prima sessione retta dal d.l. 100/2026: nulla di anteriore può portare questo anno. */
+  const PRIMA_SESSIONE_RIFORMATA = 2026;
+
+  it('non spaccia per prova assegnata un esercizio costruito da noi', () => {
+    for (const t of tracce.filter((x) => x.esercizio)) {
+      expect(t.testoUfficiale).not.toBe(true);
+      expect(t.fonte).toBeUndefined();
+      expect(t.sessione).toMatch(/esercizio/i);
+    }
+  });
+
+  it('non colloca prove assegnate in sessioni che non si sono svolte', () => {
+    const future = tracce.filter((t) => t.anno >= PRIMA_SESSIONE_RIFORMATA && !t.esercizio);
+    expect(future.map((t) => t.id)).toEqual([]);
+  });
+
+  /**
+   * Il buco che l'esercizio colma esiste davvero: se un domani entrasse
+   * in archivio un parere di amministrativo realmente assegnato, questo
+   * controllo va aggiornato invece di essere cancellato.
+   */
+  it('copre la combinazione che la riforma ha reso possibile e l’archivio non ha', () => {
+    const pareriAmministrativi = tracce.filter((t) => t.tipo === 'Parere di diritto amministrativo');
+    expect(pareriAmministrativi.length).toBeGreaterThan(0);
+    expect(pareriAmministrativi.every((t) => t.esercizio)).toBe(true);
+  });
+});

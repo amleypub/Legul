@@ -84,6 +84,22 @@ export interface Traccia {
   testoUfficiale?: boolean;
   /** URL della fonte ufficiale (pagina o PDF del Ministero della Giustizia). */
   fonte?: string;
+  /**
+   * True quando la traccia non è una prova assegnata in passato ma un
+   * esercizio costruito sulla prova riformata.
+   *
+   * Serve per un buco che la riforma ha aperto: il d.l. 100/2026 rende
+   * il **parere** sceglibile anche in diritto amministrativo, ma una
+   * prova del genere non è mai esistita, quindi in archivio non ce n'è
+   * nessuna. Chi porterà quella combinazione non ha nulla su cui
+   * esercitarsi.
+   *
+   * Colmare il buco è utile; farlo passare per una traccia d'esame
+   * passata non lo è. La schermata lo dichiara a chiare lettere, e un
+   * test impedisce che un esercizio si presenti come testo ufficiale o
+   * si nasconda sotto un anno passato.
+   */
+  esercizio?: boolean;
 }
 
 export interface MaterialeEsame {
