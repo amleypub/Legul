@@ -9,7 +9,6 @@ import {
   Text,
   View,
 } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import * as Haptics from 'expo-haptics';
@@ -185,7 +184,7 @@ function Nodo({
           ]}
         >
           {premium ? (
-            <MaterialCommunityIcons name="crown" size={24} color={colors.accent} />
+            <Icona nome="crown" size={24} color={colors.accent} />
           ) : (
             <Icona
               nome={bloccata ? 'lock-closed' : stato === 'completata' ? 'checkmark' : 'play'}
