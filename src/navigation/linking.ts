@@ -1,3 +1,4 @@
+import { Linking } from 'react-native';
 import type { LinkingOptions } from '@react-navigation/native';
 import type { RootStackParamList } from './types';
 
@@ -23,6 +24,18 @@ function intero(v: string): number {
 
 export const linking: LinkingOptions<RootStackParamList> = {
   prefixes: ['legul://', 'https://legul.app'],
+  /*
+    Il ritorno dal link di accesso dell'email porta i token
+    nell'indirizzo e lo legge `AuthContext`. Se è stato quel link ad
+    avviare l'app, la navigazione — che nasce dopo l'intro e l'accesso —
+    lo ritroverebbe come indirizzo iniziale e aprirebbe la schermata di
+    accesso per un istante, giusto il tempo di richiudersi.
+  */
+  async getInitialURL() {
+    const url = await Linking.getInitialURL();
+    if (url && /access_token=|error_description=/.test(url)) return null;
+    return url;
+  },
   config: {
     screens: {
       Tabs: {

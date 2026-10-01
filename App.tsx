@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
+import Animated, { FadeIn } from 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { BlurView } from 'expo-blur';
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
@@ -10,14 +11,17 @@ import { useFonts } from 'expo-font';
 import { applyGlobalFont, fontMap } from './src/fonts';
 import { preparaAudio } from './src/audio/sounds';
 import { configuraNotifiche } from './src/notifiche/promemoria';
-import { AuthProvider } from './src/auth/AuthContext';
+import { AuthProvider, useAuth } from './src/auth/AuthContext';
 import { GamificationProvider, useGamification } from './src/gamification/GamificationContext';
 
 applyGlobalFont();
 configuraNotifiche();
 import type { RootStackParamList } from './src/navigation/types';
 import { linking } from './src/navigation/linking';
+import { fasePrimoAvvio, type FasePrimoAvvio } from './src/navigation/primoAvvio';
+import AccessoScreen from './src/screens/AccessoScreen';
 import AperturaScreen from './src/screens/AperturaScreen';
+import IntroScreen from './src/screens/IntroScreen';
 import DiagnosiScreen from './src/screens/DiagnosiScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import QuizHomeScreen from './src/screens/QuizHomeScreen';
@@ -192,18 +196,64 @@ function Tabs() {
 }
 
 /**
- * Che cosa mostrare all'avvio.
+ * Che cosa mostrare all'avvio: l'intro, l'accesso, le domande
+ * d'apertura, poi l'app. L'ordine sta in `navigation/primoAvvio.ts`.
  *
- * Le domande d'apertura vanno prima della navigazione, non dentro: sono
- * l'unica schermata dell'app da cui non si può uscire lateralmente, e
- * infilarle nello stack significherebbe poterle scavalcare con un deep
- * link. Si attende `caricato` perché altrimenti chi le ha già fatte
- * vedrebbe un lampo della prima domanda a ogni apertura.
+ * Le fasi del primo avvio vanno prima della navigazione, non dentro: da
+ * lì non si deve poter uscire lateralmente, e infilarle nello stack
+ * significherebbe poterle scavalcare con un deep link. Si attende
+ * `caricato` perché altrimenti chi le ha già superate vedrebbe un lampo
+ * dell'intro a ogni apertura.
  */
 function Radice() {
-  const { state, caricato } = useGamification();
+  const { state, caricato, segnaIntroVista, segnaAccessoProposto } = useGamification();
+  const { utente, caricamento } = useAuth();
+  const primaFase = useRef<FasePrimoAvvio | null>(null);
+
+  // Chi accede dalla schermata del primo avvio la fa sparire nello stesso
+  // istante, prima che possa segnarsi come superata: lo si segna qui,
+  // così uscendo dall'account non la si ritrova all'avvio successivo.
+  useEffect(() => {
+    if (caricato && utente && !state.accessoProposto) segnaAccessoProposto();
+  }, [caricato, utente, state.accessoProposto, segnaAccessoProposto]);
+
   if (!caricato) return null;
-  if (!state.aperturaFatta) return <AperturaScreen />;
+
+  const fase = fasePrimoAvvio({
+    introVista: state.introVista,
+    accessoProposto: state.accessoProposto,
+    aperturaFatta: state.aperturaFatta,
+    conAccount: utente !== null,
+    sessioneInVerifica: caricamento,
+  });
+  if (fase === 'attesa') return null;
+  if (primaFase.current === null) primaFase.current = fase;
+
+  let contenuto: React.ReactNode;
+  if (fase === 'intro') contenuto = <IntroScreen onFine={segnaIntroVista} />;
+  else if (fase === 'accesso') contenuto = <AccessoScreen onFine={segnaAccessoProposto} />;
+  else if (fase === 'domande') contenuto = <AperturaScreen />;
+  else contenuto = <Navigazione />;
+
+  /*
+    Fra una fase e l'altra una dissolvenza, non un taglio: sono schermate
+    che si susseguono senza navigazione, e senza transizione il cambio
+    sembrerebbe un errore. La prima fase di ogni avvio invece compare
+    subito: chi apre l'app per la centesima volta non deve aspettare una
+    dissolvenza per arrivare alla Home.
+  */
+  return (
+    <Animated.View
+      key={fase}
+      style={styles.fase}
+      entering={fase === primaFase.current ? undefined : FadeIn.duration(420)}
+    >
+      {contenuto}
+    </Animated.View>
+  );
+}
+
+function Navigazione() {
   return (
       <NavigationContainer linking={linking} theme={TEMA_TRASPARENTE}>
         <StatusBar style="dark" />
@@ -296,6 +346,10 @@ function Radice() {
       </NavigationContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  fase: { flex: 1 },
+});
 
 export default function App() {
   const [fontsLoaded] = useFonts(fontMap);

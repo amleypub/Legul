@@ -161,6 +161,20 @@ export interface GamificationState {
    */
   aperturaFatta: boolean;
   /**
+   * L'intro animata è già stata vista, o saltata, su questo dispositivo.
+   *
+   * Come l'accesso proposto qui sotto, è un fatto del telefono e non
+   * dell'account: non va sul cloud. Chi installa l'app su un tablet la
+   * rivede una volta, ed è giusto così — dura meno di dieci secondi.
+   */
+  introVista: boolean;
+  /**
+   * La schermata di accesso del primo avvio è stata superata: con un
+   * account o scegliendo di entrare senza. Non si ripropone a ogni
+   * avvio; da lì in poi l'accesso sta nel Profilo.
+   */
+  accessoProposto: boolean;
+  /**
    * La proposta di attivare il promemoria è già stata mostrata.
    *
    * Si chiede una volta sola, dopo la prima lezione: chiedere il permesso
@@ -224,6 +238,8 @@ const initialState: GamificationState = {
   andatura: OBIETTIVO_PREDEFINITO,
   esame: PROFILO_VUOTO,
   aperturaFatta: false,
+  introVista: false,
+  accessoProposto: false,
   promemoriaProposto: false,
   promemoriaAttivo: false,
   oraPromemoria: ORA_PREDEFINITA,
@@ -310,6 +326,10 @@ interface GamificationContextValue {
   aggiornaEsame(parziale: Partial<ProfiloEsame>): void;
   /** Segna che le domande d'apertura sono state fatte o saltate. */
   chiudiApertura(): void;
+  /** Segna che l'intro è stata vista o saltata. */
+  segnaIntroVista(): void;
+  /** Segna che la schermata di accesso del primo avvio è stata superata. */
+  segnaAccessoProposto(): void;
   /** Segna che la proposta del promemoria è già stata mostrata. */
   segnaPromemoriaProposto(): void;
   /** I punti da raggiungere oggi, secondo l'andatura scelta. */
@@ -400,6 +420,10 @@ export function progressiAzzerati(s: GamificationState): GamificationState {
     // azzera non deve rifare l'apertura né ridire che cosa porta.
     esame: s.esame,
     aperturaFatta: s.aperturaFatta,
+    // Chi elimina l'account non deve rivedere l'intro né sentirsi
+    // riproporre l'accesso che ha appena chiuso.
+    introVista: s.introVista,
+    accessoProposto: s.accessoProposto,
     promemoriaProposto: s.promemoriaProposto,
     promemoriaAttivo: s.promemoriaAttivo,
     oraPromemoria: s.oraPromemoria,
@@ -480,6 +504,26 @@ export function migrato(s: GamificationState): GamificationState {
   };
 }
 
+/**
+ * Lo stato da ciò che c'era sul dispositivo: i campi mancanti prendono
+ * il valore iniziale, poi le conversioni delle versioni precedenti.
+ *
+ * Una conversione ha bisogno di sapere che cosa *mancava*, non solo che
+ * cosa c'è: chi usava l'app prima che esistessero l'intro e l'accesso del
+ * primo avvio arriva senza quei due campi, e con le domande d'apertura
+ * già fatte. Mostrargli l'intro adesso vorrebbe dire trattarlo come un
+ * nuovo arrivato, quindi per lui valgono come già viste. Chi invece non
+ * aveva ancora superato le domande vede tutto da capo, come chi installa.
+ */
+export function statoDaDeposito(letto: Partial<GamificationState>): GamificationState {
+  const stato: GamificationState = { ...initialState, ...letto };
+  if (letto.introVista === undefined && letto.aperturaFatta) {
+    stato.introVista = true;
+    stato.accessoProposto = true;
+  }
+  return migrato(stato);
+}
+
 export function GamificationProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<GamificationState>(initialState);
   const [caricato, setCaricato] = useState(false);
@@ -510,7 +554,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
         // `"null"` e `'"testo"'` si spargono in modi diversi e nessuno
         // buono.
         if (!letto || typeof letto !== 'object' || Array.isArray(letto)) return;
-        setState(migrato({ ...initialState, ...(letto as GamificationState) }));
+        setState(statoDaDeposito(letto as Partial<GamificationState>));
       })
       .catch(() => {})
       .finally(() => {
@@ -676,6 +720,14 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
     setState((prev) => (prev.aperturaFatta ? prev : { ...prev, aperturaFatta: true }));
   }, []);
 
+  const segnaIntroVista = useCallback(() => {
+    setState((prev) => (prev.introVista ? prev : { ...prev, introVista: true }));
+  }, []);
+
+  const segnaAccessoProposto = useCallback(() => {
+    setState((prev) => (prev.accessoProposto ? prev : { ...prev, accessoProposto: true }));
+  }, []);
+
   const segnaPromemoriaProposto = useCallback(() => {
     setState((prev) => (prev.promemoriaProposto ? prev : { ...prev, promemoriaProposto: true }));
   }, []);
@@ -792,6 +844,8 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
       impostaAndatura,
       aggiornaEsame,
       chiudiApertura,
+      segnaIntroVista,
+      segnaAccessoProposto,
       segnaPromemoriaProposto,
       obiettivoOggi: puntiObiettivo(state.andatura),
       impostaPromemoria,
@@ -810,6 +864,8 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
     impostaAndatura,
     aggiornaEsame,
     chiudiApertura,
+    segnaIntroVista,
+    segnaAccessoProposto,
     segnaPromemoriaProposto,
     impostaPromemoria,
     azzeraProgressi,

@@ -1,7 +1,9 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { Alert, Platform } from 'react-native';
+import * as Linking from 'expo-linking';
 import type { Session, User } from '@supabase/supabase-js';
 import { supabase, supabaseConfigurato } from './supabase';
-import { accediConProvider, inviaLinkEmail } from './oauth';
+import { accediConProvider, accettaLinkDiAccesso, inviaLinkEmail } from './oauth';
 
 interface AuthValue {
   /** `null` finché non sappiamo se c'è una sessione salvata. */
@@ -54,6 +56,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       vivo = false;
       sub.subscription.unsubscribe();
     };
+  }, []);
+
+  /*
+    Il link dell'email riapre l'app con i token nell'indirizzo: qui
+    vengono letti, sia quando è il link ad avviare l'app sia quando l'app
+    era già aperta. Sul web non serve, lo fa Supabase dalla barra degli
+    indirizzi. La sessione nuova arriva poi da `onAuthStateChange`, come
+    per gli altri accessi.
+  */
+  useEffect(() => {
+    if (!supabase || Platform.OS === 'web') return;
+    const gestisci = (url: string | null) => {
+      if (!url) return;
+      accettaLinkDiAccesso(url)
+        .then((esito) => {
+          if (esito && esito !== 'ok') {
+            Alert.alert(
+              'Accesso non completato',
+              'Il link di accesso è scaduto o non è più valido. Riprova dalla schermata di accesso.',
+              [{ text: 'Ho capito' }]
+            );
+          }
+        })
+        .catch(() => {
+          Alert.alert('Accesso non riuscito', 'Riprova tra qualche istante.', [{ text: 'Chiudi' }]);
+        });
+    };
+    Linking.getInitialURL().then(gestisci).catch(() => {});
+    const sub = Linking.addEventListener('url', ({ url }) => gestisci(url));
+    return () => sub.remove();
   }, []);
 
   const esci = useCallback(async () => {

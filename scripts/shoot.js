@@ -297,24 +297,91 @@ async function main() {
   // Home è già mostrata
   await shot('1-home.png');
 
-  // Le domande d'apertura, con lo stato azzerato: è la prima cosa che
-  // vede chi installa l'app, e non compare in nessun altro scatto.
-  try {
-    const apertura = await browser.newPage({
-      viewport: { width: 402, height: 874 },
-      deviceScaleFactor: 2,
-    });
-    await apertura.goto('http://127.0.0.1:8099', { waitUntil: 'networkidle' });
-    await apertura.waitForTimeout(3000);
-    await apertura.screenshot({ path: path.join(outDir, '0e-apertura.png') });
-    await apertura.getByText('Avanti').last().click({ timeout: 6000 });
-    await apertura.waitForTimeout(900);
-    await apertura.screenshot({ path: path.join(outDir, '0f-apertura-scritti.png') });
-    await apertura.close();
-  } catch (e) {
-    console.log('apertura errore:', e.message);
-  }
+  /*
+    Il primo avvio, con il deposito vuoto: intro, accesso, domande. È la
+    prima cosa che vede chi installa l'app, e non compare in nessun altro
+    scatto.
 
+    L'intro avanza da sola, quindi gli scatti vanno presi a tempo: a
+    3 secondi la prima pagina ha finito di comporsi (cambia a 3,8), a
+    7,9 la seconda ha mostrato anche le note (finisce a 9,4). Il conto
+    parte da quando compare «Salta», non dal caricamento della pagina,
+    che dipende da quanto ci mettono i caratteri.
+  */
+  const primoAvvio = async (viewport, prefisso, completo) => {
+    // Dichiarati subito, non al momento dello scatto: se un passaggio
+    // fallisce, il resoconto finale deve contarli fra i saltati.
+    const nomi = [`${prefisso}a-intro-benvenuto.png`, `${prefisso}b-intro-metodo.png`];
+    if (completo) {
+      nomi.push('0c-accesso.png', '0d-accesso-email.png', '0e-apertura.png', '0f-apertura-scritti.png');
+    }
+    for (const n of nomi) attesi.add(n);
+    const p = await browser.newPage({ viewport, deviceScaleFactor: 2 });
+    p.on('pageerror', (e) => console.log('PAGEERROR (primo avvio):', e.message));
+    try {
+      await p.goto('http://127.0.0.1:8099', { waitUntil: 'networkidle' });
+      await p.getByText('Salta', { exact: true }).waitFor({ timeout: 15000 });
+      const t0 = Date.now();
+      const aspettaFino = async (ms) => {
+        const resta = t0 + ms - Date.now();
+        if (resta > 0) await p.waitForTimeout(resta);
+      };
+      await aspettaFino(3000);
+      const nome1 = `${prefisso}a-intro-benvenuto.png`;
+      attesi.add(nome1);
+      await p.screenshot({ path: path.join(outDir, nome1) });
+      scattati.add(nome1);
+      await aspettaFino(7900);
+      const nome2 = `${prefisso}b-intro-metodo.png`;
+      attesi.add(nome2);
+      await p.screenshot({ path: path.join(outDir, nome2) });
+      scattati.add(nome2);
+      if (!completo) return;
+
+      // Finita l'intro arriva da sola la schermata di accesso.
+      await p.getByText('Continua senza account').waitFor({ timeout: 8000 });
+      await p.waitForTimeout(1200);
+      attesi.add('0c-accesso.png');
+      await p.screenshot({ path: path.join(outDir, '0c-accesso.png') });
+      scattati.add('0c-accesso.png');
+      await p.getByText('Continua con l’email').last().click({ timeout: 6000 });
+      await p.waitForTimeout(900);
+      attesi.add('0d-accesso-email.png');
+      await p.screenshot({ path: path.join(outDir, '0d-accesso-email.png') });
+      scattati.add('0d-accesso-email.png');
+      await p.getByText('Annulla').last().click({ timeout: 6000 });
+      await p.waitForTimeout(500);
+
+      // Senza account si passa alle domande d'apertura.
+      await p.getByText('Continua senza account').last().click({ timeout: 6000 });
+      await p.getByText('Avanti').last().waitFor({ timeout: 8000 });
+      await p.waitForTimeout(1200);
+      attesi.add('0e-apertura.png');
+      await p.screenshot({ path: path.join(outDir, '0e-apertura.png') });
+      scattati.add('0e-apertura.png');
+      await p.getByText('Avanti').last().click({ timeout: 6000 });
+      await p.waitForTimeout(900);
+      attesi.add('0f-apertura-scritti.png');
+      await p.screenshot({ path: path.join(outDir, '0f-apertura-scritti.png') });
+      scattati.add('0f-apertura-scritti.png');
+    } catch (e) {
+      console.log(`primo avvio (${prefisso}) errore:`, e.message.split('\n')[0]);
+    } finally {
+      await p.close();
+    }
+  };
+  await primoAvvio({ width: 402, height: 874 }, '0', true);
+  // Uno schermo piccolo, come quello di un iPhone SE: la seconda pagina
+  // dell'intro è la più piena dell'app e deve starci senza tagli.
+  await primoAvvio({ width: 375, height: 667 }, '0-piccolo-', false);
+
+  // `--primo-avvio`: solo questi scatti, per ritoccare intro e accesso
+  // senza aspettare il giro intero.
+  const soloPrimoAvvio = process.argv.includes('--primo-avvio');
+
+  if (!soloPrimoAvvio) await giroCompleto();
+
+  async function giroCompleto() {
   // Tab Quiz -> elenco materie
   await tap('Quiz');
   await shot('2-quiz.png');
@@ -406,7 +473,7 @@ async function main() {
     ['9-esito-fallito.png', esitoUrl({ stelle: 0, corrette: 4, punti: 22, fallito: true })],
     ['10-paywall.png', '/premium'],
     ['11-login.png', '/accedi'],
-    ['11b-login-email.png', '/accedi', async () => tap('Continua con email')],
+    ['11b-login-email.png', '/accedi', async () => tap('Continua con l’email')],
     ['12-materiale.png', '/materiale'],
     ['13-tracce.png', '/tracce'],
     ['14-traccia.png', '/traccia/2023-atto-civile'],
@@ -452,6 +519,7 @@ async function main() {
     } catch (e) {
       console.log(nome, 'errore:', e.message);
     }
+  }
   }
 
   await browser.close();

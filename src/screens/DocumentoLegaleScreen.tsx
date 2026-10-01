@@ -1,30 +1,32 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { DOCUMENTI } from '../data/legale';
+import { DOCUMENTI, type DocumentoLegale } from '../data/legale';
 import type { RootStackScreenProps } from '../navigation/types';
 import { colors, radius, spacing } from '../theme';
 
 /**
- * Mostra un documento legale (privacy o termini) leggendo dalla stessa
+ * Il testo di un documento legale (privacy o termini), dalla stessa
  * sorgente da cui vengono generate le pagine pubbliche.
+ *
+ * Sta fuori dalla schermata perché serve anche dove la navigazione non
+ * c'è ancora: la schermata di accesso del primo avvio lo apre in un
+ * foglio, e chi deve accettare i Termini deve poterli leggere prima.
  *
  * Qui la leggibilità conta più dello stile: righe corte, buona
  * interlinea, numerazione visibile. Un testo legale illeggibile è un
  * testo che nessuno legge, e questo vale anche davanti a un giudice.
  */
-export default function DocumentoLegaleScreen({
-  route,
-}: RootStackScreenProps<'DocumentoLegale'>) {
-  const documento = DOCUMENTI[route.params.documento];
+export function ContenutoDocumento({ documento }: { documento: DocumentoLegale['id'] }) {
+  const doc = DOCUMENTI[documento];
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.occhiello}>{documento.occhiello}</Text>
+      <Text style={styles.occhiello}>{doc.occhiello}</Text>
       <View style={styles.dataPill}>
-        <Text style={styles.data}>Aggiornato il {documento.aggiornatoIl}</Text>
+        <Text style={styles.data}>Aggiornato il {doc.aggiornatoIl}</Text>
       </View>
 
-      {documento.sezioni.map((sezione) => (
+      {doc.sezioni.map((sezione) => (
         <View key={sezione.titolo} style={styles.sezione}>
           <Text style={styles.sezioneTitolo}>{sezione.titolo}</Text>
           {sezione.paragrafi.map((p, i) => (
@@ -36,6 +38,12 @@ export default function DocumentoLegaleScreen({
       ))}
     </ScrollView>
   );
+}
+
+export default function DocumentoLegaleScreen({
+  route,
+}: RootStackScreenProps<'DocumentoLegale'>) {
+  return <ContenutoDocumento documento={route.params.documento} />;
 }
 
 const styles = StyleSheet.create({

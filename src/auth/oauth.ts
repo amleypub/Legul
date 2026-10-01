@@ -56,9 +56,56 @@ export async function accediConProvider(provider: Provider): Promise<void> {
 
   const token = estraiToken(esito.url);
   if (!token) throw new Error('Risposta di accesso non valida.');
+  await consegnaToken(token);
+}
 
-  const { error: erroreSessione } = await supabase.auth.setSession(token);
-  if (erroreSessione) throw erroreSessione;
+/** Il messaggio d'errore che Supabase mette nell'indirizzo di ritorno, se c'è. */
+function estraiErrore(url: string): string | null {
+  const parti = url.split(/[#?]/).slice(1).join('&');
+  if (!parti) return null;
+  const p = new URLSearchParams(parti);
+  return p.get('error_description') ?? p.get('error');
+}
+
+let ultimoTokenAccettato: string | null = null;
+
+/**
+ * Apre la sessione con i token ricevuti, una volta sola per token.
+ *
+ * Su Android lo stesso ritorno arriva per due strade: come risultato
+ * della scheda del browser e come link che riapre l'app. Senza questo
+ * controllo la sessione verrebbe impostata due volte.
+ */
+async function consegnaToken(token: { access_token: string; refresh_token: string }): Promise<boolean> {
+  if (!supabase || token.access_token === ultimoTokenAccettato) return false;
+  ultimoTokenAccettato = token.access_token;
+  const { error } = await supabase.auth.setSession(token);
+  if (error) {
+    ultimoTokenAccettato = null;
+    throw error;
+  }
+  return true;
+}
+
+/**
+ * Il ritorno dal link dell'email.
+ *
+ * Toccando il link nella posta il telefono riapre l'app su
+ * `legul://accedi#access_token=…`, e qualcuno deve leggere quei token e
+ * consegnarli a Supabase. Sul web lo fa Supabase da sé, leggendo la barra
+ * degli indirizzi; su iPhone e Android non lo faceva nessuno, e l'accesso
+ * via email finiva con l'app aperta e l'utente ancora ospite.
+ *
+ * Restituisce `'ok'` se ha aperto una sessione, il messaggio d'errore se
+ * il link non era più valido, `null` se l'indirizzo non era un ritorno di
+ * accesso. Lo stesso link può arrivare due volte — all'avvio e come
+ * evento — e la seconda viene ignorata.
+ */
+export async function accettaLinkDiAccesso(url: string): Promise<'ok' | string | null> {
+  if (!supabase || !url.includes('accedi')) return null;
+  const token = estraiToken(url);
+  if (!token) return estraiErrore(url);
+  return (await consegnaToken(token)) ? 'ok' : null;
 }
 
 /**

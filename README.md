@@ -4,16 +4,22 @@ App mobile per **Android e iOS** (React Native + Expo) per prepararsi all'esame 
 
 ## Linguaggio visivo
 
-Obsidiana, vetro satinato, un solo accento. Fondo scuro e freddo,
-superfici che sono lastre di vetro appena schiarite sopra una sfocatura
-vera, e il colore quasi assente: compare dove c'è una decisione da
-prendere, non a decorare.
+Carta calda, vetro bianco, un solo accento. Il fondo è un avorio appena
+velato di luce, le superfici sono lastre bianche traslucide sopra una
+sfocatura vera, e il colore quasi assente: compare dove c'è una
+decisione da prendere, non a decorare.
 
 - **Il vetro ha bisogno di qualcosa da rifrangere**: le superfici sono
-  bianco al quattro-sette per cento: se il fondale fosse un colore
-  piatto sarebbero rettangoli grigi, quindi `Sfondo` costruisce velature
-  e aloni. Oltre il dieci per cento la lastra diventa lattiginosa e il
-  testo perde contrasto
+  bianco fra il settantaquattro e il novanta per cento, e su un fondo
+  piatto sarebbero rettangoli un po' più chiari. Per questo `Sfondo`
+  costruisce una velatura verticale e due luci radiali — una fredda
+  sempre presente, una nella tinta della sezione — che si spengono a
+  campana. Erano rettangoli arrotondati con un gradiente lineare, e
+  dove la schermata è vuota se ne vedeva il bordo ad arco
+- **Il marchio è una parola**: *Legul* in corsivo con il gradiente dal
+  blu notte al pesca, e sotto la fonetica /ˈliːɡəl/ (`Logo`). L'aurora
+  dell'intro e dell'accesso usa le stesse tinte, schiarite: è la luce
+  che attraversa la parola, non una decorazione accostata
 - **Il bordo è luce, non contorno**: un anello in gradiente, quasi bianco
   dove la luce batte e quasi nullo dal lato opposto. È la differenza fra
   lo spigolo di una lastra e la cornice di un rettangolo, e si ottiene
@@ -46,12 +52,13 @@ prendere, non a decorare.
   logica che decide quando mostrarla, ma è diventata un pulviscolo rado
   di scaglie champagne e titanio che sale e si spegne (`Polvere`)
 - **Il colore non fa insieme da fondo e da contenuto**: dove l'accento
-  riempie, il testo e l'icona sopra sono grafite; dove il testo è
-  champagne, il fondo è un velo. Confonderli produce oro su oro, che non
-  è brutto — è invisibile, e non si vede rileggendo il codice
+  riempie, il testo e l'icona sopra sono grafite; dove un testo o
+  un'icona devono essere dorati si usa l'oro scuro `accentTesto`, perché
+  lo champagne pieno su carta ha contrasto 2,2 e non si legge. Un test
+  (`tema.test.ts`) rifiuta lo champagne usato come colore di un testo
 - **La materia è un velo, non una fascia**: nelle testate di traccia,
-  svolgimento e caso pratico la tinta vive nel bordo e in un velo al
-  quattordici per cento. Un blocco pieno in testa fa sembrare una scheda
+  svolgimento e caso pratico la tinta vive nel bordo e in un velo
+  all'undici per cento. Un blocco pieno in testa fa sembrare una scheda
   promozionale una schermata che si legge come un documento
 - **Il pieno saturo non segnala la scelta**: durate, opzioni del quiz e
   segmenti si distinguono alzando il vetro e incidendo il bordo. Un
@@ -62,8 +69,18 @@ prendere, non a decorare.
 
 ## Funzionalità
 
+### Primo avvio: intro e accesso
+- **Un'intro di due pagine, meno di dieci secondi in tutto.** Nella prima il logo entra da fuori fuoco dentro un'aurora nei colori del marchio, poi la fonetica, un filo d'oro e il benvenuto, parola per parola. Nella seconda la luce sale come un sipario, il logo diventa la testata e si rivela il metodo: **rigore e gioco, insieme**, con un grafico e le fonti in nota
+- Le pagine avanzano da sole; **toccando si va avanti, tenendo premuto ci si ferma a leggere**, «Salta» porta all'accesso. Con un lettore di schermo attivo non avanza niente da solo e compare un pulsante; con il movimento ridotto il logo non vola e non si sfoca, compare
+- **Il grafico** è quello di Roediger e Karpicke (2006, esperimento 2): a parità di tempo, cinque minuti dopo chi ha riletto un testo ne ricorda di più (83% contro 71%), una settimana dopo chi si è messo alla prova (61% contro 40%), cioè il 52% in più — arrotondato per difetto. È un grafico a pendenza e non a barre perché il dato interessante è l'incrocio: spiega perché si sceglie il metodo sbagliato. Le altre due note sono Dunlosky et al. (2013), che fra dieci tecniche di studio danno utilità alta solo a mettersi alla prova e a distribuire lo studio nel tempo, e la meta-analisi di Sailer e Homner (2020) sulla gamification (g = 0,49)
+- **Che cosa non si afferma**: nessuno di questi studi misura l'esame da avvocato né un'app. L'intro dice che il metodo è fondato sulla ricerca, mai che garantisce un risultato, e un test (`ricerca.test.ts`) controlla i numeri e l'assenza di promesse
+- **L'accesso** chiede una cosa sola, come entrare: Apple, Google o email, con i pulsanti dei due marchi secondo le loro regole. Si può **entrare senza account** — l'app funziona tutta anche così, e l'App Store chiede che un account non necessario non venga imposto — e crearlo dopo dal Profilo. Termini e privacy si aprono in un foglio, perché prima dell'accesso la navigazione non c'è ancora
+- L'ordine delle fasi sta in `src/navigation/primoAvvio.ts`, senza React, così si verifica in un test. Chi usava l'app prima che l'intro esistesse non la vede: se aveva già superato le domande d'apertura, intro e accesso valgono come già visti
+
+> Schermate in `src/screens/IntroScreen.tsx` e `src/screens/AccessoScreen.tsx`; il grafico in `src/components/GraficoMetodo.tsx`, i numeri e le fonti in `src/data/ricerca.ts`.
+
 ### Domande d'apertura
-- Al primo avvio, **quattro domande** su che cosa il candidato porta: la materia dei due scritti, la procedura all'orale, la materia della rosa e, se la conosce, la data della prova
+- Dopo l'intro e l'accesso, **quattro domande** su che cosa il candidato porta: la materia dei due scritti, la procedura all'orale, la materia della rosa e, se la conosce, la data della prova
 - Dopo la riforma del 2026 quasi tutto è a scelta, e un piano di studio che ignora quelle scelte è il piano di nessuno
 - **Si può saltare tutto, da subito**, e rifarlo dal Profilo: un'app che chiede una decisione irreversibile al primo avvio si fa chiudere
 - **Non si chiedono permessi qui.** La proposta di attivare il promemoria arriva dopo la prima lezione completata, una volta sola: chiedere le notifiche prima che l'app abbia dimostrato di valere qualcosa è il modo più affidabile di farsele negare, e su iOS quel «no» si corregge solo dalle impostazioni di sistema
@@ -174,6 +191,7 @@ prendere, non a decorare.
 - I progressi vengono **fusi** fra dispositivo e cloud, mai sovrascritti: per ogni contatore vince il valore più alto e le liste si uniscono, così un dispositivo rimasto indietro non cancella il lavoro fatto altrove
 - Le **scelte d'esame** seguono l'account e non il dispositivo, con una regola diversa: lì vince il dispositivo su cui l'utente sta agendo adesso, e il valore remoto subentra solo dove in locale non c'è nulla
 - Senza credenziali configurate l'app resta pienamente utilizzabile **come ospite**, con i progressi sul solo dispositivo
+- **Il link dell'email riapre l'app** con i token nell'indirizzo, e `AuthContext` li consegna a Supabase. Sul web lo faceva già Supabase dalla barra degli indirizzi; su iPhone e Android non lo faceva nessuno, e chi accedeva via email restava ospite
 
 > Configurazione passo passo (progetto, tabella, policy RLS, provider): **[`docs/supabase.md`](docs/supabase.md)**
 
@@ -240,32 +258,37 @@ npm run ios        # avvia su simulatore iOS (macOS)
 npm run typecheck  # verifica TypeScript
 npm test           # esegue i test (Jest)
 npm run legale     # rigenera le pagine pubbliche di privacy e termini
-npm run icone      # rigenera icona, icona adattiva, avvio e favicon dal logo
+npm run icone      # rigenera logo, icona, icona adattiva, avvio e favicon dal sorgente
+npm run suoni      # risintetizza gli effetti sonori in assets/sounds
 ```
 
 ### Sostituire il logo
 
-Metti il nuovo file in `assets/logo-sorgente.png` (il marchio su fondo
-pieno, anche con margine e ombra intorno) e lancia `npm run icone`. Lo
-script ritaglia il logo, isola il marchio dal fondo e produce i quattro
-formati con i requisiti di ciascuno store — iOS vuole un quadrato pieno
-senza canale alfa, Android il marchio dentro il 66% centrale su uno
-strato trasparente. Il colore di fondo rilevato viene stampato a fine
-esecuzione: va riportato in `app.json`, ma **soltanto** in
-`android.adaptiveIcon.backgroundColor`.
+Metti il nuovo file in `assets/logo-sorgente.png` — la parola con la
+fonetica sotto, su fondo pieno chiaro — e lancia `npm run icone`. Lo
+script riconosce il colore di fondo dagli angoli, lo toglie lasciando
+la trasparenza dove il disegno sfuma (contando solo i pixel più scuri
+del fondo, altrimenti i riflessi chiari del gradiente diventerebbero
+buchi), separa la parola dalla fonetica e produce:
 
-`splash.backgroundColor` resta obsidiana. L'app si apriva su una
-schermata arancione piena e poi cadeva nel nero: il salto era il momento
-più stridente rimasto dopo il cambio di linguaggio. Ora l'avviso mostra
-il marchio sulla sua targa, contenuto al centro di un fondo che è già
-quello dell'app.
+- `assets/logo/parola.png`, `fonetica.png`, `completo.png`, su fondo
+  trasparente: l'intro le fa comparire in due tempi, il resto dell'app
+  usa la sola parola
+- l'icona iOS, **solo la parola** su fondo crema e senza canale alfa,
+  che App Store Connect rifiuta; la fonetica a quella misura sarebbe
+  un graffio illeggibile
+- l'icona adattiva Android, la schermata d'avvio (il logo intero su
+  trasparente, sopra il colore della carta) e la favicon
 
-> Il fondo di marca non si può togliere anche da lì. Il marchio ha una
-> faccia in indaco scuro (`#1B0A38`): sul fondo arancione il contrasto è
-> 5,27, su qualunque candidato scuro del tema scende fra 1,01 e 1,43,
-> cioè la faccia sparisce e la L isometrica sembra rotta. Per portare
-> l'obsidiana anche nell'icona adattiva Android bisognerebbe ritoccare
-> quella faccia, che è una decisione sul marchio e non sull'interfaccia.
+Il colore di fondo rilevato viene stampato a fine esecuzione e va
+riportato in `app.json` in `android.adaptiveIcon.backgroundColor`. Le
+dimensioni dei ritagli sono scritte in `src/components/Logo.tsx`: se
+cambiano, `logo.test.ts` fallisce e dice quali numeri mettere, perché
+un logo deformato non dà errori, si vede soltanto.
+
+> Il sorgente attuale è largo 750 pixel: basta per lo schermo, è al
+> limite per l'icona da 1024. Un file più grande, o un vettoriale,
+> darebbe bordi più puliti.
 
 > Dopo aver creato o modificato il file `.env`, avvia con `npx expo start --clear`:
 > i valori vengono incollati nel codice in fase di trasformazione e Metro
@@ -278,8 +301,13 @@ con Chromium, comprese quelle raggiungibili solo via deep link (esito
 lezione, paywall, accesso):
 
 ```bash
-sh scripts/anteprima.sh      # immagini in shots/
+sh scripts/anteprima.sh                 # immagini in shots/
+sh scripts/anteprima.sh --primo-avvio   # solo intro, accesso e domande d'apertura
 ```
+
+L'intro avanza da sola, quindi i suoi scatti sono presi a tempo da
+quando compare «Salta»; la seconda pagina viene fotografata anche su
+uno schermo da iPhone SE, perché è la più piena dell'app.
 
 I due comandi vanno lanciati insieme, non separatamente. Un
 `expo export` avviato prima dell'ultima modifica compila il codice
@@ -318,14 +346,23 @@ src/
   gamification/ripasso.ts        # Ripetizione dilazionata: le carte e i loro intervalli
   gamification/obiettivo.ts      # Le tre andature dell'obiettivo giornaliero
   navigation/linking.ts          # Deep link (schema legul://)
+  navigation/primoAvvio.ts       # Ordine del primo avvio: intro, accesso, domande, app
+  data/ricerca.ts                # Le ricerche citate nell'intro, con i numeri e i DOI
   screens/                       # Home, Quiz, Percorso, Lezione, Tracce, Materiale, Profilo
-  components/                    # Superfici in vetro, bottoni, icone, Monolite, coriandoli
+  components/                    # Superfici in vetro, bottoni, icone, Monolite, Polvere
   components/Icona.tsx           # Mappa dei nomi di icona sui glifi Lucide
+  components/Logo.tsx            # Il marchio: parola e fonetica
+  components/Aurora.tsx          # Le luci nei colori del marchio (intro, accesso, fondale)
+  components/GraficoMetodo.tsx   # Il grafico della ricerca nell'intro
+  components/PannelloAccesso.tsx # Apple, Google, email: condiviso fra primo avvio e Profilo
+  audio/sounds.ts                # Motore degli effetti sonori
   theme.ts                       # Colori, trasparenze, tipografia, ombre, movimento
 supabase/sql/discussione.sql     # Schema e regole della discussione (RLS + funzioni)
 supabase/functions/              # Edge Function (cancellazione account)
 docs/supabase.md                 # Configurazione dell'accesso e della sincronizzazione
 scripts/shoot.js                 # Cattura delle schermate per la verifica grafica
+scripts/genera-icone.mjs         # Logo, icone e schermata d'avvio dal sorgente
+scripts/genera-suoni.mjs         # Sintesi degli effetti sonori
 ```
 
 ## Test
@@ -379,6 +416,21 @@ scripts/shoot.js                 # Cattura delle schermate per la verifica grafi
   nessuna domanda sia costruita su un importo in euro: contributi minimi,
   tetto e trattamento minimo cambiano ogni anno, e una domanda tarata su una
   cifra diventa sbagliata da sola
+- **`primoAvvio.test.ts`** — l'ordine di intro, accesso e domande, che
+  l'accesso non venga proposto a chi ha già un account né mostrato per
+  un istante mentre la sessione si sta ancora leggendo, e che l'intro
+  resti sotto i dieci secondi
+- **`ricerca.test.ts`** — che i numeri dell'intro siano quelli pubblicati,
+  che il guadagno sia arrotondato per difetto, che ogni nota abbia la sua
+  fonte con un DOI ben formato, e che il testo non prometta esiti
+  all'esame
+- **`logo.test.ts`** — che le dimensioni del logo scritte nel codice siano
+  quelle vere dei file, e che l'icona iOS non abbia il canale alfa
+- **`suoni.test.ts`** — le tre cause per cui gli effetti sonori restavano
+  muti, ciascuna col suo controllo, e che nessun file abbia un clic
+  all'inizio o alla fine
+- **`tema.test.ts`** — i contrasti del tema chiaro, e che lo champagne non
+  venga usato come colore di un testo
 - **`tributario.test.ts`** — la stessa disciplina applicata alla materia più
   mobile della rosa: nessuna domanda costruita su un importo in euro, ogni
   spiegazione ancorata a una fonte, il confine fra abuso del diritto ed

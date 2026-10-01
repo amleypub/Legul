@@ -52,13 +52,27 @@ export function altezzaFonetica(larghezzaParola: number): number {
   return Math.round((w * fonetica.altezza) / fonetica.larghezza);
 }
 
-/** La sola parola. */
-export function LogoParola({ larghezza, style }: { larghezza: number; style?: ImageStyle }) {
+/**
+ * La sola parola.
+ *
+ * `sfocatura` serve all'intro, dove il logo entra da fuori fuoco: una
+ * copia sfocata sotto la nitida, e le due si scambiano l'opacità.
+ */
+export function LogoParola({
+  larghezza,
+  sfocatura,
+  style,
+}: {
+  larghezza: number;
+  sfocatura?: number;
+  style?: ImageStyle;
+}) {
   return (
     <Image
       source={SORGENTE_PAROLA}
       style={[{ width: larghezza, height: altezzaParola(larghezza) }, style]}
       resizeMode="contain"
+      blurRadius={sfocatura}
       accessibilityIgnoresInvertColors
     />
   );

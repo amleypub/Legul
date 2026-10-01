@@ -21,7 +21,7 @@ import {
   type MateriaScritti,
   type ProceduraOrale,
 } from '../data/scelte';
-import { alone, alpha, colors, materiaColors, radius, spacing, type } from '../theme';
+import { alone, alpha, colors, FONT_SERIF, materiaColors, radius, spacing, type } from '../theme';
 
 /**
  * Le domande d'apertura.
@@ -281,7 +281,18 @@ const styles = StyleSheet.create({
   taccaPrima: {},
   contenuto: { padding: spacing.lg, paddingBottom: spacing.md, gap: spacing.sm },
   centro: { alignItems: 'center', gap: spacing.sm, paddingTop: spacing.lg },
-  titolo: { ...type.titolo, color: colors.text, textAlign: 'center', marginTop: spacing.sm },
+  /* Il titolo in serif, come nell'intro e nell'accesso che vengono
+     subito prima: sono tre schermate dello stesso benvenuto. */
+  titolo: {
+    fontFamily: FONT_SERIF.semibold,
+    fontWeight: '400',
+    fontSize: 28,
+    lineHeight: 34,
+    letterSpacing: -0.5,
+    color: colors.text,
+    textAlign: 'center',
+    marginTop: spacing.sm,
+  },
   testo: { ...type.corpoLungo, color: colors.textMuted, textAlign: 'center', maxWidth: 340 },
   domanda: { ...type.sezione, color: colors.text, marginBottom: 2 },
   sottodomanda: { ...type.corpo, color: colors.textMuted, marginBottom: spacing.sm },

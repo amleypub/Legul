@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, View, type ViewStyle } from 'react-native';
+import { StyleSheet, useWindowDimensions, View, type ViewStyle } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Luce } from './Aurora';
 import { colors } from '../theme';
 
 interface Props {
@@ -27,11 +28,17 @@ interface Props {
  * traslucida sopra un fondo uniforme è indistinguibile da una scheda
  * opaca, e il linguaggio crollerebbe in un elenco di rettangoli.
  *
- * Gli aloni sono ellissi molto sfocate ottenute con gradienti, non con
- * ombre: un'ombra colorata di quelle dimensioni costa cara su Android e
- * si vedrebbe scattare durante lo scorrimento.
+ * Gli aloni sono gradienti radiali che si spengono a campana, non ombre:
+ * un'ombra colorata di quelle dimensioni costa cara su Android e si
+ * vedrebbe scattare durante lo scorrimento. Prima erano rettangoli
+ * arrotondati riempiti con un gradiente lineare, e dove la schermata è
+ * vuota — l'intro, l'accesso — se ne vedeva il bordo: un arco netto a
+ * metà altezza, che sembrava un errore di stampa.
  */
 export function Sfondo({ children, tinta, style }: Props) {
+  const { width: W } = useWindowDimensions();
+  const freddo = W * 1.5;
+  const sezione = W * 1.4;
   return (
     <View style={[styles.base, style]}>
       <LinearGradient
@@ -41,20 +48,18 @@ export function Sfondo({ children, tinta, style }: Props) {
         pointerEvents="none"
       />
       {/* Luce ambientale fredda: c'è sempre, indipendente dalla sezione. */}
-      <LinearGradient
-        colors={['rgba(120,146,196,0.10)', 'rgba(120,146,196,0)']}
-        start={{ x: 0.1, y: 0 }}
-        end={{ x: 0.9, y: 1 }}
-        style={styles.aloneFreddo}
-        pointerEvents="none"
+      <Luce
+        colore="#7892C4"
+        opacita={0.12}
+        diametro={freddo}
+        style={{ ...styles.alone, left: W * 0.1 - freddo / 2, top: 30 - freddo / 2 }}
       />
       {!!tinta && (
-        <LinearGradient
-          colors={[tinta + '1A', tinta + '00']}
-          start={{ x: 0.85, y: 0 }}
-          end={{ x: 0.2, y: 1 }}
-          style={styles.aloneSezione}
-          pointerEvents="none"
+        <Luce
+          colore={tinta}
+          opacita={0.12}
+          diametro={sezione}
+          style={{ ...styles.alone, left: W * 0.95 - sezione / 2, top: 10 - sezione / 2 }}
         />
       )}
       {children}
@@ -64,20 +69,5 @@ export function Sfondo({ children, tinta, style }: Props) {
 
 const styles = StyleSheet.create({
   base: { flex: 1, backgroundColor: colors.background },
-  aloneFreddo: {
-    position: 'absolute',
-    top: -200,
-    left: -120,
-    right: -40,
-    height: 460,
-    borderRadius: 999,
-  },
-  aloneSezione: {
-    position: 'absolute',
-    top: -160,
-    left: -40,
-    right: -120,
-    height: 420,
-    borderRadius: 999,
-  },
+  alone: { position: 'absolute' },
 });
