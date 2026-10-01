@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { BlurView } from 'expo-blur';
@@ -8,6 +8,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
 import { applyGlobalFont, fontMap } from './src/fonts';
+import { preparaAudio } from './src/audio/sounds';
 import { configuraNotifiche } from './src/notifiche/promemoria';
 import { AuthProvider } from './src/auth/AuthContext';
 import { GamificationProvider, useGamification } from './src/gamification/GamificationContext';
@@ -298,6 +299,12 @@ function Radice() {
 
 export default function App() {
   const [fontsLoaded] = useFonts(fontMap);
+  // I suoni si caricano qui, insieme ai caratteri, e non al primo uso:
+  // caricati al momento del bisogno arrivavano tardi, e la prima risposta
+  // esatta di una sessione spesso non suonava.
+  useEffect(() => {
+    void preparaAudio();
+  }, []);
   if (!fontsLoaded) return null;
   return (
     // Fuori da tutto: deve poter intercettare anche gli errori dei provider.

@@ -6,7 +6,12 @@ jest.mock('@react-native-async-storage/async-storage', () =>
 
 // expo-audio richiede il modulo nativo: fuori dall'app non esiste.
 jest.mock('expo-audio', () => ({
-  createAudioPlayer: () => ({ play: jest.fn(), seekTo: jest.fn(), remove: jest.fn() }),
+  createAudioPlayer: () => ({
+    play: jest.fn(),
+    seekTo: jest.fn(() => Promise.resolve()),
+    remove: jest.fn(),
+    playing: false,
+  }),
   setAudioModeAsync: jest.fn(() => Promise.resolve()),
 }));
 

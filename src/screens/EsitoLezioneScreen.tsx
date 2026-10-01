@@ -19,11 +19,11 @@ import { ORE_PROPOSTE } from '../notifiche/promemoria';
 import { Bottone } from '../components/Bottone';
 import { Monolite } from '../components/Monolite';
 import { Polvere } from '../components/Polvere';
-import { playSound } from '../audio/sounds';
+import { playSound, suonoStella } from '../audio/sounds';
 import type { RootStackScreenProps } from '../navigation/types';
 import { alpha, colors, molla, ombra, radius, spacing, tintaMateria } from '../theme';
 
-function Stella({ accesa, ritardo }: { accesa: boolean; ritardo: number }) {
+function Stella({ accesa, ritardo, n }: { accesa: boolean; ritardo: number; n: number }) {
   const scale = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -32,12 +32,13 @@ function Stella({ accesa, ritardo }: { accesa: boolean; ritardo: number }) {
       Animated.spring(scale, { toValue: 1, speed: 10, bounciness: 14, useNativeDriver: true }),
     ]).start();
 
-    // Ogni stella che si accende ha il suo scatto sonoro, sincronizzato
-    // con la comparsa: tre stelle, tre note in sequenza.
+    // Ogni stella che si accende ha la sua nota, sincronizzata con la
+    // comparsa: Do, Mi, Sol, un accordo che sale. Prima era la stessa nota
+    // tre volte, nonostante questo commento lo promettesse già.
     if (!accesa) return;
-    const t = setTimeout(() => playSound('star'), ritardo);
+    const t = setTimeout(() => playSound(suonoStella(n)), ritardo);
     return () => clearTimeout(t);
-  }, [ritardo, scale, accesa]);
+  }, [ritardo, scale, accesa, n]);
 
   return (
     <Animated.View style={{ transform: [{ scale }] }}>
@@ -132,10 +133,22 @@ export default function EsitoLezioneScreen({
     Haptics.notificationAsync(
       fallito ? Haptics.NotificationFeedbackType.Warning : Haptics.NotificationFeedbackType.Success
     ).catch(() => {});
-    if (!fallito) playSound(stelle === 3 ? 'perfect' : 'complete');
+    /*
+      Il suono finale arriva dopo l'ultima stella, non insieme: partendo
+      al montaggio si sovrapponeva alle tre note e le confondeva. Così le
+      stelle salgono e l'accordo le risolve.
+    */
+    const ultimaStella = 200 + 250 * (Math.max(1, Math.min(3, stelle)) - 1);
+    const finale = fallito
+      ? null
+      : setTimeout(() => playSound(stelle === 3 ? 'perfect' : 'complete'), ultimaStella + 320);
 
     entrata.value = withDelay(150, withSpring(1, molla.ampia));
     contatore.value = withDelay(500, withTiming(punti, { duration: 1100 }));
+    // Chi esce prima che l'accordo parta non deve sentirlo nella schermata dopo.
+    return () => {
+      if (finale) clearTimeout(finale);
+    };
   }, [contatore, entrata, punti, fallito, stelle]);
 
   const mascotStyle = useAnimatedStyle(() => ({
@@ -197,11 +210,11 @@ export default function EsitoLezioneScreen({
 
           {materia !== 'Ripasso' && (
             <View style={styles.stelleRow}>
-              <Stella accesa={!fallito && stelle >= 1} ritardo={200} />
+              <Stella accesa={!fallito && stelle >= 1} ritardo={200} n={1} />
               <View style={styles.stellaCentro}>
-                <Stella accesa={!fallito && stelle >= 2} ritardo={450} />
+                <Stella accesa={!fallito && stelle >= 2} ritardo={450} n={2} />
               </View>
-              <Stella accesa={!fallito && stelle >= 3} ritardo={700} />
+              <Stella accesa={!fallito && stelle >= 3} ritardo={700} n={3} />
             </View>
           )}
 
