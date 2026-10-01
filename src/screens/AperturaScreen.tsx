@@ -243,7 +243,7 @@ export default function AperturaScreen() {
                   end={{ x: 1, y: 1 }}
                   style={[styles.conto, alone(colors.accent, 'tenue')]}
                 >
-                  <Icona nome="calendar" size={18} color={colors.accent} />
+                  <Icona nome="calendar" size={18} color={colors.accentTesto} />
                   <Text style={styles.contoTesto}>{testoConto(giorni)}</Text>
                 </LinearGradient>
               )}

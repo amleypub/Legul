@@ -115,7 +115,7 @@ function Nodo({
   const faccia = premium
     ? alpha.velo
     : bloccata
-      ? 'rgba(255,255,255,0.025)'
+      ? 'rgba(20,22,27,0.03)'
       : corrente
         ? 'rgba(201,162,39,0.12)'
         : alpha.velo;
@@ -125,7 +125,7 @@ function Nodo({
     <View style={[styles.nodoRiga, { transform: [{ translateX: offset }] }]}>
       {mostraInizia && (
         <Animated.View style={[styles.iniziaBubble, { transform: [{ translateY: bounce }] }]}>
-          <Text style={[styles.iniziaTesto, { color: colors.accent }]}>INIZIA</Text>
+          <Text style={[styles.iniziaTesto, { color: colors.accentTesto }]}>INIZIA</Text>
           <View style={styles.iniziaFreccia} />
         </Animated.View>
       )}
@@ -184,13 +184,13 @@ function Nodo({
           ]}
         >
           {premium ? (
-            <Icona nome="crown" size={24} color={colors.accent} />
+            <Icona nome="crown" size={24} color={colors.accentTesto} />
           ) : (
             <Icona
               nome={bloccata ? 'lock-closed' : stato === 'completata' ? 'checkmark' : 'play'}
               size={24}
               color={
-                bloccata ? colors.textFaint : corrente ? colors.accent : colors.titanio
+                bloccata ? colors.textFaint : corrente ? colors.accentTesto : colors.titanio
               }
             />
           )}
@@ -333,7 +333,7 @@ export default function PercorsoScreen({ route, navigation }: RootStackScreenPro
       case 'unita':
         return (
           <LinearGradient
-            colors={[tinte.soft, 'rgba(255,255,255,0.02)']}
+            colors={[tinte.soft, 'rgba(255,255,255,0.7)']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={[styles.unitaBanner, ombra.tenue]}
@@ -470,8 +470,13 @@ const styles = StyleSheet.create({
   },
   stelleRow: { flexDirection: 'row', gap: 2, marginTop: 6 },
   nodoLabel: { fontSize: 12, color: colors.textMuted, fontWeight: '600', marginTop: 2 },
+  /* Fumetto bianco con freccia bianca: in scuro il fumetto era un velo
+     grafite e la freccia sotto restava bianca, due colori diversi per lo
+     stesso oggetto. */
   iniziaBubble: {
-    backgroundColor: alpha.veloForte,
+    backgroundColor: colors.card,
+    borderWidth: 1,
+    borderColor: alpha.bordo,
     borderRadius: radius.md,
     paddingHorizontal: 14,
     paddingVertical: 6,
@@ -490,6 +495,6 @@ const styles = StyleSheet.create({
     borderTopWidth: 7,
     borderLeftColor: 'transparent',
     borderRightColor: 'transparent',
-    borderTopColor: '#FFFFFF',
+    borderTopColor: colors.card,
   },
 });

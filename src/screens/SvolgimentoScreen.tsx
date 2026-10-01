@@ -234,7 +234,7 @@ export default function SvolgimentoScreen({
         titolo="Questioni da individuare"
         sintesi="Che cosa la traccia nasconde. Confrontale con quelle che hai visto tu."
         icona="search"
-        tinta={colors.titanioChiaro}
+        tinta={colors.titanioForte}
         aperta={!!aperte.questioni}
         onToggle={() => toggle('questioni')}
       >
@@ -441,9 +441,9 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     letterSpacing: 1,
     textTransform: 'uppercase',
-    color: 'rgba(255,255,255,0.85)',
+    color: colors.textMuted,
   },
-  titolo: { fontSize: 20, fontWeight: '700', color: '#FFFFFF', lineHeight: 26 },
+  titolo: { fontSize: 20, fontWeight: '700', color: colors.text, lineHeight: 26 },
   sottotitolo: { fontSize: 12.5, color: colors.textMuted, fontWeight: '600' },
 
   provaCard: {

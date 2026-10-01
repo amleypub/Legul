@@ -41,17 +41,21 @@ function Stella({ accesa, ritardo }: { accesa: boolean; ritardo: number }) {
 
   return (
     <Animated.View style={{ transform: [{ scale }] }}>
+      {/* Su carta una stella champagne disegnata solo col tratto si
+          perde (contrasto 2,2): accesa è piena, spenta è un contorno
+          grigio. La differenza fra le due si legge da lontano. */}
       <Icona
         nome="star"
         size={38}
         color={accesa ? colors.accent : colors.textFaint}
-        strokeWidth={accesa ? 1.6 : 1.3}
+        pieno={accesa}
+        strokeWidth={accesa ? 1.2 : 1.3}
       />
     </Animated.View>
   );
 }
 
-/** Riquadro statistica a blocco, con bordo 3D scuro sul gradiente. */
+/** Riquadro statistica: vetro bianco con un filo di bordo. */
 function StatBlocco({
   label,
   valore,
@@ -63,7 +67,7 @@ function StatBlocco({
 }) {
   return (
     <View style={styles.statCard}>
-      <Icona nome={icona} size={16} color="rgba(255,255,255,0.7)" />
+      <Icona nome={icona} size={16} color={colors.textMuted} />
       <Text style={styles.statValore} numberOfLines={1} adjustsFontSizeToFit>
         {valore}
       </Text>
@@ -180,10 +184,10 @@ export default function EsitoLezioneScreen({
         alto: la festa la fanno le stelle e il numero, non il colore
         steso su tutto lo schermo.
       */
-      colors={fallito ? ['#141821', colors.background] : [tinte.soft, colors.background]}
+      colors={fallito ? ['#ECEAE4', colors.background] : [tinte.soft, colors.background]}
       style={styles.gradient}
     >
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
       {!fallito && <Polvere count={stelle === 3 ? 42 : 28} />}
       <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
         <ScrollView contentContainerStyle={styles.content}>
@@ -223,7 +227,7 @@ export default function EsitoLezioneScreen({
           */}
           {proponiPromemoria && (
             <View style={styles.promemoria}>
-              <Icona nome="notifications" size={26} color={colors.accent} />
+              <Icona nome="notifications" size={26} color={colors.accentTesto} />
               <View style={styles.promemoriaTesto}>
                 <Text style={styles.promemoriaTitolo}>Ti ricordo di studiare domani?</Text>
                 <Text style={styles.promemoriaSub}>
@@ -242,7 +246,7 @@ export default function EsitoLezioneScreen({
                   label="No"
                   compatto
                   onPress={segnaPromemoriaProposto}
-                  gradiente={['rgba(255,255,255,0.22)', 'rgba(255,255,255,0.12)']}
+                  variante="chiaro"
                 />
               </View>
             </View>
@@ -253,7 +257,7 @@ export default function EsitoLezioneScreen({
               <Text style={styles.badgeTitolo}>Nuovi badge sbloccati</Text>
               {badgeSbloccati.map((b) => (
                 <View key={b.id} style={styles.badgeCard}>
-                  <Icona nome={b.icona} size={26} color={colors.accent} />
+                  <Icona nome={b.icona} size={26} color={colors.accentTesto} />
                   <View style={styles.badgeTextWrap}>
                     <Text style={styles.badgeNome}>{b.nome}</Text>
                     <Text style={styles.badgeDescr}>{b.descrizione}</Text>
@@ -293,14 +297,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm,
-    backgroundColor: 'rgba(255,255,255,0.14)',
+    backgroundColor: alpha.vetroForte,
+    borderWidth: 1,
+    borderColor: alpha.bordo,
     borderRadius: radius.xl,
     padding: spacing.md,
     marginTop: spacing.lg,
   },
   promemoriaTesto: { flex: 1, gap: 2 },
-  promemoriaTitolo: { fontSize: 15, fontWeight: '600', color: '#FFFFFF' },
-  promemoriaSub: { fontSize: 12.5, color: 'rgba(255,255,255,0.75)', lineHeight: 18 },
+  promemoriaTitolo: { fontSize: 15, fontWeight: '600', color: colors.text },
+  promemoriaSub: { fontSize: 12.5, color: colors.textMuted, lineHeight: 18 },
   promemoriaAzioni: { gap: 6, width: 74 },
   gradient: { flex: 1 },
   safe: { flex: 1 },
@@ -318,10 +324,10 @@ const styles = StyleSheet.create({
     marginTop: spacing.xl,
   },
   stellaCentro: { marginBottom: 14 },
-  titolo: { fontSize: 30, fontWeight: '600', color: '#FFFFFF', marginTop: spacing.lg },
+  titolo: { fontSize: 30, fontWeight: '600', color: colors.text, marginTop: spacing.lg },
   messaggio: {
     fontSize: 15,
-    color: 'rgba(255,255,255,0.85)',
+    color: colors.textMuted,
     textAlign: 'center',
     lineHeight: 22,
     marginTop: spacing.sm,
@@ -332,11 +338,11 @@ const styles = StyleSheet.create({
     marginTop: spacing.xl,
     alignSelf: 'stretch',
   },
-  // La card è traslucida: il bordo 3D è un border inferiore, non un
-  // riquadro dietro (che trasparirebbe come una banda scura).
   statCard: {
     flex: 1,
-    backgroundColor: 'rgba(255,255,255,0.18)',
+    backgroundColor: alpha.vetroForte,
+    borderWidth: 1,
+    borderColor: alpha.bordo,
     borderRadius: radius.lg,
     paddingVertical: spacing.sm + 4,
     paddingHorizontal: spacing.xs,
@@ -347,20 +353,22 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     letterSpacing: 0.8,
     textTransform: 'uppercase',
-    color: 'rgba(255,255,255,0.75)',
+    color: colors.textMuted,
     marginTop: 2,
   },
-  statValore: { fontSize: 22, fontWeight: '700', color: '#FFFFFF', marginTop: 2 },
+  statValore: { fontSize: 22, fontWeight: '700', color: colors.text, marginTop: 2 },
   badgeWrap: { alignSelf: 'stretch', marginTop: spacing.lg, gap: spacing.sm },
   badgeTitolo: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#FFFFFF',
+    color: colors.text,
     textAlign: 'center',
     marginBottom: spacing.xs,
   },
   badgeCard: {
-    backgroundColor: alpha.veloForte,
+    backgroundColor: alpha.vetroForte,
+    borderWidth: 1,
+    borderColor: alpha.bordo,
     borderRadius: radius.md,
     padding: spacing.md,
     flexDirection: 'row',

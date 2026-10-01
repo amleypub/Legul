@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import { ICONA_MATERIA } from '../data/percorso';
 import { alpha, colors, materiaColors } from '../theme';
 
@@ -101,8 +103,50 @@ describe('tema', () => {
     expect(contrasto(colors.accent, colors.primary)).toBeGreaterThan(3);
   });
 
-  it('lascia leggibile l’accento usato come testo sul fondo dell’app', () => {
-    expect(contrasto(colors.accent, colors.background)).toBeGreaterThan(4.5);
+  it('dà all’accento un gemello leggibile per il testo', () => {
+    /*
+      Su carta lo champagne pieno contrasta 2,2 con il fondo: perfetto
+      come riempimento di un bottone, illeggibile come etichetta.
+      `accentTesto` porta lo stesso significato dove serve leggerlo, e
+      deve reggere il testo piccolo sia sulla carta sia sulle schede.
+    */
+    for (const fondo of [colors.background, colors.card, colors.cardAlta]) {
+      expect(contrasto(colors.accentTesto, fondo)).toBeGreaterThan(4.5);
+    }
+    expect(contrasto(colors.accent, colors.background)).toBeLessThan(3);
+  });
+
+  it('non usa mai lo champagne pieno come colore di un testo o di un tratto', () => {
+    /*
+      È la regola che il gemello rende possibile, verificata sui sorgenti:
+      `color: colors.accent` su una scritta o un'icona a tratto è un
+      contrasto di 2,2 su carta. Restano ammesse le icone piene (`pieno`),
+      dove l'oro è un riempimento e non un filo.
+    */
+    const radice = path.join(__dirname, '..');
+    const sorgenti: string[] = [];
+    const visita = (dir: string) => {
+      for (const voce of fs.readdirSync(dir, { withFileTypes: true })) {
+        const f = path.join(dir, voce.name);
+        if (voce.isDirectory()) {
+          if (voce.name !== '__tests__') visita(f);
+        } else if (/\.tsx?$/.test(voce.name) && !f.endsWith('theme.ts')) {
+          sorgenti.push(f);
+        }
+      }
+    };
+    visita(radice);
+    const violazioni: string[] = [];
+    for (const f of sorgenti) {
+      fs.readFileSync(f, 'utf8')
+        .split('\n')
+        .forEach((riga, i) => {
+          if (/color[=:]\s*\{?colors\.accent\b/.test(riga) && !/\bpieno\b/.test(riga)) {
+            violazioni.push(`${path.relative(radice, f)}:${i + 1}`);
+          }
+        });
+    }
+    expect(violazioni).toEqual([]);
   });
 
   it('tiene i testi sopra il fondo e sopra le schede entro le soglie WCAG', () => {
@@ -155,15 +199,17 @@ describe('tema', () => {
     }
   });
 
-  it('tiene leggibile il bordo chiaro di ogni materia sul fondo scuro', () => {
+  it('tiene leggibile la tinta di ogni materia, sulla carta e sulle schede', () => {
     // `edge` non è decorazione: porta gli occhielli e i numeri dei passi.
     for (const materia of Object.keys(materiaColors)) {
-      expect(contrasto(materiaColors[materia].edge, colors.background)).toBeGreaterThan(4.5);
+      for (const fondo of [colors.background, colors.card]) {
+        expect(contrasto(materiaColors[materia].edge, fondo)).toBeGreaterThan(4.5);
+      }
     }
   });
 
   it('tiene i veli delle materie trasparenti, non pastello', () => {
-    // Su fondo obsidiana un riempimento chiaro è una macchia.
+    // Un pastello pieno su carta è una caramella, non una tinta.
     for (const materia of Object.keys(materiaColors)) {
       const soft = materiaColors[materia].soft;
       const m = /^rgba\([^)]*,\s*([0-9.]+)\)$/.exec(soft);
@@ -172,17 +218,29 @@ describe('tema', () => {
     }
   });
 
-  it('tiene le lastre di vetro sotto la soglia oltre la quale diventano lattiginose', () => {
+  it('tiene distinte le due famiglie di trasparenze: vetro bianco e veli grafite', () => {
     /*
-      Oltre il dieci per cento di bianco la superficie smette di
-      rifrangere e diventa un rettangolo grigio, e il testo sopra perde
-      contrasto. Fanno eccezione i bordi, che sono luce e non fondo.
+      Su carta il vetro è bianco e denso, i veli sono grafite e radi, e
+      confonderli rompe entrambi. Il vetro deve restare traslucido — da
+      opaco smette di lasciar passare la sfocatura e diventa cartoncino —
+      ma abbastanza pieno da staccarsi dal fondo. I veli, che si posano
+      dentro una superficie, oltre l'otto per cento diventano macchie.
     */
-    const superfici = ['vetro', 'vetroForte', 'vetroInterno', 'velo', 'veloForte'] as const;
-    for (const nome of superfici) {
-      const m = /^rgba\([^)]*,\s*([0-9.]+)\)$/.exec(alpha[nome]);
-      if (!m) throw new Error(`alpha.${nome} deve essere rgba: ${alpha[nome]}`);
-      expect(Number(m[1])).toBeLessThanOrEqual(0.1);
+    const alfa = (valore: string) => {
+      const m = /^rgba\((\d+),\s*(\d+),\s*(\d+),\s*([0-9.]+)\)$/.exec(valore);
+      if (!m) throw new Error(`atteso un rgba: ${valore}`);
+      return { rgb: [Number(m[1]), Number(m[2]), Number(m[3])], a: Number(m[4]) };
+    };
+    for (const nome of ['vetro', 'vetroForte'] as const) {
+      const { rgb, a } = alfa(alpha[nome]);
+      expect(rgb).toEqual([255, 255, 255]);
+      expect(a).toBeGreaterThanOrEqual(0.6);
+      expect(a).toBeLessThan(1);
+    }
+    for (const nome of ['vetroInterno', 'velo', 'veloForte'] as const) {
+      const { rgb, a } = alfa(alpha[nome]);
+      expect(Math.max(...rgb)).toBeLessThan(60);
+      expect(a).toBeLessThanOrEqual(0.08);
     }
   });
 });

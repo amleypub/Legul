@@ -148,12 +148,12 @@ export default function PaywallScreen({ navigation }: RootStackScreenProps<'Payw
   const conProva = piano === 'annuale';
 
   return (
-    <LinearGradient colors={['#0C1017', '#07090D']} style={styles.gradient}>
-      <StatusBar style="light" />
+    <LinearGradient colors={['#FBF8EF', colors.background]} style={styles.gradient}>
+      <StatusBar style="dark" />
       <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
         <ScrollView contentContainerStyle={styles.content}>
           <Pressable onPress={() => navigation.goBack()} hitSlop={12} style={styles.chiudi}>
-            <Icona nome="close" size={28} color="rgba(255,255,255,0.7)" />
+            <Icona nome="close" size={26} color={colors.textMuted} />
           </Pressable>
 
           <LinearGradient
@@ -162,7 +162,7 @@ export default function PaywallScreen({ navigation }: RootStackScreenProps<'Payw
             end={{ x: 1, y: 1 }}
             style={[styles.coronaBubble, alone(colors.accent)]}
           >
-            <Icona nome="crown" size={40} color={colors.accent} />
+            <Icona nome="crown" size={40} color={colors.accentTesto} />
           </LinearGradient>
           <Text style={styles.titolo}>Legul Premium</Text>
           <Text style={styles.sottotitolo}>
@@ -173,7 +173,7 @@ export default function PaywallScreen({ navigation }: RootStackScreenProps<'Payw
           <View style={styles.vantaggi}>
             {elenco.map((v) => (
               <View key={v} style={styles.vantaggioRiga}>
-                <Icona nome="checkmark-circle" size={22} color={colors.accent} />
+                <Icona nome="checkmark-circle" size={22} color={colors.accentTesto} />
                 <Text style={styles.vantaggioTesto}>{v}</Text>
               </View>
             ))}
@@ -304,25 +304,25 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: spacing.sm,
   },
-  titolo: { ...type.titolo, color: '#FFFFFF', marginTop: spacing.md },
+  titolo: { ...type.titolo, color: colors.text, marginTop: spacing.md },
   sottotitolo: {
     ...type.corpo,
-    color: 'rgba(255,255,255,0.78)',
+    color: colors.textMuted,
     textAlign: 'center',
     marginTop: spacing.xs,
     maxWidth: 340,
   },
   vantaggi: { alignSelf: 'stretch', marginTop: spacing.lg, gap: spacing.sm },
   vantaggioRiga: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.sm },
-  vantaggioTesto: { ...type.corpo, flex: 1, color: '#FFFFFF' },
+  vantaggioTesto: { ...type.corpo, flex: 1, color: colors.text },
 
   tabella: {
     alignSelf: 'stretch',
     marginTop: spacing.lg,
     borderRadius: radius.lg,
-    backgroundColor: 'rgba(255,255,255,0.06)',
+    backgroundColor: alpha.vetroForte,
     borderWidth: StyleSheet.hairlineWidth * 1.5,
-    borderColor: 'rgba(255,255,255,0.14)',
+    borderColor: alpha.bordo,
     paddingVertical: spacing.xs,
     paddingHorizontal: spacing.sm,
   },
@@ -331,19 +331,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 7,
     borderBottomWidth: StyleSheet.hairlineWidth * 1.5,
-    borderBottomColor: 'rgba(255,255,255,0.14)',
+    borderBottomColor: alpha.bordo,
   },
   tabellaRiga: { flexDirection: 'row', alignItems: 'center', paddingVertical: 7 },
-  tabellaVoce: { ...type.piccolo, flex: 1.5, color: 'rgba(255,255,255,0.82)' },
+  tabellaVoce: { ...type.piccolo, flex: 1.5, color: colors.text },
   tabellaCella: {
     ...type.piccolo,
     flex: 1,
     textAlign: 'center',
     fontWeight: '700',
-    color: 'rgba(255,255,255,0.6)',
+    color: colors.textMuted,
   },
-  tabellaTitolo: { ...type.etichetta, color: 'rgba(255,255,255,0.55)' },
-  tabellaOro: { color: colors.accent },
+  tabellaTitolo: { ...type.etichetta, color: colors.textMuted },
+  tabellaOro: { color: colors.accentTesto },
 
   piani: {
     flexDirection: 'row',
@@ -360,7 +360,7 @@ const styles = StyleSheet.create({
     backgroundColor: alpha.vetro,
     borderRadius: radius.xl,
     borderWidth: 2,
-    borderColor: 'rgba(255,255,255,0.16)',
+    borderColor: alpha.bordoMarcato,
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.sm,
     alignItems: 'center',
@@ -375,23 +375,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: 9,
     marginBottom: spacing.sm,
   },
-  pianoBadgeSpento: { backgroundColor: 'rgba(255,255,255,0.16)' },
+  pianoBadgeSpento: { backgroundColor: alpha.veloForte },
   pianoBadgeVuoto: { height: 22, marginBottom: spacing.sm },
   pianoBadgeTesto: { ...type.etichetta, fontSize: 9, letterSpacing: 0.6, color: colors.primary },
-  pianoBadgeTestoSpento: { color: 'rgba(255,255,255,0.85)' },
-  pianoNome: { ...type.scheda, color: '#FFFFFF' },
+  pianoBadgeTestoSpento: { color: colors.textMuted },
+  pianoNome: { ...type.scheda, color: colors.text },
   pianoPrezzo: {
     fontSize: 24,
     fontWeight: '700',
     letterSpacing: -0.9,
-    color: '#FFFFFF',
+    color: colors.text,
     marginTop: 4,
     fontVariant: ['tabular-nums'],
   },
   pianoDettaglio: {
     ...type.minuto,
     fontWeight: '500',
-    color: 'rgba(255,255,255,0.7)',
+    color: colors.textMuted,
     marginTop: 2,
     textAlign: 'center',
   },
@@ -411,7 +411,7 @@ const styles = StyleSheet.create({
   confronto: {
     ...type.minuto,
     fontWeight: '500',
-    color: 'rgba(255,255,255,0.62)',
+    color: colors.textMuted,
     textAlign: 'center',
     marginTop: spacing.sm,
     marginBottom: spacing.md,
@@ -421,7 +421,7 @@ const styles = StyleSheet.create({
   condizioni: {
     ...type.minuto,
     fontWeight: '500',
-    color: 'rgba(255,255,255,0.62)',
+    color: colors.textMuted,
     textAlign: 'center',
     marginTop: spacing.sm,
     maxWidth: 340,
@@ -432,12 +432,12 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     marginTop: spacing.md,
   },
-  link: { ...type.piccolo, fontWeight: '600', color: 'rgba(255,255,255,0.8)' },
-  separatore: { ...type.piccolo, color: 'rgba(255,255,255,0.35)' },
+  link: { ...type.piccolo, fontWeight: '600', color: colors.text },
+  separatore: { ...type.piccolo, color: colors.textFaint },
   nota: {
     ...type.minuto,
     fontWeight: '400',
-    color: 'rgba(255,255,255,0.45)',
+    color: colors.textMuted,
     textAlign: 'center',
     marginTop: spacing.md,
   },

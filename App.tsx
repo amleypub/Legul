@@ -79,7 +79,7 @@ function tabIcon(nome: string) {
 function FondoTab() {
   return (
     <View style={StyleSheet.absoluteFill}>
-      <BlurView intensity={SFOCATURA} tint="dark" style={StyleSheet.absoluteFill} />
+      <BlurView intensity={SFOCATURA} tint="light" style={StyleSheet.absoluteFill} />
       <View style={[StyleSheet.absoluteFill, { backgroundColor: alpha.vetroChrome }]} />
     </View>
   );
@@ -102,7 +102,9 @@ function Tabs() {
         // Le schermate a tab hanno già il proprio titolo nel contenuto:
         // una barra piena sopra ripeteva l'informazione e rubava spazio.
         headerShown: false,
-        tabBarActiveTintColor: colors.accent,
+        // L'oro leggibile, non lo champagne pieno: su una barra chiara
+        // un'etichetta di undici punti a contrasto 2,2 non si legge.
+        tabBarActiveTintColor: colors.accentTesto,
         tabBarInactiveTintColor: colors.titanio,
         // Solo colori e bordo: altezze e spaziature restano quelle
         // calcolate dalla navigazione, che tiene conto della safe area.
@@ -159,7 +161,7 @@ function Tabs() {
       <Tab.Screen
         name="Quiz"
         component={QuizHomeScreen}
-        options={{ title: 'Quiz', tabBarIcon: tabIcon('help-circle') }}
+        options={{ title: 'Quiz', tabBarIcon: tabIcon('list-checks') }}
       />
       <Tab.Screen
         name="Tracce"
@@ -203,7 +205,7 @@ function Radice() {
   if (!state.aperturaFatta) return <AperturaScreen />;
   return (
       <NavigationContainer linking={linking} theme={TEMA_TRASPARENTE}>
-        <StatusBar style="light" />
+        <StatusBar style="dark" />
         {/*
           Intestazioni chiare, non più la fascia blu piena: su un
           linguaggio fatto di superfici traslucide su fondo chiaro una

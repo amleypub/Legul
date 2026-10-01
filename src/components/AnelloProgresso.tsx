@@ -41,7 +41,7 @@ export function AnelloProgresso({
   spessore = 11,
   da = '#E0C05A',
   a = '#C9A227',
-  coloreTraccia = 'rgba(255,255,255,0.16)',
+  coloreTraccia = 'rgba(20,22,27,0.08)',
   children,
 }: Props) {
   const raggio = (size - spessore) / 2;
@@ -118,7 +118,7 @@ export function EtichettaAnello({ valore, unita }: { valore: string; unita: stri
 const etichetta = StyleSheet.create({
   valore: { color: colors.text, fontSize: 26, fontWeight: '600', letterSpacing: -0.8 },
   unita: {
-    color: 'rgba(255,255,255,0.65)',
+    color: colors.textMuted,
     fontSize: 10,
     fontWeight: '600',
     letterSpacing: 1,

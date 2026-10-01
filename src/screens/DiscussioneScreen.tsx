@@ -22,7 +22,7 @@ import { useDiscussione } from '../discussione/useDiscussione';
 import { FoglioAzioni, type AzioneFoglio } from '../components/FoglioAzioni';
 import { Monolite } from '../components/Monolite';
 import type { RootStackScreenProps } from '../navigation/types';
-import { alpha, colors, radius, spacing } from '../theme';
+import { alpha, colors, radius, spacing, SU_SCURO } from '../theme';
 
 /** A chi si sta rispondendo, per la striscia sopra la casella di scrittura. */
 interface Destinatario {
@@ -192,7 +192,7 @@ export default function DiscussioneScreen({
 
         {caricamento ? (
           <View style={styles.attesa}>
-            <ActivityIndicator color={colors.accent} />
+            <ActivityIndicator color={colors.accentTesto} />
           </View>
         ) : null}
 
@@ -225,7 +225,7 @@ export default function DiscussioneScreen({
             !puoInteragire && styles.spento,
           ]}
         >
-          <Icona nome="create-outline" size={18} color={colors.accent} />
+          <Icona nome="create-outline" size={18} color={colors.accentTesto} />
           <Text style={styles.proponiTesto}>Suggerisci un’altra soluzione</Text>
         </Pressable>
 
@@ -288,12 +288,12 @@ export default function DiscussioneScreen({
             </View>
           ) : genere === 'soluzione' ? (
             <View style={[styles.striscia, styles.strisciaOro]}>
-              <Icona nome="bulb" size={14} color={colors.accent} />
+              <Icona nome="bulb" size={14} color={colors.accentTesto} />
               <Text style={[styles.strisciaTesto, styles.strisciaTestoOro]} numberOfLines={1}>
                 Stai proponendo una soluzione
               </Text>
               <Pressable onPress={() => setGenere('commento')} hitSlop={8} accessibilityLabel="Torna a commento">
-                <Icona nome="close" size={16} color={colors.accent} />
+                <Icona nome="close" size={16} color={colors.accentTesto} />
               </Pressable>
             </View>
           ) : null}
@@ -458,7 +458,7 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
   },
   proponiPremuto: { opacity: 0.75 },
-  proponiTesto: { fontSize: 14.5, fontWeight: '600', color: colors.accent },
+  proponiTesto: { fontSize: 14.5, fontWeight: '600', color: colors.accentTesto },
   spento: { opacity: 0.45 },
 
   regole: {
@@ -479,7 +479,7 @@ const styles = StyleSheet.create({
     paddingTop: spacing.md,
     paddingHorizontal: spacing.md,
   },
-  barraAccessoTesto: { fontSize: 15, fontWeight: '600', color: '#FFFFFF' },
+  barraAccessoTesto: { fontSize: 15, fontWeight: '600', color: SU_SCURO },
 
   compositore: {
     backgroundColor: alpha.vetroForte,
@@ -500,7 +500,7 @@ const styles = StyleSheet.create({
   },
   strisciaOro: { backgroundColor: colors.accentSoft },
   strisciaTesto: { flex: 1, fontSize: 12.5, fontWeight: '700', color: colors.textMuted },
-  strisciaTestoOro: { color: colors.accent },
+  strisciaTestoOro: { color: colors.accentTesto },
 
   rigaCasella: { flexDirection: 'row', alignItems: 'flex-end', gap: spacing.sm },
   casella: {

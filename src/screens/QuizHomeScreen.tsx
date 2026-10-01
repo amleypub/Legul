@@ -73,7 +73,7 @@ function MateriaBlock({
           */}
           <View style={styles.block}>
             <LinearGradient
-              colors={[tinte.soft, 'rgba(255,255,255,0.02)']}
+              colors={[tinte.soft, 'rgba(255,255,255,0.72)']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={StyleSheet.absoluteFill}
@@ -89,7 +89,7 @@ function MateriaBlock({
               <View style={styles.blockText}>
                 <Text style={styles.materia}>{materia}</Text>
                 <View style={styles.metaRow}>
-                  <Icona nome="star" size={12} color={colors.accent} />
+                  <Icona nome="star" size={12} color={colors.accentTesto} />
                   <Text style={styles.blockMeta}>
                     {stelleTotali} · {completate}/{lezioni.length} lezioni
                   </Text>
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
   progressTrack: {
     height: 3,
     borderRadius: 2,
-    backgroundColor: 'rgba(255,255,255,0.07)',
+    backgroundColor: alpha.veloForte,
     overflow: 'hidden',
   },
   progressFill: { height: '100%', borderRadius: 2 },

@@ -87,6 +87,7 @@ function GiornoPill({ g }: { g: GiornoSettimana }) {
 function Scorciatoia({
   gradiente,
   glow,
+  tinta,
   icona,
   etichetta,
   titolo,
@@ -95,6 +96,13 @@ function Scorciatoia({
 }: {
   gradiente: [string, string];
   glow: string;
+  /**
+   * Colore dell'icona. Prima l'icona prendeva `gradiente[1]`, cioè il
+   * capo del gradiente al cinque per cento di opacità: il cappello e il
+   * microfono delle due scorciatoie si vedevano appena, in qualunque
+   * tema.
+   */
+  tinta: string;
   icona: string;
   etichetta: string;
   titolo: string;
@@ -117,14 +125,14 @@ function Scorciatoia({
         style={styles.scorciatoiaCorpo}
       >
         <View style={styles.scorciatoiaIcona}>
-          <Icona nome={icona} size={22} color={gradiente[1]} />
+          <Icona nome={icona} size={22} color={tinta} />
         </View>
         <View style={styles.scorciatoiaTesti}>
           <Text style={styles.scorciatoiaEtichetta}>{etichetta}</Text>
           <Text style={styles.scorciatoiaTitolo}>{titolo}</Text>
           <Text style={styles.scorciatoiaSub}>{sottotitolo}</Text>
         </View>
-        <Icona nome="chevron-forward" size={20} color="rgba(255,255,255,0.85)" />
+        <Icona nome="chevron-forward" size={18} color={colors.textFaint} />
       </LinearGradient>
     </Superficie>
   );
@@ -253,7 +261,7 @@ export default function HomeScreen() {
   return (
     <Sfondo tinta={colors.accent}>
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-        <TitoloSchermata titolo="Legul" sottotitolo="La tua preparazione, un giorno alla volta." />
+        <TitoloSchermata titolo="Legul" marchio sottotitolo="La tua preparazione, un giorno alla volta." />
 
         {/*
           Intestazione compatta: prima occupava mezza schermata per dire il
@@ -262,7 +270,7 @@ export default function HomeScreen() {
         <Entrata>
           <View style={[styles.heroWrap, alone(colors.primary, 'tenue')]}>
             <LinearGradient
-              colors={['rgba(255,255,255,0.09)', 'rgba(255,255,255,0.025)']}
+              colors={['rgba(255,255,255,0.97)', 'rgba(255,255,255,0.8)']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.hero}
@@ -270,7 +278,7 @@ export default function HomeScreen() {
               <Monolite state="neutral" size={78} animated />
               <View style={styles.heroTesto}>
                 <View style={styles.heroBadgeLivello}>
-                  <Icona nome={livello.icona} size={13} color={colors.accent} />
+                  <Icona nome={livello.icona} size={13} color={colors.accentTesto} />
                   <Text style={styles.heroLivello} numberOfLines={1}>
                     {livello.nome}
                   </Text>
@@ -321,7 +329,7 @@ export default function HomeScreen() {
                 end={{ x: 1, y: 1 }}
                 style={styles.contoIcona}
               >
-                <Icona nome="calendar" size={22} color={colors.accent} />
+                <Icona nome="calendar" size={22} color={colors.accentTesto} />
               </LinearGradient>
               <View style={styles.contoTesto}>
                 <Text style={styles.contoTitolo}>{testoConto(esame.giorni)}</Text>
@@ -384,8 +392,9 @@ export default function HomeScreen() {
         */}
         <Entrata ritardo={scaglione(1)}>
           <Scorciatoia
-            gradiente={['rgba(255,255,255,0.13)', 'rgba(255,255,255,0.05)']}
+            gradiente={['rgba(90,127,199,0.09)', 'rgba(90,127,199,0.02)']}
             glow={colors.primary}
+            tinta={materiaColors['Diritto civile'].edge}
             icona="school"
             etichetta="Nuove regole"
             titolo="Come funziona l’esame"
@@ -402,8 +411,9 @@ export default function HomeScreen() {
         */}
         <Entrata ritardo={scaglione(2)}>
           <Scorciatoia
-            gradiente={['rgba(192,94,126,0.20)', 'rgba(192,94,126,0.05)']}
+            gradiente={['rgba(192,94,126,0.12)', 'rgba(192,94,126,0.03)']}
             glow="#B32D53"
+            tinta={materiaColors['Diritto costituzionale'].edge}
             icona="mic"
             etichetta="Prova nuova"
             titolo="Simula il caso pratico"
@@ -422,7 +432,7 @@ export default function HomeScreen() {
 
           <View style={[styles.obiettivoWrap, ombra.alta]}>
             <LinearGradient
-              colors={['rgba(255,255,255,0.07)', 'rgba(255,255,255,0.02)']}
+              colors={['rgba(255,255,255,0.97)', 'rgba(255,255,255,0.82)']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.obiettivo}
@@ -449,7 +459,7 @@ export default function HomeScreen() {
                     <Icona
                       nome="flame"
                       size={22}
-                      color={streak > 0 ? colors.streakTo : 'rgba(255,255,255,0.28)'}
+                      color={streak > 0 ? colors.streakTo : colors.textFaint}
                       pieno={streak > 0}
                     />
                   </Animated.View>
@@ -516,7 +526,7 @@ export default function HomeScreen() {
                 colors={[materiaColors.Ripasso.start, materiaColors.Ripasso.end]}
                 style={styles.ripassoIcona}
               >
-                <Icona nome="refresh-circle" size={24} color={colors.accent} />
+                <Icona nome="refresh-circle" size={24} color={colors.accentTesto} />
               </LinearGradient>
               <View style={styles.ripassoTesto}>
                 <Text style={styles.ripassoTitolo}>Ripassa i tuoi errori</Text>
@@ -638,7 +648,7 @@ const styles = StyleSheet.create({
   contoSub: { ...type.piccolo, color: colors.textMuted },
   ripresaNota: {
     ...type.minuto,
-    color: 'rgba(255,255,255,0.62)',
+    color: colors.textMuted,
     textAlign: 'center',
     marginTop: spacing.sm,
   },
@@ -648,6 +658,8 @@ const styles = StyleSheet.create({
   heroWrap: { borderRadius: radius.xxl },
   hero: {
     borderRadius: radius.xxl,
+    borderWidth: 1,
+    borderColor: alpha.bordo,
     padding: spacing.md,
     flexDirection: 'row',
     alignItems: 'center',
@@ -661,7 +673,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     gap: 5,
     /* Velo d'accento con bordo, non riempimento pieno: il testo dentro
-       è champagne, e su un fondo champagne pieno spariva del tutto. */
+       è oro, e su un fondo oro pieno spariva del tutto. */
     backgroundColor: colors.accentSoft,
     borderWidth: 1,
     borderColor: 'rgba(201,162,39,0.35)',
@@ -669,15 +681,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 4,
   },
-  heroLivello: { color: colors.accent, fontSize: 12, fontWeight: '600', letterSpacing: -0.2 },
-  heroPunti: { color: '#FFFFFF', fontSize: 30, fontWeight: '600', letterSpacing: -1 },
+  heroLivello: { color: colors.accentTesto, fontSize: 12, fontWeight: '600', letterSpacing: -0.2 },
+  heroPunti: { color: colors.text, fontSize: 30, fontWeight: '600', letterSpacing: -1 },
   heroPuntiLabel: {
-    color: 'rgba(255,255,255,0.6)',
+    color: colors.textMuted,
     fontSize: 14,
     fontWeight: '700',
     letterSpacing: -0.2,
   },
-  heroProssimo: { color: 'rgba(255,255,255,0.7)', ...type.minuto, fontWeight: '500' },
+  heroProssimo: { color: colors.textMuted, ...type.minuto, fontWeight: '500' },
 
   scorciatoia: { marginTop: spacing.md },
   scorciatoiaCorpo: {
@@ -697,18 +709,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   scorciatoiaTesti: { flex: 1 },
-  scorciatoiaEtichetta: { ...type.etichetta, fontSize: 9.5, color: 'rgba(255,255,255,0.7)' },
+  scorciatoiaEtichetta: { ...type.etichetta, fontSize: 9.5, color: colors.textMuted },
   scorciatoiaTitolo: {
     ...type.scheda,
     fontSize: 17,
     fontWeight: '600',
-    color: '#FFFFFF',
+    color: colors.text,
     marginTop: 2,
   },
   scorciatoiaSub: {
     ...type.minuto,
     fontWeight: '500',
-    color: 'rgba(255,255,255,0.78)',
+    color: colors.textMuted,
     marginTop: 2,
     lineHeight: 17,
   },
@@ -723,14 +735,16 @@ const styles = StyleSheet.create({
   obiettivoWrap: { borderRadius: radius.xxl },
   obiettivo: {
     borderRadius: radius.xxl,
+    borderWidth: 1,
+    borderColor: alpha.bordo,
     padding: spacing.md,
     gap: spacing.md,
     overflow: 'hidden',
   },
   obiettivoTop: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   obiettivoTesto: { flex: 1, gap: 4 },
-  obiettivoTitolo: { color: '#FFFFFF', ...type.sezione, fontSize: 19 },
-  obiettivoSub: { color: 'rgba(255,255,255,0.75)', ...type.piccolo, lineHeight: 19 },
+  obiettivoTitolo: { color: colors.text, ...type.sezione, fontSize: 19 },
+  obiettivoSub: { color: colors.textMuted, ...type.piccolo, lineHeight: 19 },
   obiettivoChip: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -747,13 +761,13 @@ const styles = StyleSheet.create({
   settimana: {
     gap: spacing.sm + 2,
     borderTopWidth: StyleSheet.hairlineWidth * 1.5,
-    borderTopColor: 'rgba(255,255,255,0.14)',
+    borderTopColor: alpha.bordo,
     paddingTop: spacing.md,
   },
   streakRiga: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
-  streakNumero: { flex: 1, color: '#FFFFFF', fontSize: 21, fontWeight: '600', letterSpacing: -0.6 },
+  streakNumero: { flex: 1, color: colors.text, fontSize: 21, fontWeight: '600', letterSpacing: -0.6 },
   streakNumeroLabel: {
-    color: 'rgba(255,255,255,0.62)',
+    color: colors.textMuted,
     fontSize: 13,
     fontWeight: '600',
     letterSpacing: -0.1,
@@ -764,27 +778,27 @@ const styles = StyleSheet.create({
   giornoLettera: {
     ...type.etichetta,
     fontSize: 10,
-    color: 'rgba(255,255,255,0.45)',
+    color: colors.textMuted,
   },
-  giornoLetteraOggi: { color: colors.accent },
+  giornoLetteraOggi: { color: colors.accentTesto },
   giorno: {
     width: 34,
     height: 34,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(255,255,255,0.09)',
+    backgroundColor: alpha.veloForte,
   },
   giornoAttivo: { backgroundColor: colors.streakTo },
-  giornoFuturo: { backgroundColor: 'rgba(255,255,255,0.05)' },
+  giornoFuturo: { backgroundColor: alpha.velo },
   giornoOggi: { borderWidth: 2, borderColor: colors.accent },
   giornoPunto: {
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: 'rgba(255,255,255,0.32)',
+    backgroundColor: 'rgba(20,22,27,0.22)',
   },
-  giornoPuntoFuturo: { backgroundColor: 'rgba(255,255,255,0.16)' },
+  giornoPuntoFuturo: { backgroundColor: 'rgba(20,22,27,0.10)' },
 
   ripassoWrap: { marginTop: spacing.md },
   ripasso: {

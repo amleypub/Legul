@@ -319,7 +319,7 @@ const styles = StyleSheet.create({
   linkSecondario: {
     fontSize: 14,
     fontWeight: '600',
-    color: colors.accent,
+    color: colors.accentTesto,
     marginTop: spacing.xs,
   },
   social: {
@@ -352,5 +352,5 @@ const styles = StyleSheet.create({
     marginTop: spacing.lg,
     paddingHorizontal: spacing.sm,
   },
-  privacyLink: { color: colors.accent, fontWeight: '600', textDecorationLine: 'underline' },
+  privacyLink: { color: colors.accentTesto, fontWeight: '600', textDecorationLine: 'underline' },
 });

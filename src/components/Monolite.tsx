@@ -110,7 +110,17 @@ export function Monolite({ state = 'neutral', size = 120, animated = false, styl
 
   const acceso = state === 'celebrating';
   const denso = state === 'studying';
-  const spigolo = acceso ? colors.primaryLight : colors.titanioChiaro;
+  /*
+    Acceso vuol dire champagne, come dice l'intestazione. Prima qui c'era
+    `colors.primary`, che al momento della separazione fra superficie e
+    accento è rimasto grafite: lo stato di festa disegnava spigoli grigi
+    come quelli a riposo, e nessuno se n'era accorto perché sul fondo
+    scuro la differenza era di pochi punti di luminosità. Gli spigoli
+    usano l'oro scuro e non lo champagne pieno, che su carta come tratto
+    sottile si perderebbe; lo champagne vero sta nell'alone.
+  */
+  const spigolo = acceso ? colors.accentEdge : colors.titanioForte;
+  const tintaAlone = acceso ? colors.accent : '#6E86B8';
   const maglia = denso ? 5 : 3;
 
   return (
@@ -120,24 +130,27 @@ export function Monolite({ state = 'neutral', size = 120, animated = false, styl
       <Svg width={size} height={size} viewBox="0 0 120 120">
         <Defs>
           <RadialGradient id="mono-alone" cx="50%" cy="50%" r="50%">
-            <Stop offset="0" stopColor={acceso ? colors.primary : '#6E86B8'} stopOpacity="0.34" />
-            <Stop offset="1" stopColor={acceso ? colors.primary : '#6E86B8'} stopOpacity="0" />
+            <Stop offset="0" stopColor={tintaAlone} stopOpacity={acceso ? 0.3 : 0.16} />
+            <Stop offset="1" stopColor={tintaAlone} stopOpacity="0" />
           </RadialGradient>
+          {/* Le facce sono vetro freddo su carta: il piano quasi bianco
+              prende la luce, i fianchi scuriscono verso il basso. È la
+              stessa illuminazione dall'alto a sinistra delle superfici. */}
           <SvgGradient id="mono-sup" x1="0" y1="0" x2="1" y2="1">
-            <Stop offset="0" stopColor="#FFFFFF" stopOpacity="0.22" />
-            <Stop offset="1" stopColor="#FFFFFF" stopOpacity="0.06" />
+            <Stop offset="0" stopColor="#FFFFFF" stopOpacity="0.96" />
+            <Stop offset="1" stopColor="#E9ECF2" stopOpacity="0.9" />
           </SvgGradient>
           <SvgGradient id="mono-dx" x1="0" y1="0" x2="0" y2="1">
-            <Stop offset="0" stopColor="#FFFFFF" stopOpacity="0.11" />
-            <Stop offset="1" stopColor="#FFFFFF" stopOpacity="0.02" />
+            <Stop offset="0" stopColor="#7C8AA6" stopOpacity="0.22" />
+            <Stop offset="1" stopColor="#5B6782" stopOpacity="0.30" />
           </SvgGradient>
           <SvgGradient id="mono-sx" x1="0" y1="0" x2="0" y2="1">
-            <Stop offset="0" stopColor="#FFFFFF" stopOpacity="0.05" />
-            <Stop offset="1" stopColor="#000000" stopOpacity="0.10" />
+            <Stop offset="0" stopColor="#4E5A74" stopOpacity="0.30" />
+            <Stop offset="1" stopColor="#2E3647" stopOpacity="0.40" />
           </SvgGradient>
         </Defs>
 
-        {/* Alone ambientale: è ciò che stacca il solido dal fondo scuro. */}
+        {/* Alone ambientale: una luce appena colorata dietro il solido. */}
         <Circle cx={CX} cy={CY} r={58} fill="url(#mono-alone)" />
 
         {/* Anello di tacche: dice misura, e dà al segno una scala. */}
@@ -147,7 +160,7 @@ export function Monolite({ state = 'neutral', size = 120, animated = false, styl
             cy={CY}
             r={52}
             fill="none"
-            stroke="rgba(255,255,255,0.08)"
+            stroke="rgba(20,22,27,0.10)"
             strokeWidth={0.75}
           />
           {TACCHE.map((t, i) => (
@@ -157,7 +170,7 @@ export function Monolite({ state = 'neutral', size = 120, animated = false, styl
               y1={t.y1}
               x2={t.x2}
               y2={t.y2}
-              stroke={t.forte ? spigolo : 'rgba(255,255,255,0.22)'}
+              stroke={t.forte ? spigolo : 'rgba(20,22,27,0.22)'}
               strokeOpacity={t.forte ? 0.55 : 1}
               strokeWidth={t.forte ? 1.1 : 0.7}
               strokeLinecap="round"
@@ -171,7 +184,7 @@ export function Monolite({ state = 'neutral', size = 120, animated = false, styl
         <Path d={FACCIA_SUP} fill="url(#mono-sup)" />
 
         {/* Maglia sulla faccia superiore: la stratificazione del solido. */}
-        <G stroke="rgba(255,255,255,0.16)" strokeWidth={0.6}>
+        <G stroke="rgba(20,22,27,0.13)" strokeWidth={0.6}>
           {Array.from({ length: maglia }, (_, i) => {
             const t = (i + 1) / (maglia + 1);
             return (
@@ -198,13 +211,13 @@ export function Monolite({ state = 'neutral', size = 120, animated = false, styl
           d={FACCIA_SUP}
           fill="none"
           stroke={spigolo}
-          strokeOpacity={acceso ? 0.95 : 0.55}
+          strokeOpacity={acceso ? 0.95 : 0.7}
           strokeWidth={1.2}
           strokeLinejoin="round"
         />
         <G
           stroke={spigolo}
-          strokeOpacity={acceso ? 0.5 : 0.24}
+          strokeOpacity={acceso ? 0.55 : 0.32}
           strokeWidth={1}
           strokeLinecap="round"
         >
@@ -218,7 +231,7 @@ export function Monolite({ state = 'neutral', size = 120, animated = false, styl
           cx={CX}
           cy={CY - D / 2}
           r={acceso ? 2.4 : 1.8}
-          fill={acceso ? colors.primaryLight : colors.titanioChiaro}
+          fill={acceso ? colors.accentEdge : colors.titanioForte}
           fillOpacity={acceso ? 1 : 0.7}
         />
       </Svg>

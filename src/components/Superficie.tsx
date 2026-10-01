@@ -46,7 +46,7 @@ const RIEMPIMENTO: Record<Tono, string> = {
   vetro: alpha.vetro,
   forte: alpha.vetroForte,
   interno: alpha.vetroInterno,
-  piena: '#141922',
+  piena: '#FFFFFF',
 };
 
 /**
@@ -65,21 +65,21 @@ const SFOCA: Record<Tono, boolean> = {
 /**
  * Superficie in vetro: il mattone dell'interfaccia.
  *
- * Su fondo obsidiana il distacco viene da quattro cose che agiscono
- * insieme, e nessuna delle quattro da sola basterebbe:
+ * Su carta il distacco viene da quattro cose che agiscono insieme, e
+ * nessuna delle quattro da sola basterebbe:
  *
  * 1. una sfocatura vera dietro la lastra, che deforma ciò che passa sotto;
- * 2. un riempimento bianco al quattro-sette per cento, non di più: oltre
- *    il dieci il vetro diventa lattiginoso e il testo perde contrasto;
- * 3. un bordo **in gradiente**, chiaro in alto e quasi nullo in basso —
- *    è la differenza fra lo spigolo di una lastra e la cornice di un
- *    rettangolo, ed è il dettaglio che fa sembrare l'oggetto tagliato;
- * 4. un'ombra profonda sotto, che è l'unica cosa che su fondo scuro
- *    dice «questo sta davanti».
+ * 2. un riempimento bianco denso ma non pieno, così il fondale traspare
+ *    quel tanto che basta a far capire che è vetro e non cartoncino;
+ * 3. un bordo **in gradiente**, bianco in alto e grafite appena accennato
+ *    in basso — è la differenza fra lo spigolo di una lastra e la cornice
+ *    di un rettangolo, ed è il dettaglio che fa sembrare l'oggetto tagliato;
+ * 4. un'ombra larga e rada sotto, che su fondo chiaro è ciò che dice
+ *    «questo sta davanti».
  *
  * Alla pressione l'elemento rimpicciolisce di pochissimo. Il rimbalzo
- * generoso apparteneva al linguaggio precedente: qui il tocco deve
- * sembrare la risposta di un oggetto rigido, non di uno morbido.
+ * generoso apparteneva al linguaggio giocoso: qui il tocco deve sembrare
+ * la risposta di un oggetto rigido, non di uno morbido.
  */
 export function Superficie({
   children,
@@ -111,7 +111,7 @@ export function Superficie({
         si traduce in `backdrop-filter`, che è esattamente ciò che serve.
       */}
       {!tinta && SFOCA[tono] && (
-        <BlurView intensity={SFOCATURA} tint="dark" style={StyleSheet.absoluteFill} />
+        <BlurView intensity={SFOCATURA} tint="light" style={StyleSheet.absoluteFill} />
       )}
       <View
         style={[

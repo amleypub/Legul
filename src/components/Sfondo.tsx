@@ -15,19 +15,17 @@ interface Props {
 }
 
 /**
- * Fondale dell'app: obsidiana con luce ambientale.
+ * Fondale dell'app: carta calda con luce ambientale.
  *
- * Non è un nero piatto ma una stratificazione. Prima una velatura
- * verticale che scurisce verso il basso, poi un alone freddo in alto a
- * sinistra e un secondo alone della tinta di sezione: entrambi a
- * opacità bassissima e molto estesi, così non si leggono come macchie
- * ma come illuminazione.
+ * Non è un beige piatto ma una stratificazione. Una velatura verticale
+ * appena più chiara in alto, poi un alone freddo in alto a sinistra e un
+ * secondo alone della tinta di sezione: entrambi a opacità bassissima e
+ * molto estesi, così non si leggono come macchie ma come luce che entra
+ * da una finestra.
  *
- * Serve a dare al vetro qualcosa da rifrangere. Una lastra traslucida
- * sopra un fondo uniforme è indistinguibile da una lastra opaca, e
- * tutto il linguaggio crollerebbe: su fondo scuro il rischio è ancora
- * più concreto, perché lo scarto fra il vetro e il fondale è di pochi
- * punti percentuali di bianco.
+ * Serve a dare al vetro qualcosa da rifrangere. Una lastra bianca e
+ * traslucida sopra un fondo uniforme è indistinguibile da una scheda
+ * opaca, e il linguaggio crollerebbe in un elenco di rettangoli.
  *
  * Gli aloni sono ellissi molto sfocate ottenute con gradienti, non con
  * ombre: un'ombra colorata di quelle dimensioni costa cara su Android e
@@ -37,14 +35,14 @@ export function Sfondo({ children, tinta, style }: Props) {
   return (
     <View style={[styles.base, style]}>
       <LinearGradient
-        colors={['#0C1017', colors.background, '#05070A']}
+        colors={['#FAF9F6', colors.background, '#EFEDE7']}
         locations={[0, 0.5, 1]}
         style={StyleSheet.absoluteFill}
         pointerEvents="none"
       />
       {/* Luce ambientale fredda: c'è sempre, indipendente dalla sezione. */}
       <LinearGradient
-        colors={['rgba(110,134,184,0.16)', 'rgba(110,134,184,0)']}
+        colors={['rgba(120,146,196,0.10)', 'rgba(120,146,196,0)']}
         start={{ x: 0.1, y: 0 }}
         end={{ x: 0.9, y: 1 }}
         style={styles.aloneFreddo}
@@ -52,7 +50,7 @@ export function Sfondo({ children, tinta, style }: Props) {
       />
       {!!tinta && (
         <LinearGradient
-          colors={[tinta + '2E', tinta + '00']}
+          colors={[tinta + '1A', tinta + '00']}
           start={{ x: 0.85, y: 0 }}
           end={{ x: 0.2, y: 1 }}
           style={styles.aloneSezione}

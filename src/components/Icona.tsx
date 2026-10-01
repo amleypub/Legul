@@ -51,6 +51,7 @@ import {
   Landmark,
   Leaf,
   Library,
+  ListChecks,
   Lightbulb,
   List,
   Lock,
@@ -247,6 +248,9 @@ const MAPPA: Record<string, Glifo> = {
   leaf: Leaf,
   'library-outline': Library,
   'list-outline': List,
+  /* La scheda Quiz: un elenco di domande spuntate. Sostituisce il punto
+     di domanda, che diceva «aiuto» più che «esercitati». */
+  'list-checks': ListChecks,
   'lock-closed': Lock,
   'mail-open': Mail,
   mic: Mic,

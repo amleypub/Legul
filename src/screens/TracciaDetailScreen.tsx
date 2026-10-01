@@ -13,7 +13,7 @@ import { Bottone } from '../components/Bottone';
 import { Monolite } from '../components/Monolite';
 import type { RootStackScreenProps } from '../navigation/types';
 import { materiaDellaTraccia, type TipoTraccia } from '../types';
-import { alpha, colors, materiaColors, radius, spacing, type } from '../theme';
+import { alpha, colors, materiaColors, radius, spacing, SU_SCURO, type } from '../theme';
 
 /*
   Il colore viene dalla materia della traccia, che ora il tipo dichiara:
@@ -196,7 +196,9 @@ export default function TracciaDetailScreen({
               ]}
             >
               <View style={styles.svolgimentoIcona}>
-                <Icona nome={svolgimentoLibero ? 'bulb' : 'lock-closed'} size={20} color={tinte.end} />
+                {/* L'icona era nella stessa tinta del fondo pieno della scheda, sopra
+                    un velo appena diverso: non si vedeva in nessun tema. */}
+                <Icona nome={svolgimentoLibero ? 'bulb' : 'lock-closed'} size={20} color={SU_SCURO} />
               </View>
               <View style={styles.svolgimentoTesti}>
                 <Text style={styles.svolgimentoEtichetta}>Svolgimento proposto</Text>
@@ -346,10 +348,12 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     letterSpacing: 1,
     textTransform: 'uppercase',
-    color: colors.titanio,
+    // Il titanio scende a 3,5 su carta: per un'etichetta da undici punti
+    // serve il grigio del testo secondario.
+    color: colors.textMuted,
   },
   sessione: { fontSize: 13, color: colors.text, fontWeight: '600', marginTop: 1 },
-  titolo: { fontSize: 21, fontWeight: '700', color: '#FFFFFF', lineHeight: 27 },
+  titolo: { fontSize: 21, fontWeight: '700', color: colors.text, lineHeight: 27 },
   chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
   chip: {
     backgroundColor: alpha.velo,
@@ -416,13 +420,13 @@ const styles = StyleSheet.create({
   svolgimentoIcona: {
     width: 38,
     height: 38,
-    borderRadius: 13,
-    backgroundColor: alpha.veloForte,
+    borderRadius: radius.md,
+    backgroundColor: 'rgba(255,255,255,0.16)',
     alignItems: 'center',
     justifyContent: 'center',
   },
   svolgimentoTesti: { flex: 1 },
-  svolgimentoEtichetta: { fontSize: 15.5, fontWeight: '600', color: '#FFFFFF' },
+  svolgimentoEtichetta: { fontSize: 15.5, fontWeight: '600', color: SU_SCURO },
   svolgimentoSottotitolo: {
     fontSize: 12.5,
     color: 'rgba(255,255,255,0.85)',
@@ -469,7 +473,7 @@ const styles = StyleSheet.create({
   confrontoConteggio: {
     fontSize: 12.5,
     fontWeight: '600',
-    color: '#FFFFFF',
+    color: SU_SCURO,
     backgroundColor: '#4F7CF3',
     borderRadius: radius.pill,
     paddingHorizontal: 9,

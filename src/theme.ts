@@ -3,92 +3,106 @@ import { Platform } from 'react-native';
 /**
  * Sistema visivo di Legul.
  *
- * Obsidiana, vetro satinato, un solo accento.
+ * Carta calda, vetro satinato, un solo accento.
  *
- * L'impianto precedente era chiaro, tondeggiante e amichevole: funzionava
- * per un'app di esercizi quotidiani, non per un prodotto che si presenta
- * a un professionista come strumento serio e costoso. Qui il fondo è
- * scuro e freddo, le superfici sono lastre di vetro appena schiarite che
- * lasciano intravedere ciò che hanno sotto, e il colore è quasi assente:
- * compare solo dove c'è una decisione da prendere.
+ * Il tema è passato per tre stagioni. La prima era chiara ma giocosa —
+ * colori caramellati, forme tonde, una mascotte — e non reggeva il
+ * posizionamento di uno strumento professionale. La seconda era scura:
+ * obsidiana e vetro, corretta come registro ma, all'uso, faticosa per
+ * l'unica cosa che qui si fa davvero a lungo, cioè leggere. Questa
+ * tiene il registro della seconda e torna alla luce della prima: fondo
+ * color carta, testo quasi nero, superfici di vetro bianco che si
+ * staccano con un'ombra morbida invece che con un bagliore.
  *
- * Le tre regole che tengono insieme tutto il resto:
+ * Le tre regole restano le stesse, cambia come si applicano:
  *
- * - **Il vetro ha bisogno di qualcosa da rifrangere.** Le superfici sono
- *   bianco al quattro-sette per cento sopra una sfocatura: se il fondale
- *   fosse un colore piatto sarebbero indistinguibili da rettangoli grigi.
- *   Per questo `Sfondo` costruisce velature e aloni, non tinte unite.
- * - **Il bordo è luce, non contorno.** Un grigio pieno su fondo scuro
- *   disegna una cornice; un bianco al dieci per cento in alto che sfuma
- *   verso il basso disegna lo spigolo di una lastra colpita dalla luce.
- *   È la differenza fra una scheda e un oggetto.
- * - **L'accento è una risorsa scarsa.** Lo champagne è riservato alle
- *   azioni primarie. Usato anche per un'icona decorativa smetterebbe di
- *   significare «qui si agisce» e tornerebbe a essere un colore.
+ * - **Il vetro ha bisogno di qualcosa da rifrangere.** Su carta il vetro
+ *   è bianco al settanta-novanta per cento sopra una sfocatura, e il
+ *   fondale non è una tinta unita: `Sfondo` ci stende velature appena
+ *   percettibili. Senza, le schede sarebbero rettangoli bianchi su un
+ *   rettangolo beige.
+ * - **Il bordo è luce, non contorno.** In alto un filo bianco pieno che
+ *   prende la luce, in basso un filo d'ombra appena accennato: lo
+ *   spigolo di una lastra, non la cornice di un riquadro.
+ * - **L'accento è una risorsa scarsa.** Lo champagne riempie le azioni
+ *   primarie e nient'altro. Come *testo* su carta però non si legge —
+ *   il contrasto è 2,2 — e per questo ha un gemello, `accentTesto`, un
+ *   oro profondo che porta lo stesso significato dove serve leggerlo.
  */
 
 // ——— Fondamentali ———
 
 export const colors = {
   /*
-    `primary` è una **superficie**, non un accento: grafite profonda, per
-    i fondi scuri e i gradienti. Tenerlo distinto da `accent` non è
-    pedanteria — quando i due ruoli coincidono ogni scheda che usava il
-    primario come fondo diventa una lastra dorata, ed è esattamente ciò
-    che è successo al primo tentativo.
+    `primary` è una **superficie scura**, non un accento: grafite, per i
+    pulsanti scuri e per il testo sopra i riempimenti champagne. Tenerlo
+    distinto da `accent` non è pedanteria — quando i due ruoli sono
+    coincisi una volta, ogni scheda che usava il primario come fondo è
+    diventata una lastra dorata.
   */
-  primary: '#161B24',
-  primaryLight: '#2A3140',
-  /** Champagne: l'unico accento. Riservato alle azioni primarie. */
+  primary: '#16181D',
+  primaryLight: '#2B2F38',
+  /** Champagne: l'unico accento. Riempie le azioni primarie, mai il testo. */
   accent: '#C9A227',
-  accentChiaro: '#E0C05A',
+  accentChiaro: '#DDBA4E',
   accentEdge: '#8C6F14',
+  /**
+   * L'accento quando va letto: testi, icone, tratti su carta.
+   *
+   * Lo champagne pieno su fondo chiaro scende a 2,2 di contrasto. Questo
+   * oro profondo sta sopra 5,4: abbastanza per un'etichetta piccola, e
+   * ancora abbastanza caldo da leggersi come lo stesso colore.
+   */
+  accentTesto: '#7D5F0B',
   /** Velo d'accento per i fondi delle pastiglie, non per il testo. */
-  accentSoft: 'rgba(201,162,39,0.12)',
+  accentSoft: 'rgba(201,162,39,0.13)',
 
-  /** Obsidiana: il fondo su cui poggia tutto. */
-  background: '#07090D',
-  /** Ardesia profonda: superfici opache quando il vetro non è possibile. */
-  card: '#10141B',
-  /** Un gradino più su, per ciò che deve staccarsi dal fondo. */
-  cardAlta: '#161B24',
+  /** Carta calda: il fondo su cui poggia tutto. */
+  background: '#F5F4F0',
+  /** Superficie opaca, quando il vetro non è possibile. */
+  card: '#FFFFFF',
+  /** Un gradino sopra la carta, per ciò che deve staccarsi senza ombra. */
+  cardAlta: '#FBFAF7',
 
-  text: '#EEF1F6',
-  textMuted: '#98A1B0',
-  /** Terzo livello: didascalie, unità di misura, note a margine. */
-  textFaint: '#5E6675',
+  text: '#14161B',
+  textMuted: '#5C6270',
+  /** Terzo livello: solo stati disattivi e dettagli decorativi, mai testo da leggere. */
+  textFaint: '#8E94A0',
 
-  /** Titanio: i dettagli metallici, i bordi marcati, le icone inattive. */
-  titanio: '#8A93A3',
-  titanioChiaro: '#C3CAD6',
+  /** Titanio: icone secondarie, dettagli metallici, stati inattivi. */
+  titanio: '#7C828E',
+  /** Il titanio quando deve vedersi: tratti del monolite, icone in evidenza. */
+  titanioForte: '#4B515C',
 
-  success: '#4FBF8B',
-  successEdge: '#2E8A62',
-  successSoft: 'rgba(79,191,139,0.12)',
-  error: '#E2566B',
-  errorEdge: '#A32C40',
-  errorSoft: 'rgba(226,86,107,0.12)',
+  success: '#2F8F63',
+  successEdge: '#1F6B48',
+  successSoft: 'rgba(47,143,99,0.10)',
+  error: '#C93A50',
+  errorEdge: '#9E2638',
+  errorSoft: 'rgba(201,58,80,0.09)',
 
-  /** Bordo di base: su fondo scuro è un bianco appena acceso. */
-  border: 'rgba(255,255,255,0.09)',
-  streakFrom: '#E0C05A',
+  /** Bordo di base: su carta è un grafite appena accennato. */
+  border: 'rgba(20,22,27,0.08)',
+  streakFrom: '#DDBA4E',
   streakTo: '#C9A227',
 };
 
 /**
  * Livelli trasparenti.
  *
- * Sono la sostanza del linguaggio. Su fondo scuro il vetro non si ottiene
- * schiarendo molto — a partire dal dodici per cento la lastra diventa
- * lattiginosa e il testo sotto sparisce — ma schiarendo pochissimo e
- * lasciando che sia il bordo a disegnare lo spigolo.
+ * Sono la sostanza del linguaggio, e su carta si dividono in due
+ * famiglie che non vanno confuse. Il **vetro** è bianco e denso: è ciò
+ * di cui sono fatte le superfici. I **veli** sono grafite e radi: sono
+ * ciò che si posa *dentro* una superficie per segnare un campo, uno
+ * stato, una pastiglia. Un velo bianco dentro una scheda bianca non si
+ * vedrebbe; un vetro grafite sopra la carta sarebbe una macchia.
  */
 export const alpha = {
   /** Riempimento delle superfici in vetro. */
-  vetro: 'rgba(255,255,255,0.045)',
-  vetroForte: 'rgba(255,255,255,0.075)',
-  /** Superficie appoggiata su una superficie: va più tenue, non più densa. */
-  vetroInterno: 'rgba(255,255,255,0.028)',
+  vetro: 'rgba(255,255,255,0.74)',
+  vetroForte: 'rgba(255,255,255,0.9)',
+  /** Superficie appoggiata su una superficie: un velo, non altro bianco. */
+  vetroInterno: 'rgba(20,22,27,0.028)',
   /**
    * Barra dei tab e intestazioni: più densa delle superfici di contenuto.
    *
@@ -96,29 +110,39 @@ export const alpha = {
    * sotto scorre qualcosa senza che quel qualcosa competa con le
    * etichette.
    */
-  vetroChrome: 'rgba(14,18,25,0.82)',
+  vetroChrome: 'rgba(250,249,246,0.88)',
 
-  /** Bordo standard: bianco a bassissima opacità, prende la luce del fondo. */
-  bordo: 'rgba(255,255,255,0.10)',
-  bordoMarcato: 'rgba(255,255,255,0.18)',
+  /** Bordo standard: grafite a bassissima opacità. */
+  bordo: 'rgba(20,22,27,0.08)',
+  bordoMarcato: 'rgba(20,22,27,0.15)',
   /** Filo di luce in alto: è il taglio del vetro. */
-  lume: 'rgba(255,255,255,0.16)',
+  lume: 'rgba(255,255,255,0.95)',
   /** Filo d'ombra in basso: chiude la lastra e le dà spessore. */
-  fondo: 'rgba(0,0,0,0.28)',
+  fondo: 'rgba(20,22,27,0.05)',
 
-  /** Riempimenti tenui per pastiglie e stati inattivi. */
-  velo: 'rgba(255,255,255,0.05)',
-  veloForte: 'rgba(255,255,255,0.09)',
+  /** Riempimenti tenui per pastiglie, campi e stati inattivi. */
+  velo: 'rgba(20,22,27,0.04)',
+  veloForte: 'rgba(20,22,27,0.07)',
 };
 
 /**
  * Gradiente del bordo di vetro.
  *
- * Un bordo di colore uniforme disegna una cornice. Un bordo che è quasi
- * bianco dove la luce batte e quasi nulla dal lato opposto disegna uno
- * spigolo: è ciò che distingue una lastra da un rettangolo.
+ * Bianco pieno dove la luce batte, un'ombra appena accennata dal lato
+ * opposto. Su carta il bianco in alto si vede solo contro il fondale,
+ * ed è giusto così: lo spigolo lo disegna il filo scuro in basso, la
+ * luce lo rende tagliato invece che stampato.
  */
-export const BORDO_VETRO = ['rgba(255,255,255,0.16)', 'rgba(255,255,255,0.02)'] as const;
+export const BORDO_VETRO = ['rgba(255,255,255,1)', 'rgba(20,22,27,0.09)'] as const;
+
+/**
+ * Colore del testo sopra un riempimento scuro o saturo.
+ *
+ * È uno dei pochi bianchi rimasti, e ha un nome perché non va confuso
+ * con il testo normale: dove lo si trova, sotto c'è una superficie
+ * colorata, non la carta.
+ */
+export const SU_SCURO = '#FFFFFF';
 
 export const spacing = {
   xs: 4,
@@ -218,55 +242,54 @@ export const type = {
 /**
  * Ombre.
  *
- * Su fondo scuro un'ombra nera non si vede: la profondità viene dal
- * contrasto fra la lastra schiarita e il fondo, e l'ombra serve solo a
- * staccare il bordo inferiore. Resta perché su Android `elevation` è
- * l'unica leva disponibile e senza di essa le superfici collassano sul
- * fondale.
+ * Su carta tornano a fare il loro mestiere: sono ciò che dice «questo
+ * sta davanti». Morbide, larghe e rade — un'ombra stretta e scura su
+ * fondo chiaro è il segno più riconoscibile delle interfacce economiche.
+ * Il colore è un grafite freddo e non il nero, che su carta calda
+ * sporcherebbe invece di staccare.
  */
 export const ombra = {
   /** Appena staccato: pastiglie, campi. */
   tenue: {
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.35,
-    shadowRadius: 10,
+    shadowColor: '#1A1D24',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
     elevation: 1,
   },
   /** Superficie normale. */
   media: {
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.45,
-    shadowRadius: 26,
-    elevation: 4,
+    shadowColor: '#1A1D24',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.07,
+    shadowRadius: 22,
+    elevation: 3,
   },
   /** Elemento in primo piano: fogli, schede aperte. */
   alta: {
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 22 },
-    shadowOpacity: 0.6,
-    shadowRadius: 44,
-    elevation: 12,
+    shadowColor: '#1A1D24',
+    shadowOffset: { width: 0, height: 18 },
+    shadowOpacity: 0.12,
+    shadowRadius: 40,
+    elevation: 10,
   },
 } as const;
 
 /**
  * Alone colorato per gli elementi attivi.
  *
- * Su fondo scuro finalmente funziona come un vero bagliore: l'elemento
- * illumina l'aria intorno a sé invece di proiettare un'ombra colorata.
- * È il modo con cui si dice «questo è acceso» senza aggiungere colore
- * alla superficie.
+ * Su carta un bagliore non illumina niente: diventa un'ombra della tinta
+ * dell'elemento. Per questo è più tenue che sul fondo scuro — abbastanza
+ * da dire «questo è acceso», non tanto da sembrare una sbavatura.
  */
 export function alone(colore: string, intensita: 'tenue' | 'pieno' = 'pieno') {
   const forte = intensita === 'pieno';
   return {
     shadowColor: colore,
-    shadowOffset: { width: 0, height: forte ? 6 : 3 },
-    shadowOpacity: forte ? 0.5 : 0.3,
-    shadowRadius: forte ? 26 : 14,
-    elevation: forte ? 8 : 4,
+    shadowOffset: { width: 0, height: forte ? 8 : 4 },
+    shadowOpacity: forte ? 0.28 : 0.16,
+    shadowRadius: forte ? 22 : 12,
+    elevation: forte ? 6 : 3,
   };
 }
 
@@ -305,25 +328,26 @@ export const SCALA_PRESSIONE = 0.985;
 /**
  * Intensità della sfocatura dietro le superfici.
  *
- * Più alta di prima: su fondo scuro la sfocatura è ciò che rende la
- * lastra credibile, e a valori bassi il vetro sembra semplicemente un
- * rettangolo un po' più chiaro. Su Android resta più costosa e resa in
- * modo diverso, quindi si scende.
+ * È ciò che rende credibile la lastra: senza, il vetro bianco su carta
+ * è solo un rettangolo un po' più chiaro. Su Android resta più costosa e
+ * resa in modo diverso, quindi si scende.
  */
 export const SFOCATURA = Platform.select({ ios: 40, android: 24, default: 32 });
 
 /**
  * Tinte delle materie.
  *
- * Desaturate e scurite rispetto ai gradienti precedenti, che erano
- * caramellati e su fondo obsidiana avrebbero gridato. Qui servono a
- * distinguere, non a decorare: la differenza fra due materie deve
- * leggersi di colpo d'occhio, ma nessuna delle due deve competere con
+ * Servono a distinguere, non a decorare, e nessuna deve competere con
  * l'accento champagne, che è l'unico colore autorizzato a chiamare
  * l'azione.
  *
- * `soft` non è più una tinta pastello ma un velo trasparente: su fondo
- * scuro un riempimento chiaro sarebbe una macchia.
+ * Il ruolo dei campi non cambia fra tema chiaro e scuro, cambiano i
+ * valori: `edge` è la tinta *da leggere* — occhielli, numeri dei passi,
+ * icone, il filo laterale delle schede — e su carta è la più scura delle
+ * tre. Ogni `edge` è ricavato da `start` scurendolo verso un grafite
+ * freddo finché il contrasto sul fondo arriva a 4,6: abbastanza per il
+ * testo piccolo, e ancora riconoscibile come quella materia. `soft` è un
+ * velo trasparente: su carta un pastello pieno sarebbe una caramella.
  */
 export const materiaColors: Record<
   string,
@@ -332,90 +356,82 @@ export const materiaColors: Record<
   'Diritto civile': {
     start: '#5A7FC7',
     end: '#2F4C86',
-    edge: '#7FA0DC',
-    soft: 'rgba(90,127,199,0.14)',
+    edge: '#4E6EAB',
+    soft: 'rgba(90,127,199,0.11)',
   },
   'Diritto penale': {
     start: '#C25C68',
     end: '#8A3540',
-    edge: '#DB828C',
-    soft: 'rgba(194,92,104,0.14)',
+    edge: '#AB525E',
+    soft: 'rgba(194,92,104,0.11)',
   },
   'Procedura civile': {
     start: '#3E9E92',
     end: '#1F6259',
-    edge: '#6BC0B4',
-    soft: 'rgba(62,158,146,0.14)',
+    edge: '#327871',
+    soft: 'rgba(62,158,146,0.11)',
   },
   'Procedura penale': {
     start: '#8B72C4',
     end: '#54408A',
-    edge: '#AC98DC',
-    soft: 'rgba(139,114,196,0.14)',
+    edge: '#7763A8',
+    soft: 'rgba(139,114,196,0.11)',
   },
-  /* Era un ambra a 33° di tinta, cioè quasi lo champagne dell'accento.
-     Nell'elenco delle materie sta a tre schede da «Ripasso», che l'oro
-     lo porta apposta per dire «questo è ciò che l'app ti chiede di
-     fare»: due ori vicini tolgono forza proprio a quel segnale. Qui è
-     un'oliva istituzionale, lontana sia dall'oro sia dal verde del
-     lavoro, che comunque vive nell'altro blocco. */
   'Diritto amministrativo': {
     start: '#8A9350',
     end: '#555C28',
-    edge: '#B0B87C',
-    soft: 'rgba(138,147,80,0.14)',
+    edge: '#6A7141',
+    soft: 'rgba(138,147,80,0.11)',
   },
   'Deontologia forense': {
     start: '#77808F',
     end: '#474E5A',
-    edge: '#9AA3B2',
-    soft: 'rgba(119,128,143,0.14)',
+    edge: '#676E7C',
+    soft: 'rgba(119,128,143,0.11)',
   },
-  // Le sei materie della rosa: stessa logica, tinte scelte perché due
-  // schede affiancate nell'elenco non si confondano mai.
   'Diritto costituzionale': {
     start: '#C05E7E',
     end: '#84314C',
-    edge: '#D98BA4',
-    soft: 'rgba(192,94,126,0.14)',
+    edge: '#A75370',
+    soft: 'rgba(192,94,126,0.11)',
   },
   'Diritto commerciale': {
     start: '#3F92AE',
     end: '#1F5B72',
-    edge: '#6FB8CF',
-    soft: 'rgba(63,146,174,0.14)',
+    edge: '#35768D',
+    soft: 'rgba(63,146,174,0.11)',
   },
   'Diritto del lavoro': {
     start: '#6D9E58',
     end: '#3F6631',
-    edge: '#96C182',
-    soft: 'rgba(109,158,88,0.14)',
+    edge: '#537746',
+    soft: 'rgba(109,158,88,0.11)',
   },
   'Diritto dell’Unione europea': {
     start: '#4C6BC0',
     end: '#293F86',
-    edge: '#7B93DC',
-    soft: 'rgba(76,107,192,0.14)',
+    edge: '#4B6ABE',
+    soft: 'rgba(76,107,192,0.11)',
   },
   'Diritto internazionale': {
     start: '#B5714E',
     end: '#7A4227',
-    edge: '#D19A7C',
-    soft: 'rgba(181,113,78,0.14)',
+    edge: '#976044',
+    soft: 'rgba(181,113,78,0.11)',
   },
   'Diritto tributario': {
     start: '#6F68B8',
     end: '#403A7E',
-    edge: '#9891D4',
-    soft: 'rgba(111,104,184,0.14)',
+    edge: '#6B65B2',
+    soft: 'rgba(111,104,184,0.11)',
   },
   // Il ripasso non è una materia: porta l'accento, perché è l'unica cosa
   // che l'app chiede attivamente di fare.
   Ripasso: {
     start: '#C9A227',
     end: '#8C6F14',
-    edge: '#E0C05A',
-    soft: 'rgba(201,162,39,0.14)',
+    edge: '#7D5F0B',
+    soft: 'rgba(201,162,39,0.13)',
   },
 };
 

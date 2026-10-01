@@ -454,14 +454,14 @@ const styles = StyleSheet.create({
       che è il testo che si legge più a lungo di tutta l'app. Il colore
       dell'esito resta, ma sopra un fondo che regge il contrasto.
     */
-    backgroundColor: '#0D1119',
+    backgroundColor: colors.card,
     ...ombra.alta,
   },
   sheetOk: { borderTopColor: 'rgba(79,191,139,0.45)' },
   sheetKo: { borderTopColor: 'rgba(226,86,107,0.45)' },
   sheetHeader: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   sheetTitolo: { flex: 1, fontSize: 19, fontWeight: '600' },
-  sheetPunti: { fontSize: 14, fontWeight: '600', color: colors.accent },
+  sheetPunti: { fontSize: 14, fontWeight: '600', color: colors.accentTesto },
   sheetSoluzione: {
     fontSize: 14,
     fontWeight: '700',

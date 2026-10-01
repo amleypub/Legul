@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   sezioneTitolo: {
     fontSize: 16,
     fontWeight: '600',
-    color: colors.accent,
+    color: colors.accentTesto,
     marginBottom: spacing.sm,
   },
   paragrafo: {

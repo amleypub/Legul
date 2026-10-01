@@ -162,7 +162,7 @@ export default function DiagnosiScreen({ navigation }: RootStackScreenProps<'Dia
                 un'icona mancante, ed è il modo peggiore di sparire.
               */}
               <View style={styles.corona}>
-                <Icona nome="compass" size={26} color={colors.titanioChiaro} />
+                <Icona nome="compass" size={26} color={colors.titanioForte} />
               </View>
               <Text style={styles.verdettoTitolo}>Non c’è ancora niente da misurare</Text>
               <Text style={styles.verdettoTesto}>

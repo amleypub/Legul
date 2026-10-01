@@ -13,7 +13,7 @@ interface Props {
 export function ProgressBar({
   progress,
   color = colors.accent,
-  trackColor = 'rgba(255,255,255,0.25)',
+  trackColor = 'rgba(20,22,27,0.08)',
   height = 10,
 }: Props) {
   const pct = Math.min(Math.max(progress, 0), 1) * 100;

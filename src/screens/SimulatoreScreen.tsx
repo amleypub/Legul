@@ -46,7 +46,7 @@ export default function SimulatoreScreen({ navigation }: RootStackScreenProps<'S
           non ne esistono, e i tempi non stanno nel decreto. */}
       <View style={styles.avvisoWrap}>
         <View style={styles.avviso}>
-          <Icona nome="information-circle" size={20} color={colors.accent} />
+          <Icona nome="information-circle" size={20} color={colors.accentTesto} />
           <Text style={styles.avvisoTesto}>
             Il caso pratico è stato introdotto dalla riforma del 2026: prove passate non ne esistono
             e questi casi sono scritti da noi. Anche i tempi che proponiamo{' '}
@@ -61,7 +61,7 @@ export default function SimulatoreScreen({ navigation }: RootStackScreenProps<'S
         accessibilityRole="button"
         style={({ pressed }) => [styles.rimando, pressed && styles.rimandoPremuto]}
       >
-        <Icona nome="school-outline" size={17} color={colors.accent} />
+        <Icona nome="school-outline" size={17} color={colors.accentTesto} />
         <Text style={styles.rimandoTesto}>Come funziona l’esame dopo la riforma</Text>
         <Icona nome="chevron-forward" size={16} color="#9AA3B2" />
       </Pressable>
@@ -74,15 +74,22 @@ export default function SimulatoreScreen({ navigation }: RootStackScreenProps<'S
           </View>
           <View style={styles.suggeritoWrap}>
             <LinearGradient
-              colors={[
-                materiaColors[TINTA[suggerito.materia]].start,
-                materiaColors[TINTA[suggerito.materia]].end,
-              ]}
+              colors={[materiaColors[TINTA[suggerito.materia]].soft, alpha.vetroForte]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
-              style={styles.suggerito}
+              style={[
+                styles.suggerito,
+                { borderColor: `${materiaColors[TINTA[suggerito.materia]].edge}38` },
+              ]}
             >
-              <Text style={styles.suggeritoMateria}>{suggerito.materia}</Text>
+              <Text
+                style={[
+                  styles.suggeritoMateria,
+                  { color: materiaColors[TINTA[suggerito.materia]].edge },
+                ]}
+              >
+                {suggerito.materia}
+              </Text>
               <Text style={styles.suggeritoTitolo}>{suggerito.titolo}</Text>
               <Text style={styles.suggeritoNota}>
                 {svolti[suggerito.id] === undefined
@@ -183,7 +190,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     padding: spacing.md - 2,
   },
-  avvisoTesto: { flex: 1, fontSize: 13, color: colors.accent, lineHeight: 19 },
+  avvisoTesto: { flex: 1, fontSize: 13, color: colors.accentTesto, lineHeight: 19 },
   avvisoForte: { fontWeight: '600' },
 
   rimando: {
@@ -217,16 +224,16 @@ const styles = StyleSheet.create({
   },
 
   suggeritoWrap: { },
-  suggerito: { borderRadius: radius.xxl, padding: spacing.md, gap: 3 },
+  suggerito: { borderRadius: radius.xl, borderWidth: 1, padding: spacing.md, gap: 3 },
   suggeritoMateria: {
     fontSize: 11,
     fontWeight: '600',
     letterSpacing: 1,
     textTransform: 'uppercase',
-    color: 'rgba(255,255,255,0.85)',
+    color: colors.textMuted,
   },
-  suggeritoTitolo: { fontSize: 20, fontWeight: '700', color: '#FFFFFF', lineHeight: 26 },
-  suggeritoNota: { fontSize: 13, color: 'rgba(255,255,255,0.9)', marginTop: 2 },
+  suggeritoTitolo: { fontSize: 20, fontWeight: '700', color: colors.text, lineHeight: 26 },
+  suggeritoNota: { fontSize: 13, color: colors.textMuted, marginTop: 2 },
   suggeritoBtn: { alignSelf: 'stretch', marginTop: spacing.sm + 2 },
 
   cartaWrap: { marginBottom: spacing.sm - 2 },

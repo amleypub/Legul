@@ -48,7 +48,7 @@ export function MuroPremium({
         end={{ x: 1, y: 1 }}
         style={[styles.corona, alone(colors.accent, 'tenue')]}
       >
-        <Icona nome="lock-closed" size={24} color={colors.accent} />
+        <Icona nome="lock-closed" size={24} color={colors.accentTesto} />
       </LinearGradient>
 
       <Text style={styles.titolo}>{cosa} è riservato a Premium</Text>
@@ -110,6 +110,6 @@ const styles = StyleSheet.create({
     color: colors.accentEdge,
     fontVariant: ['tabular-nums'],
   },
-  contaTesto: { ...type.piccolo, fontWeight: '600', color: colors.accent },
+  contaTesto: { ...type.piccolo, fontWeight: '600', color: colors.accentTesto },
   azione: { alignSelf: 'stretch', marginTop: spacing.xs },
 });

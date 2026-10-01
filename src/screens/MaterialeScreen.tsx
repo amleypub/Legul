@@ -61,7 +61,7 @@ export default function MaterialeScreen() {
       }
       renderSectionHeader={({ section }) => (
         <View style={styles.categoriaRow}>
-          <Icona nome={ICONA_CATEGORIA[section.title]} size={20} color={colors.accent} />
+          <Icona nome={ICONA_CATEGORIA[section.title]} size={20} color={colors.accentTesto} />
           <Text style={styles.categoria}>{section.title}</Text>
         </View>
       )}

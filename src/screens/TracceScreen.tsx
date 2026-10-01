@@ -11,7 +11,7 @@ import type { RootStackParamList } from '../navigation/types';
 import type { TipoTraccia } from '../types';
 import { Sfondo } from '../components/Sfondo';
 import { TitoloSchermata } from '../components/TitoloSchermata';
-import { SPAZIO_TAB, alpha, colors, materiaColors, radius, spacing } from '../theme';
+import { alpha, colors, materiaColors, radius, spacing, SPAZIO_TAB, SU_SCURO } from '../theme';
 
 /** Tracce che hanno uno svolgimento pubblicato: l'elenco non cambia a runtime. */
 const svolto = new Set(tracceConSvolgimento());
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm + 4,
   },
   riformaTesto: { flex: 1, fontSize: 13, color: colors.textMuted, lineHeight: 19 },
-  riformaLink: { color: colors.accent, fontWeight: '600', textDecorationLine: 'underline' },
+  riformaLink: { color: colors.accentTesto, fontWeight: '600', textDecorationLine: 'underline' },
 
   /* Solo il bordo: il resto del layout viene da `chipSvolta`, che ha già
      la riga con icona e testo. */
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 4,
   },
-  annoPillText: { color: '#FFFFFF', fontSize: 14, fontWeight: '600' },
+  annoPillText: { color: SU_SCURO, fontSize: 14, fontWeight: '600' },
   annoLine: { flex: 1, height: 2, borderRadius: 1, backgroundColor: colors.border },
   cardOuter: { marginBottom: spacing.sm },
   card: {

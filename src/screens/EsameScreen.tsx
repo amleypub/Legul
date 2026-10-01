@@ -91,13 +91,13 @@ export default function EsameScreen({ navigation }: RootStackScreenProps<'Esame'
       {/* Testata: che cosa è cambiato e da quando, prima di ogni dettaglio */}
       <View style={styles.testataWrap}>
         <LinearGradient
-          colors={['rgba(255,255,255,0.08)', 'rgba(255,255,255,0.02)']}
+          colors={['rgba(255,255,255,0.97)', 'rgba(255,255,255,0.82)']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.testata}
         >
           <View style={styles.testataChip}>
-            <Icona nome="sparkles" size={12} color="#FFE08A" />
+            <Icona nome="sparkles" size={12} color={colors.accentTesto} />
             <Text style={styles.testataChipTesto}>NUOVE REGOLE</Text>
           </View>
           <Text style={styles.testataTitolo}>Due prove scritte e un orale in cinque parti</Text>
@@ -111,7 +111,7 @@ export default function EsameScreen({ navigation }: RootStackScreenProps<'Esame'
       {/* Il dato più importante da sapere subito: manca ancora il bando */}
       <View style={styles.avvisoWrap}>
         <View style={styles.avviso}>
-          <Icona nome="time-outline" size={17} color={colors.accent} />
+          <Icona nome="time-outline" size={17} color={colors.accentTesto} />
           <Text style={styles.avvisoTesto}>
             Il decreto ministeriale di indizione non è ancora uscito: date, sedi e modalità
             operative della sessione non sono ancora note.
@@ -167,7 +167,7 @@ export default function EsameScreen({ navigation }: RootStackScreenProps<'Esame'
               <Icona
                 nome={sezione.icona as string}
                 size={19}
-                color={colors.accent}
+                color={colors.accentTesto}
               />
               <Text style={styles.schedaTitolo}>{sezione.titolo}</Text>
             </View>
@@ -224,14 +224,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 5,
     alignSelf: 'flex-start',
-    backgroundColor: 'rgba(255,255,255,0.16)',
+    backgroundColor: colors.accentSoft,
     borderRadius: radius.sm,
     paddingHorizontal: 10,
     paddingVertical: 4,
   },
-  testataChipTesto: { fontSize: 10.5, fontWeight: '700', letterSpacing: 1, color: '#FFE08A' },
-  testataTitolo: { fontSize: 21, fontWeight: '700', color: '#FFFFFF', lineHeight: 27 },
-  testataTesto: { fontSize: 13.5, color: 'rgba(255,255,255,0.88)', lineHeight: 20 },
+  testataChipTesto: { fontSize: 10.5, fontWeight: '700', letterSpacing: 1, color: colors.accentTesto },
+  testataTitolo: { fontSize: 21, fontWeight: '700', color: colors.text, lineHeight: 27 },
+  testataTesto: { fontSize: 13.5, color: colors.textMuted, lineHeight: 20 },
 
   avvisoWrap: { marginTop: spacing.md },
   /* La cautela si segnala con un filo d'ambra sul fianco, non stendendo

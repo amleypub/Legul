@@ -1,7 +1,7 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Icona } from '../components/Icona';
-import { alpha, colors, radius, spacing } from '../theme';
+import { alpha, colors, radius, spacing, SU_SCURO } from '../theme';
 import { tempoRelativo, type Messaggio } from './modello';
 
 /** Iniziale dello pseudonimo su pastiglia colorata: distingue chi scrive senza foto. */
@@ -121,7 +121,7 @@ export function CartaMessaggio({
         </View>
         {messaggio.genere === 'soluzione' && !risposta ? (
           <View style={styles.distintivo}>
-            <Icona nome="bulb" size={12} color={colors.accent} />
+            <Icona nome="bulb" size={12} color={colors.accentTesto} />
             <Text style={styles.distintivoTesto}>Soluzione</Text>
           </View>
         ) : null}
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
   intestazioneTesti: { flex: 1 },
   rigaNome: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   avatar: { width: 32, height: 32, borderRadius: 11, alignItems: 'center', justifyContent: 'center' },
-  avatarTesto: { color: '#FFFFFF', fontWeight: '700', fontSize: 15 },
+  avatarTesto: { color: SU_SCURO, fontWeight: '700', fontSize: 15 },
   nome: { fontSize: 14.5, fontWeight: '600', color: colors.text, flexShrink: 1 },
   tuo: {
     backgroundColor: alpha.velo,
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 9,
     paddingVertical: 4,
   },
-  distintivoTesto: { fontSize: 11, fontWeight: '600', color: colors.accent },
+  distintivoTesto: { fontSize: 11, fontWeight: '600', color: colors.accentTesto },
 
   testo: { fontSize: 15, color: colors.text, lineHeight: 23 },
 

@@ -445,7 +445,7 @@ export default function CasoPraticoScreen({
       <View style={styles.listaCard}>
         {caso.domandeCommissione.map((d) => (
           <View key={d} style={styles.voce}>
-            <Icona nome="chatbubble-ellipses-outline" size={16} color={colors.accent} />
+            <Icona nome="chatbubble-ellipses-outline" size={16} color={colors.accentTesto} />
             <Text style={styles.voceTesto}>{d}</Text>
           </View>
         ))}
@@ -501,9 +501,9 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     letterSpacing: 1,
     textTransform: 'uppercase',
-    color: 'rgba(255,255,255,0.85)',
+    color: colors.textMuted,
   },
-  titolo: { fontSize: 20, fontWeight: '700', color: '#FFFFFF', lineHeight: 26 },
+  titolo: { fontSize: 20, fontWeight: '700', color: colors.text, lineHeight: 26 },
 
   passiWrap: { marginTop: spacing.md },
   passi: {
@@ -612,7 +612,7 @@ const styles = StyleSheet.create({
     padding: spacing.md - 4,
     marginTop: spacing.md,
   },
-  suggerimentoTesto: { flex: 1, fontSize: 13, color: colors.accent, lineHeight: 19 },
+  suggerimentoTesto: { flex: 1, fontSize: 13, color: colors.accentTesto, lineHeight: 19 },
 
   istruzione: { fontSize: 13.5, color: colors.textMuted, lineHeight: 20, marginBottom: spacing.sm },
 

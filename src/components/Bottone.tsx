@@ -48,22 +48,25 @@ const VARIANTI: Record<
   { gradiente: [string, string]; testo: string; glow: string | null; bordo: string | null }
 > = {
   accento: {
-    /* Champagne chiaro → champagne. Qui c'era `primaryLight`, che dopo
-       la separazione fra superficie e accento è diventato ardesia
-       grigia: il bottone primario partiva grigio e finiva oro. */
+    /* Champagne chiaro → champagne, testo grafite. Su carta il pieno
+       dorato contrasta col fondo solo 2,2: il filo d'oro scuro lungo il
+       bordo e l'alone sotto sono ciò che ne disegna il contorno. */
     gradiente: [colors.accentChiaro, colors.accent],
     testo: '#0A0C10',
     glow: colors.accent,
-    bordo: null,
+    bordo: 'rgba(140,111,20,0.35)',
   },
+  /* «Scuro» per peso, non per colore: è il secondario con più autorità,
+     vetro bianco quasi pieno con il bordo marcato. Il nome viene dal
+     tema scuro, dove era una lastra più densa delle altre. */
   scuro: {
-    gradiente: ['rgba(255,255,255,0.13)', 'rgba(255,255,255,0.05)'],
+    gradiente: ['rgba(255,255,255,1)', 'rgba(255,255,255,0.94)'],
     testo: colors.text,
     glow: null,
     bordo: alpha.bordoMarcato,
   },
   chiaro: {
-    gradiente: ['rgba(255,255,255,0.09)', 'rgba(255,255,255,0.03)'],
+    gradiente: ['rgba(255,255,255,0.8)', 'rgba(255,255,255,0.66)'],
     testo: colors.text,
     glow: null,
     bordo: alpha.bordo,
@@ -103,9 +106,19 @@ export function Bottone({
   const tintaTesto = testo ?? (gradiente ? '#FFFFFF' : v.testo);
 
   const premuto = useSharedValue(0);
+  /*
+    L'ombra si spegne alla pressione insieme alla scala: l'oggetto si
+    avvicina al foglio. L'opacità di partenza è quella dello stile a
+    riposo — prima era fissata a 0,5 per tutti, e per i bottoni senza
+    alone veniva azzerata: sul fondo scuro non si notava, su carta
+    toglieva l'ombra a ogni bottone secondario.
+  */
+  const opacitaRiposo = tintaAlone
+    ? alone(tintaAlone).shadowOpacity
+    : ombra.tenue.shadowOpacity;
   const stileAnimato = useAnimatedStyle(() => ({
     transform: [{ scale: 1 - premuto.value * (1 - SCALA_PRESSIONE) }],
-    shadowOpacity: tintaAlone ? 0.5 * (1 - premuto.value) : 0,
+    shadowOpacity: opacitaRiposo * (1 - premuto.value),
   }));
 
   return (
@@ -175,7 +188,7 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     height: '45%',
-    backgroundColor: 'rgba(255,255,255,0.10)',
+    backgroundColor: 'rgba(255,255,255,0.14)',
   },
   testo: { ...tipo.scheda, fontSize: 15, fontWeight: '600', letterSpacing: -0.1 },
   testoCompatto: { fontSize: 14 },

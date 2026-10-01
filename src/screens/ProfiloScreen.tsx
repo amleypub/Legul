@@ -95,7 +95,7 @@ function Voce({
         <Switch
           value={interruttore.acceso}
           onValueChange={interruttore.cambia}
-          trackColor={{ true: colors.success, false: '#D7DCE6' }}
+          trackColor={{ true: colors.success, false: 'rgba(20,22,27,0.14)' }}
           thumbColor="#FFFFFF"
         />
       ) : valore ? (
@@ -396,7 +396,7 @@ export default function ProfiloScreen() {
           sovrapposto che sfonda il riquadro. */}
       <View style={styles.heroWrap}>
         <LinearGradient
-          colors={['rgba(255,255,255,0.08)', 'rgba(255,255,255,0.02)']}
+          colors={['rgba(255,255,255,0.97)', 'rgba(255,255,255,0.82)']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.hero}
@@ -413,7 +413,7 @@ export default function ProfiloScreen() {
               </Text>
             )}
             <View style={styles.heroLivelloRow}>
-              <Icona nome={livello.icona} size={13} color={colors.accent} />
+              <Icona nome={livello.icona} size={13} color={colors.accentTesto} />
               <Text style={styles.heroLivello} numberOfLines={1}>
                 {livello.nome}
               </Text>
@@ -729,13 +729,15 @@ const styles = StyleSheet.create({
   heroWrap: { },
   hero: {
     borderRadius: radius.xxl,
+    borderWidth: 1,
+    borderColor: alpha.bordo,
     padding: spacing.md,
     gap: spacing.md,
   },
   heroTop: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm + 2 },
   heroTesto: { flex: 1, gap: 2 },
-  heroNome: { color: '#FFFFFF', fontSize: 21, fontWeight: '700' },
-  heroEmail: { color: 'rgba(255,255,255,0.6)', fontSize: 13 },
+  heroNome: { color: colors.text, fontSize: 21, fontWeight: '700' },
+  heroEmail: { color: colors.textMuted, fontSize: 13 },
   sincro: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -749,27 +751,27 @@ const styles = StyleSheet.create({
   sincroTesto: { flex: 1, fontSize: 13.5, color: colors.text, lineHeight: 19 },
   sincroForte: { fontWeight: '600', color: colors.successEdge },
   heroLivelloRow: { flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 3 },
-  heroLivello: { color: 'rgba(255,255,255,0.85)', fontSize: 13, fontWeight: '700' },
+  heroLivello: { color: colors.textMuted, fontSize: 13, fontWeight: '700' },
   heroStats: {
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'stretch',
     justifyContent: 'space-around',
     borderTopWidth: 1,
-    borderTopColor: 'rgba(255,255,255,0.10)',
+    borderTopColor: alpha.bordo,
     paddingTop: spacing.md,
   },
   heroStat: { alignItems: 'center', flex: 1 },
-  heroStatValore: { color: '#FFFFFF', fontSize: 22, fontWeight: '700' },
+  heroStatValore: { color: colors.text, fontSize: 22, fontWeight: '700' },
   heroStatLabel: {
-    color: 'rgba(255,255,255,0.65)',
+    color: colors.textMuted,
     fontSize: 11,
     fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
     marginTop: 2,
   },
-  heroDivider: { width: 1, height: 30, backgroundColor: 'rgba(255,255,255,0.18)' },
+  heroDivider: { width: 1, height: 30, backgroundColor: alpha.bordo },
   card: {
     backgroundColor: alpha.vetroForte,
     borderRadius: radius.xxl,

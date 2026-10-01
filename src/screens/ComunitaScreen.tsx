@@ -14,7 +14,7 @@ import * as api from '../discussione/api';
 import { abbreviaNome } from '../discussione/modello';
 import { Bottone } from '../components/Bottone';
 import type { RootStackScreenProps } from '../navigation/types';
-import { alpha, colors, radius, spacing } from '../theme';
+import { alpha, colors, radius, spacing, SU_SCURO } from '../theme';
 
 /**
  * Nome pubblico e persone bloccate.
@@ -144,7 +144,7 @@ export default function ComunitaScreen({ navigation }: RootStackScreenProps<'Com
       <Text style={[styles.gruppoTitolo, styles.stacco]}>Persone bloccate</Text>
       <View style={styles.carta}>
         {caricamento ? (
-          <ActivityIndicator color={colors.accent} />
+          <ActivityIndicator color={colors.accentTesto} />
         ) : bloccati.length === 0 ? (
           <Text style={styles.spiega}>
             Non hai bloccato nessuno. Puoi farlo dal menu di un messaggio: i suoi contenuti
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  avatarTesto: { color: '#FFFFFF', fontWeight: '700', fontSize: 15 },
+  avatarTesto: { color: SU_SCURO, fontWeight: '700', fontSize: 15 },
   rigaNome: { flex: 1, fontSize: 15, fontWeight: '700', color: colors.text },
   sblocca: {
     backgroundColor: alpha.veloForte,
