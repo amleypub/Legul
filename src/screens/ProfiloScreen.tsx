@@ -284,6 +284,7 @@ export default function ProfiloScreen() {
     aggiornaEsame,
     impostaPromemoria,
     azzeraProgressi,
+    rivediIntro,
   } = useGamification();
   const { utente, esci, eliminaAccount } = useAuth();
   const [eliminazioneInCorso, setEliminazioneInCorso] = useState(false);
@@ -634,6 +635,16 @@ export default function ProfiloScreen() {
           />
         </Gruppo>
       )}
+
+      <Gruppo titolo="Legul">
+        <Voce
+          icona="play"
+          tinta={colors.accentTesto}
+          etichetta="Rivedi l’introduzione"
+          sottotitolo="Il benvenuto e il metodo, in meno di dieci secondi"
+          onPress={rivediIntro}
+        />
+      </Gruppo>
 
       <Gruppo titolo="Documenti">
         <Voce

@@ -6,7 +6,6 @@ import {
   livelloPerCopertura,
   migrato,
   progressiAzzerati,
-  statoDaDeposito,
   stellePerRisultato,
   type GamificationState,
 } from '../GamificationContext';
@@ -184,47 +183,6 @@ describe('migrato', () => {
 
   it('svuota il campo vecchio anche quando non c’è nulla da convertire', () => {
     expect(migrato(con({})).erroriDaRipassare).toBeUndefined();
-  });
-});
-
-describe('statoDaDeposito', () => {
-  /*
-    Chi usava l'app prima dell'intro non deve ritrovarsela davanti come
-    se l'avesse appena installata: per lui intro e accesso valgono come
-    già visti. Ma solo per lui — chi non aveva ancora superato le domande
-    d'apertura è a tutti gli effetti un nuovo arrivato.
-  */
-  it('non mostra l’intro a chi usava già l’app', () => {
-    const s = statoDaDeposito({ aperturaFatta: true, punti: 120 });
-    expect(s.introVista).toBe(true);
-    expect(s.accessoProposto).toBe(true);
-    expect(s.punti).toBe(120);
-  });
-
-  it('la mostra a chi non aveva ancora finito il primo avvio', () => {
-    const s = statoDaDeposito({ aperturaFatta: false });
-    expect(s.introVista).toBe(false);
-    expect(s.accessoProposto).toBe(false);
-  });
-
-  it('rispetta i valori già salvati da questa versione', () => {
-    // L'intro vista ma l'accesso no: l'app chiusa sulla schermata di accesso.
-    const s = statoDaDeposito({ aperturaFatta: false, introVista: true, accessoProposto: false });
-    expect(s.introVista).toBe(true);
-    expect(s.accessoProposto).toBe(false);
-  });
-
-  it('parte dallo stato iniziale quando il deposito è vuoto', () => {
-    const s = statoDaDeposito({});
-    expect(s.introVista).toBe(false);
-    expect(s.aperturaFatta).toBe(false);
-    expect(s.mazzoRipasso).toEqual([]);
-  });
-
-  it('applica anche le conversioni precedenti', () => {
-    const s = statoDaDeposito({ aperturaFatta: true, erroriDaRipassare: ['a'] });
-    expect(s.mazzoRipasso.map((c) => c.id)).toEqual(['a']);
-    expect(s.erroriDaRipassare).toBeUndefined();
   });
 });
 

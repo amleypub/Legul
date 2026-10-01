@@ -160,8 +160,10 @@ async function main() {
       streak: 4,
       ultimoGiornoAttivita: oggi,
       puntiOggi: 30,
-      // Le domande d'apertura sono già state fatte: senza questo, ogni
-      // scatto mostrerebbe la prima domanda invece della schermata.
+      // Intro, accesso e domande d'apertura già superati: senza questo,
+      // ogni scatto mostrerebbe l'intro invece della schermata.
+      introVista: true,
+      accessoProposto: true,
       aperturaFatta: true,
       promemoriaProposto: true,
       esame: {
@@ -219,7 +221,12 @@ async function main() {
       ([chiave, valore]) => window.localStorage.setItem(chiave, valore),
       [
         '@legul/gamification/v1',
-        JSON.stringify({ aperturaFatta: true, promemoriaProposto: true }),
+        JSON.stringify({
+          introVista: true,
+          accessoProposto: true,
+          aperturaFatta: true,
+          promemoriaProposto: true,
+        }),
       ]
     );
   }
@@ -463,6 +470,10 @@ async function main() {
     await page.waitForTimeout(2500);
     await tap('Profilo');
     await shot('7-profilo.png');
+    // «Rivedi l'introduzione» deve riportare davvero all'intro. Le pagine
+    // caricate dopo ritrovano lo stato seminato: lo riscrive `addInitScript`.
+    await tap('Rivedi l’introduzione', { wait: 3200 });
+    await shot('7b-rivedi-intro.png');
   } catch (e) {
     console.log('profilo errore:', e.message);
   }
