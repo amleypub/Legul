@@ -85,6 +85,8 @@ interface Props {
   ridotto?: boolean;
   /** Corpo del numero principale. */
   corpoNumero?: number;
+  /** Carattere di tutti i testi del grafico; se manca, quello dell'app. */
+  carattere?: string;
 }
 
 export function GraficoMetodo({
@@ -94,7 +96,9 @@ export function GraficoMetodo({
   ritardo = 0,
   ridotto = false,
   corpoNumero = 48,
+  carattere,
 }: Props) {
+  const f = carattere ? { fontFamily: carattere } : null;
   const x0 = MARGINE;
   const x1 = larghezza - MARGINE;
   const y = (v: number) => PAD + (1 - v / 100) * (altezza - 2 * PAD);
@@ -149,27 +153,27 @@ export function GraficoMetodo({
     <View accessible accessibilityRole="image" accessibilityLabel={descrizioneGrafico()}>
       <View style={styles.testata} importantForAccessibility="no-hide-descendants">
         <Text
-          style={[styles.numero, { fontSize: corpoNumero, lineHeight: Math.round(corpoNumero * 1.08) }]}
+          style={[styles.numero, f, { fontSize: corpoNumero, lineHeight: Math.round(corpoNumero * 1.08) }]}
           maxFontSizeMultiplier={1.2}
         >
           +{guadagno}%
         </Text>
-        <Text style={styles.didascalia} maxFontSizeMultiplier={1.3}>
+        <Text style={[styles.didascalia, f]} maxFontSizeMultiplier={1.3}>
           ricordato dopo una settimana mettendosi alla prova, invece di rileggere
-          <Text style={styles.apice}>¹</Text>
+          <Text style={[styles.apice, f]}>¹</Text>
         </Text>
       </View>
 
       <View style={styles.legenda} importantForAccessibility="no-hide-descendants">
         <View style={styles.voce}>
           <View style={[styles.campione, { backgroundColor: TINTA_PROVA }]} />
-          <Text style={styles.voceTesto} maxFontSizeMultiplier={1.3}>
+          <Text style={[styles.voceTesto, f]} maxFontSizeMultiplier={1.3}>
             Mettersi alla prova
           </Text>
         </View>
         <View style={styles.voce}>
           <View style={[styles.campione, { backgroundColor: TINTA_RILETTURA }]} />
-          <Text style={[styles.voceTesto, styles.voceTestoTenue]} maxFontSizeMultiplier={1.3}>
+          <Text style={[styles.voceTesto, f, styles.voceTestoTenue]} maxFontSizeMultiplier={1.3}>
             Rileggere
           </Text>
         </View>
@@ -234,24 +238,24 @@ export function GraficoMetodo({
         </Animated.View>
 
         <Animated.View style={[StyleSheet.absoluteFill, sinistra]} pointerEvents="none">
-          <Text style={[styles.valore, styles.valoreTenue, styles.aSinistra, { top: yR0 - 8, right: larghezza - x0 + 10 }]}>
+          <Text style={[styles.valore, f, styles.valoreTenue, styles.aSinistra, { top: yR0 - 8, right: larghezza - x0 + 10 }]}>
             {r0}%
           </Text>
-          <Text style={[styles.valore, styles.aSinistra, { top: yP0 - 8, right: larghezza - x0 + 10 }]}>
+          <Text style={[styles.valore, f, styles.aSinistra, { top: yP0 - 8, right: larghezza - x0 + 10 }]}>
             {p0}%
           </Text>
         </Animated.View>
         <Animated.View style={[StyleSheet.absoluteFill, destra]} pointerEvents="none">
-          <Text style={[styles.valore, styles.valoreTenue, { top: yR1 - 8, left: x1 + 10 }]}>{r1}%</Text>
-          <Text style={[styles.valore, styles.valoreForte, { top: yP1 - 8, left: x1 + 10 }]}>{p1}%</Text>
+          <Text style={[styles.valore, f, styles.valoreTenue, { top: yR1 - 8, left: x1 + 10 }]}>{r1}%</Text>
+          <Text style={[styles.valore, f, styles.valoreForte, { top: yP1 - 8, left: x1 + 10 }]}>{p1}%</Text>
         </Animated.View>
       </View>
 
       <View style={[styles.tempi, { width: larghezza }]} importantForAccessibility="no-hide-descendants">
-        <Text style={[styles.tempo, { left: x0 - MARGINE, width: MARGINE * 2 }]} maxFontSizeMultiplier={1.2}>
+        <Text style={[styles.tempo, f, { left: x0 - MARGINE, width: MARGINE * 2 }]} maxFontSizeMultiplier={1.2}>
           {ESPERIMENTO.momenti[0]}
         </Text>
-        <Text style={[styles.tempo, { left: x1 - MARGINE, width: MARGINE * 2 }]} maxFontSizeMultiplier={1.2}>
+        <Text style={[styles.tempo, f, { left: x1 - MARGINE, width: MARGINE * 2 }]} maxFontSizeMultiplier={1.2}>
           {ESPERIMENTO.momenti[1]}
         </Text>
       </View>

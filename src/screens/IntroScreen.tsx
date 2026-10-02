@@ -35,7 +35,7 @@ import {
 } from '../components/Logo';
 import { APICI, FONTI } from '../data/ricerca';
 import { DURATA_INTRO } from '../navigation/primoAvvio';
-import { colors, FONT_SERIF, ombra, radius } from '../theme';
+import { colors, FONT_INTRO, ombra, radius } from '../theme';
 
 /*
   L'introduzione: due pagine, meno di dieci secondi.
@@ -421,7 +421,8 @@ export default function IntroScreen({ onFine }: { onFine: () => void }) {
   const stileMotto = useStileComparsa(motto, ridotto, 10);
   const stileNota3 = useStileComparsa(nota3, ridotto, 4);
 
-  const corpoTitolo = compatto ? 26 : 30;
+  // Garamond ha l'occhio piccolo: a parità di corpo sembra più minuto.
+  const corpoTitolo = compatto ? 29 : 34;
   const larghezzaGrafico = W - MARGINE * 2 - 18 * 2;
   // Il grafico prende l'altezza che lo schermo concede: su un telefono
   // alto resterebbe altrimenti un vuoto sotto le note.
@@ -522,6 +523,7 @@ export default function IntroScreen({ onFine }: { onFine: () => void }) {
               larghezza={larghezzaGrafico}
               altezza={altezzaGrafico}
               corpoNumero={compatto ? 38 : 46}
+              carattere={FONT_INTRO.testo}
               attivo={seconda}
               ritardo={2150}
               ridotto={ridotto}
@@ -651,7 +653,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   taccaPiena: { height: 3, borderRadius: 2, backgroundColor: colors.titanioForte },
-  salta: { fontSize: 14, lineHeight: 20, fontWeight: '600', color: colors.textMuted },
+  salta: {
+    fontFamily: FONT_INTRO.testo, fontSize: 14, lineHeight: 20, fontWeight: '600', color: colors.textMuted },
   colonna1: {
     position: 'absolute',
     left: 0,
@@ -671,14 +674,15 @@ const styles = StyleSheet.create({
   },
   parole: { flexDirection: 'row', flexWrap: 'wrap' },
   benvenuto: {
-    fontFamily: FONT_SERIF.regular,
+    fontFamily: FONT_INTRO.titoloLeggero,
     fontWeight: '400',
-    fontSize: 25,
-    lineHeight: 34,
+    fontSize: 29,
+    lineHeight: 36,
     letterSpacing: -0.3,
     color: colors.text,
   },
   sottotitolo: {
+    fontFamily: FONT_INTRO.testo,
     marginTop: 10,
     fontSize: 15,
     lineHeight: 22,
@@ -689,6 +693,7 @@ const styles = StyleSheet.create({
   },
   colonna2: { position: 'absolute' },
   occhiello: {
+    fontFamily: FONT_INTRO.testo,
     fontSize: 11,
     lineHeight: 14,
     fontWeight: '600',
@@ -698,12 +703,13 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   titolo: {
-    fontFamily: FONT_SERIF.semibold,
+    fontFamily: FONT_INTRO.titolo,
     fontWeight: '400',
-    letterSpacing: -0.6,
+    letterSpacing: -0.4,
     color: colors.text,
   },
   corpo: {
+    fontFamily: FONT_INTRO.testo,
     marginTop: 10,
     fontSize: 15,
     lineHeight: 22,
@@ -718,6 +724,7 @@ const styles = StyleSheet.create({
   principio: { flex: 1, gap: 3 },
   principioFilo: { width: StyleSheet.hairlineWidth * 2, backgroundColor: 'rgba(20,22,27,0.14)' },
   principioNome: {
+    fontFamily: FONT_INTRO.testo,
     fontSize: 10.5,
     lineHeight: 14,
     fontWeight: '700',
@@ -725,7 +732,8 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     color: colors.text,
   },
-  principioTesto: { fontSize: 13, lineHeight: 18, color: colors.textMuted },
+  principioTesto: {
+    fontFamily: FONT_INTRO.testo, fontSize: 13, lineHeight: 18, color: colors.textMuted },
   ciclo: { flexDirection: 'row', flexWrap: 'wrap', rowGap: 10, marginTop: 20 },
   passo: { flexDirection: 'row', alignItems: 'center' },
   passoChip: {
@@ -737,14 +745,16 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(20,22,27,0.10)',
     ...ombra.tenue,
   },
-  passoTesto: { fontSize: 13, lineHeight: 17, fontWeight: '600', color: colors.text },
-  freccia: { marginHorizontal: 6, fontSize: 13, color: colors.accentTesto },
+  passoTesto: {
+    fontFamily: FONT_INTRO.testo, fontSize: 13, lineHeight: 17, fontWeight: '600', color: colors.text },
+  freccia: {
+    fontFamily: FONT_INTRO.testo, marginHorizontal: 6, fontSize: 13, color: colors.accentTesto },
   filo3: { marginTop: 30, marginBottom: 22 },
   motto: {
-    fontFamily: FONT_SERIF.semibold,
+    fontFamily: FONT_INTRO.titolo,
     fontWeight: '400',
-    fontSize: 32,
-    lineHeight: 39,
+    fontSize: 36,
+    lineHeight: 42,
     letterSpacing: -0.7,
     color: colors.text,
   },
@@ -760,8 +770,10 @@ const styles = StyleSheet.create({
   },
   schedaCompatta: { marginTop: 12, padding: 14, paddingHorizontal: 18 },
   note: { marginTop: 14, gap: 3 },
-  nota: { fontSize: 11.5, lineHeight: 16, color: colors.textMuted, letterSpacing: 0 },
+  nota: {
+    fontFamily: FONT_INTRO.testo, fontSize: 11.5, lineHeight: 16, color: colors.textMuted, letterSpacing: 0 },
   suggerimento: {
+    fontFamily: FONT_INTRO.testo,
     position: 'absolute',
     left: 0,
     right: 0,

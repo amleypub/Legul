@@ -7,6 +7,7 @@ import {
   Inter_600SemiBold,
   Inter_700Bold,
 } from '@expo-google-fonts/inter';
+import { EBGaramond_400Regular, EBGaramond_500Medium } from '@expo-google-fonts/eb-garamond';
 import {
   SourceSerif4_400Regular,
   SourceSerif4_600SemiBold,
@@ -37,6 +38,9 @@ export const fontMap = {
   Inter_700Bold,
   SourceSerif4_400Regular,
   SourceSerif4_600SemiBold,
+  // I titoli dell'intro: vedi `FONT_INTRO` in `theme.ts`.
+  EBGaramond_400Regular,
+  EBGaramond_500Medium,
 };
 
 /**

@@ -193,6 +193,25 @@ export const FONT_SERIF = {
 } as const;
 
 /**
+ * I due caratteri dell'intro: Garamond per i titoli, Helvetica Neue per
+ * tutto il resto. Per ora valgono solo lì; se convincono, si estendono.
+ *
+ * Garamond è EB Garamond, libero, ed è incluso nell'app. Helvetica Neue
+ * no: è un carattere Apple con licenza, e non si può distribuire dentro
+ * un'app. Su iPhone c'è già, di sistema, e si usa quello; su Android il
+ * suo equivalente di sistema; sul web l'Helvetica del computer, se c'è.
+ */
+export const FONT_INTRO = {
+  titolo: 'EBGaramond_500Medium',
+  titoloLeggero: 'EBGaramond_400Regular',
+  testo: Platform.select({
+    ios: 'Helvetica Neue',
+    android: 'sans-serif',
+    default: '"Helvetica Neue", Helvetica, Arial, sans-serif',
+  }) as string,
+} as const;
+
+/**
  * Scala tipografica.
  *
  * `letterSpacing` negativo cresce in valore assoluto con il corpo: a

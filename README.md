@@ -36,7 +36,11 @@ decisione da prendere, non a decorare.
   l'icona accompagna l'etichetta, non grida più forte di lei
 - **Due caratteri**: *Inter* per l'interfaccia, *Source Serif 4* per i
   testi di legge — tracce, paragrafi degli svolgimenti. È la convenzione
-  editoriale che separa la macchina dal documento che serve
+  editoriale che separa la macchina dal documento che serve. L'intro
+  fa eccezione, per prova: *EB Garamond* per i titoli e *Helvetica Neue*
+  per il resto (`FONT_INTRO`). Helvetica Neue non si può includere
+  nell'app, è un carattere Apple con licenza: su iPhone è di sistema, su
+  Android si usa il sans di sistema, nelle anteprime web un sostituto
 - **Niente mascotte**: il gufo-giurista è stato rimosso. Un personaggio
   cartoon costruisce simpatia, e la simpatia è ciò che si vende a chi
   sceglie fra le app gratuite. Al suo posto un prisma rifratto in
