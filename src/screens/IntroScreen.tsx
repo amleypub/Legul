@@ -147,6 +147,62 @@ function Parole({
   );
 }
 
+/** Un passo del ciclo, che compare quando tocca a lui. */
+function Passo({
+  testo,
+  attivo,
+  ritardo,
+  ridotto,
+  conFreccia,
+}: {
+  testo: string;
+  attivo: boolean;
+  ritardo: number;
+  ridotto: boolean;
+  conFreccia: boolean;
+}) {
+  const v = useComparsa(attivo, ritardo, ridotto, 420);
+  const stile = useStileComparsa(v, ridotto, 6);
+  return (
+    <Animated.View style={[styles.passo, stile]}>
+      <View style={styles.passoChip}>
+        <Text style={styles.passoTesto} maxFontSizeMultiplier={1.2}>
+          {testo}
+        </Text>
+      </View>
+      {conFreccia && <Text style={styles.freccia}>→</Text>}
+    </Animated.View>
+  );
+}
+
+const PASSI_CICLO = ['pensare', 'ricordare', 'rispondere', 'feedback', 'riprovare'];
+
+/**
+ * Il ciclo di ogni esercizio: i cinque passi si accendono uno dopo
+ * l'altro, come si susseguono davvero in una lezione. Per un lettore di
+ * schermo è una frase sola.
+ */
+function Ciclo({ attivo, ritardo, ridotto }: { attivo: boolean; ritardo: number; ridotto: boolean }) {
+  return (
+    <View
+      style={styles.ciclo}
+      accessible
+      accessibilityLabel={`Ogni esercizio: ${PASSI_CICLO.join(', ')}.`}
+    >
+      {PASSI_CICLO.map((p, i) => (
+        <Passo
+          key={p}
+          testo={p}
+          attivo={attivo}
+          ritardo={ritardo + i * 180}
+          ridotto={ridotto}
+          conFreccia={i < PASSI_CICLO.length - 1}
+        />
+      ))}
+    </View>
+  );
+}
+
 /** Una tacca della barra in alto: piena, vuota, o che si riempie col tempo. */
 function Tacca({
   indice,
@@ -286,13 +342,13 @@ export default function IntroScreen({ onFine }: { onFine: () => void }) {
     fuoco.value = ridotto ? 1 : withDelay(380, withTiming(1, { duration: 1000, easing: Easing.inOut(Easing.quad) }));
   }, [luce, logo, fuoco, ridotto]);
 
+  const fase3 = useSharedValue(0);
   useEffect(() => {
     if (pagina < 1) return;
-    fase.value = withTiming(1, {
-      duration: ridotto ? 250 : 950,
-      easing: Easing.inOut(Easing.cubic),
-    });
-  }, [pagina, fase, ridotto]);
+    const andatura = { duration: ridotto ? 250 : 950, easing: Easing.inOut(Easing.cubic) };
+    fase.value = withTiming(1, andatura);
+    if (pagina >= 2) fase3.value = withTiming(1, { ...andatura, duration: ridotto ? 250 : 700 });
+  }, [pagina, fase, fase3, ridotto]);
 
   const stileAurora = useAnimatedStyle(() => ({
     opacity: luce.value * (1 - fase.value * 0.38),
@@ -325,15 +381,19 @@ export default function IntroScreen({ onFine }: { onFine: () => void }) {
   const stileSottotitolo = useStileComparsa(sottotitolo, ridotto, 6);
   const stileFilo = useAnimatedStyle(() => ({ width: 40 * filo.value, opacity: filo.value }));
 
-  // ——— Pagina 2 ———
+  // ——— Pagina 2: il metodo ———
   const seconda = pagina >= 1;
+  const terza = pagina >= 2;
+  const ultima = pagina === DURATA_INTRO.length - 1;
   const occhiello = useComparsa(seconda, 480, ridotto);
-  const corpo = useComparsa(seconda, 950, ridotto, 640);
-  const scheda = useComparsa(seconda, 1150, ridotto, 700);
-  const note = useComparsa(seconda, 2550, ridotto, 700);
-  const suggerimento = useComparsa(seconda && !lettore, 3300, ridotto, 700);
+  const corpo = useComparsa(seconda, 1150, ridotto, 640);
+  const principi = useComparsa(seconda, 1500, ridotto, 640);
+  const scheda = useComparsa(seconda, 1850, ridotto, 700);
+  const note = useComparsa(seconda, 3300, ridotto, 700);
+  const suggerimento = useComparsa(seconda && !lettore, 3900, ridotto, 700);
   const stileOcchiello = useStileComparsa(occhiello, ridotto, 6);
   const stileCorpo = useStileComparsa(corpo, ridotto, 8);
+  const stilePrincipi = useStileComparsa(principi, ridotto, 8);
   const stileScheda = useAnimatedStyle(() => ({
     opacity: scheda.value,
     transform: [
@@ -343,12 +403,29 @@ export default function IntroScreen({ onFine }: { onFine: () => void }) {
   }));
   const stileNote = useStileComparsa(note, ridotto, 4);
   const stileSuggerimento = useAnimatedStyle(() => ({ opacity: suggerimento.value }));
+  // La pagina del metodo esce salendo, come la prima, quando arriva il gioco.
+  const stileUscita2 = useAnimatedStyle(() => ({
+    opacity: interpolate(fase3.value, [0, 0.5], [1, 0], Extrapolation.CLAMP),
+    transform: [{ translateY: ridotto ? 0 : -fase3.value * 18 }],
+  }));
+
+  // ——— Pagina 3: il gioco ———
+  const occhiello3 = useComparsa(terza, 420, ridotto);
+  const corpo3 = useComparsa(terza, 1000, ridotto, 640);
+  const filo3 = useComparsa(terza, 2650, ridotto, 700);
+  const motto = useComparsa(terza, 2850, ridotto, 800);
+  const nota3 = useComparsa(terza, 3200, ridotto, 700);
+  const stileOcchiello3 = useStileComparsa(occhiello3, ridotto, 6);
+  const stileCorpo3 = useStileComparsa(corpo3, ridotto, 8);
+  const stileFilo3 = useAnimatedStyle(() => ({ width: 40 * filo3.value, opacity: filo3.value }));
+  const stileMotto = useStileComparsa(motto, ridotto, 10);
+  const stileNota3 = useStileComparsa(nota3, ridotto, 4);
 
   const corpoTitolo = compatto ? 26 : 30;
   const larghezzaGrafico = W - MARGINE * 2 - 18 * 2;
   // Il grafico prende l'altezza che lo schermo concede: su un telefono
   // alto resterebbe altrimenti un vuoto sotto le note.
-  const altezzaGrafico = compatto ? 100 : Math.round(Math.min(190, Math.max(132, 132 + (H - 820) * 0.7)));
+  const altezzaGrafico = compatto ? 84 : Math.round(Math.min(170, Math.max(110, 110 + (H - 820) * 0.7)));
 
   return (
     <View style={styles.radice}>
@@ -395,51 +472,109 @@ export default function IntroScreen({ onFine }: { onFine: () => void }) {
         </Animated.View>
 
         {/* ——— Pagina 2: il metodo ——— */}
-        <View
-          style={[styles.colonna2, { top: inizioPagina2, left: MARGINE, right: MARGINE }]}
-          importantForAccessibility={seconda ? 'auto' : 'no-hide-descendants'}
-          accessibilityElementsHidden={!seconda}
+        <Animated.View
+          style={[styles.colonna2, { top: inizioPagina2, left: MARGINE, right: MARGINE }, stileUscita2]}
+          importantForAccessibility={pagina === 1 ? 'auto' : 'no-hide-descendants'}
+          accessibilityElementsHidden={pagina !== 1}
           pointerEvents="none"
         >
           <Animated.Text style={[styles.occhiello, stileOcchiello]} maxFontSizeMultiplier={1.2}>
             Il metodo
           </Animated.Text>
           <Parole
-            testo="Rigore e gioco, insieme."
+            testo="La memoria si costruisce quando provi a ricordare."
             attivo={seconda}
             ritardo={560}
-            passo={60}
+            passo={55}
             ridotto={ridotto}
             intestazione
-            style={{ ...styles.titolo, fontSize: corpoTitolo, lineHeight: Math.round(corpoTitolo * 1.2) }}
+            style={{ ...styles.titolo, fontSize: corpoTitolo, lineHeight: Math.round(corpoTitolo * 1.18) }}
           />
-          <Animated.Text
-            style={[styles.corpo, compatto && styles.corpoCompatto, stileCorpo]}
-            maxFontSizeMultiplier={1.2}
-          >
-            Il nostro obiettivo è unire una preparazione rigorosa al piacere del gioco. Perché
-            funziona: mettersi alla prova fa ricordare più che rileggere{APICI[0]},{APICI[1]} e
-            il gioco migliora l’apprendimento{APICI[2]}.
-          </Animated.Text>
+          {!compatto && (
+            <Animated.Text style={[styles.corpo, stileCorpo]} maxFontSizeMultiplier={1.2}>
+              Rileggere dà l’illusione di sapere. All’esame la risposta non sarà sulla pagina:
+              dovrai tirarla fuori dalla memoria{APICI[0]}.
+            </Animated.Text>
+          )}
+
+          <Animated.View style={[styles.principi, stilePrincipi]}>
+            <View style={styles.principio}>
+              <Text style={styles.principioNome} maxFontSizeMultiplier={1.2}>
+                Retrieval practice
+              </Text>
+              <Text style={styles.principioTesto} maxFontSizeMultiplier={1.2}>
+                recuperare attivamente dalla memoria
+              </Text>
+            </View>
+            <View style={styles.principioFilo} />
+            <View style={styles.principio}>
+              <Text style={styles.principioNome} maxFontSizeMultiplier={1.2}>
+                Spaced repetition
+              </Text>
+              <Text style={styles.principioTesto} maxFontSizeMultiplier={1.2}>
+                ripetere nel momento giusto{APICI[1]}
+              </Text>
+            </View>
+          </Animated.View>
 
           <Animated.View style={[styles.scheda, compatto && styles.schedaCompatta, stileScheda]}>
             <GraficoMetodo
               larghezza={larghezzaGrafico}
               altezza={altezzaGrafico}
-              corpoNumero={compatto ? 40 : 48}
+              corpoNumero={compatto ? 38 : 46}
               attivo={seconda}
-              ritardo={1450}
+              ritardo={2150}
               ridotto={ridotto}
             />
           </Animated.View>
 
           <Animated.View style={[styles.note, stileNote]}>
-            {FONTI.map((f) => (
+            {FONTI.slice(0, 2).map((f) => (
               <Text key={f.nota} style={styles.nota} maxFontSizeMultiplier={1.2}>
                 {APICI[f.nota - 1]} {f.citazione}
               </Text>
             ))}
           </Animated.View>
+        </Animated.View>
+
+        {/* ——— Pagina 3: il gioco ——— */}
+        <View
+          style={[styles.colonna2, { top: inizioPagina2, left: MARGINE, right: MARGINE }]}
+          importantForAccessibility={terza ? 'auto' : 'no-hide-descendants'}
+          accessibilityElementsHidden={!terza}
+          pointerEvents="none"
+        >
+          <Animated.Text style={[styles.occhiello, stileOcchiello3]} maxFontSizeMultiplier={1.2}>
+            Il gioco
+          </Animated.Text>
+          <Parole
+            testo="E poi abbiamo aggiunto il gioco."
+            attivo={terza}
+            ritardo={500}
+            passo={60}
+            ridotto={ridotto}
+            intestazione
+            style={{ ...styles.titolo, fontSize: corpoTitolo, lineHeight: Math.round(corpoTitolo * 1.18) }}
+          />
+          <Animated.Text style={[styles.corpo, stileCorpo3]} maxFontSizeMultiplier={1.2}>
+            Recupero attivo, feedback e ripetizione distribuita rendono l’apprendimento più
+            efficace e duraturo. Noi li abbiamo trasformati in domande, sfide e progressi
+            {APICI[2]}.
+          </Animated.Text>
+
+          <Ciclo attivo={terza} ritardo={1400} ridotto={ridotto} />
+
+          {/* Il motto scende con lo schermo: su un telefono alto resterebbe
+              appeso a metà, con un vuoto sotto. */}
+          <Animated.View
+            style={[styles.filo, styles.filo3, { marginTop: compatto ? 26 : Math.max(30, 30 + (H - 820) * 0.9) }, stileFilo3]}
+          />
+          <Animated.Text style={[styles.motto, stileMotto]} maxFontSizeMultiplier={1.2}>
+            Non studiare di più.{'\n'}Studia meglio.
+          </Animated.Text>
+          <Animated.Text style={[styles.nota, styles.nota3, stileNota3]} maxFontSizeMultiplier={1.2}>
+            {APICI[2]} {FONTI[2].citazione}
+          </Animated.Text>
         </View>
 
         {/* Il logo, che passa da una pagina all'altra. */}
@@ -490,7 +625,7 @@ export default function IntroScreen({ onFine }: { onFine: () => void }) {
 
       {lettore && (
         <View style={[styles.piede, { bottom: insets.bottom + 16 }]}>
-          <Bottone label={seconda ? 'Continua' : 'Avanti'} onPress={avanti} />
+          <Bottone label={ultima ? 'Continua' : 'Avanti'} onPress={avanti} />
         </View>
       )}
     </View>
@@ -575,7 +710,45 @@ const styles = StyleSheet.create({
     letterSpacing: -0.12,
     color: colors.textMuted,
   },
-  corpoCompatto: { fontSize: 14, lineHeight: 20, marginTop: 6 },
+  principi: {
+    flexDirection: 'row',
+    marginTop: 16,
+    gap: 14,
+  },
+  principio: { flex: 1, gap: 3 },
+  principioFilo: { width: StyleSheet.hairlineWidth * 2, backgroundColor: 'rgba(20,22,27,0.14)' },
+  principioNome: {
+    fontSize: 10.5,
+    lineHeight: 14,
+    fontWeight: '700',
+    letterSpacing: 1.3,
+    textTransform: 'uppercase',
+    color: colors.text,
+  },
+  principioTesto: { fontSize: 13, lineHeight: 18, color: colors.textMuted },
+  ciclo: { flexDirection: 'row', flexWrap: 'wrap', rowGap: 10, marginTop: 20 },
+  passo: { flexDirection: 'row', alignItems: 'center' },
+  passoChip: {
+    paddingHorizontal: 11,
+    paddingVertical: 6,
+    borderRadius: radius.pill,
+    backgroundColor: 'rgba(255,255,255,0.92)',
+    borderWidth: StyleSheet.hairlineWidth * 1.5,
+    borderColor: 'rgba(20,22,27,0.10)',
+    ...ombra.tenue,
+  },
+  passoTesto: { fontSize: 13, lineHeight: 17, fontWeight: '600', color: colors.text },
+  freccia: { marginHorizontal: 6, fontSize: 13, color: colors.accentTesto },
+  filo3: { marginTop: 30, marginBottom: 22 },
+  motto: {
+    fontFamily: FONT_SERIF.semibold,
+    fontWeight: '400',
+    fontSize: 32,
+    lineHeight: 39,
+    letterSpacing: -0.7,
+    color: colors.text,
+  },
+  nota3: { marginTop: 22 },
   scheda: {
     marginTop: 18,
     padding: 18,

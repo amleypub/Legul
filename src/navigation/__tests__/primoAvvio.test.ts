@@ -45,9 +45,10 @@ describe('primo avvio', () => {
     expect(fasePrimoAvvio({ ...nuovo, conAccount: true })).toBe('intro');
   });
 
-  it('tiene l’intro sotto i dieci secondi', () => {
+  it('tiene l’intro breve: tre pagine, meno di quindici secondi', () => {
+    expect(DURATA_INTRO).toHaveLength(3);
     const totale = DURATA_INTRO.reduce((a, b) => a + b, 0);
-    expect(totale).toBeLessThan(10000);
+    expect(totale).toBeLessThan(15000);
     // E nessuna pagina così breve da non lasciar finire la sua animazione.
     for (const d of DURATA_INTRO) expect(d).toBeGreaterThanOrEqual(3000);
   });

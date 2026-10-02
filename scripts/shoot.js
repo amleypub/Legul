@@ -309,16 +309,20 @@ async function main() {
     prima cosa che vede chi installa l'app, e non compare in nessun altro
     scatto.
 
-    L'intro avanza da sola, quindi gli scatti vanno presi a tempo: a
-    3 secondi la prima pagina ha finito di comporsi (cambia a 3,8), a
-    7,9 la seconda ha mostrato anche le note (finisce a 9,4). Il conto
-    parte da quando compare «Salta», non dal caricamento della pagina,
-    che dipende da quanto ci mettono i caratteri.
+    L'intro avanza da sola, quindi gli scatti vanno presi a tempo. Il
+    conto parte da quando compare «Salta», che arriva circa mezzo secondo
+    dopo l'avvio vero dell'intro: gli istanti qui sotto ne tengono conto,
+    e cadono ciascuno dopo che la pagina ha finito di comporsi e prima
+    che cambi (le durate sono in `navigation/primoAvvio.ts`).
   */
   const primoAvvio = async (viewport, prefisso, completo) => {
     // Dichiarati subito, non al momento dello scatto: se un passaggio
     // fallisce, il resoconto finale deve contarli fra i saltati.
-    const nomi = [`${prefisso}a-intro-benvenuto.png`, `${prefisso}b-intro-metodo.png`];
+    const nomi = [
+      `${prefisso}a-intro-benvenuto.png`,
+      `${prefisso}b-intro-metodo.png`,
+      `${prefisso}b2-intro-gioco.png`,
+    ];
     if (completo) {
       nomi.push('0c-accesso.png', '0d-accesso-email.png', '0e-apertura.png', '0f-apertura-scritti.png');
     }
@@ -333,16 +337,18 @@ async function main() {
         const resta = t0 + ms - Date.now();
         if (resta > 0) await p.waitForTimeout(resta);
       };
-      await aspettaFino(3000);
+      await aspettaFino(2500);
       const nome1 = `${prefisso}a-intro-benvenuto.png`;
-      attesi.add(nome1);
       await p.screenshot({ path: path.join(outDir, nome1) });
       scattati.add(nome1);
-      await aspettaFino(7900);
+      await aspettaFino(7600);
       const nome2 = `${prefisso}b-intro-metodo.png`;
-      attesi.add(nome2);
       await p.screenshot({ path: path.join(outDir, nome2) });
       scattati.add(nome2);
+      await aspettaFino(12800);
+      const nome3 = `${prefisso}b2-intro-gioco.png`;
+      await p.screenshot({ path: path.join(outDir, nome3) });
+      scattati.add(nome3);
       if (!completo) return;
 
       // Finita l'intro arriva da sola la schermata di accesso.

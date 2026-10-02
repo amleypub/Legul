@@ -70,7 +70,7 @@ decisione da prendere, non a decorare.
 ## Funzionalità
 
 ### Primo avvio: intro e accesso
-- **Un'intro di due pagine, meno di dieci secondi in tutto.** Nella prima il logo entra da fuori fuoco dentro un'aurora nei colori del marchio, poi la fonetica, un filo d'oro e il benvenuto, parola per parola. Nella seconda la luce sale come un sipario, il logo diventa la testata e si rivela il metodo: **rigore e gioco, insieme**, con un grafico e le fonti in nota
+- **Un'intro di tre pagine, intorno ai quattordici secondi.** Nella prima il logo entra da fuori fuoco dentro un'aurora nei colori del marchio, poi la fonetica, un filo d'oro e il benvenuto, parola per parola. Nella seconda la luce sale come un sipario, il logo diventa la testata e si rivela il metodo: **la memoria si costruisce quando provi a ricordare**, i due principi su cui è costruita l'app (*retrieval practice* e *spaced repetition*) e un grafico con le fonti in nota. Nella terza il gioco: il ciclo pensare → ricordare → rispondere → feedback → riprovare, e il motto **«Non studiare di più. Studia meglio.»**
 - Le pagine avanzano da sole; **toccando si va avanti, tenendo premuto ci si ferma a leggere**, «Salta» porta all'accesso. Con un lettore di schermo attivo non avanza niente da solo e compare un pulsante; con il movimento ridotto il logo non vola e non si sfoca, compare
 - **Il grafico** è quello di Roediger e Karpicke (2006, esperimento 2): a parità di tempo, cinque minuti dopo chi ha riletto un testo ne ricorda di più (83% contro 71%), una settimana dopo chi si è messo alla prova (61% contro 40%), cioè il 52% in più — arrotondato per difetto. È un grafico a pendenza e non a barre perché il dato interessante è l'incrocio: spiega perché si sceglie il metodo sbagliato. Le altre due note sono Dunlosky et al. (2013), che fra dieci tecniche di studio danno utilità alta solo a mettersi alla prova e a distribuire lo studio nel tempo, e la meta-analisi di Sailer e Homner (2020) sulla gamification (g = 0,49)
 - **Che cosa non si afferma**: nessuno di questi studi misura l'esame da avvocato né un'app. L'intro dice che il metodo è fondato sulla ricerca, mai che garantisce un risultato, e un test (`ricerca.test.ts`) controlla i numeri e l'assenza di promesse
@@ -419,7 +419,7 @@ scripts/genera-suoni.mjs         # Sintesi degli effetti sonori
 - **`primoAvvio.test.ts`** — l'ordine di intro, accesso e domande, che
   l'accesso non venga proposto a chi ha già un account né mostrato per
   un istante mentre la sessione si sta ancora leggendo, e che l'intro
-  resti sotto i dieci secondi
+  resti di tre pagine e sotto i quindici secondi
 - **`ricerca.test.ts`** — che i numeri dell'intro siano quelli pubblicati,
   che il guadagno sia arrotondato per difetto, che ogni nota abbia la sua
   fonte con un DOI ben formato, e che il testo non prometta esiti

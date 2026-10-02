@@ -12,14 +12,15 @@
 export type FasePrimoAvvio = 'attesa' | 'intro' | 'accesso' | 'domande' | 'app';
 
 /**
- * Quanto resta a schermo ciascuna pagina dell'intro, in millisecondi.
+ * Quanto resta a schermo ciascuna pagina dell'intro, in millisecondi:
+ * il benvenuto, il metodo, il gioco.
  *
- * In tutto meno di dieci secondi: è il tetto che rende un'intro qualcosa
- * che si guarda invece di qualcosa che si salta. La seconda pagina è più
- * lunga perché ha un grafico da leggere; chi vuole leggerlo tutto tiene
- * premuto e il tempo si ferma.
+ * In tutto intorno ai quattordici secondi: abbastanza per tre idee, non
+ * tanto da farla saltare. La pagina del metodo è la più lunga perché ha
+ * un grafico da leggere; chi vuole leggere tutto tiene premuto e il
+ * tempo si ferma.
  */
-export const DURATA_INTRO = [3800, 5600] as const;
+export const DURATA_INTRO = [3400, 6200, 4400] as const;
 
 export interface StatoPrimoAvvio {
   introVista: boolean;
